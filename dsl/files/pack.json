@@ -1,0 +1,273 @@
+{
+  "Name": "files",
+  "Version": "0.1.0",
+  "Description": "Files and folders: find, list, create, copy, move, rename, and delete.",
+  "Types": {
+    "o": {
+      "en": "Which files or folders?",
+      "fr": "Quels fichiers ou dossiers ?"
+    },
+    "d": {
+      "en": "In which folder?",
+      "fr": "Dans quel dossier ?"
+    },
+    "p": {
+      "en": "Where to?",
+      "fr": "Vers quel emplacement ?"
+    },
+    "c": {
+      "en": "Compared to what?",
+      "fr": "Par rapport \u00e0 quoi ?"
+    },
+    "z": {
+      "en": "What size?",
+      "fr": "Quelle taille ?"
+    },
+    "t": {
+      "en": "What age or duration?",
+      "fr": "Quelle dur\u00e9e ?"
+    }
+  },
+  "Entities": [
+    {
+      "Name": "path",
+      "Priority": 40,
+      "Kind": "text",
+      "Pattern": "(?<v>(?:[A-Za-z]:\\\\|\\\\\\\\)[^\\s,;\"]*|%[A-Za-z_]+%(?:\\\\[^\\s,;\"]*)?|\\$env:[A-Za-z_]+(?:\\\\[^\\s,;\"]*)?)"
+    },
+    {
+      "Name": "filename",
+      "Priority": 45,
+      "Kind": "text",
+      "Pattern": "(?<v>\\b[\\w-]*[A-Za-z][\\w-]*\\.[A-Za-z][A-Za-z0-9]{0,4}\\b)"
+    },
+    {
+      "Name": "size",
+      "Priority": 50,
+      "Kind": "unit",
+      "Pattern": "(?i)\\b(?<n>\\d+(?:[.,]\\d+)?)\\s?(?<u>bytes?|octets?|gigas?|[kmgt]b|[kmg]o|b)\\b",
+      "Units": {
+        "b": 1,
+        "byte": 1,
+        "bytes": 1,
+        "octet": 1,
+        "octets": 1,
+        "kb": 1024,
+        "ko": 1024,
+        "mb": 1048576,
+        "mo": 1048576,
+        "gb": 1073741824,
+        "go": 1073741824,
+        "giga": 1073741824,
+        "gigas": 1073741824,
+        "tb": 1099511627776
+      }
+    },
+    {
+      "Name": "extension",
+      "Priority": 70,
+      "Kind": "lower",
+      "Pattern": "(?<![\\w\\\\])(?<v>\\.[A-Za-z0-9]{1,5})\\b"
+    }
+  ],
+  "Words": {
+    "*": {
+      "_path_": [
+        "d"
+      ],
+      "_filename_": [
+        "o"
+      ],
+      "_quoted_": [
+        "d",
+        "o"
+      ],
+      "_size_": [
+        "z"
+      ],
+      "_duration_": [
+        "t"
+      ],
+      "_extension_": [
+        "o o^l",
+        "o^r o"
+      ]
+    },
+    "en": {
+      "delete": [
+        "s o^l"
+      ],
+      "list": [
+        "s o^l"
+      ],
+      "show": [
+        "s o^l"
+      ],
+      "find": [
+        "s o^l"
+      ],
+      "create": [
+        "s o^l"
+      ],
+      "copy": [
+        "s p^l o^l"
+      ],
+      "move": [
+        "s p^l o^l"
+      ],
+      "rename": [
+        "s p^l o^l"
+      ],
+      "file": [
+        "o"
+      ],
+      "folder": [
+        "o"
+      ],
+      "in": [
+        "o^r o d^l"
+      ],
+      "inside": [
+        "o^r o d^l"
+      ],
+      "under": [
+        "o^r o d^l"
+      ],
+      "to": [
+        "p d^l"
+      ],
+      "into": [
+        "p d^l"
+      ],
+      "old": [
+        "o o^l",
+        "o^r o c^l"
+      ],
+      "new": [
+        "o o^l",
+        "o^r o c^l"
+      ],
+      "large": [
+        "o o^l"
+      ],
+      "larger": [
+        "o^r o c^l"
+      ],
+      "smaller": [
+        "o^r o c^l"
+      ],
+      "than": [
+        "c z^l",
+        "c t^l"
+      ]
+    },
+    "fr": {
+      "supprimer": [
+        "s o^l"
+      ],
+      "lister": [
+        "s o^l"
+      ],
+      "afficher": [
+        "s o^l"
+      ],
+      "chercher": [
+        "s o^l"
+      ],
+      "creer": [
+        "s o^l"
+      ],
+      "copier": [
+        "s p^l o^l"
+      ],
+      "deplacer": [
+        "s p^l o^l"
+      ],
+      "renommer": [
+        "s p^l o^l"
+      ],
+      "fichier": [
+        "o"
+      ],
+      "dossier": [
+        "o"
+      ],
+      "dans": [
+        "o^r o d^l"
+      ],
+      "sous": [
+        "o^r o d^l"
+      ],
+      "vers": [
+        "p d^l"
+      ],
+      "en": [
+        "p d^l"
+      ],
+      "ancien": [
+        "o o^l",
+        "o^r o"
+      ],
+      "grand": [
+        "o o^l",
+        "o^r o"
+      ],
+      "plus": [
+        "o^r o z^l",
+        "o^r o t^l"
+      ],
+      "moins": [
+        "o^r o z^l",
+        "o^r o t^l"
+      ]
+    }
+  },
+  "BaseForms": {
+    "en": {
+      "deleting": "delete",
+      "deleted": "delete",
+      "deletes": "delete",
+      "remove": "delete",
+      "removing": "delete",
+      "erase": "delete",
+      "listing": "list",
+      "showing": "show",
+      "display": "show",
+      "finding": "find",
+      "search": "find",
+      "searching": "find",
+      "creating": "create",
+      "make": "create",
+      "copying": "copy",
+      "copied": "copy",
+      "copies": "copy",
+      "moving": "move",
+      "moved": "move",
+      "renaming": "rename",
+      "renamed": "rename",
+      "files": "file",
+      "folders": "folder",
+      "directory": "folder",
+      "directories": "folder"
+    },
+    "fr": {
+      "supprime": "supprimer",
+      "supprimez": "supprimer",
+      "efface": "supprimer",
+      "effacer": "supprimer",
+      "liste": "lister",
+      "affiche": "afficher",
+      "montre": "afficher",
+      "cherche": "chercher",
+      "trouve": "chercher",
+      "cree": "creer",
+      "copie": "copier",
+      "copiez": "copier",
+      "deplace": "deplacer",
+      "deplacez": "deplacer",
+      "renomme": "renommer",
+      "repertoire": "dossier",
+      "repertoires": "dossier"
+    }
+  }
+}

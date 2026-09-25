@@ -1,0 +1,133 @@
+{
+  "Name": "code",
+  "Version": "0.1.0",
+  "Description": "Code generation: scripts, functions, classes, modules, and tests.",
+  "Types": {
+    "a": {
+      "en": "What should be generated (script, function, class)?",
+      "fr": "Que faut-il g\u00e9n\u00e9rer (script, fonction, classe) ?"
+    },
+    "n": {
+      "en": "What name should it have?",
+      "fr": "Quel nom doit-il porter ?"
+    }
+  },
+  "Entities": [
+    {
+      "Name": "identifier",
+      "Priority": 35,
+      "Kind": "text",
+      "Pattern": "(?<v>\\b[A-Z][a-z]+-[A-Z][A-Za-z0-9]+\\b)"
+    }
+  ],
+  "Words": {
+    "*": {
+      "_identifier_": [
+        "n"
+      ],
+      "_quoted_": [
+        "n"
+      ]
+    },
+    "en": {
+      "generate": [
+        "s a^l"
+      ],
+      "create": [
+        "s a^l"
+      ],
+      "write": [
+        "s a^l"
+      ],
+      "script": [
+        "a"
+      ],
+      "function": [
+        "a"
+      ],
+      "class": [
+        "a"
+      ],
+      "module": [
+        "a"
+      ],
+      "test": [
+        "a"
+      ],
+      "powershell": [
+        "a a^l"
+      ],
+      "python": [
+        "a a^l"
+      ],
+      "bash": [
+        "a a^l"
+      ],
+      "named": [
+        "a^r a n^l"
+      ],
+      "called": [
+        "a^r a n^l"
+      ]
+    },
+    "fr": {
+      "generer": [
+        "s a^l"
+      ],
+      "creer": [
+        "s a^l"
+      ],
+      "ecrire": [
+        "s a^l"
+      ],
+      "script": [
+        "a"
+      ],
+      "fonction": [
+        "a"
+      ],
+      "classe": [
+        "a"
+      ],
+      "module": [
+        "a"
+      ],
+      "test": [
+        "a"
+      ],
+      "powershell": [
+        "a^r a"
+      ],
+      "python": [
+        "a^r a"
+      ],
+      "bash": [
+        "a^r a"
+      ],
+      "nomme": [
+        "a^r a n^l"
+      ],
+      "appele": [
+        "a^r a n^l"
+      ]
+    }
+  },
+  "BaseForms": {
+    "en": {
+      "generating": "generate",
+      "generated": "generate",
+      "writing": "write",
+      "functions": "function",
+      "classes": "class"
+    },
+    "fr": {
+      "genere": "generer",
+      "generez": "generer",
+      "ecris": "ecrire",
+      "ecrivez": "ecrire",
+      "fonctions": "fonction",
+      "nommee": "nomme",
+      "appelee": "appele"
+    }
+  }
+}

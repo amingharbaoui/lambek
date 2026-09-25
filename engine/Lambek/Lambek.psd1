@@ -1,6 +1,6 @@
 @{
     RootModule           = 'Lambek.psm1'
-    ModuleVersion        = '0.1.0'
+    ModuleVersion        = '0.2.0'
     GUID                 = 'eea3f7ac-dd0b-43aa-ae2b-a37522b5ea12'
     Author               = 'Amin Gharbaoui'
     CompanyName          = 'Amin Gharbaoui'
@@ -9,7 +9,13 @@
     PowerShellVersion    = '7.4'
     CompatiblePSEditions = @('Core')
 
-    FunctionsToExport    = @('ConvertTo-LambekRequest', 'Measure-LambekSimilarity')
+    FunctionsToExport    = @(
+        'ConvertTo-LambekRequest'
+        'Get-LambekPack'
+        'Import-LambekPack'
+        'Measure-LambekSimilarity'
+        'Resolve-LambekGrammar'
+    )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @()

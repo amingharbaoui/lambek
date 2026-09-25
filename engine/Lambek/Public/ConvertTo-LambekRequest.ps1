@@ -11,7 +11,7 @@ function ConvertTo-LambekRequest {
         [ValidateLength(1, 2000)]
         [string] $Text,
 
-        [ValidateSet('auto', 'en', 'fr')]
+        [ValidatePattern('^(auto|[a-z]{2})$')]
         [string] $Language = 'auto'
     )
 
@@ -29,9 +29,13 @@ function ConvertTo-LambekRequest {
         if ($Language -eq 'auto') {
             $detectedLanguage = Get-LambekLanguage -Tokens $tokenization.Tokens
         }
+        elseif ($Language -notin (Get-LambekAvailableLanguage)) {
+            throw "Language '$Language' is not available."
+        }
 
-        # Terms and n-grams
-        $terms = @(Select-LambekTerm -Tokens $tokenization.Tokens -Language $detectedLanguage)
+        # Words, terms, and n-grams
+        $words = @(ConvertTo-LambekBaseForm -Tokens $tokenization.Tokens -Language $detectedLanguage)
+        $terms = @(Select-LambekTerm -Words $words -Language $detectedLanguage)
         $nGrams = @(Get-LambekCharNGram -Terms $terms)
 
         # Hash
@@ -45,6 +49,7 @@ function ConvertTo-LambekRequest {
             Normalized = $normalized
             Tokenizer  = $tokenization.Tokenizer
             Tokens     = $tokenization.Tokens
+            Words      = $words
             Terms      = $terms
             CharNGrams = $nGrams
             Entities   = $extraction.Entities

@@ -2,7 +2,6 @@ function Get-LambekLexicon {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [ValidateSet('en', 'fr')]
         [string] $Language
     )
 
@@ -11,18 +10,19 @@ function Get-LambekLexicon {
         return $script:LexiconCache[$Language]
     }
 
-    # Load file
-    $path = Join-Path $PSScriptRoot "../Data/lexicon.$Language.json"
+    # Language file
+    $path = Join-Path $PSScriptRoot "../Data/Languages/$Language.json"
     if (-not (Test-Path -LiteralPath $path)) {
-        throw "Lexicon file not found: $path"
+        throw "Language '$Language' is not available."
     }
 
     $data = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json -AsHashtable
-    if (-not $data.ContainsKey('StopWords') -or -not $data.ContainsKey('BaseForms')) {
-        throw "Lexicon '$Language' must contain StopWords and BaseForms."
+    foreach ($key in 'StopWords', 'BaseForms', 'SentenceQuestion') {
+        if (-not $data.ContainsKey($key)) {
+            throw "Language file '$Language' must contain $key."
+        }
     }
 
-    # Build lookups
     $stopWords = [System.Collections.Generic.HashSet[string]]::new()
     foreach ($word in $data.StopWords) {
         [void] $stopWords.Add($word)
@@ -33,10 +33,21 @@ function Get-LambekLexicon {
         $baseForms[$key] = $data.BaseForms[$key]
     }
 
+    # Pack vocabulary
+    foreach ($pack in $script:Packs.Values) {
+        if ($pack.BaseForms.ContainsKey($Language)) {
+            $packForms = $pack.BaseForms[$Language]
+            foreach ($key in $packForms.Keys) {
+                $baseForms[$key] = $packForms[$key]
+            }
+        }
+    }
+
     $lexicon = [pscustomobject]@{
-        Language  = $Language
-        StopWords = $stopWords
-        BaseForms = $baseForms
+        Language         = $Language
+        StopWords        = $stopWords
+        BaseForms        = $baseForms
+        SentenceQuestion = $data.SentenceQuestion
     }
 
     $script:LexiconCache[$Language] = $lexicon

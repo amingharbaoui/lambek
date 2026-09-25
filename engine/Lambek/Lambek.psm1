@@ -10,6 +10,7 @@ foreach ($file in $privateFiles + $publicFiles) {
 }
 
 # Module state
+$script:Packs = [ordered]@{}
 $script:LexiconCache = @{}
 
 # Exports

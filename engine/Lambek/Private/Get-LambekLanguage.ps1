@@ -7,18 +7,21 @@ function Get-LambekLanguage {
     )
 
     # Count stop words per language
-    $english = Get-LambekLexicon -Language 'en'
-    $french = Get-LambekLexicon -Language 'fr'
-    $englishScore = 0
-    $frenchScore = 0
+    $bestLanguage = 'en'
+    $bestScore = 0
 
-    foreach ($token in $Tokens) {
-        if ($english.StopWords.Contains($token)) { $englishScore++ }
-        if ($french.StopWords.Contains($token)) { $frenchScore++ }
+    foreach ($language in Get-LambekAvailableLanguage) {
+        $lexicon = Get-LambekLexicon -Language $language
+        $score = 0
+        foreach ($token in $Tokens) {
+            if ($lexicon.StopWords.Contains($token)) { $score++ }
+        }
+
+        if ($score -gt $bestScore) {
+            $bestScore = $score
+            $bestLanguage = $language
+        }
     }
 
-    if ($frenchScore -gt $englishScore) {
-        return 'fr'
-    }
-    return 'en'
+    return $bestLanguage
 }
