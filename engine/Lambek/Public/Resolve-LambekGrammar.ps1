@@ -24,9 +24,10 @@ function Resolve-LambekGrammar {
         $typedWords = [System.Collections.Generic.List[object]]::new()
         $unknown = [System.Collections.Generic.List[string]]::new()
 
-        foreach ($word in $Request.Words) {
+        for ($position = 0; $position -lt $Request.Words.Count; $position++) {
+            $word = $Request.Words[$position]
             if ($grammar.Words.ContainsKey($word)) {
-                $typedWords.Add([pscustomobject]@{ Word = $word; Candidates = $grammar.Words[$word].ToArray() })
+                $typedWords.Add([pscustomobject]@{ Word = $word; Position = $position; Candidates = $grammar.Words[$word].ToArray() })
             }
             elseif (-not $lexicon.StopWords.Contains($word)) {
                 $unknown.Add($word)
@@ -85,12 +86,25 @@ function Resolve-LambekGrammar {
         # Assignment
         $assignment = for ($w = 0; $w -lt $typedWords.Count; $w++) {
             [pscustomobject]@{
-                Word = $typedWords[$w].Word
-                Type = $typedWords[$w].Candidates[$best.Choice[$w]]
+                Word     = $typedWords[$w].Word
+                Position = $typedWords[$w].Position
+                Type     = $typedWords[$w].Candidates[$best.Choice[$w]]
             }
         }
 
         # Cancellations
+        $links = foreach ($pair in $best.Reduction.Pairs) {
+            $leftWord = $typedWords[$best.Owners[$pair.Left]]
+            $rightWord = $typedWords[$best.Owners[$pair.Right]]
+            [pscustomobject]@{
+                LeftPosition  = $leftWord.Position
+                RightPosition = $rightWord.Position
+                LeftWord      = $leftWord.Word
+                RightWord     = $rightWord.Word
+                Type          = $best.SimpleTypes[$pair.Right].Base
+            }
+        }
+
         $steps = foreach ($pair in $best.Reduction.Pairs) {
             $leftType = Format-LambekType -SimpleTypes @($best.SimpleTypes[$pair.Left])
             $rightType = Format-LambekType -SimpleTypes @($best.SimpleTypes[$pair.Right])
@@ -127,10 +141,12 @@ function Resolve-LambekGrammar {
             PSTypeName = 'Lambek.Grammar'
             Canonical  = $Request.Canonical
             Language   = $language
+            Words      = $Request.Words
             IsSentence = $best.IsSentence
             Assignment = @($assignment)
             Types      = Format-LambekType -SimpleTypes $best.SimpleTypes
             Steps      = @($steps)
+            Links      = @($links)
             Leftover   = Format-LambekType -SimpleTypes $best.Left
             Missing    = $missing.ToArray()
             Questions  = @($questions)

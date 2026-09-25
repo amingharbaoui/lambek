@@ -33,8 +33,11 @@ function ConvertTo-LambekRequest {
             throw "Language '$Language' is not available."
         }
 
+        # Spelling
+        $spelling = Repair-LambekSpelling -Tokens $tokenization.Tokens -Language $detectedLanguage
+
         # Words, terms, and n-grams
-        $words = @(ConvertTo-LambekBaseForm -Tokens $tokenization.Tokens -Language $detectedLanguage)
+        $words = @(ConvertTo-LambekBaseForm -Tokens $spelling.Tokens -Language $detectedLanguage)
         $terms = @(Select-LambekTerm -Words $words -Language $detectedLanguage)
         $nGrams = @(Get-LambekCharNGram -Terms $terms)
 
@@ -43,18 +46,19 @@ function ConvertTo-LambekRequest {
         $hash = Get-LambekHash -Text "$detectedLanguage|$canonical"
 
         [pscustomobject]@{
-            PSTypeName = 'Lambek.Request'
-            Original   = $Text
-            Language   = $detectedLanguage
-            Normalized = $normalized
-            Tokenizer  = $tokenization.Tokenizer
-            Tokens     = $tokenization.Tokens
-            Words      = $words
-            Terms      = $terms
-            CharNGrams = $nGrams
-            Entities   = $extraction.Entities
-            Canonical  = $canonical
-            Hash       = $hash
+            PSTypeName  = 'Lambek.Request'
+            Original    = $Text
+            Language    = $detectedLanguage
+            Normalized  = $normalized
+            Tokenizer   = $tokenization.Tokenizer
+            Tokens      = $tokenization.Tokens
+            Corrections = @($spelling.Corrections)
+            Words       = $words
+            Terms       = $terms
+            CharNGrams  = $nGrams
+            Entities    = $extraction.Entities
+            Canonical   = $canonical
+            Hash        = $hash
         }
     }
 }

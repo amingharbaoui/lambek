@@ -88,6 +88,34 @@ function Import-LambekPack {
             }
         }
 
+        # Actions
+        if (-not $data.ContainsKey('Actions')) { $data.Actions = @() }
+        foreach ($action in $data.Actions) {
+            foreach ($key in 'Id', 'Risk', 'Title', 'Verbs', 'Examples', 'Parameters') {
+                if (-not $action.ContainsKey($key)) {
+                    throw "Pack '$($data.Name)': an action must contain $key."
+                }
+            }
+            $idPattern = "^" + [regex]::Escape($data.Name) + "\.[a-z][a-z-]*$"
+            if ($action.Id -notmatch $idPattern) {
+                throw "Pack '$($data.Name)': action id '$($action.Id)' must start with '$($data.Name).'."
+            }
+            if ($action.Risk -notin 'low', 'medium', 'high') {
+                throw "Pack '$($data.Name)': action '$($action.Id)' has an unknown risk '$($action.Risk)'."
+            }
+            if ($action.Examples.Count -eq 0) {
+                throw "Pack '$($data.Name)': action '$($action.Id)' needs at least one example."
+            }
+            foreach ($parameter in $action.Parameters) {
+                if ($parameter.Name -notmatch '^[A-Z][A-Za-z]*$') {
+                    throw "Pack '$($data.Name)': action '$($action.Id)' has an invalid parameter name '$($parameter.Name)'."
+                }
+                if (-not $parameter.ContainsKey('Entities') -and -not $parameter.ContainsKey('Words')) {
+                    throw "Pack '$($data.Name)': parameter '$($parameter.Name)' needs Entities or Words."
+                }
+            }
+        }
+
         # Register
         $pack = [pscustomobject]@{
             Name        = $data.Name
@@ -98,10 +126,12 @@ function Import-LambekPack {
             Words       = $data.Words
             Entities    = @($data.Entities)
             BaseForms   = $data.BaseForms
+            Actions     = @($data.Actions)
         }
 
         $script:Packs[$data.Name] = $pack
         $script:LexiconCache.Clear()
+        $script:ActionIndexCache.Clear()
 
         Get-LambekPack -Name $data.Name
     }

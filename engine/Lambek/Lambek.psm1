@@ -12,6 +12,7 @@ foreach ($file in $privateFiles + $publicFiles) {
 # Module state
 $script:Packs = [ordered]@{}
 $script:LexiconCache = @{}
+$script:ActionIndexCache = @{}
 
 # Exports
 Export-ModuleMember -Function $publicFiles.BaseName

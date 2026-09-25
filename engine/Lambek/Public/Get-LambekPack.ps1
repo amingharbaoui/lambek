@@ -26,6 +26,7 @@ function Get-LambekPack {
             Types       = @($pack.Types.Keys | Sort-Object)
             Words       = $wordCount
             Entities    = @($pack.Entities | ForEach-Object { $_.Name })
+            Actions     = @($pack.Actions | ForEach-Object { $_.Id })
             Path        = $pack.Path
         }
     }

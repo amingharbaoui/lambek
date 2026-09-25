@@ -17,7 +17,7 @@ function Get-LambekLexicon {
     }
 
     $data = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json -AsHashtable
-    foreach ($key in 'StopWords', 'BaseForms', 'SentenceQuestion') {
+    foreach ($key in 'StopWords', 'BaseForms', 'SentenceQuestion', 'AmbiguityQuestion') {
         if (-not $data.ContainsKey($key)) {
             throw "Language file '$Language' must contain $key."
         }
@@ -43,11 +43,28 @@ function Get-LambekLexicon {
         }
     }
 
+    # Known words (for spelling correction)
+    $vocabulary = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($key in $baseForms.Keys) {
+        [void] $vocabulary.Add($key)
+        [void] $vocabulary.Add($baseForms[$key])
+    }
+    foreach ($pack in $script:Packs.Values) {
+        foreach ($key in '*', $Language) {
+            if (-not $pack.Words.ContainsKey($key)) { continue }
+            foreach ($word in $pack.Words[$key].Keys) {
+                if ($word -notmatch '^_[a-z]+_$') { [void] $vocabulary.Add($word) }
+            }
+        }
+    }
+
     $lexicon = [pscustomobject]@{
-        Language         = $Language
-        StopWords        = $stopWords
-        BaseForms        = $baseForms
-        SentenceQuestion = $data.SentenceQuestion
+        Language          = $Language
+        StopWords         = $stopWords
+        BaseForms         = $baseForms
+        Vocabulary        = $vocabulary
+        SentenceQuestion  = $data.SentenceQuestion
+        AmbiguityQuestion = $data.AmbiguityQuestion
     }
 
     $script:LexiconCache[$Language] = $lexicon

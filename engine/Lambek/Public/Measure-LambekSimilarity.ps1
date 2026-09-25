@@ -20,27 +20,7 @@ function Measure-LambekSimilarity {
 
     $referenceRequest = ConvertTo-LambekRequest -Text $Reference -Language $Request.Language
 
-    # Edit similarity (best match per term, then average)
-    $editTotal = 0.0
-    foreach ($term in $Request.Terms) {
-        $best = 0.0
-        foreach ($candidate in $referenceRequest.Terms) {
-            $score = (Measure-LambekEditDistance -Source $term -Target $candidate).Similarity
-            if ($score -gt $best) { $best = $score }
-        }
-        $editTotal += $best
-    }
-
-    $editSimilarity = 0.0
-    if ($Request.Terms.Count -gt 0) {
-        $editSimilarity = $editTotal / $Request.Terms.Count
-    }
-
-    # Jaccard
-    $wordJaccard = Measure-LambekJaccard -SetA $Request.Terms -SetB $referenceRequest.Terms
-    $nGramJaccard = Measure-LambekJaccard -SetA $Request.CharNGrams -SetB $referenceRequest.CharNGrams
-
-    # TF-IDF cosine
+    # TF-IDF model
     $documents = [System.Collections.Generic.List[object]]::new()
     if ($Corpus) {
         foreach ($phrase in $Corpus) {
@@ -51,18 +31,17 @@ function Measure-LambekSimilarity {
         $documents.Add($Request.Terms)
         $documents.Add($referenceRequest.Terms)
     }
-
     $model = ConvertTo-LambekTfIdfModel -Documents $documents.ToArray()
-    $vectorA = ConvertTo-LambekTfIdfVector -Terms $Request.Terms -Model $model
-    $vectorB = ConvertTo-LambekTfIdfVector -Terms $referenceRequest.Terms -Model $model
-    $cosine = Measure-LambekCosine -VectorA $vectorA -VectorB $vectorB
 
-    # Result
+    # Scores
+    $scores = Measure-LambekTermSimilarity -Terms $Request.Terms -NGrams $Request.CharNGrams `
+        -ReferenceTerms $referenceRequest.Terms -ReferenceNGrams $referenceRequest.CharNGrams -Model $model
+
     [pscustomobject]@{
         Reference      = $Reference
-        EditSimilarity = [math]::Round($editSimilarity, 4)
-        WordJaccard    = [math]::Round($wordJaccard, 4)
-        NGramJaccard   = [math]::Round($nGramJaccard, 4)
-        Cosine         = [math]::Round($cosine, 4)
+        EditSimilarity = [math]::Round($scores.EditSimilarity, 4)
+        WordJaccard    = [math]::Round($scores.WordJaccard, 4)
+        NGramJaccard   = [math]::Round($scores.NGramJaccard, 4)
+        Cosine         = [math]::Round($scores.Cosine, 4)
     }
 }

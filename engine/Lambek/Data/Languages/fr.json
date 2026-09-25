@@ -90,5 +90,6 @@
     "grande": "grand",
     "grandes": "grand"
   },
-  "SentenceQuestion": "Que voulez-vous faire ?"
+  "SentenceQuestion": "Que voulez-vous faire ?",
+  "AmbiguityQuestion": "Voulez-vous dire \"{0}\" ou \"{1}\" ?"
 }
