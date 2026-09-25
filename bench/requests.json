@@ -1,0 +1,3014 @@
+{
+  "Version": "1.0",
+  "Description": "Annotated requests for evaluating Lambek. Expected values use canonical form: sizes in bytes, durations in seconds.",
+  "Cases": [
+    {
+      "Id": "B001",
+      "Split": "calibration",
+      "Text": "efface les fichiers de plus de 500 Ko dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "filter",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "MinSize": "512000"
+        }
+      }
+    },
+    {
+      "Id": "B002",
+      "Split": "calibration",
+      "Text": "cree un dossier dans C:\\Users\\Amin\\Downloads",
+      "Language": "fr",
+      "Tags": [
+        "create",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Path": "C:\\Users\\Amin\\Downloads"
+        }
+      }
+    },
+    {
+      "Id": "B003",
+      "Split": "calibration",
+      "Text": "rename report.txt",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B004",
+      "Split": "calibration",
+      "Text": "supprime les fichiers de plus de 7 jours dans C:\\Users\\Amin\\Downloads",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "filter",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Users\\Amin\\Downloads",
+          "OlderThan": "604800s"
+        }
+      }
+    },
+    {
+      "Id": "B005",
+      "Split": "calibration",
+      "Text": "show the files in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "D:\\Archive"
+        }
+      }
+    },
+    {
+      "Id": "B006",
+      "Split": "calibration",
+      "Text": "n'efface jamais les fichiers dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B007",
+      "Split": "calibration",
+      "Text": "copy the .pdf files in C:\\Users\\Amin\\Downloads to C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\Users\\Amin\\Downloads",
+          "Destination": "C:\\Temp",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B008",
+      "Split": "test",
+      "Text": "call my mother",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B009",
+      "Split": "test",
+      "Text": "hello",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B010",
+      "Split": "test",
+      "Text": "rename budget.xlsx to \"report.txt\"",
+      "Language": "en",
+      "Tags": [
+        "rename",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "budget.xlsx",
+          "NewName": "report.txt"
+        }
+      }
+    },
+    {
+      "Id": "B011",
+      "Split": "calibration",
+      "Text": "!!!",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B012",
+      "Split": "calibration",
+      "Text": "how are you",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B013",
+      "Split": "calibration",
+      "Text": "the .log files in C:\\Temp must be deleted",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B014",
+      "Split": "calibration",
+      "Text": "generate a function named",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B015",
+      "Split": "calibration",
+      "Text": "delete the .pdf files in \"D:\\Mes Documents\"",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "quoted",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "D:\\Mes Documents",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B016",
+      "Split": "calibration",
+      "Text": "renomme rapport.txt",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B017",
+      "Split": "calibration",
+      "Text": "delete the .csv files in \"C:\\Program Data\\Logs\"",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "quoted",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Program Data\\Logs",
+          "Extension": ".csv"
+        }
+      }
+    },
+    {
+      "Id": "B018",
+      "Split": "test",
+      "Text": "move the files in C:\\Users\\Amin\\Downloads to D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\Users\\Amin\\Downloads",
+          "Destination": "D:\\Archive"
+        }
+      }
+    },
+    {
+      "Id": "B019",
+      "Split": "test",
+      "Text": "write a function called Get-Report",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Function",
+          "Language": "PowerShell",
+          "Name": "Get-Report"
+        }
+      }
+    },
+    {
+      "Id": "B020",
+      "Split": "test",
+      "Text": "cree une classe nommee \"Facture\"",
+      "Language": "fr",
+      "Tags": [
+        "code",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Class",
+          "Language": "PowerShell",
+          "Name": "Facture"
+        }
+      }
+    },
+    {
+      "Id": "B021",
+      "Split": "calibration",
+      "Text": "supprime les fichiers .csv dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Extension": ".csv"
+        }
+      }
+    },
+    {
+      "Id": "B022",
+      "Split": "calibration",
+      "Text": "move the .log files in C:\\Users\\Amin\\Downloads to \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\Users\\Amin\\Downloads",
+          "Destination": "\\\\server\\share\\logs",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B023",
+      "Split": "calibration",
+      "Text": "copy report.txt to \"D:\\x`; Invoke-Expression evil\"",
+      "Language": "en",
+      "Tags": [
+        "injection",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Destination": "D:\\x`; Invoke-Expression evil",
+          "Name": "report.txt"
+        }
+      }
+    },
+    {
+      "Id": "B024",
+      "Split": "calibration",
+      "Text": "move the .pdf files in E:\\Backup\\2026 to C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "E:\\Backup\\2026",
+          "Destination": "C:\\Data",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B025",
+      "Split": "calibration",
+      "Text": "efface les fichiers .tmp dans E:\\Backup\\2026",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B026",
+      "Split": "calibration",
+      "Text": "list the files larger than 1 GB in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "D:\\Archive",
+          "MinSize": "1073741824"
+        }
+      }
+    },
+    {
+      "Id": "B027",
+      "Split": "calibration",
+      "Text": "delete the .log files in \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B028",
+      "Split": "test",
+      "Text": "genearte a functoin named Get-Report",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "typo",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Function",
+          "Language": "PowerShell",
+          "Name": "Get-Report"
+        }
+      }
+    },
+    {
+      "Id": "B029",
+      "Split": "test",
+      "Text": "copie les fichiers",
+      "Language": "fr",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B030",
+      "Split": "test",
+      "Text": "supprime les fichiers",
+      "Language": "fr",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B031",
+      "Split": "calibration",
+      "Text": "copy the files in C:\\Users\\Amin\\Downloads to C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\Users\\Amin\\Downloads",
+          "Destination": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B032",
+      "Split": "calibration",
+      "Text": "display the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B033",
+      "Split": "calibration",
+      "Text": "delete the .log and .tmp files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B034",
+      "Split": "calibration",
+      "Text": "appelle ma mere",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B035",
+      "Split": "calibration",
+      "Text": "ecris un script",
+      "Language": "fr",
+      "Tags": [
+        "code",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Script",
+          "Language": "PowerShell"
+        }
+      }
+    },
+    {
+      "Id": "B036",
+      "Split": "calibration",
+      "Text": "erase the .bak files in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".bak"
+        }
+      }
+    },
+    {
+      "Id": "B037",
+      "Split": "calibration",
+      "Text": "please delete the .log files older than 7 days in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".log",
+          "OlderThan": "604800s"
+        }
+      }
+    },
+    {
+      "Id": "B038",
+      "Split": "test",
+      "Text": "delete the files older than 2 weeks in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "OlderThan": "1209600s"
+        }
+      }
+    },
+    {
+      "Id": "B039",
+      "Split": "test",
+      "Text": "supprimez les fichiers de plus de 3 mois dans C:\\Users\\Amin\\Downloads",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "filter",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Users\\Amin\\Downloads",
+          "OlderThan": "7776000s"
+        }
+      }
+    },
+    {
+      "Id": "B040",
+      "Split": "test",
+      "Text": "liste les fichiers dans D:\\Archive",
+      "Language": "fr",
+      "Tags": [
+        "list",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "D:\\Archive"
+        }
+      }
+    },
+    {
+      "Id": "B041",
+      "Split": "calibration",
+      "Text": "wipe the .log files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B042",
+      "Split": "calibration",
+      "Text": "send an email to sarah@example.com",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B043",
+      "Split": "calibration",
+      "Text": "renomme report.txt en \"notes.md\"",
+      "Language": "fr",
+      "Tags": [
+        "rename",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "report.txt",
+          "NewName": "notes.md"
+        }
+      }
+    },
+    {
+      "Id": "B044",
+      "Split": "calibration",
+      "Text": "install Visual Studio Code",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B045",
+      "Split": "calibration",
+      "Text": "order a pizza",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B046",
+      "Split": "calibration",
+      "Text": "who won the match yesterday",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B047",
+      "Split": "calibration",
+      "Text": "genere une fonction nommee Get-Report",
+      "Language": "fr",
+      "Tags": [
+        "code",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Function",
+          "Language": "PowerShell",
+          "Name": "Get-Report"
+        }
+      }
+    },
+    {
+      "Id": "B048",
+      "Split": "test",
+      "Text": "delete 5 files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B049",
+      "Split": "test",
+      "Text": "supprime les fichiers de plus de 100 Mo dans \\\\server\\share\\logs",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "filter",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs",
+          "MinSize": "104857600"
+        }
+      }
+    },
+    {
+      "Id": "B050",
+      "Split": "test",
+      "Text": "delete",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B051",
+      "Split": "calibration",
+      "Text": "copie les fichiers .log dans D:\\Archive vers C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "copy",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "D:\\Archive",
+          "Destination": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B052",
+      "Split": "calibration",
+      "Text": "quelle heure est-il",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B053",
+      "Split": "calibration",
+      "Text": "show the flies in \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "typo",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs"
+        }
+      }
+    },
+    {
+      "Id": "B054",
+      "Split": "calibration",
+      "Text": "supprimez les fichiers .pdf dans D:\\Archive",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "D:\\Archive",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B055",
+      "Split": "calibration",
+      "Text": "show the files larger than 100 MB in \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs",
+          "MinSize": "104857600"
+        }
+      }
+    },
+    {
+      "Id": "B056",
+      "Split": "calibration",
+      "Text": "copy the files in \\\\server\\share\\logs to E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "\\\\server\\share\\logs",
+          "Destination": "E:\\Backup\\2026"
+        }
+      }
+    },
+    {
+      "Id": "B057",
+      "Split": "calibration",
+      "Text": "relocate the files in C:\\A to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B058",
+      "Split": "test",
+      "Text": "list the files in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "D:\\Archive"
+        }
+      }
+    },
+    {
+      "Id": "B059",
+      "Split": "test",
+      "Text": "move the files to",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B060",
+      "Split": "test",
+      "Text": "make one",
+      "Language": "en",
+      "Tags": [
+        "ambiguous"
+      ],
+      "Expected": {
+        "Status": "Ambiguous"
+      }
+    },
+    {
+      "Id": "B061",
+      "Split": "calibration",
+      "Text": "what time is it",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B062",
+      "Split": "calibration",
+      "Text": "turn off the lights",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B063",
+      "Split": "calibration",
+      "Text": "find the .log files in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "D:\\Archive",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B064",
+      "Split": "calibration",
+      "Text": "rename budget.xlsx to \"photo.jpg\"",
+      "Language": "en",
+      "Tags": [
+        "rename",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "budget.xlsx",
+          "NewName": "photo.jpg"
+        }
+      }
+    },
+    {
+      "Id": "B065",
+      "Split": "calibration",
+      "Text": "supprime les fichiers .txt dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Extension": ".txt"
+        }
+      }
+    },
+    {
+      "Id": "B066",
+      "Split": "calibration",
+      "Text": "supprimez les fichiers .bak dans E:\\Backup\\2026",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".bak"
+        }
+      }
+    },
+    {
+      "Id": "B067",
+      "Split": "calibration",
+      "Text": "move the files in C:\\A to D:\\B and E:\\C",
+      "Language": "en",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B068",
+      "Split": "test",
+      "Text": "show the files in \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs"
+        }
+      }
+    },
+    {
+      "Id": "B069",
+      "Split": "test",
+      "Text": "display the files larger than 5 GB in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "MinSize": "5368709120"
+        }
+      }
+    },
+    {
+      "Id": "B070",
+      "Split": "test",
+      "Text": "translate hello into Spanish",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B071",
+      "Split": "calibration",
+      "Text": "play some music",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B072",
+      "Split": "calibration",
+      "Text": "write a function called New-Invoice",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Function",
+          "Language": "PowerShell",
+          "Name": "New-Invoice"
+        }
+      }
+    },
+    {
+      "Id": "B073",
+      "Split": "calibration",
+      "Text": "remove the files older than 3 months in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "OlderThan": "7776000s"
+        }
+      }
+    },
+    {
+      "Id": "B074",
+      "Split": "calibration",
+      "Text": "never delete the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B075",
+      "Split": "calibration",
+      "Text": "remove the .txt files in \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs",
+          "Extension": ".txt"
+        }
+      }
+    },
+    {
+      "Id": "B076",
+      "Split": "calibration",
+      "Text": "what is the weather today",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B077",
+      "Split": "calibration",
+      "Text": "renomme budget.xlsx en \"photo.jpg\"",
+      "Language": "fr",
+      "Tags": [
+        "rename",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "budget.xlsx",
+          "NewName": "photo.jpg"
+        }
+      }
+    },
+    {
+      "Id": "B078",
+      "Split": "test",
+      "Text": "rename report.txt to \"x'; Remove-Item C:\\ -Recurse; '\"",
+      "Language": "en",
+      "Tags": [
+        "injection",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "report.txt",
+          "NewName": "x'; Remove-Item C:\\ -Recurse; '"
+        }
+      }
+    },
+    {
+      "Id": "B079",
+      "Split": "test",
+      "Text": "efface les fichiers .tmp dans E:\\Backup\\2026",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B080",
+      "Split": "test",
+      "Text": "rename photo.jpg to \"notes.md\"",
+      "Language": "en",
+      "Tags": [
+        "rename",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "photo.jpg",
+          "NewName": "notes.md"
+        }
+      }
+    },
+    {
+      "Id": "B081",
+      "Split": "calibration",
+      "Text": "delete the .bak files in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".bak"
+        }
+      }
+    },
+    {
+      "Id": "B082",
+      "Split": "calibration",
+      "Text": "find the files in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026"
+        }
+      }
+    },
+    {
+      "Id": "B083",
+      "Split": "calibration",
+      "Text": "delete the files in C:\\Temp except the .log files",
+      "Language": "en",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B084",
+      "Split": "calibration",
+      "Text": "display the .tmp files in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B085",
+      "Split": "calibration",
+      "Text": "create a folder in \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "create",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Path": "\\\\server\\share\\logs"
+        }
+      }
+    },
+    {
+      "Id": "B086",
+      "Split": "calibration",
+      "Text": "affiche les fichiers .tmp dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "list",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B087",
+      "Split": "calibration",
+      "Text": "create a folder",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B088",
+      "Split": "test",
+      "Text": "generate a powershell function named Test-Connection2",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Function",
+          "Language": "PowerShell",
+          "Name": "Test-Connection2"
+        }
+      }
+    },
+    {
+      "Id": "B089",
+      "Split": "test",
+      "Text": "cree un dossier dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "create",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B090",
+      "Split": "test",
+      "Text": "move the .csv files in \\\\server\\share\\logs to E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "\\\\server\\share\\logs",
+          "Destination": "E:\\Backup\\2026",
+          "Extension": ".csv"
+        }
+      }
+    },
+    {
+      "Id": "B091",
+      "Split": "calibration",
+      "Text": "deelte the .txt flies in \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "typo",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs",
+          "Extension": ".txt"
+        }
+      }
+    },
+    {
+      "Id": "B092",
+      "Split": "calibration",
+      "Text": "restart the computer",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B093",
+      "Split": "calibration",
+      "Text": "copy the .csv files in D:\\Archive to C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "D:\\Archive",
+          "Destination": "C:\\Temp",
+          "Extension": ".csv"
+        }
+      }
+    },
+    {
+      "Id": "B094",
+      "Split": "calibration",
+      "Text": "erase the files older than 2 weeks in C:\\Users\\Amin\\Downloads",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Users\\Amin\\Downloads",
+          "OlderThan": "1209600s"
+        }
+      }
+    },
+    {
+      "Id": "B095",
+      "Split": "calibration",
+      "Text": "enumerate the files in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B096",
+      "Split": "calibration",
+      "Text": "find the files larger than 5 GB in C:\\Users\\Amin\\Downloads",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Users\\Amin\\Downloads",
+          "MinSize": "5368709120"
+        }
+      }
+    },
+    {
+      "Id": "B097",
+      "Split": "calibration",
+      "Text": "create a folder in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "create",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Path": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B098",
+      "Split": "test",
+      "Text": "delete the files larger than 500 KB in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "D:\\Archive",
+          "MinSize": "512000"
+        }
+      }
+    },
+    {
+      "Id": "B099",
+      "Split": "test",
+      "Text": "list the .pdf files in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B100",
+      "Split": "test",
+      "Text": "create",
+      "Language": "en",
+      "Tags": [
+        "ambiguous"
+      ],
+      "Expected": {
+        "Status": "Ambiguous"
+      }
+    },
+    {
+      "Id": "B101",
+      "Split": "calibration",
+      "Text": "please delete the .csv files older than 1 year in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Extension": ".csv",
+          "OlderThan": "31536000s"
+        }
+      }
+    },
+    {
+      "Id": "B102",
+      "Split": "calibration",
+      "Text": "generate a powershell function named Test-Connection2",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Function",
+          "Language": "PowerShell",
+          "Name": "Test-Connection2"
+        }
+      }
+    },
+    {
+      "Id": "B103",
+      "Split": "calibration",
+      "Text": "remove the .log files in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B104",
+      "Split": "calibration",
+      "Text": "create something",
+      "Language": "en",
+      "Tags": [
+        "ambiguous"
+      ],
+      "Expected": {
+        "Status": "Ambiguous"
+      }
+    },
+    {
+      "Id": "B105",
+      "Split": "calibration",
+      "Text": "create the folder E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "create",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Path": "E:\\Backup\\2026"
+        }
+      }
+    },
+    {
+      "Id": "B106",
+      "Split": "calibration",
+      "Text": "purge the old files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B107",
+      "Split": "calibration",
+      "Text": "ping google.com",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B108",
+      "Split": "test",
+      "Text": "deplace les fichiers dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B109",
+      "Split": "test",
+      "Text": "create the folder C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "create",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B110",
+      "Split": "test",
+      "Text": "erase the .bak files in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "D:\\Archive",
+          "Extension": ".bak"
+        }
+      }
+    },
+    {
+      "Id": "B111",
+      "Split": "calibration",
+      "Text": "generate a powershell function named Set-Config",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Function",
+          "Language": "PowerShell",
+          "Name": "Set-Config"
+        }
+      }
+    },
+    {
+      "Id": "B112",
+      "Split": "calibration",
+      "Text": "cherche les fichiers dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "list",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B113",
+      "Split": "calibration",
+      "Text": "list the files in",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B114",
+      "Split": "calibration",
+      "Text": "book a flight to Paris",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B115",
+      "Split": "calibration",
+      "Text": "list the files in \"$(Remove-Item C:\\)\"",
+      "Language": "en",
+      "Tags": [
+        "injection",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "$(Remove-Item C:\\)"
+        }
+      }
+    },
+    {
+      "Id": "B116",
+      "Split": "calibration",
+      "Text": "erase the files larger than 5 GB in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "MinSize": "5368709120"
+        }
+      }
+    },
+    {
+      "Id": "B117",
+      "Split": "calibration",
+      "Text": "bonjour",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B118",
+      "Split": "test",
+      "Text": "deltee the .bak flies in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "typo",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".bak"
+        }
+      }
+    },
+    {
+      "Id": "B119",
+      "Split": "test",
+      "Text": "create a class named \"Invoice\"",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Class",
+          "Language": "PowerShell",
+          "Name": "Invoice"
+        }
+      }
+    },
+    {
+      "Id": "B120",
+      "Split": "test",
+      "Text": "supprime les fichiers sauf les .log dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B121",
+      "Split": "calibration",
+      "Text": "duplicate report.txt to D:\\Backup",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Destination": "D:\\Backup",
+          "Name": "report.txt"
+        }
+      }
+    },
+    {
+      "Id": "B122",
+      "Split": "calibration",
+      "Text": "ne supprime pas les fichiers dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B123",
+      "Split": "calibration",
+      "Text": "move the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B124",
+      "Split": "calibration",
+      "Text": "copie les fichiers .log dans C:\\Users\\Amin\\Downloads vers E:\\Backup\\2026",
+      "Language": "fr",
+      "Tags": [
+        "copy",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\Users\\Amin\\Downloads",
+          "Destination": "E:\\Backup\\2026",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B125",
+      "Split": "calibration",
+      "Text": "affiche les fichiers dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "list",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B126",
+      "Split": "calibration",
+      "Text": "commande une pizza",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B127",
+      "Split": "calibration",
+      "Text": "don't delete the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B128",
+      "Split": "test",
+      "Text": "show the .bak files in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "Extension": ".bak"
+        }
+      }
+    },
+    {
+      "Id": "B129",
+      "Split": "test",
+      "Text": "please delete the .txt files older than 1 year in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".txt",
+          "OlderThan": "31536000s"
+        }
+      }
+    },
+    {
+      "Id": "B130",
+      "Split": "test",
+      "Text": "move the files in E:\\Backup\\2026 to C:\\Users\\Amin\\Downloads",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "E:\\Backup\\2026",
+          "Destination": "C:\\Users\\Amin\\Downloads"
+        }
+      }
+    },
+    {
+      "Id": "B131",
+      "Split": "calibration",
+      "Text": "show the flies in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "typo",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "D:\\Archive"
+        }
+      }
+    },
+    {
+      "Id": "B132",
+      "Split": "calibration",
+      "Text": "create a file in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "create",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "File",
+          "Path": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B133",
+      "Split": "calibration",
+      "Text": "dleete the .tmp flies in \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "typo",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B134",
+      "Split": "calibration",
+      "Text": "delete the .tmp files in C:\\Users\\Amin\\Downloads",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Users\\Amin\\Downloads",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B135",
+      "Split": "calibration",
+      "Text": "remove the .txt files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".txt"
+        }
+      }
+    },
+    {
+      "Id": "B136",
+      "Split": "calibration",
+      "Text": "efface les fichiers de plus de 3 mois dans E:\\Backup\\2026",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "filter",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026",
+          "OlderThan": "7776000s"
+        }
+      }
+    },
+    {
+      "Id": "B137",
+      "Split": "calibration",
+      "Text": "remind me to buy milk",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B138",
+      "Split": "test",
+      "Text": "deelte the .tmp fiels in C:\\Users\\Amin\\Downloads",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "typo",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Users\\Amin\\Downloads",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B139",
+      "Split": "test",
+      "Text": "liste les fichiers .tmp dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "list",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B140",
+      "Split": "test",
+      "Text": "erase the .log files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B141",
+      "Split": "calibration",
+      "Text": "copy budget.xlsx to E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "filename",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Destination": "E:\\Backup\\2026",
+          "Name": "budget.xlsx"
+        }
+      }
+    },
+    {
+      "Id": "B142",
+      "Split": "calibration",
+      "Text": "generate a python function named Get-Data",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Function",
+          "Language": "Python",
+          "Name": "Get-Data"
+        }
+      }
+    },
+    {
+      "Id": "B143",
+      "Split": "calibration",
+      "Text": "create a folder in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "create",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B144",
+      "Split": "calibration",
+      "Text": "supprime les fichiers .log de plus de 100 Mo dans \"C:\\Program Data\\Logs\"",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "filter",
+        "quoted",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Program Data\\Logs",
+          "Extension": ".log",
+          "MinSize": "104857600"
+        }
+      }
+    },
+    {
+      "Id": "B145",
+      "Split": "calibration",
+      "Text": "joue de la musique",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B146",
+      "Split": "calibration",
+      "Text": "raconte une blague",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B147",
+      "Split": "calibration",
+      "Text": "rename notes.md to \"report.txt\"",
+      "Language": "en",
+      "Tags": [
+        "rename",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "notes.md",
+          "NewName": "report.txt"
+        }
+      }
+    },
+    {
+      "Id": "B148",
+      "Split": "test",
+      "Text": "move the files in C:\\Temp to C:\\Users\\Amin\\Downloads",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\Temp",
+          "Destination": "C:\\Users\\Amin\\Downloads"
+        }
+      }
+    },
+    {
+      "Id": "B149",
+      "Split": "test",
+      "Text": "delete the files newer than 30 days in C:\\Users\\Amin\\Downloads",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Users\\Amin\\Downloads",
+          "NewerThan": "2592000s"
+        }
+      }
+    },
+    {
+      "Id": "B150",
+      "Split": "test",
+      "Text": "in C:\\Temp, delete the .log files",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B151",
+      "Split": "calibration",
+      "Text": "get rid of the .tmp files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B152",
+      "Split": "calibration",
+      "Text": "list the files in E:\\Backup\\2026",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "E:\\Backup\\2026"
+        }
+      }
+    },
+    {
+      "Id": "B153",
+      "Split": "calibration",
+      "Text": "please delete the .tmp files older than 30 days in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "D:\\Archive",
+          "Extension": ".tmp",
+          "OlderThan": "2592000s"
+        }
+      }
+    },
+    {
+      "Id": "B154",
+      "Split": "calibration",
+      "Text": "quel temps fait-il",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B155",
+      "Split": "calibration",
+      "Text": "copy data.csv to D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "filename",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Destination": "D:\\Archive",
+          "Name": "data.csv"
+        }
+      }
+    },
+    {
+      "Id": "B156",
+      "Split": "calibration",
+      "Text": "shut down the server",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B157",
+      "Split": "calibration",
+      "Text": "find the files in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B158",
+      "Split": "test",
+      "Text": "copy the files",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B159",
+      "Split": "test",
+      "Text": "tell me a joke",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B160",
+      "Split": "test",
+      "Text": "display the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B161",
+      "Split": "calibration",
+      "Text": "open the pod bay doors",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B162",
+      "Split": "calibration",
+      "Text": "write a script",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Script",
+          "Language": "PowerShell"
+        }
+      }
+    },
+    {
+      "Id": "B163",
+      "Split": "calibration",
+      "Text": "creer",
+      "Language": "en",
+      "Tags": [
+        "ambiguous"
+      ],
+      "Expected": {
+        "Status": "Ambiguous"
+      }
+    },
+    {
+      "Id": "B164",
+      "Split": "calibration",
+      "Text": "delete the .txt files in \"D:\\Mes Documents\"",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "quoted",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "D:\\Mes Documents",
+          "Extension": ".txt"
+        }
+      }
+    },
+    {
+      "Id": "B165",
+      "Split": "calibration",
+      "Text": "deplace les fichiers .bak dans \\\\server\\share\\logs vers D:\\Archive",
+      "Language": "fr",
+      "Tags": [
+        "move",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "\\\\server\\share\\logs",
+          "Destination": "D:\\Archive",
+          "Extension": ".bak"
+        }
+      }
+    },
+    {
+      "Id": "B166",
+      "Split": "calibration",
+      "Text": "delete the files smaller than 5 GB in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "MaxSize": "5368709120"
+        }
+      }
+    },
+    {
+      "Id": "B167",
+      "Split": "calibration",
+      "Text": "do not remove the .log files in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B168",
+      "Split": "test",
+      "Text": "delete the .log files in \"C:\\Temp'; Stop-Computer; '\"",
+      "Language": "en",
+      "Tags": [
+        "injection",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp'; Stop-Computer; '",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B169",
+      "Split": "test",
+      "Text": "deplace les fichiers .pdf dans C:\\Users\\Amin\\Downloads vers E:\\Backup\\2026",
+      "Language": "fr",
+      "Tags": [
+        "move",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\Users\\Amin\\Downloads",
+          "Destination": "E:\\Backup\\2026",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B170",
+      "Split": "test",
+      "Text": "delete the files",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B171",
+      "Split": "calibration",
+      "Text": "supprimez les fichiers de plus de 1 Go dans \\\\server\\share\\logs",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "filter",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "\\\\server\\share\\logs",
+          "MinSize": "1073741824"
+        }
+      }
+    },
+    {
+      "Id": "B172",
+      "Split": "calibration",
+      "Text": "supprime les fichiers .tmp de plus de 5 Go dans \"D:\\Mes Documents\"",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "filter",
+        "quoted",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "D:\\Mes Documents",
+          "Extension": ".tmp",
+          "MinSize": "5368709120"
+        }
+      }
+    },
+    {
+      "Id": "B173",
+      "Split": "calibration",
+      "Text": "delete everything in C:\\Temp without the .bak files",
+      "Language": "en",
+      "Tags": [
+        "guard"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B174",
+      "Split": "calibration",
+      "Text": "move report.txt to \\\\server\\share\\logs",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "filename",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Destination": "\\\\server\\share\\logs",
+          "Name": "report.txt"
+        }
+      }
+    },
+    {
+      "Id": "B175",
+      "Split": "calibration",
+      "Text": "eteins la lumiere",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B176",
+      "Split": "calibration",
+      "Text": "reserve une table pour deux",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B177",
+      "Split": "calibration",
+      "Text": "move data.csv to C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "filename",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Destination": "C:\\Temp",
+          "Name": "data.csv"
+        }
+      }
+    },
+    {
+      "Id": "B178",
+      "Split": "test",
+      "Text": "copy the .log files in C:\\Data to C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\Data",
+          "Destination": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B179",
+      "Split": "test",
+      "Text": "42",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B180",
+      "Split": "test",
+      "Text": "cherche les fichiers .csv dans D:\\Archive",
+      "Language": "fr",
+      "Tags": [
+        "list",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "D:\\Archive",
+          "Extension": ".csv"
+        }
+      }
+    },
+    {
+      "Id": "B181",
+      "Split": "calibration",
+      "Text": "copy the files in \\\\server\\share\\logs to C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "\\\\server\\share\\logs",
+          "Destination": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B182",
+      "Split": "calibration",
+      "Text": "delete the .log files",
+      "Language": "en",
+      "Tags": [
+        "incomplete"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B183",
+      "Split": "calibration",
+      "Text": "remove the files larger than 1 GB in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "filter",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "D:\\Archive",
+          "MinSize": "1073741824"
+        }
+      }
+    },
+    {
+      "Id": "B184",
+      "Split": "calibration",
+      "Text": "create a powershell script",
+      "Language": "en",
+      "Tags": [
+        "code",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "code.generate",
+        "Parameters": {
+          "Kind": "Script",
+          "Language": "PowerShell"
+        }
+      }
+    }
+  ]
+}
