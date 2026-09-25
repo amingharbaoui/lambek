@@ -92,5 +92,44 @@
   ],
   "NegationQuestion": "Lambek does not act on negative requests. What should it do instead?",
   "ExclusionQuestion": "Exclusions are not supported yet. Which files should be used?",
-  "UnusedQuestion": "I could not use: {0}. Could you say it another way?"
+  "UnusedQuestion": "I could not use: {0}. Could you say it another way?",
+  "Answer": {
+    "Single": "I will {0}.",
+    "Steps": "I will do {0} steps:",
+    "Affected": "{0} item(s) affected.",
+    "Code": "Here is the generated code.",
+    "Done": "Done.",
+    "Failed": "Step {0} failed: {1}",
+    "Refused": "I did not run the plan: {0}",
+    "Approval": "Type {0} to confirm.",
+    "Units": {
+      "B": "bytes",
+      "KB": "KB",
+      "MB": "MB",
+      "GB": "GB",
+      "TB": "TB",
+      "Directory": "folder",
+      "File": "file",
+      "minute": [
+        "minute",
+        "minutes"
+      ],
+      "hour": [
+        "hour",
+        "hours"
+      ],
+      "day": [
+        "day",
+        "days"
+      ],
+      "week": [
+        "week",
+        "weeks"
+      ],
+      "year": [
+        "year",
+        "years"
+      ]
+    }
+  }
 }
