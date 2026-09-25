@@ -17,7 +17,8 @@ function Get-LambekLexicon {
     }
 
     $data = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json -AsHashtable
-    foreach ($key in 'StopWords', 'BaseForms', 'SentenceQuestion', 'AmbiguityQuestion', 'RephraseQuestion') {
+    foreach ($key in 'StopWords', 'BaseForms', 'SentenceQuestion', 'AmbiguityQuestion', 'RephraseQuestion',
+        'Negations', 'Exclusions', 'NegationQuestion', 'ExclusionQuestion', 'UnusedQuestion') {
         if (-not $data.ContainsKey($key)) {
             throw "Language file '$Language' must contain $key."
         }
@@ -66,6 +67,11 @@ function Get-LambekLexicon {
         SentenceQuestion  = $data.SentenceQuestion
         AmbiguityQuestion = $data.AmbiguityQuestion
         RephraseQuestion  = $data.RephraseQuestion
+        Negations         = @($data.Negations)
+        Exclusions        = @($data.Exclusions)
+        NegationQuestion  = $data.NegationQuestion
+        ExclusionQuestion = $data.ExclusionQuestion
+        UnusedQuestion    = $data.UnusedQuestion
     }
 
     $script:LexiconCache[$Language] = $lexicon

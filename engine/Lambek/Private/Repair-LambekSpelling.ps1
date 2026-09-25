@@ -15,7 +15,9 @@ function Repair-LambekSpelling {
 
     foreach ($token in $Tokens) {
         $isTag = $token -match '^_[a-z]+_$'
-        $isKnown = $isTag -or $lexicon.StopWords.Contains($token) -or $lexicon.Vocabulary.Contains($token)
+        $isGuard = $token -in $lexicon.Negations -or $token -in $lexicon.Exclusions
+        $isPlural = $token.EndsWith('s') -and $lexicon.Vocabulary.Contains($token.Substring(0, $token.Length - 1))
+        $isKnown = $isTag -or $isGuard -or $isPlural -or $lexicon.StopWords.Contains($token) -or $lexicon.Vocabulary.Contains($token)
 
         if ($isKnown -or $token.Length -lt 4) {
             $repaired.Add($token)

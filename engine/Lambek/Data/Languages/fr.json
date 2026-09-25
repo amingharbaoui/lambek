@@ -92,5 +92,20 @@
   },
   "SentenceQuestion": "Que voulez-vous faire ?",
   "AmbiguityQuestion": "Voulez-vous dire \"{0}\" ou \"{1}\" ?",
-  "RephraseQuestion": "Pouvez-vous le dire autrement ?"
+  "RephraseQuestion": "Pouvez-vous le dire autrement ?",
+  "Negations": [
+    "pas",
+    "jamais",
+    "ne",
+    "rien"
+  ],
+  "Exclusions": [
+    "sauf",
+    "excepte",
+    "hormis",
+    "sans"
+  ],
+  "NegationQuestion": "Lambek n'agit pas sur une demande n\u00e9gative. Que doit-il faire \u00e0 la place ?",
+  "ExclusionQuestion": "Les exclusions ne sont pas encore prises en charge. Quels fichiers faut-il utiliser ?",
+  "UnusedQuestion": "Je n'ai pas pu utiliser : {0}. Pouvez-vous le dire autrement ?"
 }

@@ -108,7 +108,11 @@ function Get-LambekParameter {
         }
     }
 
+    # Entities that no parameter used
+    $unused = @($occurrences | Where-Object { -not $_.Used } | ForEach-Object { Format-LambekValue -Value $_.Value })
+
     return [pscustomobject]@{
+        Unused    = $unused
         Values    = $ordered
         Missing   = $missing.ToArray()
         Questions = $questions.ToArray()

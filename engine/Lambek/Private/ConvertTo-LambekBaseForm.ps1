@@ -13,8 +13,11 @@ function ConvertTo-LambekBaseForm {
     $words = [System.Collections.Generic.List[string]]::new()
 
     foreach ($token in $Tokens) {
-        # Entity tags and stop words stay as they are
-        if ($token -match '^_[a-z]+_$' -or $lexicon.StopWords.Contains($token)) {
+        # Entity tags, stop words, guard words, and known words stay as they are
+        $isTag = $token -match '^_[a-z]+_$'
+        $isGuard = $token -in $lexicon.Negations -or $token -in $lexicon.Exclusions
+        $isKnown = $lexicon.StopWords.Contains($token) -or ($lexicon.Vocabulary.Contains($token) -and -not $lexicon.BaseForms.ContainsKey($token))
+        if ($isTag -or $isGuard -or $isKnown) {
             $words.Add($token)
         }
         # Base forms
