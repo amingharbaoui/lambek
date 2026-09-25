@@ -1,5 +1,6 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../Lambek/Lambek.psd1" -Force
+    Import-LambekPack -Path "$PSScriptRoot/../../dsl/files" | Out-Null
 }
 
 Describe 'ConvertTo-LambekRequest' {
@@ -62,6 +63,29 @@ Describe 'ConvertTo-LambekRequest' {
         It 'reads an extension' {
             $extension = $request.Entities | Where-Object Type -EQ 'extension'
             $extension.Value | Should -Be '.log'
+        }
+    }
+
+    Context 'Universal entities' {
+        It 'reads an email address' {
+            $email = (ConvertTo-LambekRequest 'send the report to Sarah.Doe@Example.com').Entities | Where-Object Type -EQ 'email'
+            $email.Value | Should -Be 'sarah.doe@example.com'
+        }
+
+        It 'reads a url' {
+            $url = (ConvertTo-LambekRequest 'download https://example.com/data.csv').Entities | Where-Object Type -EQ 'url'
+            $url.Value | Should -Be 'https://example.com/data.csv'
+        }
+
+        It 'reads a file name' {
+            $file = (ConvertTo-LambekRequest 'delete report.txt').Entities | Where-Object Type -EQ 'filename'
+            $file.Value | Should -Be 'report.txt'
+        }
+
+        It 'does not read a decimal size as a file name' {
+            $request = ConvertTo-LambekRequest 'files larger than 5.5 GB'
+            ($request.Entities | Where-Object Type -EQ 'size').Value | Should -Be ([long] (5.5 * 1GB))
+            ($request.Entities | Where-Object Type -EQ 'filename') | Should -BeNullOrEmpty
         }
     }
 
@@ -134,6 +158,16 @@ Describe 'ConvertTo-LambekRequest' {
 
         It 'returns terms as an array for a single word' {
             (ConvertTo-LambekRequest 'shutdown').Terms.Count | Should -Be 1
+        }
+
+        It 'rejects a language that is not available' {
+            { ConvertTo-LambekRequest 'delete the file' -Language 'xx' } | Should -Throw
+        }
+
+        It 'keeps stop words in Words but not in Terms' {
+            $request = ConvertTo-LambekRequest 'move the files in C:\Temp'
+            $request.Words | Should -Contain 'in'
+            $request.Terms | Should -Not -Contain 'in'
         }
     }
 }

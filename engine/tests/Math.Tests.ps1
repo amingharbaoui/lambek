@@ -99,3 +99,69 @@ Describe 'Get-LambekCharNGram' {
         }
     }
 }
+
+Describe 'Pregroup types' {
+
+    It 'reads <Text> as order <Order>' -ForEach @(
+        @{ Text = 'o'; Order = 0 }
+        @{ Text = 'o^l'; Order = -1 }
+        @{ Text = 'o^r'; Order = 1 }
+        @{ Text = 'o^ll'; Order = -2 }
+        @{ Text = 'o^rr'; Order = 2 }
+    ) {
+        InModuleScope Lambek -Parameters $_ {
+            (ConvertFrom-LambekType -Type $Text).Order | Should -Be $Order
+        }
+    }
+
+    It 'writes a type back the same way' {
+        InModuleScope Lambek {
+            Format-LambekType -SimpleTypes (ConvertFrom-LambekType -Type 's p^l o^rr') | Should -Be 's p^l o^rr'
+        }
+    }
+
+    It 'rejects an invalid type' {
+        InModuleScope Lambek {
+            { ConvertFrom-LambekType -Type 'o^x' } | Should -Throw
+        }
+    }
+}
+
+Describe 'Pregroup reduction' {
+
+    It 'reduces <Text> to <Expected>' -ForEach @(
+        @{ Text = 's o^l o'; Expected = 's' }
+        @{ Text = 'n n^r s o^l o'; Expected = 's' }
+        @{ Text = 's p^l o^l o p'; Expected = 's' }
+        @{ Text = 's o^l o o^r o d^l d'; Expected = 's' }
+        @{ Text = 'o^ll o^l'; Expected = '' }
+        @{ Text = 's o^l'; Expected = 's o^l' }
+        @{ Text = 'o s'; Expected = 'o s' }
+        @{ Text = 'o^r o'; Expected = 'o^r o' }
+    ) {
+        InModuleScope Lambek -Parameters $_ {
+            $simpleTypes = ConvertFrom-LambekType -Type $Text
+            $result = Invoke-LambekReduction -SimpleTypes $simpleTypes
+            $left = @($result.Leftover | ForEach-Object { $simpleTypes[$_] })
+
+            Format-LambekType -SimpleTypes $left | Should -Be $Expected
+        }
+    }
+
+    It 'finds the cancellation that a left-to-right scan would miss' {
+        InModuleScope Lambek {
+            $simpleTypes = ConvertFrom-LambekType -Type 's o^l o o^r o'
+            $result = Invoke-LambekReduction -SimpleTypes $simpleTypes
+
+            $result.Leftover.Count | Should -Be 1
+            $result.Pairs.Count | Should -Be 2
+        }
+    }
+
+    It 'returns nothing for an empty list' {
+        InModuleScope Lambek {
+            $result = Invoke-LambekReduction -SimpleTypes @()
+            $result.Leftover.Count | Should -Be 0
+        }
+    }
+}
