@@ -1,0 +1,19 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test and build output
+TestResults/
+coverage.xml
+testResults.xml
+out/
+dist/
+
+# App (Tauri / Node), added later
+node_modules/
+app/src-tauri/target/
