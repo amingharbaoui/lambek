@@ -20,7 +20,7 @@ Describe 'Resolve-LambekIntent' {
             @{ Text = 'copy report.txt to D:\Backup'; Action = 'files.copy' }
             @{ Text = 'move the files in C:\Temp to D:\Archive'; Action = 'files.move' }
             @{ Text = 'rename report.txt to "summary.txt"'; Action = 'files.rename' }
-            @{ Text = 'create a folder in C:\Temp'; Action = 'files.create' }
+            @{ Text = 'create a folder named "logs" in C:\Temp'; Action = 'files.create' }
             @{ Text = 'create a script'; Action = 'code.generate' }
             @{ Text = 'generate a powershell function named Get-Report'; Action = 'code.generate' }
             @{ Text = 'supprime les fichiers .log dans C:\Temp'; Action = 'files.delete' }
