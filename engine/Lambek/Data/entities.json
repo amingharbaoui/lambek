@@ -1,0 +1,60 @@
+{
+  "Entities": [
+    {
+      "Name": "quoted",
+      "Priority": 10,
+      "Kind": "text",
+      "Pattern": "\"(?<v>[^\"]+)\"|\u00ab\\s*(?<v>[^\u00bb]+?)\\s*\u00bb|\u201c(?<v>[^\u201d]+)\u201d"
+    },
+    {
+      "Name": "email",
+      "Priority": 20,
+      "Kind": "lower",
+      "Pattern": "(?<v>\\b[\\w.+-]+@[\\w-]+(?:\\.[\\w-]+)+\\b)"
+    },
+    {
+      "Name": "url",
+      "Priority": 30,
+      "Kind": "text",
+      "Pattern": "(?<v>\\bhttps?://[^\\s\"]+)"
+    },
+    {
+      "Name": "duration",
+      "Priority": 60,
+      "Kind": "duration",
+      "Pattern": "(?i)\\b(?<n>\\d+)\\s?(?<u>days?|jours?|weeks?|semaines?|months?|mois|years?|ann[e\u00e9]es?|ans?|hours?|heures?|minutes?|min)\\b",
+      "Units": {
+        "day": 86400,
+        "days": 86400,
+        "jour": 86400,
+        "jours": 86400,
+        "week": 604800,
+        "weeks": 604800,
+        "semaine": 604800,
+        "semaines": 604800,
+        "month": 2592000,
+        "months": 2592000,
+        "mois": 2592000,
+        "year": 31536000,
+        "years": 31536000,
+        "an": 31536000,
+        "ans": 31536000,
+        "annee": 31536000,
+        "annees": 31536000,
+        "hour": 3600,
+        "hours": 3600,
+        "heure": 3600,
+        "heures": 3600,
+        "minute": 60,
+        "minutes": 60,
+        "min": 60
+      }
+    },
+    {
+      "Name": "number",
+      "Priority": 90,
+      "Kind": "number",
+      "Pattern": "(?<![\\w.])(?<v>\\d+(?:[.,]\\d+)?)(?![\\w.])"
+    }
+  ]
+}
