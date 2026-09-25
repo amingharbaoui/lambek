@@ -13,6 +13,7 @@ foreach ($file in $privateFiles + $publicFiles) {
 $script:Packs = [ordered]@{}
 $script:LexiconCache = @{}
 $script:ActionIndexCache = @{}
+$script:AuditPath = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'Lambek/audit.jsonl'
 
 # Exports
 Export-ModuleMember -Function $publicFiles.BaseName

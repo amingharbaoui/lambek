@@ -1,6 +1,6 @@
 @{
     RootModule           = 'Lambek.psm1'
-    ModuleVersion        = '0.4.0'
+    ModuleVersion        = '0.5.0'
     GUID                 = 'eea3f7ac-dd0b-43aa-ae2b-a37522b5ea12'
     Author               = 'Amin Gharbaoui'
     CompanyName          = 'Amin Gharbaoui'
@@ -10,13 +10,16 @@
     CompatiblePSEditions = @('Core')
 
     FunctionsToExport    = @(
+        'Approve-LambekPlan'
         'ConvertTo-LambekRequest'
         'Get-LambekPack'
         'Import-LambekPack'
+        'Invoke-LambekPlan'
         'Measure-LambekSimilarity'
         'New-LambekPlan'
         'Resolve-LambekGrammar'
         'Resolve-LambekIntent'
+        'Test-LambekAudit'
         'Test-LambekScript'
     )
     CmdletsToExport      = @()

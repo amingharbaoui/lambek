@@ -144,22 +144,28 @@ function New-LambekPlan {
         }
 
         # Plan hash: every step in execution order
+        $order = @($sorting.Order | ForEach-Object { $_ + 1 })
         $planHash = $null
         if ($status -eq 'Ready') {
-            $parts = foreach ($index in $sorting.Order) {
-                "$($index + 1):$($steps[$index].CardHash):$($steps[$index].Script)"
-            }
-            $planHash = Get-LambekHash -Text ($parts -join "`n")
+            $planHash = Get-LambekPlanHash -Steps $steps.ToArray() -Order $order
+        }
+
+        # Plan risk: the highest risk of its steps
+        $risk = 'low'
+        foreach ($step in $steps) {
+            if ($step.Risk -eq 'high') { $risk = 'high' }
+            elseif ($step.Risk -eq 'medium' -and $risk -ne 'high') { $risk = 'medium' }
         }
 
         [pscustomobject]@{
             PSTypeName = 'Lambek.Plan'
             Status     = $status
+            Risk       = $risk
             Original   = $Text
             Steps      = $steps.ToArray()
             Edges      = @($edges | ForEach-Object { [pscustomobject]@{ From = $_.From + 1; To = $_.To + 1; Reason = $_.Reason } })
             Cycles     = @($cycles | ForEach-Object { , [int[]] @($_ | ForEach-Object { $_ + 1 }) })
-            Order      = @($sorting.Order | ForEach-Object { $_ + 1 })
+            Order      = $order
             Levels     = @($sorting.Levels | ForEach-Object { , [int[]] @($_ | ForEach-Object { $_ + 1 }) })
             Questions  = $questions.ToArray()
             PlanHash   = $planHash
