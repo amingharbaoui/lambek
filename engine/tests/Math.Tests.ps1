@@ -165,3 +165,23 @@ Describe 'Pregroup reduction' {
         }
     }
 }
+
+Describe 'Scoring' {
+
+    It 'has weights that add up to 1' {
+        InModuleScope Lambek {
+            $scoring = Get-LambekScoring
+            $total = 0.0
+            foreach ($weight in $scoring.Weights.Values) { $total += $weight }
+            [math]::Round($total, 6) | Should -Be 1
+        }
+    }
+
+    It 'has a threshold between 0 and 1' {
+        InModuleScope Lambek {
+            $scoring = Get-LambekScoring
+            $scoring.Threshold | Should -BeGreaterThan 0
+            $scoring.Threshold | Should -BeLessThan 1
+        }
+    }
+}

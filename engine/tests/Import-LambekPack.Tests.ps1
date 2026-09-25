@@ -25,6 +25,11 @@ Describe 'Import-LambekPack' {
             $pack.Entities | Should -Contain 'path'
         }
 
+        It 'lists the actions of a pack' {
+            $pack = Import-LambekPack -Path "$packs/files"
+            $pack.Actions | Should -Contain 'files.delete'
+        }
+
         It 'loads the code pack' {
             $pack = Import-LambekPack -Path "$packs/code"
             $pack.Name | Should -Be 'code'
@@ -103,6 +108,28 @@ Describe 'Import-LambekPack' {
                 Entities = @(@{ Name = 'weight'; Kind = 'unit'; Priority = 1; Pattern = '\d+' })
             }
             { Import-LambekPack -Path $folder } | Should -Throw '*needs Units*'
+        }
+
+        It 'rejects an action id from another pack' {
+            $folder = New-TestPack @{
+                Name = 'test'; Version = '1.0.0'; Types = @{}; Words = @{}
+                Actions = @(@{
+                        Id = 'other.run'; Risk = 'low'; Title = @{ en = 'Run' }; Verbs = @('run')
+                        Examples = @{ en = @('run it') }; Parameters = @()
+                    })
+            }
+            { Import-LambekPack -Path $folder } | Should -Throw '*must start with*'
+        }
+
+        It 'rejects an unknown risk' {
+            $folder = New-TestPack @{
+                Name = 'test'; Version = '1.0.0'; Types = @{}; Words = @{}
+                Actions = @(@{
+                        Id = 'test.run'; Risk = 'extreme'; Title = @{ en = 'Run' }; Verbs = @('run')
+                        Examples = @{ en = @('run it') }; Parameters = @()
+                    })
+            }
+            { Import-LambekPack -Path $folder } | Should -Throw '*unknown risk*'
         }
 
         It 'rejects an invalid pack name' {
