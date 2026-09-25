@@ -74,7 +74,8 @@
     "*": {
       "_path_": [
         "d",
-        "o"
+        "o",
+        "o^r o"
       ],
       "_filename_": [
         "o"
@@ -369,6 +370,21 @@
             "moins"
           ]
         }
+      ],
+      "Output": "command",
+      "Reads": [],
+      "Writes": [
+        "Path"
+      ],
+      "Template": [
+        "$items = Get-ChildItem -LiteralPath {{Path}} -File -Recurse",
+        "?Name $items = $items | Where-Object Name -EQ {{Name}}",
+        "?Extension $items = $items | Where-Object Extension -EQ {{Extension}}",
+        "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
+        "?NewerThan $items = $items | Where-Object LastWriteTime -GE ((Get-Date) - {{NewerThan}})",
+        "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
+        "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
+        "$items | Remove-Item"
       ]
     },
     {
@@ -467,6 +483,22 @@
             "moins"
           ]
         }
+      ],
+      "Output": "command",
+      "Reads": [
+        "Path"
+      ],
+      "Writes": [],
+      "Template": [
+        "?Path $items = Get-ChildItem -LiteralPath {{Path}} -File -Recurse",
+        "!Path $items = Get-ChildItem -File -Recurse",
+        "?Name $items = $items | Where-Object Name -EQ {{Name}}",
+        "?Extension $items = $items | Where-Object Extension -EQ {{Extension}}",
+        "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
+        "?NewerThan $items = $items | Where-Object LastWriteTime -GE ((Get-Date) - {{NewerThan}})",
+        "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
+        "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
+        "$items | Select-Object FullName, Length, LastWriteTime"
       ]
     },
     {
@@ -575,6 +607,24 @@
             "moins"
           ]
         }
+      ],
+      "Output": "command",
+      "Reads": [
+        "Source"
+      ],
+      "Writes": [
+        "Destination"
+      ],
+      "Template": [
+        "?Source $items = Get-ChildItem -LiteralPath {{Source}} -File",
+        "!Source $items = Get-ChildItem -File",
+        "?Name $items = $items | Where-Object Name -EQ {{Name}}",
+        "?Extension $items = $items | Where-Object Extension -EQ {{Extension}}",
+        "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
+        "?NewerThan $items = $items | Where-Object LastWriteTime -GE ((Get-Date) - {{NewerThan}})",
+        "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
+        "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
+        "$items | Copy-Item -Destination {{Destination}}"
       ]
     },
     {
@@ -683,6 +733,25 @@
             "moins"
           ]
         }
+      ],
+      "Output": "command",
+      "Reads": [
+        "Source"
+      ],
+      "Writes": [
+        "Source",
+        "Destination"
+      ],
+      "Template": [
+        "?Source $items = Get-ChildItem -LiteralPath {{Source}} -File",
+        "!Source $items = Get-ChildItem -File",
+        "?Name $items = $items | Where-Object Name -EQ {{Name}}",
+        "?Extension $items = $items | Where-Object Extension -EQ {{Extension}}",
+        "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
+        "?NewerThan $items = $items | Where-Object LastWriteTime -GE ((Get-Date) - {{NewerThan}})",
+        "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
+        "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
+        "$items | Move-Item -Destination {{Destination}}"
       ]
     },
     {
@@ -738,6 +807,14 @@
             "fr": "Quel est le nouveau nom ?"
           }
         }
+      ],
+      "Output": "command",
+      "Reads": [],
+      "Writes": [
+        "Name"
+      ],
+      "Template": [
+        "Rename-Item -LiteralPath {{Name}} -NewName {{NewName}}"
       ]
     },
     {
@@ -768,8 +845,8 @@
           "Words": {
             "file": "File",
             "fichier": "File",
-            "folder": "Folder",
-            "dossier": "Folder"
+            "folder": "Directory",
+            "dossier": "Directory"
           },
           "Required": true,
           "Question": {
@@ -789,7 +866,13 @@
             "under",
             "dans",
             "sous"
-          ]
+          ],
+          "Fallback": true,
+          "Required": true,
+          "Question": {
+            "en": "In which folder?",
+            "fr": "Dans quel dossier ?"
+          }
         },
         {
           "Name": "Name",
@@ -798,7 +881,27 @@
             "quoted"
           ]
         }
+      ],
+      "Output": "command",
+      "Reads": [],
+      "Writes": [
+        "Path"
+      ],
+      "Template": [
+        "?Name New-Item -Path {{Path}} -Name {{Name}} -ItemType {{Kind}}",
+        "!Name New-Item -Path {{Path}} -ItemType {{Kind}}"
       ]
     }
+  ],
+  "Commands": [
+    "Get-ChildItem",
+    "Where-Object",
+    "Get-Date",
+    "Select-Object",
+    "Remove-Item",
+    "Copy-Item",
+    "Move-Item",
+    "Rename-Item",
+    "New-Item"
   ]
 }

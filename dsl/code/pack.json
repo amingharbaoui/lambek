@@ -202,7 +202,38 @@
           ],
           "Fallback": true
         }
-      ]
+      ],
+      "Output": "code",
+      "Reads": [],
+      "Writes": [],
+      "Supported": {
+        "Language": [
+          "PowerShell"
+        ]
+      },
+      "TemplateKey": "Kind",
+      "Templates": {
+        "Function": [
+          "?Name function {{Name!}} {",
+          "!Name function Invoke-Task {",
+          "    [CmdletBinding()]",
+          "    param()",
+          "",
+          "}"
+        ],
+        "Script": [
+          "[CmdletBinding()]",
+          "param()",
+          ""
+        ],
+        "Class": [
+          "?Name class {{Name!}} {",
+          "!Name class NewClass {",
+          "",
+          "}"
+        ]
+      }
     }
-  ]
+  ],
+  "Commands": []
 }
