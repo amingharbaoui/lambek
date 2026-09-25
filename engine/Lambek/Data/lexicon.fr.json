@@ -1,0 +1,26 @@
+{
+  "StopWords": [
+    "le", "la", "les", "l", "un", "une", "des", "du", "de", "d", "au", "aux",
+    "et", "ou", "mais", "donc", "puis", "stp", "svp", "merci",
+    "je", "j", "me", "m", "moi", "mon", "ma", "mes", "tu", "te", "t", "ton", "ta", "tes",
+    "il", "elle", "on", "nous", "vous", "ils", "elles", "ce", "cet", "cette", "ces", "c",
+    "est", "sont", "suis", "es", "etre", "a", "ai", "as", "ont", "avoir",
+    "dans", "en", "sur", "pour", "par", "avec", "chez", "qui", "que", "qu", "quoi",
+    "peux", "peut", "pouvez", "veux", "voudrais", "faire", "fais", "s", "y"
+  ],
+  "BaseForms": {
+    "supprime": "supprimer", "supprimes": "supprimer", "supprimez": "supprimer", "efface": "supprimer", "effacer": "supprimer",
+    "deplace": "deplacer", "deplacez": "deplacer",
+    "copie": "copier", "copiez": "copier",
+    "arrete": "arreter", "arretez": "arreter", "stoppe": "arreter", "stopper": "arreter", "tue": "arreter", "tuer": "arreter",
+    "demarre": "demarrer", "lance": "demarrer", "lancer": "demarrer",
+    "redemarre": "redemarrer",
+    "cherche": "chercher", "trouve": "chercher", "trouver": "chercher",
+    "liste": "lister", "affiche": "afficher", "montre": "afficher", "montrer": "afficher",
+    "renomme": "renommer",
+    "fichiers": "fichier", "dossiers": "dossier", "repertoire": "dossier", "repertoires": "dossier",
+    "processus": "processus", "services": "service",
+    "gros": "grand", "grosse": "grand", "grosses": "grand", "grands": "grand", "grande": "grand", "grandes": "grand",
+    "vieux": "ancien", "vieille": "ancien", "vieilles": "ancien", "anciens": "ancien", "ancienne": "ancien", "anciennes": "ancien"
+  }
+}
