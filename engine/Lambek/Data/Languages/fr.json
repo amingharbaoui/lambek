@@ -91,5 +91,6 @@
     "grandes": "grand"
   },
   "SentenceQuestion": "Que voulez-vous faire ?",
-  "AmbiguityQuestion": "Voulez-vous dire \"{0}\" ou \"{1}\" ?"
+  "AmbiguityQuestion": "Voulez-vous dire \"{0}\" ou \"{1}\" ?",
+  "RephraseQuestion": "Pouvez-vous le dire autrement ?"
 }

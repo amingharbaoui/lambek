@@ -71,5 +71,6 @@
     "smallest": "smaller"
   },
   "SentenceQuestion": "What do you want to do?",
-  "AmbiguityQuestion": "Did you mean \"{0}\" or \"{1}\"?"
+  "AmbiguityQuestion": "Did you mean \"{0}\" or \"{1}\"?",
+  "RephraseQuestion": "Could you say it another way?"
 }

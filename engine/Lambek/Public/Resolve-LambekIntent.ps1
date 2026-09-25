@@ -107,6 +107,9 @@ function Resolve-LambekIntent {
                 if (-not $grammar.IsSentence -or $missing.Count -gt 0) {
                     $status = 'NeedsInput'
                 }
+                if ($status -eq 'NeedsInput' -and $questions.Count -eq 0) {
+                    $questions.Add($lexicon.RephraseQuestion)
+                }
             }
         }
         else {

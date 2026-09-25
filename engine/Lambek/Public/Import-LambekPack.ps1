@@ -41,6 +41,7 @@ function Import-LambekPack {
         if (-not $data.ContainsKey('Entities')) { $data.Entities = @() }
         if (-not $data.ContainsKey('BaseForms')) { $data.BaseForms = @{} }
         if (-not $data.ContainsKey('Description')) { $data.Description = '' }
+        if (-not $data.ContainsKey('Commands')) { $data.Commands = @() }
 
         # Types
         $knownBases = [System.Collections.Generic.HashSet[string]]::new()
@@ -106,6 +107,37 @@ function Import-LambekPack {
             if ($action.Examples.Count -eq 0) {
                 throw "Pack '$($data.Name)': action '$($action.Id)' needs at least one example."
             }
+            $parameterNames = @($action.Parameters | ForEach-Object { $_.Name })
+
+            foreach ($key in 'Reads', 'Writes') {
+                if (-not $action.ContainsKey($key)) { $action[$key] = @() }
+                foreach ($name in $action[$key]) {
+                    if ($name -notin $parameterNames) {
+                        throw "Pack '$($data.Name)': action '$($action.Id)' lists an unknown parameter '$name' in $key."
+                    }
+                }
+            }
+
+            if (-not $action.ContainsKey('Output')) { $action.Output = 'command' }
+            if ($action.Output -notin 'command', 'code') {
+                throw "Pack '$($data.Name)': action '$($action.Id)' has an unknown output '$($action.Output)'."
+            }
+
+            $templates = @()
+            if ($action.ContainsKey('Template')) { $templates += , $action.Template }
+            if ($action.ContainsKey('Templates')) {
+                foreach ($key in $action.Templates.Keys) { $templates += , $action.Templates[$key] }
+            }
+            foreach ($template in $templates) {
+                foreach ($line in $template) {
+                    foreach ($placeholder in [regex]::Matches($line, '\{\{(?<name>[A-Za-z]+)!?\}\}|^[?!](?<name>[A-Za-z]+) ')) {
+                        if ($placeholder.Groups['name'].Value -notin $parameterNames) {
+                            throw "Pack '$($data.Name)': template of '$($action.Id)' uses an unknown parameter '$($placeholder.Groups['name'].Value)'."
+                        }
+                    }
+                }
+            }
+
             foreach ($parameter in $action.Parameters) {
                 if ($parameter.Name -notmatch '^[A-Z][A-Za-z]*$') {
                     throw "Pack '$($data.Name)': action '$($action.Id)' has an invalid parameter name '$($parameter.Name)'."
@@ -127,6 +159,7 @@ function Import-LambekPack {
             Entities    = @($data.Entities)
             BaseForms   = $data.BaseForms
             Actions     = @($data.Actions)
+            Commands    = @($data.Commands)
         }
 
         $script:Packs[$data.Name] = $pack

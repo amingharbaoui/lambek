@@ -1,6 +1,6 @@
 @{
     RootModule           = 'Lambek.psm1'
-    ModuleVersion        = '0.3.0'
+    ModuleVersion        = '0.4.0'
     GUID                 = 'eea3f7ac-dd0b-43aa-ae2b-a37522b5ea12'
     Author               = 'Amin Gharbaoui'
     CompanyName          = 'Amin Gharbaoui'
@@ -14,8 +14,10 @@
         'Get-LambekPack'
         'Import-LambekPack'
         'Measure-LambekSimilarity'
+        'New-LambekPlan'
         'Resolve-LambekGrammar'
         'Resolve-LambekIntent'
+        'Test-LambekScript'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
