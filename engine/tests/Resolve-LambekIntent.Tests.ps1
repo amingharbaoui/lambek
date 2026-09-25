@@ -112,6 +112,26 @@ Describe 'Resolve-LambekIntent' {
         }
     }
 
+    Context 'Safety guards' {
+        It 'does not act on "<Text>"' -ForEach @(
+            @{ Text = "don't delete the files in C:\Temp" }
+            @{ Text = 'never delete the files in C:\Temp' }
+            @{ Text = 'delete the files in C:\Temp except the .log files' }
+            @{ Text = 'delete the .log and .tmp files in C:\Temp' }
+            @{ Text = 'ne supprime pas les fichiers dans C:\Temp' }
+            @{ Text = "n'efface jamais les fichiers dans C:\Temp" }
+            @{ Text = 'supprime les fichiers sauf les .log dans C:\Temp' }
+        ) {
+            $card = Resolve-Text $Text
+            $card.Status | Should -Be 'NeedsInput'
+            $card.CardHash | Should -BeNullOrEmpty
+        }
+
+        It 'says which value it could not use' {
+            (Resolve-Text 'delete the .log and .tmp files in C:\Temp').Questions | Should -Contain 'I could not use: .tmp. Could you say it another way?'
+        }
+    }
+
     Context 'Card hash' {
         It 'is the same for different wording with the same meaning' {
             $first = Resolve-Text 'delete the .log files in C:\Temp'
