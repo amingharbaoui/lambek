@@ -130,7 +130,7 @@ function Import-LambekPack {
             }
             foreach ($template in $templates) {
                 foreach ($line in $template) {
-                    foreach ($placeholder in [regex]::Matches($line, '\{\{(?<name>[A-Za-z]+)!?\}\}|^[?!](?<name>[A-Za-z]+) ')) {
+                    foreach ($placeholder in [regex]::Matches($line, '\{\{(?<name>[A-Za-z]+)!?\}\}|(?<=^(?:[?!][A-Za-z]+ )*)[?!](?<name>[A-Za-z]+) ')) {
                         if ($placeholder.Groups['name'].Value -notin $parameterNames) {
                             throw "Pack '$($data.Name)': template of '$($action.Id)' uses an unknown parameter '$($placeholder.Groups['name'].Value)'."
                         }

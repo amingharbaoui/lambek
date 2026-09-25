@@ -24,7 +24,7 @@
     {
       "Id": "B002",
       "Split": "calibration",
-      "Text": "cree un dossier dans C:\\Users\\Amin\\Downloads",
+      "Text": "cree un dossier nomme \"logs\" dans C:\\Users\\Amin\\Downloads",
       "Language": "fr",
       "Tags": [
         "create",
@@ -35,7 +35,8 @@
         "Action": "files.create",
         "Parameters": {
           "Kind": "Directory",
-          "Path": "C:\\Users\\Amin\\Downloads"
+          "Parent": "C:\\Users\\Amin\\Downloads",
+          "Name": "logs"
         }
       }
     },
@@ -1360,7 +1361,7 @@
     {
       "Id": "B085",
       "Split": "calibration",
-      "Text": "create a folder in \\\\server\\share\\logs",
+      "Text": "create a folder named \"logs\" in \\\\server\\share\\logs",
       "Language": "en",
       "Tags": [
         "create",
@@ -1371,7 +1372,8 @@
         "Action": "files.create",
         "Parameters": {
           "Kind": "Directory",
-          "Path": "\\\\server\\share\\logs"
+          "Parent": "\\\\server\\share\\logs",
+          "Name": "logs"
         }
       }
     },
@@ -1427,7 +1429,7 @@
     {
       "Id": "B089",
       "Split": "test",
-      "Text": "cree un dossier dans C:\\Data",
+      "Text": "cree un dossier nomme \"logs\" dans C:\\Data",
       "Language": "fr",
       "Tags": [
         "create",
@@ -1438,7 +1440,8 @@
         "Action": "files.create",
         "Parameters": {
           "Kind": "Directory",
-          "Path": "C:\\Data"
+          "Parent": "C:\\Data",
+          "Name": "logs"
         }
       }
     },
@@ -1569,7 +1572,7 @@
     {
       "Id": "B097",
       "Split": "calibration",
-      "Text": "create a folder in C:\\Temp",
+      "Text": "create a folder named \"logs\" in C:\\Temp",
       "Language": "en",
       "Tags": [
         "create",
@@ -1580,7 +1583,8 @@
         "Action": "files.create",
         "Parameters": {
           "Kind": "Directory",
-          "Path": "C:\\Temp"
+          "Parent": "C:\\Temp",
+          "Name": "logs"
         }
       }
     },
@@ -2134,7 +2138,7 @@
     {
       "Id": "B132",
       "Split": "calibration",
-      "Text": "create a file in C:\\Temp",
+      "Text": "create a file named notes.txt in C:\\Temp",
       "Language": "en",
       "Tags": [
         "create",
@@ -2145,7 +2149,8 @@
         "Action": "files.create",
         "Parameters": {
           "Kind": "File",
-          "Path": "C:\\Temp"
+          "Parent": "C:\\Temp",
+          "Name": "notes.txt"
         }
       }
     },
@@ -2331,7 +2336,7 @@
     {
       "Id": "B143",
       "Split": "calibration",
-      "Text": "create a folder in C:\\Data",
+      "Text": "create a folder named \"logs\" in C:\\Data",
       "Language": "en",
       "Tags": [
         "create",
@@ -2342,7 +2347,8 @@
         "Action": "files.create",
         "Parameters": {
           "Kind": "Directory",
-          "Path": "C:\\Data"
+          "Parent": "C:\\Data",
+          "Name": "logs"
         }
       }
     },
@@ -3008,6 +3014,32 @@
           "Kind": "Script",
           "Language": "PowerShell"
         }
+      }
+    },
+    {
+      "Id": "B185",
+      "Split": "calibration",
+      "Text": "create a folder in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "incomplete",
+        "create"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B186",
+      "Split": "test",
+      "Text": "cree un dossier dans D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "incomplete",
+        "create"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
       }
     }
   ]

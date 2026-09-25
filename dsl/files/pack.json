@@ -26,6 +26,10 @@
     "t": {
       "en": "What age or duration?",
       "fr": "Quelle dur\u00e9e ?"
+    },
+    "q": {
+      "en": "What name should it have?",
+      "fr": "Quel nom doit-il porter ?"
     }
   },
   "Entities": [
@@ -78,12 +82,14 @@
         "o^r o"
       ],
       "_filename_": [
-        "o"
+        "o",
+        "q"
       ],
       "_quoted_": [
         "d",
         "o",
-        "o^r o"
+        "o^r o",
+        "q"
       ],
       "_size_": [
         "z"
@@ -162,6 +168,12 @@
       "than": [
         "c z^l",
         "c t^l"
+      ],
+      "named": [
+        "o^r o q^l"
+      ],
+      "called": [
+        "o^r o q^l"
       ]
     },
     "fr": {
@@ -222,6 +234,12 @@
       "moins": [
         "o^r o z^l",
         "o^r o t^l"
+      ],
+      "nomme": [
+        "o^r o q^l"
+      ],
+      "appele": [
+        "o^r o q^l"
       ]
     }
   },
@@ -270,7 +288,10 @@
       "deplacez": "deplacer",
       "renomme": "renommer",
       "repertoire": "dossier",
-      "repertoires": "dossier"
+      "repertoires": "dossier",
+      "nommee": "nomme",
+      "nommes": "nomme",
+      "appelee": "appele"
     }
   },
   "Actions": [
@@ -386,7 +407,31 @@
         "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
         "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
         "$items | Remove-Item"
-      ]
+      ],
+      "Say": {
+        "en": [
+          "delete the",
+          "?Extension {Extension}",
+          "files",
+          "?Name named {Name}",
+          "?OlderThan older than {OlderThan}",
+          "?NewerThan newer than {NewerThan}",
+          "?MinSize larger than {MinSize}",
+          "?MaxSize smaller than {MaxSize}",
+          "in {Path}"
+        ],
+        "fr": [
+          "supprimer les",
+          "fichiers",
+          "?Extension {Extension}",
+          "?Name nomm\u00e9s {Name}",
+          "?OlderThan de plus de {OlderThan}",
+          "?NewerThan de moins de {NewerThan}",
+          "?MinSize de plus de {MinSize}",
+          "?MaxSize de moins de {MaxSize}",
+          "dans {Path}"
+        ]
+      }
     },
     {
       "Id": "files.list",
@@ -500,7 +545,31 @@
         "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
         "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
         "$items | Select-Object FullName, Length, LastWriteTime"
-      ]
+      ],
+      "Say": {
+        "en": [
+          "list the",
+          "?Extension {Extension}",
+          "files",
+          "?Name named {Name}",
+          "?OlderThan older than {OlderThan}",
+          "?NewerThan newer than {NewerThan}",
+          "?MinSize larger than {MinSize}",
+          "?MaxSize smaller than {MaxSize}",
+          "?Path in {Path}"
+        ],
+        "fr": [
+          "lister les",
+          "fichiers",
+          "?Extension {Extension}",
+          "?Name nomm\u00e9s {Name}",
+          "?OlderThan de plus de {OlderThan}",
+          "?NewerThan de moins de {NewerThan}",
+          "?MinSize de plus de {MinSize}",
+          "?MaxSize de moins de {MaxSize}",
+          "?Path dans {Path}"
+        ]
+      }
     },
     {
       "Id": "files.copy",
@@ -626,7 +695,33 @@
         "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
         "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
         "$items | Copy-Item -Destination {{Destination}}"
-      ]
+      ],
+      "Say": {
+        "en": [
+          "copy the",
+          "?Extension {Extension}",
+          "files",
+          "?Name named {Name}",
+          "?OlderThan older than {OlderThan}",
+          "?NewerThan newer than {NewerThan}",
+          "?MinSize larger than {MinSize}",
+          "?MaxSize smaller than {MaxSize}",
+          "?Source from {Source}",
+          "to {Destination}"
+        ],
+        "fr": [
+          "copier les",
+          "fichiers",
+          "?Extension {Extension}",
+          "?Name nomm\u00e9s {Name}",
+          "?OlderThan de plus de {OlderThan}",
+          "?NewerThan de moins de {NewerThan}",
+          "?MinSize de plus de {MinSize}",
+          "?MaxSize de moins de {MaxSize}",
+          "?Source de {Source}",
+          "vers {Destination}"
+        ]
+      }
     },
     {
       "Id": "files.move",
@@ -753,7 +848,33 @@
         "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
         "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
         "$items | Move-Item -Destination {{Destination}}"
-      ]
+      ],
+      "Say": {
+        "en": [
+          "move the",
+          "?Extension {Extension}",
+          "files",
+          "?Name named {Name}",
+          "?OlderThan older than {OlderThan}",
+          "?NewerThan newer than {NewerThan}",
+          "?MinSize larger than {MinSize}",
+          "?MaxSize smaller than {MaxSize}",
+          "?Source from {Source}",
+          "to {Destination}"
+        ],
+        "fr": [
+          "d\u00e9placer les",
+          "fichiers",
+          "?Extension {Extension}",
+          "?Name nomm\u00e9s {Name}",
+          "?OlderThan de plus de {OlderThan}",
+          "?NewerThan de moins de {NewerThan}",
+          "?MinSize de plus de {MinSize}",
+          "?MaxSize de moins de {MaxSize}",
+          "?Source de {Source}",
+          "vers {Destination}"
+        ]
+      }
     },
     {
       "Id": "files.rename",
@@ -816,7 +937,15 @@
       ],
       "Template": [
         "Rename-Item -LiteralPath {{Name}} -NewName {{NewName}}"
-      ]
+      ],
+      "Say": {
+        "en": [
+          "rename {Name} to {NewName}"
+        ],
+        "fr": [
+          "renommer {Name} en {NewName}"
+        ]
+      }
     },
     {
       "Id": "files.create",
@@ -833,11 +962,13 @@
         "en": [
           "create a folder",
           "create a new file in a folder",
-          "make a directory"
+          "make a directory",
+          "create a folder named"
         ],
         "fr": [
           "creer un dossier",
-          "creer un fichier dans un dossier"
+          "creer un fichier dans un dossier",
+          "creer un dossier nomme"
         ]
       },
       "Parameters": [
@@ -856,7 +987,7 @@
           }
         },
         {
-          "Name": "Path",
+          "Name": "Parent",
           "Entities": [
             "path",
             "quoted"
@@ -867,18 +998,25 @@
             "under",
             "dans",
             "sous"
-          ],
-          "Fallback": true,
-          "Required": true,
-          "Question": {
-            "en": "In which folder?",
-            "fr": "Dans quel dossier ?"
-          }
+          ]
         },
         {
           "Name": "Name",
           "Entities": [
             "filename",
+            "quoted"
+          ],
+          "After": [
+            "named",
+            "called",
+            "nomme",
+            "appele"
+          ]
+        },
+        {
+          "Name": "Path",
+          "Entities": [
+            "path",
             "quoted"
           ]
         }
@@ -886,12 +1024,40 @@
       "Output": "command",
       "Reads": [],
       "Writes": [
-        "Path"
+        "Path",
+        "Parent"
       ],
       "Template": [
-        "?Name New-Item -Path {{Path}} -Name {{Name}} -ItemType {{Kind}}",
-        "!Name New-Item -Path {{Path}} -ItemType {{Kind}}"
-      ]
+        "?Path New-Item -Path {{Path}} -ItemType {{Kind}}",
+        "!Path ?Name New-Item -Path {{Parent}} -Name {{Name}} -ItemType {{Kind}}"
+      ],
+      "Say": {
+        "en": [
+          "create",
+          "?Path the {Kind|lower} {Path}",
+          "!Path ?Name a {Kind|lower} named {Name} in {Parent}"
+        ],
+        "fr": [
+          "cr\u00e9er",
+          "?Path le {Kind|lower} {Path}",
+          "!Path ?Name un {Kind|lower} nomm\u00e9 {Name} dans {Parent}"
+        ]
+      },
+      "RequireOneOf": {
+        "Sets": [
+          [
+            "Path"
+          ],
+          [
+            "Parent",
+            "Name"
+          ]
+        ],
+        "Question": {
+          "en": "What name should it have?",
+          "fr": "Quel nom doit-il porter ?"
+        }
+      }
     }
   ],
   "Commands": [

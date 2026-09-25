@@ -29,23 +29,27 @@ function Get-LambekParameter {
         $occurrences.Add([pscustomobject]@{
                 Type    = $type
                 Value   = $entity.Value
-                Context = @(Get-LambekEntityContext -Position $position -Grammar $Grammar)
+                Near    = @(Get-LambekEntityContext -Position $position -Grammar $Grammar -Depth 1)
+                Context = @(Get-LambekEntityContext -Position $position -Grammar $Grammar -Depth 2)
                 Used    = $false
             })
     }
 
-    # Pass 1: entities after a specific word (in, to, than...)
-    foreach ($parameter in $Action.Parameters) {
-        if (-not $parameter.ContainsKey('Entities') -or -not $parameter.ContainsKey('After')) { continue }
+    # Pass 1: entities after a specific word (in, to, than...), direct links first
+    foreach ($field in 'Near', 'Context') {
+        foreach ($parameter in $Action.Parameters) {
+            if (-not $parameter.ContainsKey('Entities') -or -not $parameter.ContainsKey('After')) { continue }
+            if ($values.Contains($parameter.Name)) { continue }
 
-        foreach ($occurrence in $occurrences) {
-            if ($occurrence.Used -or $occurrence.Type -notin $parameter.Entities) { continue }
+            foreach ($occurrence in $occurrences) {
+                if ($occurrence.Used -or $occurrence.Type -notin $parameter.Entities) { continue }
 
-            $matchesContext = @($occurrence.Context | Where-Object { $_ -in $parameter.After }).Count -gt 0
-            if ($matchesContext) {
-                $values[$parameter.Name] = $occurrence.Value
-                $occurrence.Used = $true
-                break
+                $matchesContext = @($occurrence.$field | Where-Object { $_ -in $parameter.After }).Count -gt 0
+                if ($matchesContext) {
+                    $values[$parameter.Name] = $occurrence.Value
+                    $occurrence.Used = $true
+                    break
+                }
             }
         }
     }
@@ -105,6 +109,20 @@ function Get-LambekParameter {
                 }
             }
             $questions.Add($question)
+        }
+    }
+
+    # At least one complete set of parameters (for example Path, or Parent and Name)
+    if ($Action.ContainsKey('RequireOneOf')) {
+        $hasSet = $false
+        foreach ($set in $Action.RequireOneOf.Sets) {
+            if (@($set | Where-Object { -not $ordered.Contains($_) }).Count -eq 0) { $hasSet = $true }
+        }
+        if (-not $hasSet) {
+            $missing.Add('RequireOneOf')
+            $texts = $Action.RequireOneOf.Question
+            if ($texts.ContainsKey($language)) { $questions.Add($texts[$language]) }
+            else { $questions.Add($texts['en']) }
         }
     }
 

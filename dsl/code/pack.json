@@ -232,6 +232,16 @@
           "",
           "}"
         ]
+      },
+      "Say": {
+        "en": [
+          "generate a {Language} {Kind|lower}",
+          "?Name named {Name}"
+        ],
+        "fr": [
+          "g\u00e9n\u00e9rer un {Kind|lower} {Language}",
+          "?Name nomm\u00e9 {Name}"
+        ]
       }
     }
   ],

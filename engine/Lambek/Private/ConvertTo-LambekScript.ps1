@@ -15,13 +15,15 @@ function ConvertTo-LambekScript {
     foreach ($line in $Template) {
         $text = $line
 
-        # ?Name: keep the line only when Name is set, !Name: only when it is not
-        if ($text -match '^(?<sign>[?!])(?<name>[A-Za-z]+) (?<rest>.*)$') {
+        # ?Name: keep only when Name is set, !Name: only when it is not (several conditions allowed)
+        $keep = $true
+        while ($text -match '^(?<sign>[?!])(?<name>[A-Za-z]+) (?<rest>.*)$') {
             $isSet = $Parameters.Contains($Matches['name'])
-            if ($Matches['sign'] -eq '?' -and -not $isSet) { continue }
-            if ($Matches['sign'] -eq '!' -and $isSet) { continue }
+            if ($Matches['sign'] -eq '?' -and -not $isSet) { $keep = $false }
+            if ($Matches['sign'] -eq '!' -and $isSet) { $keep = $false }
             $text = $Matches['rest']
         }
+        if (-not $keep) { continue }
 
         # {{Name!}}: raw identifier, {{Name}}: escaped literal
         foreach ($placeholder in [regex]::Matches($text, '\{\{(?<name>[A-Za-z]+)(?<raw>!?)\}\}')) {
