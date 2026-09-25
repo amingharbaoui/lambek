@@ -14,6 +14,7 @@ $script:Packs = [ordered]@{}
 $script:LexiconCache = @{}
 $script:ActionIndexCache = @{}
 $script:AuditPath = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'Lambek/audit.jsonl'
+$script:HostState = @{ Plans = [ordered]@{}; Simulations = @{}; Approvals = @{} }
 
 # Exports
 Export-ModuleMember -Function $publicFiles.BaseName

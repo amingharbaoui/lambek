@@ -1,6 +1,6 @@
 @{
     RootModule           = 'Lambek.psm1'
-    ModuleVersion        = '0.6.0'
+    ModuleVersion        = '0.7.0'
     GUID                 = 'eea3f7ac-dd0b-43aa-ae2b-a37522b5ea12'
     Author               = 'Amin Gharbaoui'
     CompanyName          = 'Amin Gharbaoui'
@@ -11,6 +11,7 @@
 
     FunctionsToExport    = @(
         'Approve-LambekPlan'
+        'ConvertTo-LambekAnswer'
         'ConvertTo-LambekRequest'
         'Get-LambekPack'
         'Import-LambekPack'
@@ -21,6 +22,7 @@
         'Optimize-LambekScoring'
         'Resolve-LambekGrammar'
         'Resolve-LambekIntent'
+        'Start-LambekHost'
         'Test-LambekAudit'
         'Test-LambekScript'
     )

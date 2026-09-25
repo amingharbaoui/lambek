@@ -30,7 +30,10 @@ function New-LambekPlan {
             $step = [pscustomobject]@{
                 Step       = $number
                 Clause     = $clauses[$i]
+                Language   = $card.Language
                 Status     = $card.Status
+                Confidence = $card.Confidence
+                Types      = $card.Types
                 Action     = $card.Action
                 Risk       = $card.Risk
                 Parameters = $card.Parameters
