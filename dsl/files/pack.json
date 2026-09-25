@@ -73,7 +73,8 @@
   "Words": {
     "*": {
       "_path_": [
-        "d"
+        "d",
+        "o"
       ],
       "_filename_": [
         "o"
@@ -269,5 +270,535 @@
       "repertoire": "dossier",
       "repertoires": "dossier"
     }
-  }
+  },
+  "Actions": [
+    {
+      "Id": "files.delete",
+      "Risk": "high",
+      "Title": {
+        "en": "Delete files or folders",
+        "fr": "Supprimer des fichiers ou dossiers"
+      },
+      "Verbs": [
+        "delete",
+        "supprimer"
+      ],
+      "Examples": {
+        "en": [
+          "delete files",
+          "delete the old files in a folder",
+          "remove the log files",
+          "erase a folder"
+        ],
+        "fr": [
+          "supprimer des fichiers",
+          "supprimer les anciens fichiers dans un dossier",
+          "effacer un dossier"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Path",
+          "Entities": [
+            "path",
+            "quoted"
+          ],
+          "After": [
+            "in",
+            "inside",
+            "under",
+            "dans",
+            "sous"
+          ],
+          "Fallback": true,
+          "Required": true,
+          "Question": {
+            "en": "In which folder?",
+            "fr": "Dans quel dossier ?"
+          }
+        },
+        {
+          "Name": "Name",
+          "Entities": [
+            "filename"
+          ]
+        },
+        {
+          "Name": "Extension",
+          "Entities": [
+            "extension"
+          ]
+        },
+        {
+          "Name": "OlderThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "old",
+            "plus"
+          ]
+        },
+        {
+          "Name": "NewerThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "new",
+            "moins"
+          ]
+        },
+        {
+          "Name": "MinSize",
+          "Entities": [
+            "size"
+          ],
+          "After": [
+            "larger",
+            "plus"
+          ]
+        },
+        {
+          "Name": "MaxSize",
+          "Entities": [
+            "size"
+          ],
+          "After": [
+            "smaller",
+            "moins"
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "files.list",
+      "Risk": "low",
+      "Title": {
+        "en": "List or find files",
+        "fr": "Lister ou chercher des fichiers"
+      },
+      "Verbs": [
+        "list",
+        "show",
+        "find",
+        "lister",
+        "afficher",
+        "chercher"
+      ],
+      "Examples": {
+        "en": [
+          "list the files",
+          "show the files in a folder",
+          "find the large files",
+          "search files"
+        ],
+        "fr": [
+          "lister les fichiers",
+          "afficher les fichiers dans un dossier",
+          "chercher les gros fichiers"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Path",
+          "Entities": [
+            "path",
+            "quoted"
+          ],
+          "After": [
+            "in",
+            "inside",
+            "under",
+            "dans",
+            "sous"
+          ],
+          "Fallback": true
+        },
+        {
+          "Name": "Name",
+          "Entities": [
+            "filename"
+          ]
+        },
+        {
+          "Name": "Extension",
+          "Entities": [
+            "extension"
+          ]
+        },
+        {
+          "Name": "OlderThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "old",
+            "plus"
+          ]
+        },
+        {
+          "Name": "NewerThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "new",
+            "moins"
+          ]
+        },
+        {
+          "Name": "MinSize",
+          "Entities": [
+            "size"
+          ],
+          "After": [
+            "larger",
+            "plus"
+          ]
+        },
+        {
+          "Name": "MaxSize",
+          "Entities": [
+            "size"
+          ],
+          "After": [
+            "smaller",
+            "moins"
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "files.copy",
+      "Risk": "medium",
+      "Title": {
+        "en": "Copy files",
+        "fr": "Copier des fichiers"
+      },
+      "Verbs": [
+        "copy",
+        "copier"
+      ],
+      "Examples": {
+        "en": [
+          "copy the files to a folder",
+          "copy a file"
+        ],
+        "fr": [
+          "copier les fichiers vers un dossier",
+          "copier un fichier"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Source",
+          "Entities": [
+            "path",
+            "quoted"
+          ],
+          "After": [
+            "in",
+            "inside",
+            "under",
+            "dans",
+            "sous"
+          ]
+        },
+        {
+          "Name": "Destination",
+          "Entities": [
+            "path",
+            "quoted"
+          ],
+          "After": [
+            "to",
+            "into",
+            "vers",
+            "en"
+          ],
+          "Required": true,
+          "Question": {
+            "en": "Where to?",
+            "fr": "Vers quel emplacement ?"
+          }
+        },
+        {
+          "Name": "Name",
+          "Entities": [
+            "filename"
+          ]
+        },
+        {
+          "Name": "Extension",
+          "Entities": [
+            "extension"
+          ]
+        },
+        {
+          "Name": "OlderThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "old",
+            "plus"
+          ]
+        },
+        {
+          "Name": "NewerThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "new",
+            "moins"
+          ]
+        },
+        {
+          "Name": "MinSize",
+          "Entities": [
+            "size"
+          ],
+          "After": [
+            "larger",
+            "plus"
+          ]
+        },
+        {
+          "Name": "MaxSize",
+          "Entities": [
+            "size"
+          ],
+          "After": [
+            "smaller",
+            "moins"
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "files.move",
+      "Risk": "medium",
+      "Title": {
+        "en": "Move files",
+        "fr": "D\u00e9placer des fichiers"
+      },
+      "Verbs": [
+        "move",
+        "deplacer"
+      ],
+      "Examples": {
+        "en": [
+          "move the files to a folder",
+          "move a file"
+        ],
+        "fr": [
+          "deplacer les fichiers vers un dossier",
+          "deplacer un fichier"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Source",
+          "Entities": [
+            "path",
+            "quoted"
+          ],
+          "After": [
+            "in",
+            "inside",
+            "under",
+            "dans",
+            "sous"
+          ]
+        },
+        {
+          "Name": "Destination",
+          "Entities": [
+            "path",
+            "quoted"
+          ],
+          "After": [
+            "to",
+            "into",
+            "vers",
+            "en"
+          ],
+          "Required": true,
+          "Question": {
+            "en": "Where to?",
+            "fr": "Vers quel emplacement ?"
+          }
+        },
+        {
+          "Name": "Name",
+          "Entities": [
+            "filename"
+          ]
+        },
+        {
+          "Name": "Extension",
+          "Entities": [
+            "extension"
+          ]
+        },
+        {
+          "Name": "OlderThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "old",
+            "plus"
+          ]
+        },
+        {
+          "Name": "NewerThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "new",
+            "moins"
+          ]
+        },
+        {
+          "Name": "MinSize",
+          "Entities": [
+            "size"
+          ],
+          "After": [
+            "larger",
+            "plus"
+          ]
+        },
+        {
+          "Name": "MaxSize",
+          "Entities": [
+            "size"
+          ],
+          "After": [
+            "smaller",
+            "moins"
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "files.rename",
+      "Risk": "medium",
+      "Title": {
+        "en": "Rename a file",
+        "fr": "Renommer un fichier"
+      },
+      "Verbs": [
+        "rename",
+        "renommer"
+      ],
+      "Examples": {
+        "en": [
+          "rename a file",
+          "rename the file to a new name"
+        ],
+        "fr": [
+          "renommer un fichier",
+          "renommer le fichier en"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Entities": [
+            "filename",
+            "quoted",
+            "path"
+          ],
+          "Required": true,
+          "Question": {
+            "en": "Which file?",
+            "fr": "Quel fichier ?"
+          }
+        },
+        {
+          "Name": "NewName",
+          "Entities": [
+            "filename",
+            "quoted"
+          ],
+          "After": [
+            "to",
+            "into",
+            "vers",
+            "en"
+          ],
+          "Required": true,
+          "Question": {
+            "en": "What is the new name?",
+            "fr": "Quel est le nouveau nom ?"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "files.create",
+      "Risk": "low",
+      "Title": {
+        "en": "Create a file or folder",
+        "fr": "Cr\u00e9er un fichier ou un dossier"
+      },
+      "Verbs": [
+        "create",
+        "creer"
+      ],
+      "Examples": {
+        "en": [
+          "create a folder",
+          "create a new file in a folder",
+          "make a directory"
+        ],
+        "fr": [
+          "creer un dossier",
+          "creer un fichier dans un dossier"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Kind",
+          "Words": {
+            "file": "File",
+            "fichier": "File",
+            "folder": "Folder",
+            "dossier": "Folder"
+          },
+          "Required": true,
+          "Question": {
+            "en": "A file or a folder?",
+            "fr": "Un fichier ou un dossier ?"
+          }
+        },
+        {
+          "Name": "Path",
+          "Entities": [
+            "path",
+            "quoted"
+          ],
+          "After": [
+            "in",
+            "inside",
+            "under",
+            "dans",
+            "sous"
+          ]
+        },
+        {
+          "Name": "Name",
+          "Entities": [
+            "filename",
+            "quoted"
+          ]
+        }
+      ]
+    }
+  ]
 }

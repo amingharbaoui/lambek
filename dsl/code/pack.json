@@ -129,5 +129,80 @@
       "nommee": "nomme",
       "appelee": "appele"
     }
-  }
+  },
+  "Actions": [
+    {
+      "Id": "code.generate",
+      "Risk": "low",
+      "Title": {
+        "en": "Generate code",
+        "fr": "G\u00e9n\u00e9rer du code"
+      },
+      "Verbs": [
+        "generate",
+        "create",
+        "write",
+        "generer",
+        "creer",
+        "ecrire"
+      ],
+      "Examples": {
+        "en": [
+          "generate a function",
+          "write a script",
+          "create a class",
+          "generate a powershell function named",
+          "create a script"
+        ],
+        "fr": [
+          "generer une fonction",
+          "ecrire un script",
+          "creer une classe",
+          "creer un script"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Kind",
+          "Words": {
+            "script": "Script",
+            "function": "Function",
+            "fonction": "Function",
+            "class": "Class",
+            "classe": "Class",
+            "module": "Module",
+            "test": "Test"
+          },
+          "Required": true,
+          "Question": {
+            "en": "What should be generated (script, function, class)?",
+            "fr": "Que faut-il g\u00e9n\u00e9rer (script, fonction, classe) ?"
+          }
+        },
+        {
+          "Name": "Language",
+          "Words": {
+            "powershell": "PowerShell",
+            "python": "Python",
+            "bash": "Bash"
+          },
+          "Default": "PowerShell"
+        },
+        {
+          "Name": "Name",
+          "Entities": [
+            "identifier",
+            "quoted"
+          ],
+          "After": [
+            "named",
+            "called",
+            "nomme",
+            "appele"
+          ],
+          "Fallback": true
+        }
+      ]
+    }
+  ]
 }
