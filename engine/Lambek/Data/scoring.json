@@ -1,11 +1,11 @@
 {
   "Weights": {
-    "Grammar": 0.35,
-    "Cosine": 0.2,
-    "WordJaccard": 0.15,
-    "NGramJaccard": 0.15,
-    "Edit": 0.15
+    "Grammar": 0.4,
+    "Cosine": 0.18,
+    "WordJaccard": 0.14,
+    "NGramJaccard": 0.14,
+    "Edit": 0.14
   },
-  "Threshold": 0.45,
-  "Margin": 0.05
+  "Threshold": 0.55,
+  "Margin": 0.08
 }
