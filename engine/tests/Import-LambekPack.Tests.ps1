@@ -132,6 +132,18 @@ Describe 'Import-LambekPack' {
             { Import-LambekPack -Path $folder } | Should -Throw '*unknown risk*'
         }
 
+        It 'rejects a template that uses an unknown parameter' {
+            $folder = New-TestPack @{
+                Name = 'test'; Version = '1.0.0'; Types = @{}; Words = @{}
+                Actions = @(@{
+                        Id = 'test.run'; Risk = 'low'; Title = @{ en = 'Run' }; Verbs = @('run')
+                        Examples = @{ en = @('run it') }; Parameters = @()
+                        Template = @('Get-Item {{Path}}')
+                    })
+            }
+            { Import-LambekPack -Path $folder } | Should -Throw '*unknown parameter*'
+        }
+
         It 'rejects an invalid pack name' {
             $folder = New-TestPack @{ Name = 'My Pack'; Version = '1.0.0'; Types = @{}; Words = @{} }
             { Import-LambekPack -Path $folder } | Should -Throw '*pack name*'
