@@ -13,12 +13,20 @@ function Get-LambekSimulation {
 
     foreach ($number in $Plan.Order) {
         $step = $Plan.Steps[$number - 1]
+        Send-LambekProgress -Stage 'Simulate' -Step $number -Percent (100 * [array]::IndexOf(@($Plan.Order), $number) / @($Plan.Order).Count)
         $affected = @()
+        $bytes = 0L
         $stepStatus = 'Ready'
         $message = $null
 
         if ($step.Output -eq 'code') {
             $message = 'Generates code only, nothing is changed.'
+        }
+        elseif ($step.Output -eq 'mcp') {
+            # MCP tools have no dry run: the simulation shows the exact call and sends nothing
+            $call = $step.Script | ConvertFrom-Json -AsHashtable
+            $message = "Would call $($call.tool) on $($call.server). Nothing was sent."
+            $fingerprint.Add("mcp|$($step.Script)")
         }
         else {
             # Every command that is not read-only must support -WhatIf
@@ -42,10 +50,16 @@ function Get-LambekSimulation {
             elseif ($run.Items.Count -gt 0) {
                 foreach ($item in $run.Items) {
                     $affected += [string] $item.FullName
+                    if ($item.PSObject.Properties['Length'] -and $item.Length -is [long]) { $bytes += $item.Length }
                     $fingerprint.Add("$($item.FullName)|$($item.Length)|$($item.LastWriteTimeUtc.Ticks)")
                 }
             }
+            elseif ($step.Script -match '\$items\s*=') {
+                # The action works on the items it selects: none selected, nothing changes
+                foreach ($path in $step.Writes) { $fingerprint.Add("$path|none") }
+            }
             else {
+                # The action creates something: what it writes is what changes
                 foreach ($path in $step.Writes) {
                     $affected += $path
                     $fingerprint.Add("$path|$(Test-Path -LiteralPath $path)")
@@ -63,6 +77,7 @@ function Get-LambekSimulation {
                 Risk     = $step.Risk
                 Status   = $stepStatus
                 Count    = $affected.Count
+                Bytes    = $bytes
                 Affected = $affected
                 Message  = $message
             })

@@ -55,6 +55,25 @@ Describe 'ConvertTo-LambekRequest' {
             $quoted.Value | Should -BeExactly 'D:\Mes Logs'
         }
 
+        It 'reads a path without quotes: <Text>' -ForEach @(
+            @{ Text = 'list the files in C:\Program Files\App\logs'; Path = 'C:\Program Files\App\logs' }
+            @{ Text = 'move the .log files in C:\Temp to D:\Archive'; Path = 'C:\Temp' }
+            @{ Text = 'list the files in C:\Temp.'; Path = 'C:\Temp' }
+            @{ Text = 'list the files in /var/log/app'; Path = '/var/log/app' }
+            @{ Text = 'delete the files in .\old'; Path = '.\old' }
+        ) {
+            ((ConvertTo-LambekRequest $Text).Entities | Where-Object Type -EQ 'path')[0].Value | Should -Be $Path
+        }
+
+        It 'expands the home folder' {
+            $home2 = [Environment]::GetFolderPath('UserProfile')
+            ((ConvertTo-LambekRequest 'list the files in ~/Documents').Entities | Where-Object Type -EQ 'path').Value | Should -Be "$home2/Documents"
+        }
+
+        It 'does not read a word pair as a path' {
+            (ConvertTo-LambekRequest 'copy and/or move').Entities | Should -BeNullOrEmpty
+        }
+
         It 'reads a French size unit' {
             $size = $request.Entities | Where-Object Type -EQ 'size'
             $size.Value | Should -Be 5GB
@@ -135,6 +154,35 @@ Describe 'ConvertTo-LambekRequest' {
         It 'gives the same hash on every run' {
             $hashes = 1..20 | ForEach-Object { (ConvertTo-LambekRequest 'stop the service').Hash }
             ($hashes | Select-Object -Unique).Count | Should -Be 1
+        }
+    }
+
+    Context 'Folders of the user' {
+        It 'turns <Text> into a folder of the user' -ForEach @(
+            @{ Text = 'list the files in Documents'; Folder = 'MyDocuments' }
+            @{ Text = 'cree un fichier nomme a.txt sur le bureau'; Folder = 'Desktop' }
+            @{ Text = 'move the .log files to the desktop'; Folder = 'Desktop' }
+        ) {
+            $path = (ConvertTo-LambekRequest $Text).Entities | Where-Object Type -EQ 'path'
+            $expected = [Environment]::GetFolderPath($Folder)
+            if (-not $expected) { $expected = Join-Path ([Environment]::GetFolderPath('UserProfile')) $Folder.Replace('My', '') }
+            $path.Value | Should -Be $expected
+        }
+
+        It 'finds the downloads folder in French' {
+            $path = (ConvertTo-LambekRequest 'supprime les fichiers .tmp dans mes téléchargements').Entities | Where-Object Type -EQ 'path'
+            $path.Value | Should -Be (Join-Path ([Environment]::GetFolderPath('UserProfile')) 'Downloads')
+        }
+
+        It 'keeps entities in the order of the sentence' {
+            $paths = @((ConvertTo-LambekRequest 'move the .log files in C:\Temp to Downloads').Entities | Where-Object Type -EQ 'path')
+            $paths[0].Value | Should -Be 'C:\Temp'
+            $paths[1].Value | Should -Be (Join-Path ([Environment]::GetFolderPath('UserProfile')) 'Downloads')
+        }
+
+        It 'keeps the word as a word without a place before it' {
+            $request = ConvertTo-LambekRequest 'list the documents'
+            @($request.Entities | Where-Object Type -EQ 'path').Count | Should -Be 0
         }
     }
 

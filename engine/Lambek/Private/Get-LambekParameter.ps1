@@ -13,6 +13,7 @@ function Get-LambekParameter {
 
     $language = $Request.Language
     $values = [ordered]@{}
+    $usedBy = @{}
 
     # Entity occurrences in text order
     $occurrences = [System.Collections.Generic.List[object]]::new()
@@ -27,11 +28,12 @@ function Get-LambekParameter {
         $seen[$type]++
 
         $occurrences.Add([pscustomobject]@{
-                Type    = $type
-                Value   = $entity.Value
-                Near    = @(Get-LambekEntityContext -Position $position -Grammar $Grammar -Depth 1)
-                Context = @(Get-LambekEntityContext -Position $position -Grammar $Grammar -Depth 2)
-                Used    = $false
+                Type     = $type
+                Value    = $entity.Value
+                Near     = @(Get-LambekEntityContext -Position $position -Grammar $Grammar -Depth 1)
+                Context  = @(Get-LambekEntityContext -Position $position -Grammar $Grammar -Depth 2)
+                Position = $position
+                Used     = $false
             })
     }
 
@@ -48,6 +50,7 @@ function Get-LambekParameter {
                 if ($matchesContext) {
                     $values[$parameter.Name] = $occurrence.Value
                     $occurrence.Used = $true
+                    $usedBy[$parameter.Name] = $occurrence
                     break
                 }
             }
@@ -66,8 +69,61 @@ function Get-LambekParameter {
             if (-not $occurrence.Used -and $occurrence.Type -in $parameter.Entities) {
                 $values[$parameter.Name] = $occurrence.Value
                 $occurrence.Used = $true
+                $usedBy[$parameter.Name] = $occurrence
                 break
             }
+        }
+    }
+
+    # Pass 3: a place that follows another ("de X dans Y", "my downloads on the desktop"):
+    # with no word for it, the first of the two is the source and the next one the destination
+    foreach ($parameter in $Action.Parameters) {
+        if (-not $parameter.ContainsKey('Follows') -or $values.Contains($parameter.Name)) { continue }
+        $leader = $parameter.Follows
+        if (-not $usedBy.ContainsKey($leader)) { continue }
+
+        $places = @(@($usedBy[$leader]) + @($occurrences | Where-Object { -not $_.Used -and $_.Type -in $parameter.Entities }) | Sort-Object Position)
+        if ($places.Count -ne 2) { continue }
+        $values[$leader] = $places[0].Value
+        $values[$parameter.Name] = $places[1].Value
+        foreach ($place in $places) { $place.Used = $true }
+    }
+
+    # Free text: words the grammar does not know fill a text parameter ("search notes for budget")
+    $freeParameters = @($Action.Parameters | Where-Object { $_.ContainsKey('Free') -and $_.Free -and -not $values.Contains($_.Name) })
+    if ($freeParameters.Count -gt 0) {
+        $lexicon = Get-LambekLexicon -Language $language
+        $tokens = @($Request.Tokens)
+        $taken = [System.Collections.Generic.HashSet[int]]::new()
+        $anchorless = $true
+
+        foreach ($parameter in $freeParameters) {
+            # After the word of the parameter when there is one ("query budget"), otherwise anywhere once
+            $start = -1
+            for ($i = 0; $i -lt $tokens.Count; $i++) {
+                if ($tokens[$i] -in $parameter.After) { $start = $i + 1; break }
+            }
+            if ($start -lt 0 -and -not $anchorless) { continue }
+
+            # After an anchor, small words stay inside the text ("groceries for sunday")
+            $loose = [System.Collections.Generic.List[int]]::new()
+            for ($i = [math]::Max($start, 0); $i -lt $tokens.Count; $i++) {
+                $token = $tokens[$i]
+                $isStop = $lexicon.StopWords.Contains($token)
+                $isKnown = $token -match '^_[a-z]+_$' -or $lexicon.Vocabulary.Contains($token) -or $taken.Contains($i)
+                if ($isKnown -or ($isStop -and $start -lt 0)) {
+                    if ($start -ge 0 -and $loose.Count -gt 0) { break }
+                    continue
+                }
+                if ($isStop -and $loose.Count -eq 0) { continue }
+                $loose.Add($i)
+            }
+            while ($loose.Count -gt 0 -and $lexicon.StopWords.Contains($tokens[$loose[$loose.Count - 1]])) { $loose.RemoveAt($loose.Count - 1) }
+            if ($loose.Count -eq 0) { continue }
+
+            foreach ($index in $loose) { [void] $taken.Add($index) }
+            if ($start -lt 0) { $anchorless = $false }
+            $values[$parameter.Name] = Get-LambekOriginalText -Text $Request.Original -Words @($loose | ForEach-Object { $tokens[$_] })
         }
     }
 
@@ -89,42 +145,14 @@ function Get-LambekParameter {
 
     # Keep the order of the action definition
     $ordered = [ordered]@{}
-    $missing = [System.Collections.Generic.List[string]]::new()
-    $questions = [System.Collections.Generic.List[string]]::new()
-
     foreach ($parameter in $Action.Parameters) {
         if ($values.Contains($parameter.Name)) {
             $ordered[$parameter.Name] = $values[$parameter.Name]
         }
-        elseif ($parameter.ContainsKey('Required') -and $parameter.Required) {
-            $missing.Add($parameter.Name)
-
-            $question = "Missing: $($parameter.Name)"
-            if ($parameter.ContainsKey('Question')) {
-                if ($parameter.Question.ContainsKey($language)) {
-                    $question = $parameter.Question[$language]
-                }
-                elseif ($parameter.Question.ContainsKey('en')) {
-                    $question = $parameter.Question['en']
-                }
-            }
-            $questions.Add($question)
-        }
     }
-
-    # At least one complete set of parameters (for example Path, or Parent and Name)
-    if ($Action.ContainsKey('RequireOneOf')) {
-        $hasSet = $false
-        foreach ($set in $Action.RequireOneOf.Sets) {
-            if (@($set | Where-Object { -not $ordered.Contains($_) }).Count -eq 0) { $hasSet = $true }
-        }
-        if (-not $hasSet) {
-            $missing.Add('RequireOneOf')
-            $texts = $Action.RequireOneOf.Question
-            if ($texts.ContainsKey($language)) { $questions.Add($texts[$language]) }
-            else { $questions.Add($texts['en']) }
-        }
-    }
+    $check = Get-LambekMissingParameter -Action $Action -Parameters $ordered -Language $language
+    $missing = $check.Missing
+    $questions = $check.Questions
 
     # Entities that no parameter used
     $unused = @($occurrences | Where-Object { -not $_.Used } | ForEach-Object { Format-LambekValue -Value $_.Value })
@@ -132,7 +160,20 @@ function Get-LambekParameter {
     return [pscustomobject]@{
         Unused    = $unused
         Values    = $ordered
-        Missing   = $missing.ToArray()
-        Questions = $questions.ToArray()
+        Missing   = @($missing)
+        Questions = @($questions)
     }
+}
+
+function Get-LambekOriginalText {
+    param(
+        [string] $Text,
+        [string[]] $Words
+    )
+
+    # The words as the user typed them, with their case
+    $pattern = ($Words | ForEach-Object { [regex]::Escape($_) }) -join '\W+'
+    $found = [regex]::Match($Text, $pattern, 'IgnoreCase')
+    if ($found.Success) { return $found.Value }
+    return $Words -join ' '
 }

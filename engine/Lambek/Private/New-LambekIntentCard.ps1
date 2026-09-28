@@ -13,6 +13,7 @@ function New-LambekIntentCard {
 
     $request = $Evidence.Request
     $grammar = $Evidence.Grammar
+    $implied = @()
     $language = $request.Language
     $lexicon = Get-LambekLexicon -Language $language
     $selection = Select-LambekIntent -Evidence $Evidence -Scoring $Scoring
@@ -68,8 +69,23 @@ function New-LambekIntentCard {
             $questions.Add(($lexicon.UnusedQuestion -f ($filled.Unused -join ', ')))
         }
 
+        # A missing part the parameters already hold: a folder alone stands for the files in it
+        # ("delete everything in C:\Temp"), a second folder is the place ("my downloads on the desktop")
+        $isSentence = $grammar.IsSentence
+        $held = @{ o = @('Path', 'Source'); p = @('Destination') }
+        $gaps = @($grammar.Missing)
+        $covered = @(for ($i = 0; $i -lt $gaps.Count; $i++) {
+                $names = $held[$gaps[$i]]
+                if ($names -and @($names | Where-Object { $parameters.Contains($_) }).Count -gt 0) { $i }
+            })
+        if (-not $isSentence -and $gaps.Count -gt 0 -and $covered.Count -eq $gaps.Count) {
+            $isSentence = $true
+            foreach ($i in $covered) { [void] $questions.Remove($grammar.Questions[$i]) }
+            $implied = @($covered | ForEach-Object { $gaps[$_] })
+        }
+
         $status = 'Ready'
-        if (-not $grammar.IsSentence -or $missing.Count -gt 0 -or $hasNegation -or $hasExclusion -or $filled.Unused.Count -gt 0) {
+        if (-not $isSentence -or $missing.Count -gt 0 -or $hasNegation -or $hasExclusion -or $filled.Unused.Count -gt 0) {
             $status = 'NeedsInput'
         }
         if ($status -eq 'NeedsInput' -and $questions.Count -eq 0) {
@@ -80,10 +96,7 @@ function New-LambekIntentCard {
     # Card hash: action and parameters only, so it does not depend on wording or language
     $cardHash = $null
     if ($status -eq 'Ready') {
-        $parts = foreach ($name in ($parameters.Keys | Sort-Object)) {
-            "$name=$(Format-LambekValue -Value $parameters[$name])"
-        }
-        $cardHash = Get-LambekHash -Text "$($best.Action.Id)|$($parts -join ';')"
+        $cardHash = Get-LambekCardHash -ActionId $best.Action.Id -Parameters $parameters
     }
 
     # Intent Card
@@ -124,6 +137,7 @@ function New-LambekIntentCard {
         Original    = $request.Original
         IsSentence  = $grammar.IsSentence
         Types       = $grammar.Types
+        Implied     = $implied
         Candidates  = @($top)
         RequestHash = $request.Hash
         CardHash    = $cardHash

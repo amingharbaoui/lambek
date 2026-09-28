@@ -36,8 +36,20 @@
     {
       "Name": "path",
       "Priority": 40,
-      "Kind": "text",
-      "Pattern": "(?<v>(?:[A-Za-z]:\\\\|\\\\\\\\)[^\\s,;\"]*|%[A-Za-z_]+%(?:\\\\[^\\s,;\"]*)?|\\$env:[A-Za-z_]+(?:\\\\[^\\s,;\"]*)?)"
+      "Kind": "path",
+      "Pattern": "(?:(?i)(?<=\\b(?:in|inside|under|on|from|into|to|dans|sous|sur|vers|de|du|des|depuis)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:dossier|folder|r[e\u00e9]pertoire|directory)\\s+)?(?<v>(?:[A-Za-z]:\\\\|\\\\\\\\|\\.{1,2}\\\\)(?:[^\\s,;\"\\\\:]+(?: [^\\s,;\"\\\\:]+)*\\\\)*(?:[^\\s,;\"\\\\]*[^\\s,;\"\\\\.])?|%[A-Za-z_]+%(?:\\\\[^\\s,;\"]*)?|\\$env:[A-Za-z_]+(?:\\\\[^\\s,;\"]*)?|\\$HOME(?:/[^\\s,;\"]*)?|(?<![\\w/:.~])(?:~|\\.{1,2})?/(?:[^\\s,;\"/]+/)*[^\\s,;\"/.]+(?:\\.[^\\s,;\"/.]+)*/?|(?<![\\w/])~(?=\\s|$))"
+    },
+    {
+      "Name": "path",
+      "Priority": 41,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:in|inside|under|on|to|into|dans|sous|sur|vers)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:(?:dossier|folder|r[e\u00e9]pertoire|directory)\\s+)?(?<v>desktop|bureau|documents|downloads|t[e\u00e9]l[e\u00e9]chargements|pictures|images|music|musique|videos|vid[e\u00e9]os)\\b(?![\\\\/.\\w])"
+    },
+    {
+      "Name": "path",
+      "Priority": 42,
+      "Kind": "path",
+      "Pattern": "(?i)(?:(?<=\\b(?:my|mes|mon|ma)\\s+)(?<v>documents|pictures|images|music|musique|videos|vid[e\u00e9]os)|(?:(?<=\\b(?:in|inside|under|on|from|into|to|dans|sous|sur|vers|de|du|des|depuis)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:dossier|folder|r[e\u00e9]pertoire|directory)\\s+)?(?<![\\w\\\\/.])(?<v>desktop|bureau|downloads|t[e\u00e9]l[e\u00e9]chargements))\\b(?![\\\\/.\\w])"
     },
     {
       "Name": "filename",
@@ -134,7 +146,8 @@
         "o"
       ],
       "in": [
-        "o^r o d^l"
+        "o^r o d^l",
+        "s s^l d^l"
       ],
       "inside": [
         "o^r o d^l"
@@ -174,6 +187,22 @@
       ],
       "called": [
         "o^r o q^l"
+      ],
+      "on": [
+        "o^r o d^l",
+        "s s^l d^l"
+      ],
+      "everything": [
+        "o"
+      ],
+      "image": [
+        "o"
+      ],
+      "photo": [
+        "o"
+      ],
+      "picture": [
+        "o"
       ]
     },
     "fr": {
@@ -208,7 +237,8 @@
         "o"
       ],
       "dans": [
-        "o^r o d^l"
+        "o^r o d^l",
+        "s s^l d^l"
       ],
       "sous": [
         "o^r o d^l"
@@ -240,6 +270,22 @@
       ],
       "appele": [
         "o^r o q^l"
+      ],
+      "sur": [
+        "o^r o d^l",
+        "s s^l d^l"
+      ],
+      "tout": [
+        "o"
+      ],
+      "image": [
+        "o"
+      ],
+      "photo": [
+        "o"
+      ],
+      "remettre": [
+        "s p^l o^l"
       ]
     }
   },
@@ -269,7 +315,10 @@
       "files": "file",
       "folders": "folder",
       "directory": "folder",
-      "directories": "folder"
+      "directories": "folder",
+      "images": "image",
+      "photos": "photo",
+      "pictures": "picture"
     },
     "fr": {
       "supprime": "supprimer",
@@ -291,7 +340,12 @@
       "repertoires": "dossier",
       "nommee": "nomme",
       "nommes": "nomme",
-      "appelee": "appele"
+      "appelee": "appele",
+      "images": "image",
+      "photos": "photo",
+      "remets": "remettre",
+      "remet": "remettre",
+      "remettez": "remettre"
     }
   },
   "Actions": [
@@ -331,7 +385,9 @@
             "inside",
             "under",
             "dans",
-            "sous"
+            "sous",
+            "on",
+            "sur"
           ],
           "Fallback": true,
           "Required": true,
@@ -473,7 +529,9 @@
             "inside",
             "under",
             "dans",
-            "sous"
+            "sous",
+            "on",
+            "sur"
           ],
           "Fallback": true
         },
@@ -604,8 +662,11 @@
             "inside",
             "under",
             "dans",
-            "sous"
-          ]
+            "sous",
+            "on",
+            "sur"
+          ],
+          "Fallback": true
         },
         {
           "Name": "Destination",
@@ -619,6 +680,7 @@
             "vers",
             "en"
           ],
+          "Follows": "Source",
           "Required": true,
           "Question": {
             "en": "Where to?",
@@ -732,7 +794,8 @@
       },
       "Verbs": [
         "move",
-        "deplacer"
+        "deplacer",
+        "remettre"
       ],
       "Examples": {
         "en": [
@@ -741,7 +804,8 @@
         ],
         "fr": [
           "deplacer les fichiers vers un dossier",
-          "deplacer un fichier"
+          "deplacer un fichier",
+          "remettre les fichiers dans un autre dossier"
         ]
       },
       "Parameters": [
@@ -756,8 +820,11 @@
             "inside",
             "under",
             "dans",
-            "sous"
-          ]
+            "sous",
+            "on",
+            "sur"
+          ],
+          "Fallback": true
         },
         {
           "Name": "Destination",
@@ -771,6 +838,7 @@
             "vers",
             "en"
           ],
+          "Follows": "Source",
           "Required": true,
           "Question": {
             "en": "Where to?",
@@ -997,7 +1065,9 @@
             "inside",
             "under",
             "dans",
-            "sous"
+            "sous",
+            "on",
+            "sur"
           ]
         },
         {
@@ -1070,5 +1140,24 @@
     "Move-Item",
     "Rename-Item",
     "New-Item"
-  ]
+  ],
+  "Category": {
+    "en": {
+      "Title": "Files",
+      "Summary": "Find, copy, move, rename, and clean up files and folders.",
+      "Examples": [
+        "list the files larger than 100 MB in C:\\Users",
+        "delete the .tmp files older than 30 days in C:\\Temp",
+        "move the .log files in C:\\Temp to D:\\Archive"
+      ]
+    },
+    "fr": {
+      "Title": "Fichiers",
+      "Summary": "Chercher, copier, d\u00e9placer, renommer et nettoyer des fichiers et dossiers.",
+      "Examples": [
+        "affiche les fichiers de plus de 100 Mo dans C:\\Users",
+        "supprime les fichiers .tmp de plus de 30 jours dans C:\\Temp"
+      ]
+    }
+  }
 }

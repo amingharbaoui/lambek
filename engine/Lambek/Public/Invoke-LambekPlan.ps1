@@ -57,8 +57,23 @@ function Invoke-LambekPlan {
 
         if (-not $reason) {
             foreach ($step in $Plan.Steps) {
-                $commands = (Get-LambekAction -Id $step.Action).Pack.Commands
-                if (-not (Test-LambekScript -Script $step.Script -AllowedCommand $commands).IsValid) {
+                try {
+                    $definition = Get-LambekAction -Id $step.Action
+                }
+                catch {
+                    $reason = "Step $($step.Step) uses an action that is no longer loaded."
+                    continue
+                }
+
+                # MCP calls are rebuilt from the current tool definition
+                if ($step.Output -eq 'mcp') {
+                    $call = ConvertTo-LambekMcpCall -Action $definition.Action -Parameters $step.Parameters
+                    if ($call.Violations.Count -gt 0 -or $call.Script -ne $step.Script) {
+                        $reason = "Step $($step.Step): the MCP tool changed since the plan was built."
+                    }
+                    continue
+                }
+                if (-not (Test-LambekScript -Script $step.Script -AllowedCommand $definition.Pack.Commands).IsValid) {
                     $reason = "Step $($step.Step) no longer passes the safety check."
                 }
             }
@@ -89,28 +104,34 @@ function Invoke-LambekPlan {
         $status = 'Completed'
         foreach ($number in $Plan.Order) {
             $step = $Plan.Steps[$number - 1]
+            Send-LambekProgress -Stage 'Run' -Step $number -Percent (100 * [array]::IndexOf(@($Plan.Order), $number) / @($Plan.Order).Count)
 
             if ($status -ne 'Completed') {
-                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Skipped'; Output = @(); Error = $null })
+                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Skipped'; Output = @(); Error = $null; Count = 0 })
                 continue
             }
 
             if ($step.Output -eq 'code') {
-                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Completed'; Output = @($step.Script); Error = $null })
+                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Completed'; Output = @($step.Script); Error = $null; Count = 0 })
                 Write-LambekAudit -Path $AuditPath -EventName 'StepCompleted' -PlanHash $planHash -Step $number -Action $step.Action -Detail 'code generated'
                 continue
             }
 
-            $commands = (Get-LambekAction -Id $step.Action).Pack.Commands
-            $run = Invoke-LambekSandbox -Script $step.Script -Commands $commands -TimeoutSeconds $TimeoutSeconds
+            if ($step.Output -eq 'mcp') {
+                $run = Invoke-LambekMcpTool -Script $step.Script -TimeoutSeconds $TimeoutSeconds
+            }
+            else {
+                $commands = (Get-LambekAction -Id $step.Action).Pack.Commands
+                $run = Invoke-LambekSandbox -Script $step.Script -Commands $commands -TimeoutSeconds $TimeoutSeconds
+            }
 
             if ($run.Succeeded) {
-                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Completed'; Output = $run.Output; Error = $null })
+                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Completed'; Output = $run.Output; Error = $null; Count = $run.Items.Count })
                 Write-LambekAudit -Path $AuditPath -EventName 'StepCompleted' -PlanHash $planHash -Step $number -Action $step.Action -Detail "$($run.Items.Count) item(s)"
             }
             else {
                 $status = 'Failed'
-                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Failed'; Output = $run.Output; Error = $run.Error })
+                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Failed'; Output = $run.Output; Error = $run.Error; Count = 0 })
                 Write-LambekAudit -Path $AuditPath -EventName 'StepFailed' -PlanHash $planHash -Step $number -Action $step.Action -Detail $run.Error
             }
         }

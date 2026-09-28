@@ -43,5 +43,5 @@ function ConvertTo-LambekSentence {
         $parts.Add($text)
     }
 
-    return (($parts -join ' ') -replace '\s+', ' ').Trim()
+    return (($parts -join ' ') -replace '\s+', ' ' -replace ' ,', ',').Trim()
 }

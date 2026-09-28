@@ -77,6 +77,65 @@ Describe 'New-LambekPlan' {
             $plan.Questions | Should -Contain 'Step 1: Where to?'
         }
 
+        It 'runs an action said with a folder alone' -ForEach @(
+            @{ Text = 'delete everything in C:\Temp' }
+            @{ Text = 'list Downloads' }
+            @{ Text = 'move C:\Temp to D:\Archive' }
+            @{ Text = 'list the files on my desktop' }
+        ) {
+            $plan = New-LambekPlan $Text
+            $plan.Status | Should -Be 'Ready'
+            $plan.Questions | Should -BeNullOrEmpty
+        }
+
+        It 'reads the first folder as the source and the next one as the place: <Text>' -ForEach @(
+            @{ Text = 'déplace mes téléchargements sur le bureau'; Source = 'Downloads'; Destination = 'Desktop' }
+            @{ Text = 'deplace le fichiers dans pictures et mets le dans desktop'; Source = 'Pictures'; Destination = 'Desktop' }
+            @{ Text = 'remet le fichier qui est dans desktop vers pictures'; Source = 'Desktop'; Destination = 'Pictures' }
+            @{ Text = 'déplace les images de mes téléchargements dans mes images'; Source = 'Downloads'; Destination = 'Pictures' }
+            @{ Text = 'copy the pdf files from C:\A into C:\B'; Source = 'C:\A'; Destination = 'C:\B' }
+            @{ Text = 'move the files in C:\A to C:\B'; Source = 'C:\A'; Destination = 'C:\B' }
+        ) {
+            $plan = New-LambekPlan $Text
+            $plan.Status | Should -Be 'Ready'
+            $plan.Steps[0].Parameters.Source | Should -BeLike "*$Source"
+            $plan.Steps[0].Parameters.Destination | Should -BeLike "*$Destination"
+        }
+
+        It 'reads "the folder X" as the folder itself: <Text>' -ForEach @(
+            @{ Text = 'dans le dossier Pictures sais tu déplacer mon image vers Downloads'; Source = 'Pictures'; Destination = 'Downloads' }
+            @{ Text = 'déplace les fichiers dans le dossier C:\Temp vers D:\X'; Source = 'C:\Temp'; Destination = 'D:\X' }
+        ) {
+            $plan = New-LambekPlan $Text
+            $plan.Status | Should -Be 'Ready'
+            $plan.Steps[0].Parameters.Source | Should -BeLike "*$Source"
+            $plan.Steps[0].Parameters.Destination | Should -BeLike "*$Destination"
+        }
+
+        It 'reads a place said before the verb as part of the sentence' {
+            $plan = New-LambekPlan 'dans le dossier Pictures sais tu déplacer mon image vers Downloads'
+            $plan.Steps[0].Types | Should -BeLike 's s^l d^l d s *'
+            $plan.Steps[0].Implied | Should -BeNullOrEmpty
+        }
+
+        It 'says which type the folder supplies' {
+            (New-LambekPlan 'déplace mes téléchargements sur le bureau').Steps[0].Implied | Should -Be 'p'
+            (New-LambekPlan 'move the files in C:\A to C:\B').Steps[0].Implied | Should -BeNullOrEmpty
+        }
+
+        It 'still asks for the place with one folder only' {
+            $plan = New-LambekPlan 'move the files in C:\A'
+            $plan.Status | Should -Be 'NeedsInput'
+        }
+
+        It 'still asks for the files when no folder is given' -ForEach @(
+            @{ Text = 'move to Downloads' }
+            @{ Text = 'delete' }
+        ) {
+            $plan = New-LambekPlan $Text
+            $plan.Status | Should -Be 'NeedsInput'
+        }
+
         It 'blocks a generated script that fails the safety check' {
             $plan = New-LambekPlan 'create a class named Get-Report'
             $plan.Status | Should -Be 'Invalid'

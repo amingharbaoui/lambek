@@ -119,10 +119,17 @@ function Resolve-LambekGrammar {
         if (-not $hasSentence) {
             $missing.Add('s')
         }
-        foreach ($simpleType in $best.Left) {
-            if ($simpleType.Order -ne 0 -and -not $missing.Contains($simpleType.Base)) {
-                $missing.Add($simpleType.Base)
-            }
+        $left = @($best.Left)
+        for ($k = 0; $k -lt $left.Count; $k++) {
+            $simpleType = $left[$k]
+            if ($simpleType.Order -eq 0 -or $missing.Contains($simpleType.Base)) { continue }
+
+            # Present but blocked by another missing part ("move to D:\Archive" lacks the files, not the place)
+            $partner = $simpleType.Order + 1
+            $others = @(if ($simpleType.Order -lt 0) { $left | Select-Object -Skip ($k + 1) } else { $partner = $simpleType.Order - 1; $left | Select-Object -First $k })
+            if (@($others | Where-Object { $_.Base -eq $simpleType.Base -and $_.Order -eq $partner }).Count -gt 0) { continue }
+
+            $missing.Add($simpleType.Base)
         }
 
         $questions = foreach ($base in $missing) {

@@ -245,5 +245,24 @@
       }
     }
   ],
-  "Commands": []
+  "Commands": [],
+  "Category": {
+    "en": {
+      "Title": "Code",
+      "Summary": "Generate PowerShell functions, scripts, and classes.",
+      "Examples": [
+        "generate a powershell function named Get-Report",
+        "write a script",
+        "create a class named \"Invoice\""
+      ]
+    },
+    "fr": {
+      "Title": "Code",
+      "Summary": "G\u00e9n\u00e9rer des fonctions, scripts et classes PowerShell.",
+      "Examples": [
+        "genere une fonction nommee Get-Report",
+        "ecris un script"
+      ]
+    }
+  }
 }
