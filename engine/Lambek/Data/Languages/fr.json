@@ -110,13 +110,46 @@
   "UnusedQuestion": "Je n'ai pas pu utiliser : {0}. Pouvez-vous le dire autrement ?",
   "Answer": {
     "Single": "Je vais {0}.",
-    "Steps": "Je vais faire {0} \u00e9tapes :",
-    "Affected": "{0} \u00e9l\u00e9ment(s) concern\u00e9(s).",
-    "Code": "Voici le code g\u00e9n\u00e9r\u00e9.",
-    "Done": "Termin\u00e9.",
-    "Failed": "L'\u00e9tape {0} a \u00e9chou\u00e9 : {1}",
-    "Refused": "Je n'ai pas ex\u00e9cut\u00e9 le plan : {0}",
+    "Steps": "Je vais le faire en {0} \u00e9tapes :",
+    "RiskLow": "Ceci ne fait que lire. Rien ne change sur votre ordinateur.",
+    "RiskCreate": "Ceci ajoute seulement quelque chose de nouveau. Rien d'existant ne change.",
+    "RiskMedium": "Ceci modifie des choses sur votre ordinateur. Simulez d'abord pour voir exactement quoi.",
+    "RiskHigh": "Ceci est irr\u00e9versible. Simulez d'abord, puis confirmez avec un code.",
+    "CodeOnly": "Voici le code, pr\u00eat \u00e0 copier.",
+    "Waits": "L'\u00e9tape {0} attend l'\u00e9tape {1} car {2}.",
+    "NeedOne": "Il me manque un d\u00e9tail. {0}",
+    "NeedMany": "Il me manque quelques d\u00e9tails :",
+    "Unknown": "Sur cet ordinateur, je m'occupe de : {0}. Dites-moi ce que vous voulez faire.",
+    "Stopped": "Je me suis arr\u00eat\u00e9 avant d'ex\u00e9cuter quoi que ce soit.",
+    "Matches": "{0} \u00e9l\u00e9ment(s) concern\u00e9(s), {1} au total.",
+    "MatchesCount": "{0} \u00e9l\u00e9ment(s) concern\u00e9(s).",
+    "Nothing": "Rien ne correspond, donc rien ne changerait.",
     "Approval": "Tapez {0} pour confirmer.",
+    "ReadyToRun": "R\u00e9pondez oui pour continuer.",
+    "DoneBrief": "Terminé.",
+    "Done": "Termin\u00e9. {0} \u00e9l\u00e9ment(s) trait\u00e9(s).",
+    "DoneCode": "Termin\u00e9. Le code est pr\u00eat \u00e0 copier.",
+    "Failed": "L'\u00e9tape {0} a \u00e9chou\u00e9 : {1}",
+    "AfterFail": "Les \u00e9tapes suivantes n'ont pas \u00e9t\u00e9 ex\u00e9cut\u00e9es.",
+    "Refused": "Je ne l'ai pas ex\u00e9cut\u00e9 : {0}",
+    "ExplainStep": "\u00c9tape {0} : {1}.",
+    "ExplainAction": "Action {0}, risque {1}.",
+    "ExplainParams": "Param\u00e8tres : {0}.",
+    "ExplainGrammar": "Types de Lambek : {0}, qui se r\u00e9duisent \u00e0 s.",
+    "ExplainGrammarOpen": "Types de Lambek : {0}, qui ne se r\u00e9duisent pas encore \u00e0 s.",
+    "ExplainSafe": "Le script a pass\u00e9 le pare-feu AST.",
+    "ExplainBlocked": "Le script a \u00e9t\u00e9 bloqu\u00e9 : {0}.",
+    "ExplainOrder": "Ordre d'ex\u00e9cution : {0}.",
+    "Edited": "Mis \u00e0 jour. {0}",
+    "McpLow": "Le serveur {0} indique que cet outil ne fait que lire.",
+    "McpMedium": "Ceci envoie des donn\u00e9es au serveur {0}. Simulez d'abord pour voir l'appel exact.",
+    "McpHigh": "Le serveur {0} peut modifier ou supprimer des donn\u00e9es avec cet outil. Simulez d'abord, puis confirmez avec un code.",
+    "McpCall": "Rien n'a \u00e9t\u00e9 envoy\u00e9. Lambek appellera {0} sur {1} avec {2}.",
+    "McpNoArguments": "aucun argument",
+    "McpReply": "{0} a r\u00e9pondu :",
+    "McpEmpty": "{0} a r\u00e9pondu sans contenu.",
+    "ExplainMcp": "L'appel respecte le sch\u00e9ma d'entr\u00e9e de l'outil.",
+    "ExplainMcpBlocked": "L'appel ne respecte pas le sch\u00e9ma d'entr\u00e9e : {0}.",
     "Units": {
       "B": "octets",
       "KB": "Ko",
@@ -145,6 +178,205 @@
         "an",
         "ans"
       ]
+    },
+    "And": "et",
+    "Files": {
+      "Culture": "fr-FR",
+      "DateFormat": "d MMM yyyy",
+      "Image": "{0} est une image {1} de {2} \u00d7 {3} pixels, {4}, modifi\u00e9e le {5}.",
+      "ImageNoSize": "{0} est une image {1}, {2}, modifi\u00e9e le {3}.",
+      "TakenWith": "Prise le {0} avec {1}.",
+      "Taken": "Prise le {0}.",
+      "Camera": "Prise avec {0}.",
+      "Location": "Lieu : {0}, {1}.",
+      "Text": "{0} est un fichier texte de {1} lignes, {2}, modifi\u00e9 le {3}.",
+      "Pdf": "{0} est un document PDF de {1} pages, {2}, modifi\u00e9 le {3}.",
+      "Other": "{0} est un fichier {1}, {2}, modifi\u00e9 le {3}.",
+      "Folder": "{0} est un dossier de {1} \u00e9l\u00e9ments, modifi\u00e9 le {2}.",
+      "Missing": "Je ne trouve pas {0}.",
+      "Next": "Dites-moi quoi en faire, par exemple le copier, le d\u00e9placer ou le renommer.",
+      "NextMany": "Dites-moi quoi en faire, par exemple les copier, les d\u00e9placer ou les renommer."
+    }
+  },
+  "FollowUp": {
+    "Run": [
+      "lance",
+      "execute",
+      "oui",
+      "confirme",
+      "vas",
+      "go",
+      "ok",
+      "fais"
+    ],
+    "Explain": [
+      "pourquoi",
+      "explique",
+      "comment",
+      "quoi",
+      "montre",
+      "detail",
+      "details"
+    ],
+    "Step": [
+      "etape"
+    ],
+    "Filler": [
+      "le",
+      "la",
+      "les",
+      "maintenant",
+      "stp",
+      "svp",
+      "plutot",
+      "ca",
+      "plan",
+      "y"
+    ]
+  },
+  "Talk": {
+    "Incognito": {
+      "Phrases": [
+        "incognito",
+        "je suis incognito",
+        "suis je incognito",
+        "mode incognito",
+        "en incognito",
+        "chat prive",
+        "ce chat est prive",
+        "c est enregistre",
+        "est ce enregistre"
+      ],
+      "Reply": "Oui. Ce chat reste hors de votre historique.",
+      "ReplyOff": "Non, ce chat est enregistr\u00e9 dans votre historique. Appuyez sur Ctrl+Maj+N pour un chat incognito."
+    },
+    "Identity": {
+      "Phrases": [
+        "qui es tu",
+        "tu es qui",
+        "t es qui",
+        "qui etes vous",
+        "vous etes qui",
+        "c est quoi lambek",
+        "qu est ce que lambek",
+        "comment tu t appelles",
+        "tu t appelles comment",
+        "quel est ton nom",
+        "t es quoi",
+        "tu es quoi"
+      ],
+      "Reply": "Je suis Lambek. Je transforme des phrases simples en actions sur votre ordinateur, et je vous montre chaque \u00e9tape avant d'ex\u00e9cuter quoi que ce soit."
+    },
+    "Abilities": {
+      "Phrases": [
+        "que sais tu faire",
+        "que peux tu faire",
+        "tu sais faire quoi",
+        "tu peux faire quoi",
+        "tu fais quoi",
+        "qu est ce que tu sais faire",
+        "qu est ce que tu peux faire",
+        "que savez vous faire",
+        "que pouvez vous faire",
+        "aide",
+        "aide moi",
+        "aidez moi",
+        "comment ca marche",
+        "comment tu marches",
+        "comment tu fonctionnes",
+        "comment ca fonctionne"
+      ],
+      "Reply": "Pour l'instant, je m'occupe de : {0}. Dites ce que vous voulez avec vos mots, par exemple : {1}"
+    },
+    "Languages": {
+      "Phrases": [
+        "parles tu",
+        "tu parles",
+        "parlez vous",
+        "vous parlez",
+        "tu comprends l",
+        "tu comprends le",
+        "quelles langues",
+        "en anglais",
+        "en francais",
+        "sais tu parler",
+        "tu sais parler",
+        "parler francais",
+        "parler anglais",
+        "parle francais",
+        "parle anglais",
+        "tu parles francais",
+        "tu parles anglais"
+      ],
+      "Reply": "Je comprends le fran\u00e7ais et l'anglais. \u00c9crivez dans la langue que vous pr\u00e9f\u00e9rez."
+    },
+    "HowAreYou": {
+      "Phrases": [
+        "ca va",
+        "comment ca va",
+        "comment vas tu",
+        "comment allez vous",
+        "tu vas bien",
+        "vous allez bien",
+        "ca roule",
+        "quoi de neuf"
+      ],
+      "Reply": "Tr\u00e8s bien, merci. Que voulez-vous faire ?"
+    },
+    "Thanks": {
+      "Phrases": [
+        "merci",
+        "merci beaucoup",
+        "merci bien",
+        "je te remercie",
+        "je vous remercie"
+      ],
+      "Reply": "Avec plaisir."
+    },
+    "Bye": {
+      "Phrases": [
+        "au revoir",
+        "a plus",
+        "a plus tard",
+        "a bientot",
+        "bonne nuit",
+        "bonne journee",
+        "bonne soiree",
+        "ciao",
+        "bye"
+      ],
+      "Reply": "\u00c0 bient\u00f4t."
+    },
+    "Greeting": {
+      "Phrases": [
+        "salut",
+        "bonjour",
+        "bonsoir",
+        "coucou",
+        "hello",
+        "hey",
+        "yo",
+        "wesh",
+        "salut a toi",
+        "bonjour a toi"
+      ],
+      "Reply": "Bonjour ! Que voulez-vous faire ?"
+    },
+    "Okay": {
+      "Phrases": [
+        "ok",
+        "d accord",
+        "dac",
+        "super",
+        "parfait",
+        "top",
+        "cool",
+        "genial",
+        "tres bien",
+        "ca marche",
+        "compris"
+      ],
+      "Reply": "Tr\u00e8s bien. Dites-moi quand vous avez besoin de quelque chose."
     }
   }
 }

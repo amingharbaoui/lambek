@@ -94,14 +94,47 @@
   "ExclusionQuestion": "Exclusions are not supported yet. Which files should be used?",
   "UnusedQuestion": "I could not use: {0}. Could you say it another way?",
   "Answer": {
-    "Single": "I will {0}.",
-    "Steps": "I will do {0} steps:",
-    "Affected": "{0} item(s) affected.",
-    "Code": "Here is the generated code.",
-    "Done": "Done.",
-    "Failed": "Step {0} failed: {1}",
-    "Refused": "I did not run the plan: {0}",
+    "Single": "I'll {0}.",
+    "Steps": "I'll do this in {0} steps:",
+    "RiskLow": "This only reads. Nothing on your computer changes.",
+    "RiskCreate": "This only adds something new. Nothing that exists changes.",
+    "RiskMedium": "This changes things on your computer. Simulate first to see exactly what.",
+    "RiskHigh": "This cannot be undone. Simulate first, then confirm with a code.",
+    "CodeOnly": "Here is the code, ready to copy.",
+    "Waits": "Step {0} waits for step {1} because {2}.",
+    "NeedOne": "I need one more detail. {0}",
+    "NeedMany": "I need a few details:",
+    "Unknown": "On this computer, I take care of {0}. Tell me what you'd like to do.",
+    "Stopped": "I stopped before running anything.",
+    "Matches": "{0} item(s) match, {1} in total.",
+    "MatchesCount": "{0} item(s) match.",
+    "Nothing": "Nothing matches, so nothing would change.",
     "Approval": "Type {0} to confirm.",
+    "ReadyToRun": "Reply yes to go ahead.",
+    "DoneBrief": "Done.",
+    "Done": "Done. {0} item(s) processed.",
+    "DoneCode": "Done. The code is ready to copy.",
+    "Failed": "Step {0} failed: {1}",
+    "AfterFail": "The steps after it did not run.",
+    "Refused": "I did not run it: {0}",
+    "ExplainStep": "Step {0}: {1}.",
+    "ExplainAction": "Action {0}, {1} risk.",
+    "ExplainParams": "Parameters: {0}.",
+    "ExplainGrammar": "Lambek types: {0}, which reduce to s.",
+    "ExplainGrammarOpen": "Lambek types: {0}, which do not reduce to s yet.",
+    "ExplainSafe": "The script passed the AST firewall.",
+    "ExplainBlocked": "The script was blocked: {0}.",
+    "ExplainOrder": "Execution order: {0}.",
+    "Edited": "Updated. {0}",
+    "McpLow": "The {0} server marks this tool as read-only.",
+    "McpMedium": "This sends data to the {0} server. Simulate first to see the exact call.",
+    "McpHigh": "The {0} server may change or delete data with this tool. Simulate first, then confirm with a code.",
+    "McpCall": "Nothing was sent. Lambek will call {0} on {1} with {2}.",
+    "McpNoArguments": "no arguments",
+    "McpReply": "{0} replied:",
+    "McpEmpty": "{0} replied with no content.",
+    "ExplainMcp": "The call matches the input schema of the tool.",
+    "ExplainMcpBlocked": "The call does not match the input schema: {0}.",
     "Units": {
       "B": "bytes",
       "KB": "KB",
@@ -130,6 +163,181 @@
         "year",
         "years"
       ]
+    },
+    "And": "and",
+    "Files": {
+      "Culture": "en-US",
+      "DateFormat": "MMM d, yyyy",
+      "Image": "{0} is a {1} image of {2} \u00d7 {3} pixels, {4}, changed on {5}.",
+      "ImageNoSize": "{0} is a {1} image, {2}, changed on {3}.",
+      "TakenWith": "Taken on {0} with {1}.",
+      "Taken": "Taken on {0}.",
+      "Camera": "Taken with {0}.",
+      "Location": "Location: {0}, {1}.",
+      "Text": "{0} is a text file of {1} lines, {2}, changed on {3}.",
+      "Pdf": "{0} is a PDF document of {1} pages, {2}, changed on {3}.",
+      "Other": "{0} is a {1} file, {2}, changed on {3}.",
+      "Folder": "{0} is a folder with {1} items, changed on {2}.",
+      "Missing": "I can't find {0}.",
+      "Next": "Tell me what to do with it, for example copy, move, or rename it.",
+      "NextMany": "Tell me what to do with them, for example copy, move, or rename them."
+    }
+  },
+  "FollowUp": {
+    "Run": [
+      "run",
+      "go",
+      "execute",
+      "yes",
+      "confirm",
+      "proceed",
+      "ok",
+      "do"
+    ],
+    "Explain": [
+      "why",
+      "explain",
+      "how",
+      "what",
+      "show",
+      "detail",
+      "details"
+    ],
+    "Step": [
+      "step"
+    ],
+    "Filler": [
+      "it",
+      "now",
+      "please",
+      "them",
+      "that",
+      "instead",
+      "the",
+      "plan"
+    ]
+  },
+  "Talk": {
+    "Incognito": {
+      "Phrases": [
+        "incognito",
+        "am i incognito",
+        "is this incognito",
+        "private chat",
+        "is this chat private",
+        "is this chat saved",
+        "is it saved"
+      ],
+      "Reply": "Yes. This chat stays out of your history.",
+      "ReplyOff": "No, this chat is saved in your history. Press Ctrl+Shift+N for an incognito chat."
+    },
+    "Identity": {
+      "Phrases": [
+        "who are you",
+        "what are you",
+        "what is lambek",
+        "what s lambek",
+        "whats lambek",
+        "what is your name",
+        "what s your name",
+        "whats your name"
+      ],
+      "Reply": "I'm Lambek. I turn plain sentences into actions on your computer, and I show you each step before anything runs."
+    },
+    "Abilities": {
+      "Phrases": [
+        "what can you do",
+        "what do you do",
+        "what are you able to do",
+        "what can i do",
+        "help",
+        "help me",
+        "how does it work",
+        "how do you work",
+        "how does this work"
+      ],
+      "Reply": "I can help with {0}. Say what you want in your own words, for example: {1}"
+    },
+    "Languages": {
+      "Phrases": [
+        "do you speak",
+        "can you speak",
+        "do you understand",
+        "which languages",
+        "what languages",
+        "speak french",
+        "speak english",
+        "in french",
+        "in english",
+        "talk in french",
+        "talk in english",
+        "understand french",
+        "understand english"
+      ],
+      "Reply": "I understand English and French. Write in whichever you prefer."
+    },
+    "HowAreYou": {
+      "Phrases": [
+        "how are you",
+        "how are you doing",
+        "how is it going",
+        "how s it going",
+        "hows it going",
+        "what s up",
+        "whats up",
+        "how do you do"
+      ],
+      "Reply": "I'm good, thanks. What would you like to do?"
+    },
+    "Thanks": {
+      "Phrases": [
+        "thanks",
+        "thank you",
+        "thank you very much",
+        "thanks a lot",
+        "thx",
+        "cheers"
+      ],
+      "Reply": "You're welcome."
+    },
+    "Bye": {
+      "Phrases": [
+        "bye",
+        "goodbye",
+        "bye bye",
+        "see you",
+        "see you later",
+        "good night"
+      ],
+      "Reply": "See you soon."
+    },
+    "Greeting": {
+      "Phrases": [
+        "hello",
+        "hi",
+        "hey",
+        "hey there",
+        "hello there",
+        "good morning",
+        "good afternoon",
+        "good evening",
+        "yo"
+      ],
+      "Reply": "Hello! What would you like to do?"
+    },
+    "Okay": {
+      "Phrases": [
+        "ok",
+        "okay",
+        "alright",
+        "cool",
+        "great",
+        "nice",
+        "perfect",
+        "got it",
+        "sounds good"
+      ],
+      "Reply": "Good. Tell me whenever you need something."
     }
   }
 }
