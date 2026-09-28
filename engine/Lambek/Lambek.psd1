@@ -1,6 +1,6 @@
 @{
     RootModule           = 'Lambek.psm1'
-    ModuleVersion        = '0.7.0'
+    ModuleVersion        = '0.9.0'
     GUID                 = 'eea3f7ac-dd0b-43aa-ae2b-a37522b5ea12'
     Author               = 'Amin Gharbaoui'
     CompanyName          = 'Amin Gharbaoui'
@@ -13,6 +13,9 @@
         'Approve-LambekPlan'
         'ConvertTo-LambekAnswer'
         'ConvertTo-LambekRequest'
+        'Connect-LambekMcp'
+        'Disconnect-LambekMcp'
+        'Get-LambekMcpServer'
         'Get-LambekPack'
         'Import-LambekPack'
         'Invoke-LambekBenchmark'
@@ -20,8 +23,10 @@
         'Measure-LambekSimilarity'
         'New-LambekPlan'
         'Optimize-LambekScoring'
+        'Resolve-LambekFollowUp'
         'Resolve-LambekGrammar'
         'Resolve-LambekIntent'
+        'Set-LambekPlanParameter'
         'Start-LambekHost'
         'Test-LambekAudit'
         'Test-LambekScript'
@@ -32,7 +37,7 @@
 
     PrivateData          = @{
         PSData = @{
-            Tags       = @('NLP', 'Automation', 'Deterministic', 'DSL', 'AST')
+            Tags       = @('NLP', 'Automation', 'Deterministic', 'DSL', 'AST', 'MCP')
             ProjectUri = 'https://github.com/amingharbaoui/lambek'
         }
     }

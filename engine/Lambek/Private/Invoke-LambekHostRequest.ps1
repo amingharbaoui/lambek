@@ -23,15 +23,55 @@ function Invoke-LambekHostRequest {
         }
 
         $id = $request['id']
+        $script:HostRequestId = $id
         $params = @{}
         if ($request.ContainsKey('params') -and $request.params -is [hashtable]) {
             $params = $request.params
         }
         $state = $script:HostState
 
+        # The language of the chat, used when a message could be in any language
+        $script:LanguageHint = $null
+        $script:Incognito = $params['incognito'] -eq $true
+        $hint = [string] $params['language']
+        if ($hint -in (Get-LambekAvailableLanguage)) { $script:LanguageHint = $hint }
+
         switch ($request.method) {
             'ping' {
                 $result = [ordered]@{ name = 'Lambek'; version = (Get-Module Lambek).Version.ToString() }
+            }
+            'categories' {
+                $language = 'en'
+                if ($params.ContainsKey('language')) { $language = [string] $params.language }
+                $result = @(Get-LambekCategory -Language $language | ForEach-Object {
+                        [ordered]@{ pack = $_.Pack; title = $_.Title; summary = $_.Summary; examples = @($_.Examples); actions = @($_.Actions) }
+                    })
+            }
+            'mcp' {
+                # A starter config the user can open and fill
+                $path = $script:Mcp.ConfigPath
+                if ($params.ContainsKey('create') -and $params.create -eq $true -and -not (Test-Path -LiteralPath $path)) {
+                    New-Item -Path (Split-Path -Path $path -Parent) -ItemType Directory -Force | Out-Null
+                    Set-Content -LiteralPath $path -Value "{`n  `"mcpServers`": {}`n}" -Encoding utf8NoBOM
+                }
+                if ($params.ContainsKey('refresh') -and $params.refresh -eq $true) {
+                    Connect-LambekMcp -Path $script:Mcp.ConfigPath -Refresh | Out-Null
+                }
+                $result = [ordered]@{
+                    config  = $script:Mcp.ConfigPath
+                    exists  = (Test-Path -LiteralPath $script:Mcp.ConfigPath -PathType Leaf)
+                    servers = @(Get-LambekMcpServer | ForEach-Object {
+                            [ordered]@{
+                                name    = $_.Name
+                                status  = $_.Status
+                                running = $_.Running
+                                version = $_.Version
+                                error   = $_.Error
+                                tools   = @($_.Tools | ForEach-Object { [ordered]@{ name = $_.Name; action = $_.Action; title = $_.Title; risk = $_.Risk; description = $_.Description } })
+                                skipped = @($_.Skipped | ForEach-Object { [ordered]@{ tool = $_.Tool; reason = $_.Reason } })
+                            }
+                        })
+                }
             }
             'packs' {
                 $result = @(Get-LambekPack | ForEach-Object {
@@ -42,15 +82,64 @@ function Invoke-LambekHostRequest {
                 if (-not $params.ContainsKey('text') -or [string]::IsNullOrWhiteSpace($params.text)) {
                     throw 'ask needs a text.'
                 }
-                $plan = New-LambekPlan -Text $params.text
+                # A message about the current plan edits it, explains it, or runs it
+                $kind = 'new'
+                $answer = $null
+                $context = [string] $params['context']
+                $selected = 0
+                if ($params['step']) { $selected = [int] $params['step'] }
+                if ($context -and $state.Plans.Contains($context)) {
+                    $followUp = Resolve-LambekFollowUp -Plan $state.Plans[$context] -Text $params.text -Step $selected
+                    $kind = $followUp.Kind
+                    $plan = $followUp.Plan
+                    $answer = $followUp.Answer
+                }
+                else {
+                    $plan = New-LambekPlan -Text $params.text
+                }
 
-                # Plans are kept in memory by id (at most 50)
-                $planId = $plan.PlanHash
-                if (-not $planId) { $planId = Get-LambekHash -Text "draft|$($params.text)" }
-                $state.Plans[$planId] = $plan
+                if ($kind -in 'explain', 'run') {
+                    $result = [ordered]@{ kind = $kind; id = $context; answer = $answer }
+                }
+                else {
+                    # Plans are kept in memory by id (at most 50)
+                    $planId = $plan.PlanHash
+                    if (-not $planId) { $planId = Get-LambekHash -Text "draft|$($params.text)|$context" }
+                    $state.Plans[$planId] = $plan
+                    while ($state.Plans.Count -gt 50) { $state.Plans.RemoveAt(0) }
+
+                    $result = ConvertTo-LambekHostPlan -Id $planId -Plan $plan
+                    $result.kind = $kind
+                    # A new or edited plan speaks through its status; only questions and small talk need words
+                    if ($answer -and $plan.Status -ne 'Ready') { $result.answer = $answer }
+                    if ($plan.Status -ne 'Ready' -and $kind -ne 'new') { $result.answer = ConvertTo-LambekAnswer -Plan $plan -Brief }
+                }
+
+                # The language of the message, so the app can keep the chat in it
+                $words = @((ConvertTo-LambekNormalizedText -Text $params.text) -split '[^\p{L}\p{N}]+' | Where-Object { $_ })
+                $result.language = Get-LambekLanguage -Tokens $words
+
+                # Small talk: nothing to prove, the app shows no reading for it
+                $result.talk = $false
+                if ($kind -eq 'new' -and @($plan.Steps | Where-Object { $_.Action }).Count -eq 0) {
+                    $result.talk = [bool](Get-LambekTalk -Text $params.text -Language $result.language)
+                }
+            }
+            'edit' {
+                $plan = Get-LambekHostPlan -State $state -Params $params
+                foreach ($key in 'step', 'name') {
+                    if (-not $params.ContainsKey($key)) { throw "edit needs $key." }
+                }
+                $value = $null
+                if ($params.ContainsKey('value')) { $value = [string] $params.value }
+
+                $edited = Set-LambekPlanParameter -Plan $plan -Step ([int] $params.step) -Name $params.name -Value $value
+                $planId = $edited.PlanHash
+                if (-not $planId) { $planId = Get-LambekHash -Text "draft|$($params.id)|$($params.step)|$($params.name)|$value" }
+                $state.Plans[$planId] = $edited
                 while ($state.Plans.Count -gt 50) { $state.Plans.RemoveAt(0) }
 
-                $result = ConvertTo-LambekHostPlan -Id $planId -Plan $plan
+                $result = ConvertTo-LambekHostPlan -Id $planId -Plan $edited
             }
             'simulate' {
                 $plan = Get-LambekHostPlan -State $state -Params $params
@@ -62,7 +151,7 @@ function Invoke-LambekHostRequest {
                     status           = $simulation.Status
                     risk             = $simulation.Risk
                     confirmationCode = $simulation.ConfirmationCode
-                    answer           = ConvertTo-LambekAnswer -Plan $plan -Simulation $simulation
+                    answer           = ConvertTo-LambekAnswer -Plan $plan -Simulation $simulation -Brief
                     steps            = @($simulation.Steps | ForEach-Object {
                             [ordered]@{ step = $_.Step; action = $_.Action; status = $_.Status; count = $_.Count; affected = @($_.Affected | Select-Object -First 50); message = $_.Message }
                         })
@@ -90,7 +179,7 @@ function Invoke-LambekHostRequest {
                     id     = $params.id
                     status = $execution.Status
                     reason = $execution.Reason
-                    answer = ConvertTo-LambekAnswer -Plan $plan -Execution $execution
+                    answer = ConvertTo-LambekAnswer -Plan $plan -Execution $execution -Brief
                     steps  = @($execution.Steps | ForEach-Object {
                             [ordered]@{
                                 step   = $_.Step
@@ -113,6 +202,14 @@ function Invoke-LambekHostRequest {
                 }
                 $result = [ordered]@{ valid = $valid; entries = $entries }
             }
+            'inspect' {
+                # Files sent without a message: what Lambek can read from them
+                $paths = @($params['paths'] | Where-Object { $_ } | ForEach-Object { [string] $_ })
+                if ($paths.Count -eq 0) { throw 'inspect needs paths.' }
+                $language = 'en'
+                if ($script:LanguageHint) { $language = $script:LanguageHint }
+                $result = [ordered]@{ kind = 'files'; language = $language; answer = (Get-LambekFileReport -Path $paths -Language $language) }
+            }
             default {
                 throw "Unknown method '$($request.method)'."
             }
@@ -122,6 +219,10 @@ function Invoke-LambekHostRequest {
     }
     catch {
         $response = [ordered]@{ id = $id; error = [ordered]@{ message = $_.Exception.Message } }
+    }
+    finally {
+        $script:LanguageHint = $null
+        $script:Incognito = $false
     }
 
     return ($response | ConvertTo-Json -Depth 12 -Compress)

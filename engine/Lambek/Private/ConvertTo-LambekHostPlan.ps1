@@ -18,22 +18,51 @@ function ConvertTo-LambekHostPlan {
             $exact[$name] = Format-LambekValue -Value $step.Parameters[$name]
         }
 
+        # Every parameter of the action, so the app can show and edit them
+        $schema = @()
+        if ($step.Action) {
+            $action = (Get-LambekAction -Id $step.Action).Action
+            $schema = @(foreach ($parameter in $action.Parameters) {
+                    $kind = 'text'
+                    $choices = @()
+                    if ($parameter.ContainsKey('Words')) {
+                        $kind = 'choice'
+                        $choices = @($parameter.Words.Values | Select-Object -Unique)
+                    }
+                    elseif (@($parameter.Entities) -contains 'size') { $kind = 'size' }
+                    elseif (@($parameter.Entities) -contains 'duration') { $kind = 'duration' }
+
+                    [ordered]@{
+                        name     = $parameter.Name
+                        kind     = $kind
+                        choices  = $choices
+                        required = ($parameter.ContainsKey('Required') -and $parameter.Required)
+                    }
+                })
+        }
+
         $violations = @()
         if ($step.Check) {
             $violations = @($step.Check.Violations | ForEach-Object { [ordered]@{ rule = $_.Rule; line = $_.Line; text = $_.Text } })
         }
 
+        $title = $null
+        if ($step.Action) { $title = Get-LambekTitle -Action (Get-LambekAction -Id $step.Action).Action -Language $step.Language }
+
         [ordered]@{
             step       = $step.Step
+            title      = $title
             clause     = $step.Clause
             language   = $step.Language
             status     = $step.Status
             action     = $step.Action
             risk       = $step.Risk
             confidence = $step.Confidence
-            types      = $step.Types
+            types      = Format-LambekShownType -Step $step
             parameters = $human
             exact      = $exact
+            schema     = $schema
+            questions  = @($step.Questions)
             output     = $step.Output
             script     = $step.Script
             safe       = ($null -ne $step.Check -and $step.Check.IsValid)
@@ -45,7 +74,11 @@ function ConvertTo-LambekHostPlan {
         id        = $Id
         status    = $Plan.Status
         risk      = $Plan.Risk
-        answer    = ConvertTo-LambekAnswer -Plan $Plan
+        answer    = ConvertTo-LambekAnswer -Plan $Plan -Brief
+        sentences = @(foreach ($number in $Plan.Order) {
+                $item = $Plan.Steps[$number - 1]
+                if ($item.Action) { Get-LambekStepSentence -Step $item -Language $item.Language -Units (Get-LambekLexicon -Language $item.Language).Answer.Units }
+            })
         questions = @($Plan.Questions)
         steps     = @($steps)
         edges     = @($Plan.Edges | ForEach-Object { [ordered]@{ from = $_.From; to = $_.To; reason = $_.Reason } })
@@ -53,5 +86,15 @@ function ConvertTo-LambekHostPlan {
         levels    = @($Plan.Levels | ForEach-Object { , @($_) })
         cycles    = @($Plan.Cycles | ForEach-Object { , @($_) })
         planHash  = $Plan.PlanHash
+        trace     = @(Get-LambekTraceItem -Plan $Plan)
+    }
+}
+
+function Get-LambekTraceItem {
+    param([pscustomobject] $Plan)
+
+    if (-not $Plan.PSObject.Properties['Trace']) { return }
+    foreach ($item in $Plan.Trace) {
+        [ordered]@{ stage = $item.Stage; step = $item.Step; detail = $item.Detail; ms = $item.Milliseconds }
     }
 }
