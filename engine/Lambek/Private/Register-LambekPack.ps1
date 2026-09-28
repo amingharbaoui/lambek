@@ -1,0 +1,153 @@
+function Register-LambekPack {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [hashtable] $Data,
+
+        [Parameter(Mandatory)]
+        [string] $Source
+    )
+
+    $file = $Source
+
+    # Required fields
+    foreach ($key in 'Name', 'Version', 'Types', 'Words') {
+        if (-not $data.ContainsKey($key)) {
+            throw "Pack '$file' must contain $key."
+        }
+    }
+    if ($data.Name -notmatch '^[a-z][a-z0-9-]*$') {
+        throw "Pack name '$($data.Name)' must be lower case letters, digits, or dashes."
+    }
+    if (-not $data.ContainsKey('Entities')) { $data.Entities = @() }
+    if (-not $data.ContainsKey('BaseForms')) { $data.BaseForms = @{} }
+    if (-not $data.ContainsKey('Description')) { $data.Description = '' }
+    if (-not $data.ContainsKey('Commands')) { $data.Commands = @() }
+    if (-not $data.ContainsKey('Category')) { $data.Category = @{} }
+
+    # Types
+    $knownBases = [System.Collections.Generic.HashSet[string]]::new()
+    [void] $knownBases.Add('s')
+    foreach ($pack in $script:Packs.Values) {
+        if ($pack.Name -eq $data.Name) { continue }
+        foreach ($base in $pack.Types.Keys) { [void] $knownBases.Add($base) }
+    }
+    foreach ($base in $data.Types.Keys) {
+        if ($base -notmatch '^[a-z]+$' -or $base -eq 's') {
+            throw "Pack '$($data.Name)': invalid type name '$base'."
+        }
+        [void] $knownBases.Add($base)
+    }
+
+    # Words
+    foreach ($language in $data.Words.Keys) {
+        foreach ($word in $data.Words[$language].Keys) {
+            foreach ($type in $data.Words[$language][$word]) {
+                foreach ($simpleType in ConvertFrom-LambekType -Type $type) {
+                    if (-not $knownBases.Contains($simpleType.Base)) {
+                        throw "Pack '$($data.Name)': word '$word' uses unknown type '$($simpleType.Base)'."
+                    }
+                }
+            }
+        }
+    }
+
+    # Entities
+    foreach ($rule in $data.Entities) {
+        if ($rule.Name -notmatch '^[a-z]+$') {
+            throw "Pack '$($data.Name)': invalid entity name '$($rule.Name)'."
+        }
+        if ($rule.Kind -notin 'text', 'lower', 'path', 'number', 'unit', 'duration') {
+            throw "Pack '$($data.Name)': entity '$($rule.Name)' has an unknown kind '$($rule.Kind)'."
+        }
+        if ($rule.Kind -in 'unit', 'duration' -and -not $rule.ContainsKey('Units')) {
+            throw "Pack '$($data.Name)': entity '$($rule.Name)' needs Units."
+        }
+        try {
+            [void] [regex]::new($rule.Pattern)
+        }
+        catch {
+            throw "Pack '$($data.Name)': entity '$($rule.Name)' has an invalid pattern."
+        }
+    }
+
+    # Actions
+    if (-not $data.ContainsKey('Actions')) { $data.Actions = @() }
+    foreach ($action in $data.Actions) {
+        foreach ($key in 'Id', 'Risk', 'Title', 'Verbs', 'Examples', 'Parameters') {
+            if (-not $action.ContainsKey($key)) {
+                throw "Pack '$($data.Name)': an action must contain $key."
+            }
+        }
+        $idPattern = "^" + [regex]::Escape($data.Name) + "\.[a-z][a-z0-9-]*$"
+        if ($action.Id -notmatch $idPattern) {
+            throw "Pack '$($data.Name)': action id '$($action.Id)' must start with '$($data.Name).'."
+        }
+        if ($action.Risk -notin 'low', 'medium', 'high') {
+            throw "Pack '$($data.Name)': action '$($action.Id)' has an unknown risk '$($action.Risk)'."
+        }
+        if ($action.Examples.Count -eq 0) {
+            throw "Pack '$($data.Name)': action '$($action.Id)' needs at least one example."
+        }
+        $parameterNames = @($action.Parameters | ForEach-Object { $_.Name })
+
+        foreach ($key in 'Reads', 'Writes') {
+            if (-not $action.ContainsKey($key)) { $action[$key] = @() }
+            foreach ($name in $action[$key]) {
+                if ($name -notin $parameterNames) {
+                    throw "Pack '$($data.Name)': action '$($action.Id)' lists an unknown parameter '$name' in $key."
+                }
+            }
+        }
+
+        if (-not $action.ContainsKey('Output')) { $action.Output = 'command' }
+        if ($action.Output -notin 'command', 'code', 'mcp') {
+            throw "Pack '$($data.Name)': action '$($action.Id)' has an unknown output '$($action.Output)'."
+        }
+
+        $templates = @()
+        if ($action.ContainsKey('Template')) { $templates += , $action.Template }
+        if ($action.ContainsKey('Templates')) {
+            foreach ($key in $action.Templates.Keys) { $templates += , $action.Templates[$key] }
+        }
+        foreach ($template in $templates) {
+            foreach ($line in $template) {
+                foreach ($placeholder in [regex]::Matches($line, '\{\{(?<name>[A-Za-z]+)!?\}\}|(?<=^(?:[?!][A-Za-z]+ )*)[?!](?<name>[A-Za-z]+) ')) {
+                    if ($placeholder.Groups['name'].Value -notin $parameterNames) {
+                        throw "Pack '$($data.Name)': template of '$($action.Id)' uses an unknown parameter '$($placeholder.Groups['name'].Value)'."
+                    }
+                }
+            }
+        }
+
+        foreach ($parameter in $action.Parameters) {
+            if ($parameter.Name -notmatch '^[A-Z][A-Za-z0-9]*$') {
+                throw "Pack '$($data.Name)': action '$($action.Id)' has an invalid parameter name '$($parameter.Name)'."
+            }
+            if (-not $parameter.ContainsKey('Entities') -and -not $parameter.ContainsKey('Words')) {
+                throw "Pack '$($data.Name)': parameter '$($parameter.Name)' needs Entities or Words."
+            }
+        }
+    }
+
+    # Register
+    $pack = [pscustomobject]@{
+        Name        = $data.Name
+        Version     = $data.Version
+        Description = $data.Description
+        Path        = $Source
+        Types       = $data.Types
+        Words       = $data.Words
+        Entities    = @($data.Entities)
+        BaseForms   = $data.BaseForms
+        Actions     = @($data.Actions)
+        Commands    = @($data.Commands)
+        Category    = $data.Category
+    }
+
+    $script:Packs[$data.Name] = $pack
+    $script:LexiconCache.Clear()
+    $script:ActionIndexCache.Clear()
+
+    return $data.Name
+}
