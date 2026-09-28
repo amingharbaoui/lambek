@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "app": {
+    "windows": [
+      {
+        "title": "Lambek",
+        "width": 1280,
+        "height": 832,
+        "minWidth": 760,
+        "minHeight": 540,
+        "visible": false,
+        "backgroundColor": "#1f1f21",
+        "decorations": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true
+      }
+    ]
+  }
+}
