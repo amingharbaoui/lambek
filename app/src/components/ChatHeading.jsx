@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ChevronDown, Pencil, Pin, PinOff, Trash2 } from "lucide-react";
-import { chatName, PointMenu } from "./Sidebar.jsx";
+import { ChevronDown } from "lucide-react";
+import { chatMenuItems, chatName, PointMenu } from "./Sidebar.jsx";
 
 // The name of the chat at the top left: a click renames it, the arrow opens its menu
 export default function ChatHeading({ chat, onUpdate, onRemove }) {
@@ -19,17 +19,7 @@ export default function ChatHeading({ chat, onUpdate, onRemove }) {
     if (value && value.trim() && value.trim() !== name) onUpdate(chat.id, { name: value.trim() });
   }
 
-  const items = [
-    {
-      label: chat.pinned ? "Unpin" : "Pin",
-      key: "P",
-      icon: chat.pinned ? <PinOff size={15} /> : <Pin size={15} />,
-      onSelect: () => onUpdate(chat.id, { pinned: !chat.pinned }),
-    },
-    { label: "Rename", key: "R", icon: <Pencil size={15} />, onSelect: rename },
-    { separator: "delete" },
-    { label: "Delete", key: "D", icon: <Trash2 size={15} />, danger: true, onSelect: () => onRemove(chat.id) },
-  ];
+  const items = chatMenuItems(chat, { onUpdate, onRemove, onRename: rename });
 
   return (
     <header className={`chat-heading ${renaming ? "renaming" : ""}`}>
@@ -64,7 +54,7 @@ export default function ChatHeading({ chat, onUpdate, onRemove }) {
           setMenu(menu ? null : { x: box.left, y: box.bottom + 6 });
         }}
       >
-        <ChevronDown size={16} />
+        <ChevronDown size={14} />
       </button>
       {menu && <PointMenu at={menu} items={items} onClose={() => setMenu(null)} />}
     </header>

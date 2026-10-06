@@ -40,11 +40,11 @@ export default function Composer({ text, onText, busy, onStop, attachments, onAt
   // Send: an arrow while empty; once there is something to send, the return that sends it
   const action = busy ? (
     <button className="stop" onClick={onStop} data-tip="Stop" data-keys={keys("Esc")} aria-label="Stop">
-      <CircleStop size={22} />
+      <CircleStop size={18} />
     </button>
   ) : (
     <button className={`send ${compact ? "quiet" : ""}`} onClick={send} disabled={!canSend} data-tip="Send message" data-keys={keys("Enter")} aria-label="Send message">
-      {compact ? <PiArrowElbowDownLeftBold size={15} /> : <ArrowUp size={17} />}
+      {compact ? <PiArrowElbowDownLeftBold size={15} /> : <ArrowUp size={16} />}
     </button>
   );
 
@@ -76,7 +76,7 @@ export default function Composer({ text, onText, busy, onStop, attachments, onAt
                 <img src={file.preview} alt={file.name} />
               ) : (
                 <>
-                  {file.isFolder ? <Folder size={16} /> : <FileText size={16} />}
+                  {file.isFolder ? <Folder size={15} /> : <FileText size={15} />}
                   <span className="file-name">{file.name}</span>
                   <span className="file-type">{file.isFolder ? "folder" : file.extension}</span>
                 </>

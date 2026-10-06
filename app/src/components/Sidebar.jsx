@@ -1,11 +1,47 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, Ellipsis, Info, Keyboard, Pencil, Pin, PinOff, Plug, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
+import { Check, ChevronDown, Ellipsis, Info, Keyboard, Link, Pencil, Pin, PinOff, Plug, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
+import { notify } from "./Toast.jsx";
 
 const DAY = 86400000;
 const SHOWN = 20;
 
 export function chatName(chat) {
   return chat.name ?? chat.summary ?? chat.title;
+}
+
+// The order of the sidebar: pinned chats first, then the newest
+export function chatOrder(chats) {
+  return [...chats].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || b.updatedAt - a.updatedAt);
+}
+
+// The address of a chat inside Lambek; pasted in the search of the sidebar, it finds the chat again
+const LINK = "lambek://chat/";
+
+export function chatLink(chat) {
+  return `${LINK}${chat.id}`;
+}
+
+function copyLink(chat) {
+  navigator.clipboard
+    ?.writeText(chatLink(chat))
+    .then(() => notify("Link copied to clipboard."))
+    .catch(() => notify("The link could not be copied."));
+}
+
+// The menu of a chat, the same from the sidebar and from the name above the conversation
+export function chatMenuItems(chat, { onUpdate, onRemove, onRename }) {
+  return [
+    {
+      label: chat.pinned ? "Unpin" : "Pin",
+      key: "P",
+      icon: chat.pinned ? <PinOff size={15} /> : <Pin size={15} />,
+      onSelect: () => onUpdate(chat.id, { pinned: !chat.pinned }),
+    },
+    { label: "Rename", key: "R", icon: <Pencil size={15} />, onSelect: onRename },
+    { label: "Copy link", key: "C", icon: <Link size={15} />, onSelect: () => copyLink(chat) },
+    { separator: "delete" },
+    { label: "Delete", key: "D", icon: <Trash2 size={15} />, danger: true, onSelect: () => onRemove(chat.id) },
+  ];
 }
 
 function groupOf(chat) {
@@ -154,6 +190,12 @@ function ChatItem({ chat, active, onOpen, onMenu, renaming, onRename }) {
   );
 }
 
+// True while the focus is in a text field of this element
+function typingIn(element) {
+  const active = document.activeElement;
+  return Boolean(active && element.contains(active) && active.matches("input, textarea"));
+}
+
 // Search, actions, chats by day, and the account. The chat sits above it like a sheet of paper.
 export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive, chats, currentId, onOpen, onRemove, onUpdate, searchRef, account }) {
   const [filter, setFilter] = useState("");
@@ -163,9 +205,10 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
   const [renaming, setRenaming] = useState(null);
   const [accountOpen, setAccountOpen] = useState(false);
   const accountBox = useRef(null);
+  const hovering = useRef(false);
 
   const shown = useMemo(
-    () => chats.filter((chat) => chatName(chat).toLowerCase().includes(filter.toLowerCase())).sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || b.updatedAt - a.updatedAt),
+    () => chatOrder(chats.filter((chat) => (filter.startsWith(LINK) ? chatLink(chat) === filter.trim() : chatName(chat).toLowerCase().includes(filter.toLowerCase())))),
     [chats, filter],
   );
 
@@ -193,23 +236,29 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
   }, [accountOpen]);
 
   const menuItems = menu
-    ? [
-        {
-          label: menu.chat.pinned ? "Unpin" : "Pin",
-          key: "P",
-          icon: menu.chat.pinned ? <PinOff size={15} /> : <Pin size={15} />,
-          onSelect: () => onUpdate(menu.chat.id, { pinned: !menu.chat.pinned }),
-        },
-        { label: "Rename", key: "R", icon: <Pencil size={15} />, onSelect: () => setRenaming(menu.chat.id) },
-        { separator: "delete" },
-        { label: "Delete", key: "D", icon: <Trash2 size={15} />, danger: true, onSelect: () => onRemove(menu.chat.id) },
-      ]
+    ? chatMenuItems(menu.chat, { onUpdate, onRemove, onRename: () => setRenaming(menu.chat.id) })
     : [];
 
   const initial = (account.name || "?").charAt(0).toUpperCase();
 
   return (
-    <aside className="sidebar" aria-label="Sidebar" onMouseEnter={onEnter} onMouseLeave={() => !menu && !accountOpen && onLeave()}>
+    <aside
+      className="sidebar"
+      aria-label="Sidebar"
+      onMouseEnter={() => {
+        hovering.current = true;
+        onEnter();
+      }}
+      onMouseLeave={(event) => {
+        hovering.current = false;
+        // While you type in the search or rename a chat, the floating sidebar stays, wherever the pointer is
+        if (!menu && !accountOpen && !typingIn(event.currentTarget)) onLeave();
+      }}
+      onBlur={(event) => {
+        // The field lost the focus with the pointer already outside: now the sidebar can go
+        if (!hovering.current && !menu && !accountOpen && !event.currentTarget.contains(event.relatedTarget)) onLeave();
+      }}
+    >
       <div className="sidebar-inner">
         <label className="nav-search">
           <Search size={15} />
@@ -218,10 +267,10 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
 
         <nav className="sidebar-nav">
           <button className="nav-item" onClick={onNew}>
-            <Plus size={17} /> New chat
+            <Plus size={15} /> New chat
           </button>
           <button className={`nav-item ${toolsActive ? "active" : ""}`} onClick={onTools}>
-            <Plug size={16} /> Connectors
+            <Plug size={15} /> Connectors
           </button>
         </nav>
 
@@ -235,7 +284,7 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
                   onClick={() => setClosed((names) => (isClosed ? names.filter((name) => name !== group.name) : [...names, group.name]))}
                   aria-expanded={!isClosed}
                 >
-                  {group.name} <ChevronDown size={12} className={isClosed ? "turned" : ""} />
+                  {group.name} <ChevronDown size={13} className={isClosed ? "turned" : ""} />
                 </button>
                 {!isClosed &&
                   group.chats.map((chat) => (
@@ -289,7 +338,7 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
           <button className="account" onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen}>
             <span className="avatar">{initial}</span>
             <span className="account-name">{account.name || "You"}</span>
-            <ChevronDown size={14} />
+            <ChevronDown size={13} />
           </button>
         </div>
       </div>

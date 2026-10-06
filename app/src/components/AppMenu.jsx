@@ -34,7 +34,7 @@ export default function AppMenu({ sections }) {
     // Clicks in the menu keep the focus where it was, so Copy and Paste reach the text field
     <div className="app-menu" ref={box} onMouseDown={(event) => event.preventDefault()}>
       <button className="icon-button" onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>
-        <MenuIcon size={18} />
+        <MenuIcon size={16} />
       </button>
       {open && (
         <div className="menu-list" role="menu">

@@ -160,7 +160,7 @@ export function Request({ message, busy, onEdit }) {
                 <img key={file.path} src={file.preview} alt={file.name} title={file.path} />
               ) : (
                 <div key={file.path} className="file" title={file.path}>
-                  {file.isFolder ? <Folder size={16} /> : <FileText size={16} />}
+                  {file.isFolder ? <Folder size={15} /> : <FileText size={15} />}
                   <span className="file-name">{file.name}</span>
                   {(file.isFolder || file.extension) && <span className="file-type">{file.isFolder ? "folder" : file.extension}</span>}
                 </div>
@@ -203,7 +203,7 @@ export function Request({ message, busy, onEdit }) {
                   data-tip="Edit"
                   aria-label="Edit"
                 >
-                  <TbEdit size={16} />
+                  <TbEdit size={15} />
                 </button>
                 <button onClick={copy} data-tip={copied ? "Copied" : "Copy"} aria-label="Copy">
                   {copied ? <CheckArc size={15} /> : <CopySlot size={15} />}
@@ -278,7 +278,7 @@ export function Answer({ message, onOpenStep, onRetry, canRetry }) {
           )}
           {onRetry && (
             <button onClick={onRetry} disabled={!canRetry} data-tip="Retry" aria-label="Retry">
-              <TbReload size={16} />
+              <TbReload size={15} />
             </button>
           )}
         </div>

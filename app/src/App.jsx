@@ -10,7 +10,8 @@ import useTheme from "./useTheme.js";
 import { keys as keyLabel, platform, PLATFORM_NAMES } from "./platform.js";
 import useChats from "./useChats.js";
 import { load, save } from "./storage.js";
-import Sidebar from "./components/Sidebar.jsx";
+import Sidebar, { chatOrder } from "./components/Sidebar.jsx";
+import Toast from "./components/Toast.jsx";
 import ChatHeading from "./components/ChatHeading.jsx";
 import Home from "./components/Home.jsx";
 import Composer from "./components/Composer.jsx";
@@ -347,7 +348,7 @@ export default function App() {
 
   // Previous and next chat, in the order of the sidebar
   function goChat(direction) {
-    const order = [...chats.chats].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || b.updatedAt - a.updatedAt);
+    const order = chatOrder(chats.chats);
     if (order.length === 0) return;
     const index = order.findIndex((chat) => chat.id === chats.currentId);
     const next = order[(index + direction + order.length) % order.length];
@@ -551,7 +552,7 @@ export default function App() {
     }
 
     const word = context ? "Reading your reply" : "Reading your request";
-    const result = await work(chatId, messageId, word, () => lambek("ask", { text: request, context, step, language, incognito }), (result, _message, ms) => {
+    const result = await work(chatId, messageId, word, () => lambek("ask", { text: request, context, step, language, incognito, chat: chatId }), (result, _message, ms) => {
       // The plan keeps the words of the request that created it
       const title = result.kind === "new" ? request : (target?.title ?? target?.request);
       if (result.kind === "explain") return { kind: "explain", answer: result.answer, elapsed: ms };
@@ -722,7 +723,7 @@ export default function App() {
       <header className="titlebar" data-tauri-drag-region>
         {incognito ? (
           <span className="incognito-title">
-            <GhostNodes size={18} /> Incognito
+            <GhostNodes size={16} /> Incognito
           </span>
         ) : (
           <div className="titlebar-start" data-tauri-drag-region>
@@ -739,25 +740,25 @@ export default function App() {
               data-keys={keyLabel("Ctrl+B")}
               aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
             >
-              <PanelLeft size={18} />
+              <PanelLeft size={16} />
             </button>
             <button className="icon-button" onClick={() => go(-1)} disabled={!canGo.back} data-tip="Back" data-keys={BACK_KEYS} aria-label="Back">
-              <ArrowLeft size={18} />
+              <ArrowLeft size={16} />
             </button>
             <button className="icon-button" onClick={() => go(1)} disabled={!canGo.forward} data-tip="Forward" data-keys={FORWARD_KEYS} aria-label="Forward">
-              <ArrowRight size={18} />
+              <ArrowRight size={16} />
             </button>
           </div>
         )}
         <span className="titlebar-title" data-tauri-drag-region />
         {incognito ? (
           <button className="icon-button" onClick={toggleIncognito} data-tip="Leave incognito" data-keys={keyLabel("Ctrl+Shift+N")} aria-label="Leave incognito">
-            <X size={18} />
+            <X size={16} />
           </button>
         ) : (
           isHome && (
             <button className="icon-button" onClick={toggleIncognito} data-tip="Incognito" data-keys={keyLabel("Ctrl+Shift+N")} aria-label="Incognito">
-              <GhostNodes size={19} />
+              <GhostNodes size={16} />
             </button>
           )
         )}
@@ -925,9 +926,11 @@ export default function App() {
         </Dialog>
       )}
 
+      <Toast />
+
       {dragging && (
         <div className="drop">
-          <Upload size={21} />
+          <Upload size={18} />
           <span>Drop files to add them</span>
         </div>
       )}

@@ -35,6 +35,23 @@ function complete(step) {
 
 const NAMES = { Path: "the folder", Source: "the source", Destination: "the destination", Extension: "the type", Name: "the name" };
 
+// The GPS panel of a choice: the verdict, then the numbers it rests on
+const REASONS = { protection: "one signal alone decides", chisquare: "the signals contradict each other", probability: "probability too low" };
+
+function integrityLines(integrity) {
+  if (!integrity) return [];
+  const round = (value) => Number(value ?? 0).toFixed(2);
+  const verdict = integrity.available
+    ? "Integrity available"
+    : `Integrity unavailable: ${(integrity.reasons ?? []).map((reason) => REASONS[reason] ?? reason).join(", ")}`;
+  return [
+    verdict,
+    `Margin ${round(integrity.margin)} for a protection level of ${round(integrity.protection)}`,
+    `${integrity.signals} signals, about ${round(integrity.independent)} independent`,
+    `χ² ${round(integrity.chiSquare)} under ${round(integrity.limit)}, probability ${round(integrity.probability)} for ${round(integrity.needed)} needed`,
+  ];
+}
+
 function listOf(words) {
   return words.length > 1 ? `${words.slice(0, -1).join(", ")} and ${words.at(-1)}` : (words[0] ?? "");
 }
@@ -62,6 +79,7 @@ function describe(row, message) {
         title: `Chose “${step.title ?? step.action}”`,
         lines: [
           `Sure at ${Math.round((step.confidence ?? 0) * 100)}%`,
+          ...integrityLines(step.integrity),
           ...(step.questions ?? []).map((question) => `Still needs: ${question.replace(/^Step \d+: /, "")}`),
         ],
       };

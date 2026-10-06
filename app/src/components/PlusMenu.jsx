@@ -69,24 +69,24 @@ export default function PlusMenu({ onAttach, onInsert, onTools }) {
   return (
     <div className="plus-menu" ref={box}>
       <button className="icon-button" onClick={() => setOpen(!open)} aria-label="Add" aria-expanded={open} aria-haspopup="menu" data-tip={open ? undefined : "Add"}>
-        <Plus size={18} />
+        <Plus size={16} />
       </button>
 
       {open && (
         <div className="menu-list up" role="menu">
           <button className="menu-row" role="menuitem" disabled={!isDesktop} onClick={() => add("files")} onMouseEnter={() => setSub(false)}>
-            <Paperclip size={16} />
+            <Paperclip size={15} />
             <span>Add files or photos</span>
             <kbd>{keys("Ctrl+O")}</kbd>
           </button>
           <button className="menu-row" role="menuitem" disabled={!isDesktop} onClick={() => add("folder")} onMouseEnter={() => setSub(false)}>
-            <FolderPlus size={16} />
+            <FolderPlus size={15} />
             <span>Add folder</span>
           </button>
           <hr />
           <div className="menu-entry" ref={entry} onMouseEnter={() => setSub(true)}>
             <button className={`menu-row ${sub ? "hover" : ""}`} role="menuitem" aria-haspopup="menu" aria-expanded={sub} onClick={() => setSub(!sub)}>
-              <Plug size={16} />
+              <Plug size={15} />
               <span>Connectors</span>
               <ChevronRight size={14} />
             </button>
@@ -105,7 +105,7 @@ export default function PlusMenu({ onAttach, onInsert, onTools }) {
                 ))}
                 <hr />
                 <button className="menu-row" role="menuitem" disabled={!isDesktop} onClick={addServer}>
-                  <Plus size={16} />
+                  <Plus size={15} />
                   <span>Add a connector…</span>
                 </button>
                 <button
@@ -116,7 +116,7 @@ export default function PlusMenu({ onAttach, onInsert, onTools }) {
                     onTools();
                   }}
                 >
-                  <Settings2 size={16} />
+                  <Settings2 size={15} />
                   <span>Manage connectors</span>
                 </button>
               </div>
