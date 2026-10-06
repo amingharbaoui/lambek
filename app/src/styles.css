@@ -3054,7 +3054,8 @@ tr:last-child td {
 .toast-area {
   position: fixed;
   right: var(--space-4);
-  bottom: 88px;
+  /* Above the composer and its footer, so it never sits beside the field */
+  bottom: 128px;
   z-index: 90;
   pointer-events: none;
 }
