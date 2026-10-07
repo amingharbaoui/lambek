@@ -184,7 +184,7 @@ button:disabled {
   cursor: default;
 }
 
-/* Keyboard focus: a thin blue ring, like Claude; at the edges of the window it is drawn inside, so it is never cut */
+/* Keyboard focus: a thin blue ring; at the edges of the window it is drawn inside, so it is never cut */
 :focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 1px;

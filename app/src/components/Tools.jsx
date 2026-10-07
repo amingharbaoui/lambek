@@ -64,7 +64,7 @@ export default function Tools({ onChanged }) {
 
         {data && data.servers.length === 0 && (
           <div className="empty-state">
-            No servers yet. Add them to the config in the same format as Claude Desktop, then reload:
+            No servers yet. Add them to the config in the format below, then reload:
             <pre className="code">{EXAMPLE}</pre>
           </div>
         )}

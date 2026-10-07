@@ -50,6 +50,8 @@ impl Engine {
                 "-Command",
                 &script,
             ])
+            // Plain text errors: no colour codes to show in the app
+            .env("NO_COLOR", "1")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped());
@@ -172,7 +174,7 @@ fn collect_errors(stderr: ChildStderr) -> Arc<Mutex<String>> {
     std::thread::spawn(move || {
         for line in BufReader::new(stderr).lines().map_while(Result::ok) {
             if let Ok(mut text) = sink.lock() {
-                text.push_str(line.trim_end());
+                text.push_str(strip_colors(&line).trim_end());
                 text.push('\n');
                 if text.len() > 4000 {
                     let cut = text.len() - 4000;
@@ -185,6 +187,25 @@ fn collect_errors(stderr: ChildStderr) -> Arc<Mutex<String>> {
         }
     });
     errors
+}
+
+/// Removes the colour codes of a terminal (ESC [ ... m) from a line.
+fn strip_colors(line: &str) -> String {
+    let mut clean = String::with_capacity(line.len());
+    let mut chars = line.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c == '\u{1b}' && chars.peek() == Some(&'[') {
+            chars.next();
+            for next in chars.by_ref() {
+                if next.is_ascii_alphabetic() {
+                    break;
+                }
+            }
+            continue;
+        }
+        clean.push(c);
+    }
+    clean
 }
 
 /// Adds the last error lines of PowerShell to a message.
@@ -276,7 +297,7 @@ mod tests {
             .unwrap();
         let sentence = result["sentences"][0].as_str().unwrap();
         assert!(
-            sentence.starts_with("créer un dossier nommé Été"),
+            sentence.starts_with("créer un dossier nommé « Été »"),
             "{sentence}"
         );
     }
@@ -350,5 +371,11 @@ mod tests {
         let mut engine = start();
         let error = engine.request("nope", json!({})).unwrap_err();
         assert!(error.contains("Unknown method"));
+    }
+
+    #[test]
+    fn strips_colour_codes() {
+        let line = "\u{1b}[31;1mException: \u{1b}[31;1mA file is left.\u{1b}[0m";
+        assert_eq!(strip_colors(line), "Exception: A file is left.");
     }
 }
