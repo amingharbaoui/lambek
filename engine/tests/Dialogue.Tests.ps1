@@ -112,8 +112,8 @@ Describe 'Dialogue act' {
     }
 
     It 'says back who, what and when' {
-        New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -Be 'I understand. Who: you. What: delete the files in C:\Temp. When: yesterday. You are telling me, so I am not doing it. I am keeping it.'
-        New-LambekPlan 'mon collègue veut supprimer les fichiers .log de C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je comprends. Qui : mon collègue. Souhaite : supprimer les fichiers .log dans C:\Temp.*'
+        New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -Be 'I understand. Yesterday you deleted the files in C:\Temp. You are telling me, so I am not doing it. I am keeping it.'
+        New-LambekPlan 'mon collègue veut supprimer les fichiers .log de C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je comprends. Votre collègue veut supprimer les fichiers .log de C:\Temp.*'
     }
 
     Context 'What was told in the conversation' {
@@ -127,11 +127,11 @@ Describe 'Dialogue act' {
         }
 
         It 'answers "<Ask>" from what was told' -ForEach @(
-            @{ Ask = 'what did I delete yesterday'; Line = '- Who: you. What: delete the files in C:\Temp. When: yesterday.' }
-            @{ Ask = 'what did I delete'; Line = '- Who: you. What: delete the files in C:\Temp. When: yesterday.' }
-            @{ Ask = 'did I delete the files in C:\Temp'; Line = '- Who: you. What: delete the files in C:\Temp. When: yesterday.' }
-            @{ Ask = 'what did I move last week'; Line = '- Who: you. What: move the .pdf files from C:\A to D:\B. When: last week.' }
-            @{ Ask = 'what did my colleague copy'; Line = '- Who: my colleague. What: copy the files named report.txt to D:\Backup. When: this morning.' }
+            @{ Ask = 'what did I delete yesterday'; Line = '- Yesterday you deleted the files in C:\Temp.' }
+            @{ Ask = 'what did I delete'; Line = '- Yesterday you deleted the files in C:\Temp.' }
+            @{ Ask = 'did I delete the files in C:\Temp'; Line = '- Yesterday you deleted the files in C:\Temp.' }
+            @{ Ask = 'what did I move last week'; Line = '- Last week you moved the .pdf files from C:\A to D:\B.' }
+            @{ Ask = 'what did my colleague copy'; Line = '- Your colleague copied report.txt to D:\Backup this morning.' }
         ) {
             New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
             New-LambekPlan 'last week we moved the .pdf files from C:\A to D:\B' | Out-Null
@@ -156,13 +156,13 @@ Describe 'Dialogue act' {
             New-LambekPlan 'last week we moved the .pdf files from C:\A to D:\B' | Out-Null
             $lines = @((New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer) -split "`n")
             $lines.Count | Should -Be 3
-            $lines[1] | Should -BeLike '*delete the files in C:\Temp*'
-            $lines[2] | Should -BeLike '*move the .pdf files*'
+            $lines[1] | Should -BeLike '*deleted the files in C:\Temp*'
+            $lines[2] | Should -BeLike '*moved the .pdf files*'
         }
 
         It 'answers in French from what was told in French' {
             New-LambekPlan 'hier j''ai supprimé les fichiers .log dans C:\Temp' | Out-Null
-            New-LambekPlan 'qu''est-ce que j''ai supprimé hier' | ConvertTo-LambekAnswer | Should -Be ("D'après ce qui m'a été dit dans cette conversation :", '- Qui : vous. Quoi : supprimer les fichiers .log dans C:\Temp. Quand : hier.' -join "`n")
+            New-LambekPlan 'qu''est-ce que j''ai supprimé hier' | ConvertTo-LambekAnswer | Should -Be ("D'après ce qui m'a été dit dans cette conversation :", '- Hier vous avez supprimé les fichiers .log dans C:\Temp.' -join "`n")
             New-LambekPlan 'quels fichiers j''ai déplacés' | ConvertTo-LambekAnswer | Should -Be "Cela ne m'a pas été dit."
         }
 
@@ -176,7 +176,7 @@ Describe 'Dialogue act' {
             $turn = Resolve-LambekFollowUp -Plan $plan -Text 'this morning I renamed report.txt to summary.txt'
             $turn.Kind | Should -Be 'explain'
             [object]::ReferenceEquals($turn.Plan, $plan) | Should -BeTrue
-            (Resolve-LambekFollowUp -Plan $plan -Text 'what did I rename').Answer | Should -BeLike '*rename report.txt to summary.txt*'
+            (Resolve-LambekFollowUp -Plan $plan -Text 'what did I rename').Answer | Should -BeLike '*renamed report.txt to summary.txt*'
         }
 
         It 'still reads a question about files as a listing, and an order as an order' {
@@ -206,7 +206,7 @@ Describe 'Dialogue act' {
             New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
             Start-Conversation
             Start-Day '2026-10-09 09:00'
-            New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Who: you. What: delete the files in C:\Temp. When: 2026-10-05.' -join "`n")
+            New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Yesterday you deleted the files in C:\Temp. (2026-10-05)' -join "`n")
         }
 
         It 'does not take the yesterday of another day for the yesterday of today' {
@@ -215,7 +215,7 @@ Describe 'Dialogue act' {
             Start-Day '2026-10-09 09:00'
             New-LambekPlan 'what did I delete yesterday' | ConvertTo-LambekAnswer | Should -Be 'You have not told me that.'
             Start-Day '2026-10-06 18:00'
-            New-LambekPlan 'what did I delete yesterday' | ConvertTo-LambekAnswer | Should -BeLike '*delete the files in C:\Temp*'
+            New-LambekPlan 'what did I delete yesterday' | ConvertTo-LambekAnswer | Should -BeLike '*deleted the files in C:\Temp*'
         }
 
         It 'says what was told in this conversation first, then what was told before, once each' {
@@ -225,16 +225,16 @@ Describe 'Dialogue act' {
             New-LambekPlan 'yesterday I deleted the .log files in C:\Logs' | Out-Null
             New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -Be (@(
                     'From what you told me in this conversation:'
-                    '- Who: you. What: delete the .log files in C:\Logs. When: yesterday.'
+                    '- Yesterday you deleted the .log files in C:\Logs.'
                     'From what you told me before:'
-                    '- Told on 2026-10-06. Who: you. What: delete the files in C:\Temp. When: 2026-10-05.'
+                    '- Told on 2026-10-06. Yesterday you deleted the files in C:\Temp. (2026-10-05)'
                 ) -join "`n")
         }
 
         It 'keeps the words of the day: accents, and the language it was told in' {
             New-LambekPlan 'mon collègue a copié l''été.txt vers D:\Backup ce matin' | Out-Null
             Start-Conversation
-            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Who: mon collègue. What: copier les fichiers nommés été.txt vers D:\Backup. When: 2026-10-06.' -join "`n")
+            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Votre collègue a copié l''été.txt vers D:\Backup ce matin. (2026-10-06)' -join "`n")
         }
 
         It 'leaves out a line changed by hand and those after it, says so, and still keeps what is told next' {
@@ -249,13 +249,13 @@ Describe 'Dialogue act' {
             Start-Conversation
             $answer = @((New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer) -split "`n")
             $answer.Count | Should -Be 3
-            $answer[1] | Should -BeLike '*delete the files in C:\Temp*'
+            $answer[1] | Should -BeLike '*deleted the files in C:\Temp*'
             $answer[2] | Should -Be '2 lines of my journal were changed outside Lambek: I left them out.'
             New-LambekPlan 'yesterday I deleted the files in C:\Logs' | Out-Null
             Start-Conversation
             $answer = @((New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer) -split "`n")
             $answer.Count | Should -Be 4
-            $answer[2] | Should -BeLike '*delete the files in C:\Logs*'
+            $answer[2] | Should -BeLike '*deleted the files in C:\Logs*'
         }
 
         It 'keeps the conversation of each chat of the app apart' {
@@ -282,7 +282,7 @@ Describe 'Dialogue act' {
             & (Get-Module Lambek) { $script:Incognito = $true }
             New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike '*I am keeping it for this conversation only.'
             Test-Path -LiteralPath (Get-JournalPath) | Should -BeFalse
-            New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -BeLike '*delete the files in C:\Temp*'
+            New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -BeLike '*deleted the files in C:\Temp*'
             Start-Conversation
             New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything yet.'
         }
@@ -337,11 +337,11 @@ Describe 'Dialogue act' {
         }
 
         It 'answers "<Ask>" from what was told' -ForEach @(
-            @{ Ask = 'where does my sister live'; Line = '- Who: my sister. What: live in Lyon.' }
-            @{ Ask = 'who lives in Lyon'; Line = '- Who: my sister. What: live in Lyon.' }
-            @{ Ask = 'what did I buy yesterday'; Line = '- Who: you. What: buy a red car. When: yesterday.' }
-            @{ Ask = 'what did I buy'; Line = '- Who: you. What: buy a red car. When: yesterday.' }
-            @{ Ask = 'what is my name'; Line = '- Who: my name. What: be Amin.' }
+            @{ Ask = 'where does my sister live'; Line = '- Your sister lives in Lyon.' }
+            @{ Ask = 'who lives in Lyon'; Line = '- Your sister lives in Lyon.' }
+            @{ Ask = 'what did I buy yesterday'; Line = '- You bought a red car yesterday.' }
+            @{ Ask = 'what did I buy'; Line = '- You bought a red car yesterday.' }
+            @{ Ask = 'what is my name'; Line = '- Your name is Amin.' }
         ) {
             New-LambekPlan 'my sister lives in Lyon' | Out-Null
             New-LambekPlan 'I bought a red car yesterday' | Out-Null
@@ -367,13 +367,156 @@ Describe 'Dialogue act' {
         It 'keeps it across conversations like anything else told' {
             New-LambekPlan 'my sister lives in Lyon' | Out-Null
             & (Get-Module Lambek) { $script:Told = $null; $script:ToldJournal = $null }
-            New-LambekPlan 'where does my sister live' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Who: my sister. What: live in Lyon.' -join "`n")
+            New-LambekPlan 'where does my sister live' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Your sister lives in Lyon.' -join "`n")
         }
 
         It 'still takes a reply to its own question as a reply' {
             $plan = New-LambekPlan 'delete the files'
             $plan.Status | Should -Be 'NeedsInput'
             (Resolve-LambekFollowUp -Plan $plan -Text 'the folder is C:\Temp').Kind | Should -Not -Be 'explain'
+        }
+    }
+
+    Context 'What follows from what was told' {
+        BeforeEach {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = [datetime] '2026-10-06 10:00' }
+        }
+        AfterAll {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Now = $null }
+        }
+
+        It 'reads a question as the body of a rule: <Text>' -ForEach @(
+            @{ Text = 'where does my sister live'; Rule = 'answer(E) :- event(E, "verb:live"), agent(E, "my sister"), says(E, "place").' }
+            @{ Text = 'who lives in France'; Rule = 'answer(E) :- event(E, "verb:live"), holds(E, "in", "france").' }
+            @{ Text = 'what did I buy yesterday'; Rule = 'answer(E) :- event(E, "verb:buy"), by(E, "speaker"), says(E, "object"), on(E, "2026-10-05").' }
+            @{ Text = 'what is my name'; Rule = 'answer(E) :- event(E, "verb:be"), about(E, "my name").' }
+            @{ Text = 'what did I delete yesterday'; Rule = 'answer(E) :- event(E, "files.delete"), by(E, "speaker"), on(E, "2026-10-05").' }
+            @{ Text = 'what have I told you'; Rule = 'answer(E) :- event(E, V).' }
+        ) {
+            $asked = (Resolve-Text $Text).Asked
+            InModuleScope Lambek -Parameters @{ Asked = $asked } { Get-LambekAskedRule -Asked $Asked } | Should -Be $Rule
+        }
+
+        It 'deduces where someone is from where a place is, and says what it deduced it with' {
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            New-LambekPlan 'Lyon is in France' | Out-Null
+            New-LambekPlan 'France is in Europe' | Out-Null
+            New-LambekPlan 'who lives in France' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'From what you told me in this conversation:'
+                    '- Your sister lives in Lyon.'
+                    '  deduced with: Lyon is in France.'
+                ) -join "`n")
+            New-LambekPlan 'who lives in Europe' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'From what you told me in this conversation:'
+                    '- Your sister lives in Lyon.'
+                    '  deduced with: Lyon is in France.'
+                    '  deduced with: France is in Europe.'
+                ) -join "`n")
+        }
+
+        It 'deduces nothing that does not follow' {
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            New-LambekPlan 'Lyon is in France' | Out-Null
+            New-LambekPlan 'who lives in Spain' | ConvertTo-LambekAnswer | Should -Be 'I do not know: nobody told me, and I cannot find it out by myself yet.'
+            # France is not in Lyon: the rule goes one way only
+            New-LambekPlan 'my brother lives in France' | Out-Null
+            New-LambekPlan 'who lives in Lyon' | ConvertTo-LambekAnswer | Should -Be ('From what you told me in this conversation:', '- Your sister lives in Lyon.' -join "`n")
+        }
+
+        It 'says nothing of a deduction when the answer was told as it is' {
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            New-LambekPlan 'Lyon is in France' | Out-Null
+            New-LambekPlan 'who lives in Lyon' | ConvertTo-LambekAnswer | Should -Be ('From what you told me in this conversation:', '- Your sister lives in Lyon.' -join "`n")
+        }
+
+        It 'deduces with what was told in another conversation' {
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            & (Get-Module Lambek) { $script:Told = $null; $script:ToldJournal = $null }
+            New-LambekPlan 'Lyon is in France' | Out-Null
+            New-LambekPlan 'who lives in France' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'From what you told me before:'
+                    '- Told on 2026-10-06. Your sister lives in Lyon.'
+                    '  deduced with: Lyon is in France.'
+                ) -join "`n")
+        }
+
+        It 'explains an answer with the proof of the logic' {
+            $proof = InModuleScope Lambek {
+                $facts = @(
+                    ConvertTo-LambekRequest 'my sister lives in Lyon' | Resolve-LambekIntent | ForEach-Object { $_.Statement }
+                    ConvertTo-LambekRequest 'Lyon is in France' | Resolve-LambekIntent | ForEach-Object { $_.Statement }
+                )
+                $logic = Get-LambekToldLogic -Facts $facts
+                $logic.Run()
+                $logic.Explain('holds', [string[]] @('e0', 'in', 'france'), 6)
+            }
+            $proof[0] | Should -Be 'holds("e0", "in", "france") :-'
+            $proof | Should -Contain '  role("e0", "in", "lyon")'
+            ($proof -join "`n") | Should -BeLike '*inside("lyon", "france")*'
+        }
+    }
+
+    Context 'Saying it back' {
+        BeforeEach {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = [datetime] '2026-10-06 10:00' }
+        }
+        AfterAll {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Now = $null }
+        }
+
+        It 'turns the sentence to the other side: <Text>' -ForEach @(
+            @{ Language = 'en'; Text = 'I bought a red car yesterday'; Said = 'You bought a red car yesterday.' }
+            @{ Language = 'en'; Text = 'my sister lives in Lyon'; Said = 'Your sister lives in Lyon.' }
+            @{ Language = 'en'; Text = 'I am tired today'; Said = 'You are tired today.' }
+            @{ Language = 'en'; Text = 'we have a meeting with the client on Friday'; Said = 'You have a meeting with the client on Friday.' }
+            @{ Language = 'en'; Text = 'yesterday I deleted the files in C:\Temp'; Said = 'Yesterday you deleted the files in C:\Temp.' }
+            @{ Language = 'en'; Text = 'Lyon is in France'; Said = 'Lyon is in France.' }
+            @{ Language = 'fr'; Text = 'hier j''ai acheté une voiture'; Said = 'Hier vous avez acheté une voiture.' }
+            @{ Language = 'fr'; Text = 'ma sœur habite à Lyon'; Said = 'Votre sœur habite à Lyon.' }
+            @{ Language = 'fr'; Text = 'je m''appelle Amin'; Said = 'Vous vous appelez Amin.' }
+            @{ Language = 'fr'; Text = 'je suis fatigué'; Said = 'Vous êtes fatigué.' }
+            @{ Language = 'fr'; Text = 'nous avons une réunion avec le client'; Said = 'Vous avez une réunion avec le client.' }
+        ) {
+            InModuleScope Lambek -Parameters @{ Text = $Text; Language = $Language } { ConvertTo-LambekOtherSide -Text $Text -Language $Language } | Should -BeExactly $Said
+        }
+
+        It 'says "tu" to who says "tu": <Text>' -ForEach @(
+            @{ Text = 'hier j''ai acheté une voiture'; Said = 'Hier tu as acheté une voiture.' }
+            @{ Text = 'ma sœur habite à Lyon'; Said = 'Ta sœur habite à Lyon.' }
+            @{ Text = 'je m''appelle Amin'; Said = 'Tu t''appelles Amin.' }
+            @{ Text = 'nous avons une réunion avec le client'; Said = 'Vous avez une réunion avec le client.' }
+        ) {
+            InModuleScope Lambek -Parameters @{ Text = $Text } { ConvertTo-LambekOtherSide -Text $Text -Language fr -Register tu } | Should -BeExactly $Said
+        }
+
+        It 'never rewrites a place, a file or a name between quotes' {
+            InModuleScope Lambek { ConvertTo-LambekOtherSide -Text 'I renamed my.report.txt to "my summary.txt" in C:\Users\me\my files' -Language en } | Should -BeExactly 'You renamed my.report.txt to "my summary.txt" in C:\Users\me\my files.'
+        }
+
+        It 'does not turn round a sentence that already speaks to Lambek' {
+            InModuleScope Lambek { ConvertTo-LambekOtherSide -Text 'tu sais, hier j''ai supprimé les fichiers dans C:\Temp' -Language fr } | Should -BeNullOrEmpty
+            # It is then said plainly: who, what, when
+            New-LambekPlan 'tu sais, hier j''ai supprimé les fichiers dans C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je comprends. Qui : toi. Quoi : supprimer les fichiers dans C:\Temp. Quand : hier.*'
+        }
+
+        It 'reads its own sentence again, and says it only when it gives the same thing told' {
+            InModuleScope Lambek {
+                $fact = (ConvertTo-LambekRequest 'my sister lives in Lyon' | Resolve-LambekIntent).Statement
+                Test-LambekSaidBack -Fact $fact -Sentence 'Your sister lives in Lyon.' | Should -BeTrue
+                # Another verb, another place, another one: not the same thing
+                Test-LambekSaidBack -Fact $fact -Sentence 'Your sister works in Lyon.' | Should -BeFalse
+                Test-LambekSaidBack -Fact $fact -Sentence 'Your sister lives in Paris.' | Should -BeFalse
+                Test-LambekSaidBack -Fact $fact -Sentence 'Your brother lives in Lyon.' | Should -BeFalse
+                Test-LambekSaidBack -Fact $fact -Sentence 'You live in Lyon.' | Should -BeFalse
+                $fact = (ConvertTo-LambekRequest 'yesterday I deleted the files in C:\Temp' | Resolve-LambekIntent).Statement
+                Test-LambekSaidBack -Fact $fact -Sentence 'Yesterday you deleted the files in C:\Temp.' | Should -BeTrue
+                Test-LambekSaidBack -Fact $fact -Sentence 'Yesterday you deleted the files in C:\Windows.' | Should -BeFalse
+            }
+        }
+
+        It 'answers with whole sentences' {
+            New-LambekPlan 'my sister lives in Lyon' | ConvertTo-LambekAnswer | Should -Be 'I understand. Your sister lives in Lyon. You are telling me, so I am not doing it. I am keeping it.'
+            New-LambekPlan 'hier j''ai acheté une voiture' | ConvertTo-LambekAnswer | Should -Be 'Je comprends. Hier vous avez acheté une voiture. C''est une information, donc je ne fais rien. Je la retiens.'
         }
     }
 

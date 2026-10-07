@@ -73,6 +73,7 @@ $script:Told = $null
 $script:ToldPath = Join-Path $dataFolder 'told.jsonl'
 $script:ToldJournal = $null
 $script:ToldDoubt = 0
+$script:KnowledgeRules = $null
 $script:Now = $null
 $script:KeyNeighbors = $null
 # Read from the machine once, and the folder names they give

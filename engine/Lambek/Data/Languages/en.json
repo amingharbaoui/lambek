@@ -585,6 +585,13 @@
       "what do you know"
     ],
     "General": {
+      "OtherSide": {"Second": ["you", "your", "yours", "yourself"], "Plural": [], "Conjugate": false, "Words": {"i": "you", "me": "you", "my": "your", "mine": "yours", "myself": "yourself", "we": "you", "us": "you", "our": "your", "ours": "yours"}, "Subjects": {"i": "1", "we": "1"}, "Between": [], "Agree": {"am": "are", "was": "were", "m": "are"}},
+      "Owners": ["my", "your", "our", "mine", "yours", "ours"],
+      "Logic": {
+        "copula": ["verb:be"],
+        "within": ["in"],
+        "place": ["in", "at", "near"]
+      },
       "Unread": [
         "there",
         "here",
@@ -715,7 +722,8 @@
       "Forgotten": "Done: I have forgotten everything you told me.",
       "ToldHere": "I understand. {0} You are telling me, so I am not doing it. I am keeping it for this conversation only.",
       "Doubt": "{0} {0:line|lines} of my journal {0:was|were} changed outside Lambek: I left {0:it|them} out.",
-      "NotKnown": "I do not know: nobody told me, and I cannot find it out by myself yet."
+      "NotKnown": "I do not know: nobody told me, and I cannot find it out by myself yet.",
+      "Because": "deduced with: {0}"
     }
   },
   "Answer": {

@@ -2,7 +2,10 @@ function Get-LambekGeneralReading {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [pscustomobject] $Request
+        [pscustomobject] $Request,
+
+        # Read as the one spoken to: "you bought a car" is then about the user, as when Lambek says it back
+        [switch] $Listener
     )
 
     # A sentence about anything, read with the same pregroup grammar as an order but with the words of the dictionary:
@@ -28,7 +31,10 @@ function Get-LambekGeneralReading {
     # "what time is it", "she moved": who or what "it" and "she" are would have to come from the sentences before
     if (@($tokens | Where-Object { $_ -in @($general['Pronouns']) }).Count -gt 0) { return $null }
     # "who are you", "what can you do": what is said to Lambek about itself is answered elsewhere
-    if (@($tokens | Where-Object { $_ -in @($general['Addressee']) }).Count -gt 0) { return $null }
+    $first = @($general['Speakers'])
+    $second = @($general['Addressee'])
+    if ($Listener) { $first = @($general['Addressee']); $second = @($general['Speakers']) }
+    if (@($tokens | Where-Object { $_ -in $second }).Count -gt 0) { return $null }
     # "what time is it", "which file...": a question word before a noun is not read yet
     if ($tokens[0] -in @($general['What']) -and $tokens[1] -notin @($general['Auxiliaries']) -and $tokens[1] -notin @($general['Speakers'])) {
         $next = @($dictionary.Lemmas($tokens[1], $language) | ForEach-Object { $_.Pos })
@@ -57,13 +63,15 @@ function Get-LambekGeneralReading {
     for ($i = 0; $i -lt $tokens.Count; $i++) {
         $token = $tokens[$i]
         if ($timeAt[$i] -eq 'rest' -or $token -in @($general['Skipped'])) { continue }
+        # "vous vous appelez": the second one goes with the verb, as "m'" does in "je m'appelle"
+        if ($Listener -and $i -gt 0 -and $token -in $first -and $tokens[$i - 1] -eq $token) { continue }
         $types = [System.Collections.Generic.List[string]]::new()
         $kind = 'word'
         if ($timeAt[$i] -eq 'first') { $kind = 'time'; $types.AddRange([string[]] @('s^r s', 's s^l')) }
         elseif ($token -match '^_[a-z]+_$') { $types.Add('n') }
         elseif ($token -in @($general['Where'])) { $kind = 'where'; $types.Add('s s^l') }
         elseif ($token -in @($general['What'])) { $kind = 'what'; $types.AddRange([string[]] @('s n^ll s^l', 's s^l n')) }
-        elseif ($token -in @($general['Speakers']) -or $token -in @($general['Addressee']) -or $token -in @($general['Pronouns'])) { $kind = 'pronoun'; $types.Add('n') }
+        elseif ($token -in $first -or $token -in $second -or $token -in @($general['Pronouns'])) { $kind = 'pronoun'; $types.Add('n') }
         elseif ($token -in @($general['Determiners'])) { $types.Add('n n^l') }
         elseif ($token -in @($general['Prepositions'])) { $kind = 'preposition'; $types.AddRange([string[]] @('s^r s n^l', 's s^l n^l')) }
         else {
@@ -72,7 +80,9 @@ function Get-LambekGeneralReading {
             if ($token -in @($general['Auxiliaries'])) { $kind = 'auxiliary'; $types.AddRange([string[]] @('n^r n', 'n n^l')) }
             if ('v' -in $pos -or $token -in @($general['Verbs'])) {
                 $types.AddRange([string[]] @('n^r s', 'n^r s n^l'))
-                $verb = @($found | Where-Object { $_.Pos -eq 'v' } | Select-Object -First 1)
+                # ("suis" is "etre" before it is "suivre": a verb that also helps the others is read as itself)
+                $helps = @($found | Where-Object { $_.Pos -like 'aux*' } | ForEach-Object { $_.Lemma })
+                $verb = @(@($found | Where-Object { $_.Pos -eq 'v' -and $_.Lemma -in $helps }) + @($found | Where-Object { $_.Pos -eq 'v' }) | Select-Object -First 1)
                 $lemmas[$i] = $(if ($verb.Count -gt 0) { if ($verb[0].Shown) { $verb[0].Shown } else { $verb[0].Lemma } } else { $token })
             }
             # A word no dictionary knows is a name only when it is written like one ("Amin", "Felix")
@@ -94,7 +104,7 @@ function Get-LambekGeneralReading {
 
     # Several readings may reduce to s ("I am tired": "am" helps "tired", or "am" is the verb). Each is read;
     # the first that says something wins, one whose verb is a real verb before one whose verb is "be" or "have"
-    $readings = @(foreach ($choice in $root['s|0']) { Get-LambekGeneralChoice -Request $typedAs -Typed $typed -Choice $choice -Kinds $kinds -Lemmas $lemmas -General $general })
+    $readings = @(foreach ($choice in $root['s|0']) { Get-LambekGeneralChoice -Request $typedAs -Typed $typed -Choice $choice -Kinds $kinds -Lemmas $lemmas -General $general -First $first })
     $readings = @($readings | Where-Object { $_ })
     if ($readings.Count -eq 0) { return $null }
     $plain = @($readings | Where-Object { -not $_.Helper })
@@ -109,7 +119,10 @@ function Get-LambekGeneralChoice {
         [int[]] $Choice,
         [hashtable] $Kinds,
         [hashtable] $Lemmas,
-        [System.Collections.IDictionary] $General
+        [System.Collections.IDictionary] $General,
+
+        # The words for the one who speaks
+        [string[]] $First = @()
     )
 
     # One reading of the sentence: who, the verb, what, where
@@ -167,18 +180,21 @@ function Get-LambekGeneralChoice {
     $who = @(& $phrase $partner[$subject])
     if ($who.Count -eq 0) { return $null }
     # A subject is "I", a name, or a noun with its article: "answers small talk" has none, and is no sentence
-    # (the first word of a sentence has a capital whatever it is: there, only a word no dictionary knows is a name)
+    # (the first word of a sentence has a capital whatever it is: there, a name is a word no dictionary knows,
+    # or a noun in the singular standing alone, which only a name can do: "Lyon is...", never "Files left...")
     $named = @($who | Where-Object {
             $written = Get-LambekWritten -Request $typedAs -Words @($tokens[$_])
-            $written -cmatch '^\p{Lu}' -and ($_ -gt 0 -or @($dictionary.Lemmas($tokens[$_], $Request.Language)).Count -eq 0)
+            $known = @($dictionary.Lemmas($tokens[$_], $Request.Language))
+            $alone = @($known | Where-Object { $_.Pos -ne 'n' -or $_.Lemma -ne $tokens[$who[0]] }).Count -eq 0
+            $written -cmatch '^\p{Lu}' -and ($_ -gt 0 -or $known.Count -eq 0 -or $alone)
         }).Count -eq $who.Count
     $article = @($who | Where-Object { $tokens[$_] -in @($general['Determiners']) }).Count -gt 0
-    $single = $who.Count -eq 1 -and ($tokens[$who[0]] -in @($general['Speakers']) -or $kinds[$who[0]] -eq 'what')
+    $single = $who.Count -eq 1 -and ($tokens[$who[0]] -in $First -or $kinds[$who[0]] -eq 'what')
     if (-not ($named -or $article -or $single)) { return $null }
     $agent = 'other'
     $name = & $said $who
     if ($who.Count -eq 1 -and $kinds[$who[0]] -eq 'what') { $asked = 'agent'; $agent = $null; $name = $null }
-    elseif ($who.Count -eq 1 -and $tokens[$who[0]] -in @($general['Speakers'])) { $agent = 'speaker'; $name = $null }
+    elseif ($who.Count -eq 1 -and $tokens[$who[0]] -in $First) { $agent = 'speaker'; $name = $null }
     elseif (@($who | Where-Object { $tokens[$_] -in @($general['Addressee']) }).Count -gt 0) { return $null }
     # "she", "it": who that is would have to come from the sentences before, which is not read yet
     elseif ($who.Count -eq 1 -and $tokens[$who[0]] -in @($general['Pronouns'])) { return $null }

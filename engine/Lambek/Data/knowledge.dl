@@ -1,0 +1,26 @@
+% What Lambek may conclude from what it is told. Each thing told is an event E:
+%   event(E, V)     the verb, or the action of a pack
+%   agent(E, X)     who does it ("speaker" for the user)
+%   role(E, R, Y)   what goes with it: its object, a place after "in", a value of an action
+%   on(E, D)        the day, week, month or year it is about
+% The words that mean "be", "in" and a place are facts too: copula(V), within(P), place(P), from the language files.
+
+% "Lyon is in France": Lyon is inside France, and inside whatever France is inside
+inside(X, Y) :- event(E, V), copula(V), agent(E, X), role(E, P, Y), within(P).
+inside(X, Z) :- inside(X, Y), inside(Y, Z).
+
+% What an event says, and what follows from it: what is in a place is in every place that place is inside
+holds(E, R, Y) :- role(E, R, Y).
+holds(E, P, Z) :- role(E, P, Y), place(P), inside(Y, Z).
+
+% "my name is Amin" is about "my name" and about "Amin", whichever side is asked
+about(E, X) :- event(E, V), copula(V), agent(E, X).
+about(E, Y) :- event(E, V), copula(V), role(E, "object", Y).
+
+% Who: the user, or someone else
+by(E, "speaker") :- agent(E, "speaker").
+by(E, "other") :- agent(E, X), neq(X, "speaker").
+
+% An event that says where, or what
+says(E, "object") :- role(E, "object", Y).
+says(E, "place") :- role(E, R, Y), neq(R, "object").

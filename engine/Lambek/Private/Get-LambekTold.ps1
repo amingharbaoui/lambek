@@ -143,12 +143,23 @@ function Format-LambekFact {
         [pscustomobject] $Fact,
 
         [Parameter(Mandatory)]
-        [string] $Language
+        [string] $Language,
+
+        [string] $Register = 'vous'
     )
 
-    # One thing told, said back: who, what, when
+    # One thing told, said back. First as a sentence, the user's own turned to the other side ("you bought a car"),
+    # kept only when reading it again gives the same thing told; otherwise plainly: who, what, when
     $lexicon = Get-LambekLexicon -Language $Language
     $say = $lexicon.Dialogue.Say
+    if ($Fact.PSObject.Properties['Text'] -and $Fact.Text -and $Fact.Language) {
+        $sentence = ConvertTo-LambekOtherSide -Text "$($Fact.Text)" -Language $Fact.Language -Register $Register
+        if ($sentence -and (Test-LambekSaidBack -Fact $Fact -Sentence $sentence)) {
+            # "yesterday" told another day is said with the day it was
+            if ($Fact.PSObject.Properties['PreviousHash'] -and $Fact.Time -and $Fact.Day) { $sentence += " ($($Fact.Day))" }
+            return $sentence
+        }
+    }
     # A thing told in another conversation is said in the words of the day it was told
     if ($Fact.PSObject.Properties['What'] -and $Fact.What) { $what = $Fact.What }
     else { $what = Get-LambekStepSentence -Step ([pscustomobject]@{ Action = $Fact.Action; Parameters = $Fact.Parameters; Output = $null }) -Language $Language -Units $lexicon.Answer.Units -Unchecked }
@@ -171,7 +182,9 @@ function Get-LambekToldAnswer {
         [pscustomobject] $Asked,
 
         [Parameter(Mandatory)]
-        [string] $Language
+        [string] $Language,
+
+        [string] $Register = 'vous'
     )
 
     # The answer to a question about what was told: the things told that agree with every word of the question.
@@ -188,47 +201,27 @@ function Get-LambekToldAnswer {
     # A question about anything: what nobody told is not known, and it is said so
     $anything = -not $Asked.All -and @($Asked.Actions | Where-Object { "$_".StartsWith('verb:') }).Count -gt 0
     if ($told.Count + $before.Count -eq 0) { return "$($say[$(if ($anything) { 'NotKnown' } else { 'NothingTold' })])$doubt" }
-    $agrees = {
-        param($fact)
-        if ($Asked.All) { return $true }
-        if ($fact.Action -notin @($Asked.Actions)) { return $false }
-        # "what is my name" asks for the other side of "my name is Amin", whichever side it was told on
-        if ($Asked.PSObject.Properties['Either'] -and $Asked.Either -and $Asked.Wanted -eq 'agent' -and $Asked.Parameters.Contains('object')) {
-            $side = ConvertTo-LambekNormalizedText -Text "$($Asked.Parameters['object'])"
-            $other = $null
-            if ($fact.PSObject.Properties['Values']) { $other = $fact.Values['object'] } elseif ($fact.Parameters.Contains('object')) { $other = $fact.Parameters['object'] }
-            return ((ConvertTo-LambekNormalizedText -Text "$($fact.Name)") -eq $side -or (ConvertTo-LambekNormalizedText -Text "$other") -eq $side)
-        }
-        if ($Asked.Person -and $fact.Agent -ne $Asked.Person) { return $false }
-        # "my sister" asked is "my sister" told: the same words, whatever their capitals and accents
-        if ($Asked.PSObject.Properties['Name'] -and $Asked.Name -and (ConvertTo-LambekNormalizedText -Text "$($fact.Name)") -ne (ConvertTo-LambekNormalizedText -Text $Asked.Name)) { return $false }
-        # "where...", "what...": the thing told must say it
-        if ($Asked.PSObject.Properties['Wanted'] -and $Asked.Wanted) {
-            $names = @(if ($fact.PSObject.Properties['Values']) { $fact.Values.Keys } else { $fact.Parameters.Keys })
-            if ($Asked.Wanted -eq 'object' -and 'object' -notin $names) { return $false }
-            if ($Asked.Wanted -eq 'place' -and @($names | Where-Object { $_ -ne 'object' }).Count -eq 0) { return $false }
-        }
-        # The same words of time mean the same day only when they were said the same day
-        if ($Asked.Time -and (-not $fact.Day -or "$($fact.Day)" -ne "$($Asked.Day)")) { return $false }
-        foreach ($name in $Asked.Parameters.Keys) {
-            $value = $null
-            if ($fact.PSObject.Properties['Values']) { $value = $fact.Values[$name] }
-            elseif ($fact.Parameters.Contains($name)) { $value = Format-LambekValue -Value $fact.Parameters[$name] }
-            if ((ConvertTo-LambekNormalizedText -Text "$value") -ne (ConvertTo-LambekNormalizedText -Text (Format-LambekValue -Value $Asked.Parameters[$name]))) { return $false }
-        }
-        return $true
-    }
-    $found = @($told | Where-Object { & $agrees $_ })
-    $older = @($before | Where-Object { & $agrees $_ })
+    # The question is a rule of the logic, and everything told its facts: the answers are what the logic proves
+    $all = @($told) + @($before)
+    $proved = @(Find-LambekTold -Asked $Asked -Facts $all)
+    $found = @($proved | Where-Object { $told -contains $_.Fact })
+    $older = @($proved | Where-Object { $told -notcontains $_.Fact })
     if ($found.Count + $older.Count -eq 0) { return "$($say[$(if ($anything) { 'NotKnown' } else { 'NotTold' })])$doubt" }
     $lines = [System.Collections.Generic.List[string]]::new()
     if ($found.Count -gt 0) {
         $lines.Add($say['Recalled'])
-        foreach ($fact in $found) { $lines.Add("- $(Format-LambekFact -Fact $fact -Language $Language)") }
+        foreach ($answer in $found) {
+            $lines.Add("- $(Format-LambekFact -Fact $answer.Fact -Language $Language -Register $Register)")
+            # What it was deduced with is said: the answer can be checked
+            foreach ($reason in $answer.Because) { $lines.Add("  $($say['Because'] -f (Format-LambekFact -Fact $reason -Language $Language -Register $Register))") }
+        }
     }
     if ($older.Count -gt 0) {
         $lines.Add($say['RecalledBefore'])
-        foreach ($fact in $older) { $lines.Add("- $($say['OnDay'] -f $fact.Told, (Format-LambekFact -Fact $fact -Language $Language))") }
+        foreach ($answer in $older) {
+            $lines.Add("- $($say['OnDay'] -f $answer.Fact.Told, (Format-LambekFact -Fact $answer.Fact -Language $Language -Register $Register))")
+            foreach ($reason in $answer.Because) { $lines.Add("  $($say['Because'] -f (Format-LambekFact -Fact $reason -Language $Language -Register $Register))") }
+        }
     }
     return "$($lines -join "`n")$doubt"
 }

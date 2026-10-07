@@ -631,6 +631,13 @@
       "que savez vous"
     ],
     "General": {
+      "OtherSide": {"Second": ["tu", "te", "t", "toi", "ton", "ta", "tes", "vous", "votre", "vos"], "Plural": ["vous"], "Conjugate": true, "Words": {"je": "vous", "j": "vous", "me": "vous", "m": "vous", "moi": "vous", "mon": "votre", "ma": "votre", "mes": "vos", "nous": "vous", "notre": "votre", "nos": "vos", "on": "vous"}, "Words-tu": {"je": "tu", "j": "tu", "me": "t'", "m": "t'", "moi": "toi", "mon": "ton", "ma": "ta", "mes": "tes", "nous": "vous", "notre": "votre", "nos": "vos", "on": "tu"}, "Subjects": {"je": "1", "j": "1", "nous": "1", "on": "3"}, "Between": ["me", "m", "ne", "n", "le", "la", "l", "les", "y", "en"]},
+      "Owners": ["mon", "ma", "mes", "ton", "ta", "tes", "votre", "vos", "notre", "nos"],
+      "Logic": {
+        "copula": ["verb:etre"],
+        "within": ["en", "dans", "a", "au", "aux"],
+        "place": ["a", "au", "aux", "en", "dans", "pres", "chez"]
+      },
       "Unread": [
         "voici",
         "voila",
@@ -792,7 +799,8 @@
       "Forgotten": "C'est fait : j'ai oublié tout ce qui m'a été dit.",
       "ToldHere": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens pour cette conversation seulement.",
       "Doubt": "{0} {0:ligne|lignes} de mon journal {0:a été modifiée|ont été modifiées} en dehors de Lambek : je {0:l'ai laissée|les ai laissées} de côté.",
-      "NotKnown": "Je ne sais pas : on ne me l'a pas dit, et je ne sais pas encore le trouver seul."
+      "NotKnown": "Je ne sais pas : on ne me l'a pas dit, et je ne sais pas encore le trouver seul.",
+      "Because": "déduit avec : {0}"
     }
   },
   "Answer": {
