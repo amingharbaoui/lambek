@@ -561,14 +561,35 @@
       "tomorrow",
       "next week"
     ],
+    "Asked": [
+      "what",
+      "which",
+      "when",
+      "where",
+      "who",
+      "did",
+      "have",
+      "has"
+    ],
+    "Everything": [
+      "what did i tell you",
+      "what have i told you",
+      "what did i say",
+      "what do you remember",
+      "what do you know"
+    ],
     "Say": {
-      "Report": "I read that as something you are telling me, not as something to do. I cannot keep what I am told yet.",
+      "Report": "I read that as something you are telling me, not as something to do. I did not understand it well enough to keep it.",
       "Question": "That is a question, not something to do. I cannot answer that kind of question yet.",
       "Other": "I read that as being about something other than what I take care of, so I am not doing anything.",
-      "Told": "I understand. Who: {0}. What: {1}.{2} You are telling me, so I am not doing it, and I cannot keep it yet.",
-      "Wished": "I understand. Who: {0}. Wants: {1}.{2} You are telling me, so I am not doing it, and I cannot keep it yet.",
       "Speaker": "you",
-      "When": " When: {0}."
+      "When": " When: {0}.",
+      "Told": "I understand. {0} You are telling me, so I am not doing it. I am keeping it for this conversation.",
+      "Fact": "Who: {0}. What: {1}.{2}",
+      "FactWished": "Who: {0}. Wants: {1}.{2}",
+      "Recalled": "From what you told me in this conversation:",
+      "NotTold": "You have not told me that in this conversation.",
+      "NothingTold": "You have not told me anything in this conversation yet."
     }
   },
   "Answer": {

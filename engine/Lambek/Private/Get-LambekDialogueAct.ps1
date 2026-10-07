@@ -27,6 +27,12 @@ function Get-LambekDialogueAct {
     $entities = @($Request.Entities | Where-Object { $_.Type -ne 'number' })
     $act = { param($kind, $rule, $subject) [pscustomobject]@{ Kind = $kind; Rule = $rule; Say = $dialogue.Say[$kind]; Subject = $subject } }
 
+    # "what have I told you": everything told in the conversation is asked for
+    $plain = ((ConvertTo-LambekNormalizedText -Text "$($Request.Original)") -replace '[^\p{L}\p{N}]+', ' ').Trim()
+    if ($plain -in @($dialogue['Everything'])) { return & $act 'Question' 'told' }
+    # "what did I delete yesterday", "did I delete...": a question word first, then a subject and a verb, asks what was told
+    $asked = $tokens[0] -in @($dialogue['Asked'])
+
     # "how do I delete...", "what is a .log file": the sentence opens as a question about how things are
     $opening = $tokens -join ' '
     foreach ($phrase in @($dialogue['Questions'])) {
@@ -43,12 +49,14 @@ function Get-LambekDialogueAct {
             if ($token -in @($dialogue['Addressee'])) { break }
             if ($token -in @($dialogue['Wishes'])) { $wish = $true; continue }
             if ($token -in @($dialogue['Speakers'])) {
+                if ($asked) { return & $act 'Question' 'recall' ([pscustomobject]@{ Position = $i; Verb = $verb; Person = 'speaker'; Wish = $wish }) }
                 if (-not $wish) { return & $act 'Report' 'subject' ([pscustomobject]@{ Position = $i; Verb = $verb; Person = 'speaker'; Wish = $false }) }
                 break
             }
             if ($token -in @($dialogue['Others'])) {
                 # "from my desktop delete...": after a word of place, it is not the subject
                 if ($i -gt 0 -and $typed.ContainsKey($i - 1) -and $typed[$i - 1] -match 'd\^l') { break }
+                if ($asked) { return & $act 'Question' 'recall' ([pscustomobject]@{ Position = $i; Verb = $verb; Person = 'other'; Wish = $wish }) }
                 return & $act 'Report' 'subject' ([pscustomobject]@{ Position = $i; Verb = $verb; Person = 'other'; Wish = $wish })
             }
         }

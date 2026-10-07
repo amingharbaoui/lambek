@@ -81,6 +81,7 @@ function New-LambekPlan {
                     Status     = $card.Status
                     Act        = $card.Act
                     Statement  = $card.Statement
+                    Asked      = $card.Asked
                     Confidence = $card.Confidence
                     Types      = $card.Types
                     Implied    = @($card.Implied)
@@ -150,6 +151,9 @@ function New-LambekPlan {
             $plan | Add-Member -NotePropertyName Proposal -NotePropertyValue $proposal
         }
 
+        # What the user told stays with the conversation
+        if (-not $NoRecall) { Add-LambekTold -Plan $plan }
+
         # Nothing understood and not small talk: the closest request remembered, or the closest example
         if (-not $NoRecall -and $plan.Steps.Count -gt 0 -and @($plan.Steps | Where-Object { $_.Action -or $_.Guess }).Count -eq 0) {
             $language = $plan.Steps[0].Language
@@ -184,7 +188,7 @@ function ConvertTo-LambekReplyPlan {
 
     # A plan with one step that asks for no action: the answer is the reply
     $step = [pscustomobject]@{
-        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; Statement = $null; Confidence = 0.0; Types = ''
+        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; Statement = $null; Asked = $null; Confidence = 0.0; Types = ''
         Implied = @(); Guess = $null; Senses = @(); Pending = @(); FromHabit = @(); Votes = $null; Reading = $null
         Action = $null; Risk = $null; Parameters = [ordered]@{}; Questions = @(); Reads = @(); Writes = @()
         Output = $null; Script = $null; Check = $null; CardHash = $null

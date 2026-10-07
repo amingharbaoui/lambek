@@ -51,6 +51,11 @@ function Resolve-LambekTurn {
         return [pscustomobject]@{ Kind = 'new'; Plan = $fresh; Answer = (ConvertTo-LambekAnswer -Plan $fresh) }
     }
 
+    # Something told, or a question about what was told: it is answered, and the plan in progress stays as it is
+    if (@($fresh.Steps | Where-Object { ($_.PSObject.Properties['Statement'] -and $_.Statement) -or ($_.PSObject.Properties['Asked'] -and $_.Asked) }).Count -gt 0) {
+        return [pscustomobject]@{ Kind = 'explain'; Plan = $Plan; Answer = (ConvertTo-LambekAnswer -Plan $fresh) }
+    }
+
     # "oui" to "did you mean ...?": the request suggested becomes the plan
     if ($Plan.PSObject.Properties['Suggestion'] -and $Plan.Suggestion) {
         # "yes" in any language: the question may have been asked in another one than the reply

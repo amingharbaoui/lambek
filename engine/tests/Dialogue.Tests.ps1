@@ -84,10 +84,10 @@ Describe 'Dialogue act' {
     It 'reads the meaning of what is told: <Text>' -ForEach @(
         @{ Text = 'yesterday I deleted the files in C:\Temp'; Form = 'told(delete(all(object and path(C:\Temp))), agent(speaker), time("yesterday"))' }
         @{ Text = 'last week we moved the .pdf files from C:\A to D:\B'; Form = 'told(move(all(object and extension(.pdf) and source(C:\A)), destination(D:\B)), agent(speaker), time("last week"))' }
-        @{ Text = 'she copied report.txt to D:\Backup this morning'; Form = 'told(copy(all(object and name(report.txt)), destination(D:\Backup)), agent(other), time("this morning"))' }
+        @{ Text = 'she copied report.txt to D:\Backup this morning'; Form = 'told(copy(all(object and name(report.txt)), destination(D:\Backup)), agent("she"), time("this morning"))' }
         @{ Text = 'I renamed report.txt to summary.txt'; Form = 'told(rename(all(object and name(report.txt)), newName(summary.txt)), agent(speaker))' }
         @{ Text = 'hier j''ai supprimé les fichiers dans C:\Temp'; Form = 'told(delete(all(object and path(C:\Temp))), agent(speaker), time("hier"))' }
-        @{ Text = 'mon collègue veut supprimer les fichiers .log de C:\Temp'; Form = 'told(wish(delete(all(object and extension(.log) and path(C:\Temp))), agent(other)))' }
+        @{ Text = 'mon collègue veut supprimer les fichiers .log de C:\Temp'; Form = 'told(wish(delete(all(object and extension(.log) and path(C:\Temp))), agent("mon collègue")))' }
     ) {
         $card = Resolve-Text $Text
         $card.Statement.Form | Should -Be $Form
@@ -113,8 +113,79 @@ Describe 'Dialogue act' {
     }
 
     It 'says back who, what and when' {
-        New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -Be 'I understand. Who: you. What: delete the files in C:\Temp. When: yesterday. You are telling me, so I am not doing it, and I cannot keep it yet.'
+        New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -Be 'I understand. Who: you. What: delete the files in C:\Temp. When: yesterday. You are telling me, so I am not doing it. I am keeping it for this conversation.'
         New-LambekPlan 'mon collègue veut supprimer les fichiers .log de C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je comprends. Qui : mon collègue. Souhaite : supprimer les fichiers .log dans C:\Temp.*'
+    }
+
+    Context 'What was told in the conversation' {
+        BeforeEach {
+            # Every test starts a conversation of its own
+            & (Get-Module Lambek) { $script:Told = $null }
+        }
+
+        It 'says that nothing was told yet' {
+            New-LambekPlan 'what did I delete yesterday' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything in this conversation yet.'
+        }
+
+        It 'answers "<Ask>" from what was told' -ForEach @(
+            @{ Ask = 'what did I delete yesterday'; Line = '- Who: you. What: delete the files in C:\Temp. When: yesterday.' }
+            @{ Ask = 'what did I delete'; Line = '- Who: you. What: delete the files in C:\Temp. When: yesterday.' }
+            @{ Ask = 'did I delete the files in C:\Temp'; Line = '- Who: you. What: delete the files in C:\Temp. When: yesterday.' }
+            @{ Ask = 'what did I move last week'; Line = '- Who: you. What: move the .pdf files from C:\A to D:\B. When: last week.' }
+            @{ Ask = 'what did my colleague copy'; Line = '- Who: my colleague. What: copy the files named report.txt to D:\Backup. When: this morning.' }
+        ) {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            New-LambekPlan 'last week we moved the .pdf files from C:\A to D:\B' | Out-Null
+            New-LambekPlan 'my colleague copied report.txt to D:\Backup this morning' | Out-Null
+            New-LambekPlan $Ask | ConvertTo-LambekAnswer | Should -Be ("From what you told me in this conversation:", $Line -join "`n")
+        }
+
+        It 'never says more than was told: <Ask>' -ForEach @(
+            @{ Ask = 'did I delete the files in C:\Windows' }
+            @{ Ask = 'what did I move yesterday' }
+            @{ Ask = 'what did I copy' }
+        ) {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            New-LambekPlan 'last week we moved the .pdf files from C:\A to D:\B' | Out-Null
+            New-LambekPlan 'my colleague copied report.txt to D:\Backup this morning' | Out-Null
+            New-LambekPlan $Ask | ConvertTo-LambekAnswer | Should -Be 'You have not told me that in this conversation.'
+        }
+
+        It 'says everything that was told, once each, in the order it was told' {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            New-LambekPlan 'last week we moved the .pdf files from C:\A to D:\B' | Out-Null
+            $lines = @((New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer) -split "`n")
+            $lines.Count | Should -Be 3
+            $lines[1] | Should -BeLike '*delete the files in C:\Temp*'
+            $lines[2] | Should -BeLike '*move the .pdf files*'
+        }
+
+        It 'answers in French from what was told in French' {
+            New-LambekPlan 'hier j''ai supprimé les fichiers .log dans C:\Temp' | Out-Null
+            New-LambekPlan 'qu''est-ce que j''ai supprimé hier' | ConvertTo-LambekAnswer | Should -Be ("D'après ce qui m'a été dit dans cette conversation :", '- Qui : vous. Quoi : supprimer les fichiers .log dans C:\Temp. Quand : hier.' -join "`n")
+            New-LambekPlan 'quels fichiers j''ai déplacés' | ConvertTo-LambekAnswer | Should -Be "Cela ne m'a pas été dit dans cette conversation."
+        }
+
+        It 'keeps nothing of a sentence read without the memory' {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' -NoRecall | Out-Null
+            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything in this conversation yet.'
+        }
+
+        It 'keeps the plan in progress when something is told or asked about what was told' {
+            $plan = New-LambekPlan 'delete the .tmp files in C:\Temp'
+            $turn = Resolve-LambekFollowUp -Plan $plan -Text 'this morning I renamed report.txt to summary.txt'
+            $turn.Kind | Should -Be 'explain'
+            [object]::ReferenceEquals($turn.Plan, $plan) | Should -BeTrue
+            (Resolve-LambekFollowUp -Plan $plan -Text 'what did I rename').Answer | Should -BeLike '*rename report.txt to summary.txt*'
+        }
+
+        It 'still reads a question about files as a listing, and an order as an order' {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            (Resolve-Text 'which files in C:\Data are older than 30 days').Action | Should -Be 'files.list'
+            (Resolve-Text 'delete the files in C:\Temp').Status | Should -Be 'Ready'
+            (Resolve-Text 'did I delete the files in C:\Temp').Statement | Should -BeNullOrEmpty
+        }
     }
 
     It 'still answers small talk, and still asks what to do when nothing is recognised' {

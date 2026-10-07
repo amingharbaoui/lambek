@@ -60,15 +60,11 @@ function ConvertTo-LambekAnswer {
                 if ($told -and $said -and $said.Say[$told.Act]) { $reply = $said.Say[$told.Act] }
                 # A sentence whose meaning was read is said back: who, what, when
                 if ($told -and $told.PSObject.Properties['Statement'] -and $told.Statement -and $said -and $said.Say['Told']) {
-                    $fact = $told.Statement
-                    $what = Get-LambekStepSentence -Step ([pscustomobject]@{ Action = $fact.Action; Parameters = $fact.Parameters; Output = $null }) -Language $language -Units $answer.Units -Unchecked
-                    $who = $said.Say['Speaker']
-                    if ($fact.Agent -ne 'speaker') { $who = $fact.Name }
-                    $when = ''
-                    if ($fact.Time) { $when = $said.Say['When'] -f $fact.Time }
-                    $shape = 'Told'
-                    if ($fact.Wish) { $shape = 'Wished' }
-                    $reply = $said.Say[$shape] -f $who, $what, $when
+                    $reply = $said.Say['Told'] -f (Format-LambekFact -Fact $told.Statement -Language $language)
+                }
+                # A question about what was told is answered from the conversation, and only from it
+                if ($told -and $told.PSObject.Properties['Asked'] -and $told.Asked -and $said -and $said.Say['Recalled']) {
+                    $reply = Get-LambekToldAnswer -Asked $told.Asked -Language $language
                 }
             }
             if (-not $reply -and $Plan.PSObject.Properties['Suggestion'] -and $Plan.Suggestion) { $reply = $answer.DidYouMean -f $Plan.Suggestion }

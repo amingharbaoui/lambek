@@ -26,13 +26,6 @@ function Get-LambekStatement {
     if (@($filled.Missing).Count -gt 0 -or $filled.Values.Count -eq 0) { return $null }
 
     $tokens = @($Request.Tokens)
-    # The words as the user wrote them, with their accents and capitals
-    $written = @{}
-    foreach ($match in [regex]::Matches("$($Request.Original)", '[\p{L}\p{N}]+')) {
-        $plain = ConvertTo-LambekNormalizedText -Text $match.Value
-        if (-not $written.ContainsKey($plain)) { $written[$plain] = $match.Value }
-    }
-    $say = { param($words) (@($words | ForEach-Object { if ($written.ContainsKey($_)) { $written[$_] } else { $_ } }) -join ' ') }
 
     # Who: the speaker, or the words from the subject to the verb that are not the wish or small words
     $typed = @{}
@@ -46,19 +39,14 @@ function Get-LambekStatement {
                 if ($i -ne $Act.Subject.Position -and ($typed.ContainsKey($i) -or $tokens[$i] -in @($dialogue['Wishes']) -or $lexicon.StopWords.Contains($tokens[$i]))) { continue }
                 $tokens[$i]
             })
-        $name = & $say $kept
+        $name = Get-LambekWritten -Request $Request -Words $kept
     }
 
-    # When: the longest words of time in the sentence
-    $when = $null
-    $text = " $($tokens -join ' ') "
-    foreach ($phrase in @($dialogue['Times']) | Sort-Object { -$_.Length }, { $_ }) {
-        if ($text.Contains(" $phrase ")) { $when = & $say @($phrase -split ' '); break }
-    }
+    $when = Get-LambekSaidTime -Request $Request
 
     # The same term as the plan of an order, with the roles around it
     $step = [pscustomobject]@{ Action = $Action.Id; Parameters = $filled.Values; Output = $Action['Output'] }
-    $roles = @((Get-LambekLogicalForm -Step $step), "agent($agent)")
+    $roles = @((Get-LambekLogicalForm -Step $step), $(if ($name) { "agent(""$name"")" } else { "agent($agent)" }))
     if ($when) { $roles += "time(""$when"")" }
     $form = "told($($roles -join ', '))"
     if ($Act.Subject.Wish) { $form = "told(wish($($roles -join ', ')))" }

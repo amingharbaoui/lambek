@@ -63,7 +63,10 @@ function New-LambekIntentCard {
     # A tool of a server takes words no pack knows as its arguments (the title of a note): that is still an order
     if ($act.Rule -eq 'nothing known' -and $best -and $best.Action['Output'] -eq 'mcp') { $act = [pscustomobject]@{ Kind = 'Order'; Rule = $null; Say = $null; Subject = $null } }
     $statement = $null
+    $recall = $null
     if ($act.Kind -ne 'Order') {
+        # A question about what was told is answered from the conversation
+        if ($act.Kind -eq 'Question') { $recall = Get-LambekAsked -Request $request -Grammar $grammar -Act $act -Candidates @($Evidence.Candidates) }
         # What is told keeps its meaning, read with the action its verb names: it is understood, never carried out
         if ($act.Kind -eq 'Report' -and $selection.Status -eq 'Found' -and $best) {
             $statement = Get-LambekStatement -Request $request -Grammar $grammar -Act $act -Action $best.Action
@@ -309,6 +312,7 @@ function New-LambekIntentCard {
         Status      = $status
         Act         = $act.Kind
         Statement   = $statement
+        Asked       = $recall
         Action      = $actionId
         Title       = $title
         Pack        = $pack

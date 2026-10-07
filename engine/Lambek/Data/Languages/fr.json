@@ -603,14 +603,39 @@
       "demain",
       "la semaine prochaine"
     ],
+    "Asked": [
+      "qu",
+      "que",
+      "quand",
+      "quel",
+      "quels",
+      "quelle",
+      "quelles",
+      "qui",
+      "ou"
+    ],
+    "Everything": [
+      "qu est ce que je t ai dit",
+      "qu est ce que je vous ai dit",
+      "que t ai je dit",
+      "que vous ai je dit",
+      "de quoi te souviens tu",
+      "de quoi vous souvenez vous",
+      "que sais tu",
+      "que savez vous"
+    ],
     "Say": {
-      "Report": "Je lis cela comme une information, pas comme une demande. Je ne sais pas encore retenir ce qu'on me dit.",
+      "Report": "Je lis cela comme une information, pas comme une demande. Je ne l'ai pas assez bien comprise pour la retenir.",
       "Question": "C'est une question, pas une demande d'action. Je ne sais pas encore répondre à ce genre de question.",
       "Other": "Je lis cela comme un sujet autre que ceux dont je m'occupe : je ne fais donc rien.",
-      "Told": "Je comprends. Qui : {0}. Quoi : {1}.{2} C'est une information, donc je ne fais rien, et je ne sais pas encore la retenir.",
-      "Wished": "Je comprends. Qui : {0}. Souhaite : {1}.{2} C'est une information, donc je ne fais rien, et je ne sais pas encore la retenir.",
       "Speaker": "vous",
-      "When": " Quand : {0}."
+      "When": " Quand : {0}.",
+      "Told": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens pour cette conversation.",
+      "Fact": "Qui : {0}. Quoi : {1}.{2}",
+      "FactWished": "Qui : {0}. Souhaite : {1}.{2}",
+      "Recalled": "D'après ce qui m'a été dit dans cette conversation :",
+      "NotTold": "Cela ne m'a pas été dit dans cette conversation.",
+      "NothingTold": "Rien ne m'a encore été dit dans cette conversation."
     }
   },
   "Answer": {

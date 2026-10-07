@@ -68,6 +68,7 @@ $script:GuardWords = $null
 # The language each chat is in, as a belief over the languages (a filter over the turns)
 $script:LanguageBelief = $null
 $script:Incognito = $false
+$script:Told = $null
 $script:KeyNeighbors = $null
 # Read from the machine once, and the folder names they give
 $script:SystemVocabulary = $null
