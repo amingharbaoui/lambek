@@ -28,3 +28,25 @@ jobs:
 
       - name: Analyze and test
         run: ./build.ps1
+
+      - name: Fingerprint the answers
+        run: ./build.ps1 -Task Fingerprint -OutFile fingerprint.txt
+
+      - name: Keep the fingerprint
+        uses: actions/upload-artifact@v4
+        with:
+          name: fingerprint-${{ matrix.os }}
+          path: fingerprint.txt
+
+  same:
+    name: Same answers on every system
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the fingerprints
+        uses: actions/download-artifact@v4
+
+      - name: Compare Windows and Ubuntu
+        run: |
+          sha256sum fingerprint-windows-latest/fingerprint.txt fingerprint-ubuntu-latest/fingerprint.txt
+          diff fingerprint-windows-latest/fingerprint.txt fingerprint-ubuntu-latest/fingerprint.txt

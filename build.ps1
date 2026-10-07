@@ -1,7 +1,10 @@
 #Requires -Version 7.4
 param(
-    [ValidateSet('All', 'Analyze', 'Test', 'Benchmark')]
-    [string] $Task = 'All'
+    [ValidateSet('All', 'Analyze', 'Test', 'Benchmark', 'Fingerprint')]
+    [string] $Task = 'All',
+
+    # Where the fingerprint writes its lines (one answer each)
+    [string] $OutFile
 )
 
 $ErrorActionPreference = 'Stop'
@@ -69,4 +72,36 @@ if ($Task -eq 'Benchmark') {
             Write-Host ("  {0,-16} {1}" -f $name, $report.$name)
         }
     }
+}
+
+# Fingerprint: what Lambek answers to every request of the benchmark, one line each, and the hash of them all.
+# The same sources must give the same hash on every machine
+if ($Task -eq 'Fingerprint') {
+    # Nothing learned before may change an answer
+    $env:LAMBEK_DATA = Join-Path ([IO.Path]::GetTempPath()) "lambek-fingerprint-$PID"
+    Import-Module (Join-Path $engine 'Lambek/Lambek.psd1') -Force
+    Import-LambekPack -Path (Join-Path $PSScriptRoot 'dsl/files') | Out-Null
+    Import-LambekPack -Path (Join-Path $PSScriptRoot 'dsl/code') | Out-Null
+
+    $invariant = [cultureinfo]::InvariantCulture
+    $cases = (Get-Content -LiteralPath (Join-Path $PSScriptRoot 'bench/requests.json') -Raw | ConvertFrom-Json).Cases
+    $lines = foreach ($case in $cases) {
+        $card = ConvertTo-LambekRequest -Text $case.Text | Resolve-LambekIntent
+        $names = [string[]] @($card.Parameters.Keys)
+        [array]::Sort($names, [System.StringComparer]::Ordinal)
+        $values = foreach ($name in $names) {
+            $said = foreach ($value in @($card.Parameters[$name])) {
+                if ($value -is [timespan]) { $value.TotalSeconds.ToString($invariant) + 's' }
+                elseif ($value -is [double] -or $value -is [long] -or $value -is [int]) { ([double] $value).ToString('R', $invariant) }
+                else { [string] $value }
+            }
+            "$name=$($said -join ' ')"
+        }
+        "$($case.Id)|$($card.Status)|$($card.Action)|$(([double] $card.Confidence).ToString('R', $invariant))|$($values -join ';')"
+    }
+
+    $text = ($lines -join "`n") + "`n"
+    $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($text))).ToLowerInvariant()
+    if ($OutFile) { [IO.File]::WriteAllText($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutFile), $text, [Text.UTF8Encoding]::new($false)) }
+    Write-Host "Fingerprint of $(@($lines).Count) answers: $hash"
 }
