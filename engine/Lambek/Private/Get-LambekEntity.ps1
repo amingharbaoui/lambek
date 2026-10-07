@@ -134,6 +134,8 @@ function Expand-LambekPath {
     if ($path -match '^(\$HOME|~)(?=$|[\\/])') {
         $path = $userFolder + $path.Substring($Matches[1].Length)
     }
+    # A drive written with forward slashes (C:/Temp) is the same folder as C:\Temp
+    if ($path -match '^[A-Za-z]:/') { $path = $path.Replace('/', '\') }
 
     # Folder names like Desktop or Documents become the folder of the user
     $name = (ConvertTo-LambekNormalizedText -Text $path) -replace '\s+', ' '

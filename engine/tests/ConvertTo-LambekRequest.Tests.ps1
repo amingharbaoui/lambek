@@ -61,6 +61,8 @@ Describe 'ConvertTo-LambekRequest' {
             @{ Text = 'list the files in C:\Temp.'; Path = 'C:\Temp' }
             @{ Text = 'list the files in /var/log/app'; Path = '/var/log/app' }
             @{ Text = 'delete the files in .\old'; Path = '.\old' }
+            @{ Text = 'list the files in C:/Temp/logs'; Path = 'C:\Temp\logs' }
+            @{ Text = 'delete the .log files older than 30 days in C:/Users/RUNNER~1/AppData/Local/Temp'; Path = 'C:\Users\RUNNER~1\AppData\Local\Temp' }
         ) {
             ((ConvertTo-LambekRequest $Text).Entities | Where-Object Type -EQ 'path')[0].Value | Should -Be $Path
         }
