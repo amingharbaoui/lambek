@@ -4180,6 +4180,770 @@
       "Expected": {
         "Status": "Unknown"
       }
+    },
+    {
+      "Id": "H001",
+      "Split": "hard",
+      "Text": "get rid of the .tmp files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "H002",
+      "Split": "hard",
+      "Text": "wipe out everything older than 30 days in C:\\Logs",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Logs",
+          "OlderThan": "2592000s"
+        }
+      }
+    },
+    {
+      "Id": "H003",
+      "Split": "hard",
+      "Text": "débarrasse-moi des fichiers .log dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "H004",
+      "Split": "hard",
+      "Text": "vire les .tmp de C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "H005",
+      "Split": "hard",
+      "Text": "what is inside C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "H006",
+      "Split": "hard",
+      "Text": "give me the contents of C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "H007",
+      "Split": "hard",
+      "Text": "qu'est-ce qu'il y a dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "H008",
+      "Split": "hard",
+      "Text": "montre-moi le contenu de C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "H009",
+      "Split": "hard",
+      "Text": "duplicate the .pdf files from C:\\A into D:\\B",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "H010",
+      "Split": "hard",
+      "Text": "make a backup of the .docx files in C:\\Work to E:\\Backup",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\Work",
+          "Destination": "E:\\Backup",
+          "Extension": ".docx"
+        }
+      }
+    },
+    {
+      "Id": "H011",
+      "Split": "hard",
+      "Text": "fais une copie des .pdf de C:\\A dans D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "H012",
+      "Split": "hard",
+      "Text": "transfer the .log files from C:\\Temp to D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\Temp",
+          "Destination": "D:\\Archive",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "H013",
+      "Split": "hard",
+      "Text": "relocate the files in C:\\A to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "H014",
+      "Split": "hard",
+      "Text": "range les .pdf de C:\\Inbox dans D:\\Papers",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\Inbox",
+          "Destination": "D:\\Papers",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "H015",
+      "Split": "hard",
+      "Text": "envoie les fichiers de C:\\A vers D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "H016",
+      "Split": "hard",
+      "Text": "make a new folder called reports in C:\\Work",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Parent": "C:\\Work",
+          "Name": "reports"
+        }
+      }
+    },
+    {
+      "Id": "H017",
+      "Split": "hard",
+      "Text": "ajoute un dossier nommé \"factures\" dans C:\\Compta",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.create",
+        "Parameters": {
+          "Kind": "Directory",
+          "Parent": "C:\\Compta",
+          "Name": "factures"
+        }
+      }
+    },
+    {
+      "Id": "H018",
+      "Split": "hard",
+      "Text": "change the name of report.txt to summary.txt",
+      "Language": "en",
+      "Tags": [
+        "paraphrase",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "report.txt",
+          "NewName": "summary.txt"
+        }
+      }
+    },
+    {
+      "Id": "H019",
+      "Split": "hard",
+      "Text": "appelle rapport.txt \"bilan.txt\" à la place",
+      "Language": "fr",
+      "Tags": [
+        "paraphrase",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "rapport.txt",
+          "NewName": "bilan.txt"
+        }
+      }
+    },
+    {
+      "Id": "H020",
+      "Split": "hard",
+      "Text": "could you please delete the .log files in C:\\Temp for me",
+      "Language": "en",
+      "Tags": [
+        "indirect",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "H021",
+      "Split": "hard",
+      "Text": "I would like the .tmp files in C:\\Temp deleted",
+      "Language": "en",
+      "Tags": [
+        "indirect",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "H022",
+      "Split": "hard",
+      "Text": "j'aimerais que tu supprimes les fichiers .tmp dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "indirect",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "H023",
+      "Split": "hard",
+      "Text": "the .log files in C:\\Temp need to be moved to D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "indirect",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\Temp",
+          "Destination": "D:\\Archive",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "H024",
+      "Split": "hard",
+      "Text": "to D:\\B, move the files in C:\\A",
+      "Language": "en",
+      "Tags": [
+        "word-order",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "H025",
+      "Split": "hard",
+      "Text": "from C:\\A copy the .pdf files to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "word-order",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "H026",
+      "Split": "hard",
+      "Text": "dans C:\\Temp, supprime les fichiers .log",
+      "Language": "fr",
+      "Tags": [
+        "word-order",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "H027",
+      "Split": "hard",
+      "Text": "in C:\\Data list the files larger than 5 GB",
+      "Language": "en",
+      "Tags": [
+        "word-order",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "MinSize": "5368709120"
+        }
+      }
+    },
+    {
+      "Id": "H028",
+      "Split": "hard",
+      "Text": "do not delete the .log files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "not-a-request",
+        "en"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "H029",
+      "Split": "hard",
+      "Text": "never move the files in C:\\A to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "not-a-request",
+        "en"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "H030",
+      "Split": "hard",
+      "Text": "ne supprime surtout pas les fichiers dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "not-a-request",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "H031",
+      "Split": "hard",
+      "Text": "is it safe to delete the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "not-a-request",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H032",
+      "Split": "hard",
+      "Text": "what would happen if I deleted the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "not-a-request",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H033",
+      "Split": "hard",
+      "Text": "how do I delete the .log files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "not-a-request",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H034",
+      "Split": "hard",
+      "Text": "est-ce que je peux supprimer les fichiers dans C:\\Temp sans risque",
+      "Language": "fr",
+      "Tags": [
+        "not-a-request",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H035",
+      "Split": "hard",
+      "Text": "yesterday I deleted the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "not-a-request",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H036",
+      "Split": "hard",
+      "Text": "my colleague wants to delete the files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "not-a-request",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H037",
+      "Split": "hard",
+      "Text": "hier j'ai supprimé les fichiers dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "not-a-request",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H038",
+      "Split": "hard",
+      "Text": "delete the files in C:\\Temp? no, wait",
+      "Language": "en",
+      "Tags": [
+        "not-a-request",
+        "en"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "H039",
+      "Split": "hard",
+      "Text": "the delete key on my keyboard is broken",
+      "Language": "en",
+      "Tags": [
+        "other-topic",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H040",
+      "Split": "hard",
+      "Text": "copy that, thanks",
+      "Language": "en",
+      "Tags": [
+        "other-topic",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H041",
+      "Split": "hard",
+      "Text": "my boss moved to Paris last year",
+      "Language": "en",
+      "Tags": [
+        "other-topic",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H042",
+      "Split": "hard",
+      "Text": "list three reasons to learn French",
+      "Language": "en",
+      "Tags": [
+        "other-topic",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H043",
+      "Split": "hard",
+      "Text": "create a good impression at the interview",
+      "Language": "en",
+      "Tags": [
+        "other-topic",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H044",
+      "Split": "hard",
+      "Text": "j'ai déplacé mon rendez-vous à mardi",
+      "Language": "fr",
+      "Tags": [
+        "other-topic",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H045",
+      "Split": "hard",
+      "Text": "la liste des courses est sur la table",
+      "Language": "fr",
+      "Tags": [
+        "other-topic",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H046",
+      "Split": "hard",
+      "Text": "find me a good restaurant in Brussels",
+      "Language": "en",
+      "Tags": [
+        "other-topic",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H047",
+      "Split": "hard",
+      "Text": "show me how to bake bread",
+      "Language": "en",
+      "Tags": [
+        "other-topic",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "H048",
+      "Split": "hard",
+      "Text": "what is a .log file",
+      "Language": "en",
+      "Tags": [
+        "other-topic",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
     }
   ]
 }

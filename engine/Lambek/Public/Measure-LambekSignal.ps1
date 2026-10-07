@@ -10,7 +10,7 @@ function Measure-LambekSignal {
         [Parameter(Mandatory)]
         [string] $Path,
 
-        [ValidateSet('all', 'calibration', 'test')]
+        [ValidateSet('all', 'calibration', 'test', 'hard')]
         [string] $Split = 'calibration'
     )
 

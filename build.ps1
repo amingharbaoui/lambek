@@ -64,7 +64,7 @@ if ($Task -eq 'Benchmark') {
     Import-LambekPack -Path (Join-Path $PSScriptRoot 'dsl/code') | Out-Null
 
     $path = Join-Path $PSScriptRoot 'bench/requests.json'
-    foreach ($split in 'calibration', 'test') {
+    foreach ($split in 'calibration', 'test', 'hard') {
         $report = Invoke-LambekBenchmark -Path $path -Split $split
         Write-Host ''
         Write-Host "Benchmark ($split)"

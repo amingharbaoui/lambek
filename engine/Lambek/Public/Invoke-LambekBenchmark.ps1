@@ -10,7 +10,7 @@ function Invoke-LambekBenchmark {
         [Parameter(Mandatory)]
         [string] $Path,
 
-        [ValidateSet('all', 'calibration', 'test')]
+        [ValidateSet('all', 'calibration', 'test', 'hard')]
         [string] $Split = 'all',
 
         [pscustomobject] $Scoring = (Get-LambekScoring)

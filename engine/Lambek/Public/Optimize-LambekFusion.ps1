@@ -11,7 +11,7 @@ function Optimize-LambekFusion {
         [Parameter(Mandatory)]
         [string] $Path,
 
-        [ValidateSet('all', 'calibration', 'test')]
+        [ValidateSet('all', 'calibration', 'test', 'hard')]
         [string] $Split = 'calibration',
 
         [string] $OutFile
