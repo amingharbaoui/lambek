@@ -1,0 +1,36 @@
+% What Lambek never changes, and why. Facts about the machine come from the engine:
+% os(O), protected(P) for the folders of the system, root(R) for each drive, home(H) for the user folder,
+% users(U) for the folder that holds the folder of every user.
+% Your own rules go in rules.dl next to the audit log, for example: kept("D:\Photos").
+
+protected_on("linux", "/bin").
+protected_on("linux", "/boot").
+protected_on("linux", "/dev").
+protected_on("linux", "/etc").
+protected_on("linux", "/lib").
+protected_on("linux", "/lib64").
+protected_on("linux", "/proc").
+protected_on("linux", "/sbin").
+protected_on("linux", "/sys").
+protected_on("linux", "/usr").
+protected_on("linux", "/var").
+protected_on("macos", "/System").
+protected_on("macos", "/Library").
+protected_on("macos", "/bin").
+protected_on("macos", "/sbin").
+protected_on("macos", "/usr").
+protected_on("macos", "/private").
+
+protected(P) :- os(O), protected_on(O, P).
+
+users_on("linux", "/home").
+users_on("macos", "/Users").
+users(U) :- os(O), users_on(O, U).
+mine(P) :- changes(P), home(H), under(P, H).
+
+blocked(P, "system") :- changes(P), protected(Q), under(P, Q).
+blocked(P, "root") :- changes(P), root(R), same(P, R).
+blocked(P, "home") :- changes(P), home(H), same(P, H).
+blocked(P, "users") :- changes(P), users(U), same(P, U).
+blocked(P, "other") :- changes(P), users(U), under(P, U), not same(P, U), not mine(P).
+blocked(P, "user") :- changes(P), kept(Q), under(P, Q).
