@@ -21,7 +21,11 @@ function ConvertTo-LambekAnswer {
         [string] $AnswerLanguage = '',
 
         # Only what the user must know or do: no restating of the request, no counts, no risk notes
-        [switch] $Brief
+        [switch] $Brief,
+
+        # Tu or vous: by default the one the user's own words use, else vous
+        [ValidateSet('', 'vous', 'tu')]
+        [string] $Register = ''
     )
 
     process {
@@ -30,9 +34,15 @@ function ConvertTo-LambekAnswer {
         if ($AnswerLanguage) { $language = $AnswerLanguage }
         $answer = (Get-LambekLexicon -Language $language).Answer
         $lines = [System.Collections.Generic.List[string]]::new()
+        # Lines said as they came (a server's reply), never changed by the rules of the language
+        $raw = [System.Collections.Generic.HashSet[int]]::new()
+        if (-not $Register) { $Register = Get-LambekRegister -Text "$($Plan.Original)" -Language $language }
+        if (-not $Register) { $Register = 'vous' }
+        # What the memory gave: "like on 12 March: ..." or that nothing was remembered
+        if (-not $Simulation -and -not $Execution -and $Plan.PSObject.Properties['Remark'] -and $Plan.Remark) { $lines.Add($Plan.Remark) }
 
-        # Nothing to do: answer small talk, or say what Lambek can help with
-        $understood = @($Plan.Steps | Where-Object { $_.Action })
+        # Nothing to do: answer small talk, or say what Lambek can help with (a word to explain is something to do)
+        $understood = @($Plan.Steps | Where-Object { $_.Action -or ($_.PSObject.Properties['Guess'] -and $_.Guess) })
         if ($understood.Count -eq 0) {
             $categories = @(Get-LambekCategory -Language $language)
             $titles = @($categories | ForEach-Object { $_.Title.ToLowerInvariant() })
@@ -40,9 +50,13 @@ function ConvertTo-LambekAnswer {
             if ($titles.Count -gt 1) { $topics = ($titles[0..($titles.Count - 2)] -join ', ') + " $($answer.And) " + $titles[-1] }
             $example = "$(@($categories | ForEach-Object { $_.Examples } | Select-Object -First 1))"
 
-            $reply = Get-LambekTalk -Text "$($Plan.Original)" -Language $language -Topics $topics -Example $example
+            $reply = $null
+            if ($Plan.PSObject.Properties['Reply'] -and $Plan.Reply) { $reply = $Plan.Reply; [void] $raw.Add($lines.Count) }
+            if (-not $reply) { $reply = Get-LambekTalk -Text "$($Plan.Original)" -Language $language -Topics $topics -Example $example -Vary }
+            if (-not $reply -and $Plan.PSObject.Properties['Suggestion'] -and $Plan.Suggestion) { $reply = $answer.DidYouMean -f $Plan.Suggestion }
             if (-not $reply) { $reply = $answer.Unknown -f $topics }
-            return $reply
+            $lines.Add($reply)
+            return Complete-LambekAnswer -Lines $lines -Raw $raw -Language $language -Register $Register
         }
 
         # Missing details or blocked plan
@@ -59,7 +73,7 @@ function ConvertTo-LambekAnswer {
                 $lines.Add($answer.NeedMany)
                 foreach ($question in $questions) { $lines.Add("- $question") }
             }
-            return $lines -join "`n"
+            return Complete-LambekAnswer -Lines $lines -Raw $raw -Language $language -Register $Register
         }
 
         # One sentence per step
@@ -79,9 +93,19 @@ function ConvertTo-LambekAnswer {
         }
         elseif (@($sentences).Count -eq 1) {
             $lines.Add(($answer.Single -f @($sentences)[0]))
+            # A value taken from the user's habits is said, so it can be changed
+            $step = @($Plan.Steps)[0]
+            if ($step.PSObject.Properties['FromHabit']) {
+                foreach ($name in $step.FromHabit) { $lines.Add(($answer.Habit -f (Format-LambekHumanValue -Name $name -Value $step.Parameters[$name] -Units $answer.Units))) }
+            }
+            # How the action goes about it, when the pack says ("the largest files go first")
+            $only = (Get-LambekAction -Id @($Plan.Steps)[0].Action).Action
+            foreach ($note in Get-LambekActionNote -Action $only -Parameters @($Plan.Steps)[0].Parameters -Language $language) { $lines.Add($note) }
         }
         else {
-            $lines.Add(($answer.Steps -f @($sentences).Count))
+            # A compound task says what it breaks down into
+            if ($Plan.PSObject.Properties['Method'] -and $Plan.Method) { $lines.Add(($answer.Method -f $Plan.Method.Word, @($sentences).Count)) }
+            else { $lines.Add(($answer.Steps -f @($sentences).Count)) }
             $index = 1
             foreach ($sentence in $sentences) {
                 $lines.Add("$index. $($sentence.Substring(0, 1).ToUpperInvariant())$($sentence.Substring(1)).")
@@ -92,6 +116,23 @@ function ConvertTo-LambekAnswer {
             }
         }
 
+        # A word read from what it looks like is said, so a wrong reading can be seen before anything runs
+        foreach ($step in $Plan.Steps) {
+            if (-not $step.PSObject.Properties['Senses']) { continue }
+            foreach ($sense in $step.Senses) {
+                if ($sense.Sense -ne 'dictionary') { $lines.Add(($answer.Understood -f $sense.From, $sense.To)); continue }
+                # A word of the dictionary: how it leads to the known word (synonym, a way to, narrower, close)
+                $relation = 'near'
+                if ($sense.Relation -in 'form', 'synonym', 'hyper', 'hypo') { $relation = $sense.Relation }
+                $lines.Add(($answer.Dictionary[$relation] -f $sense.From, $sense.To))
+            }
+        }
+
+        # A vague word read with a threshold says the threshold ("gros": more than 50 MB)
+        foreach ($step in $Plan.Steps) {
+            if ($step.PSObject.Properties['Vague'] -and $step.Vague -and -not $step.Vague.Core) { $lines.Add(($answer.VagueNote -f $step.Vague.Word, $step.Vague.Shown)) }
+        }
+
         $onlyCode = @($Plan.Steps | Where-Object { $_.Output -ne 'code' }).Count -eq 0
         $mcpSteps = @($Plan.Steps | Where-Object { $_.Output -eq 'mcp' })
         $commandSteps = @($Plan.Steps | Where-Object { $_.Output -eq 'command' })
@@ -99,7 +140,19 @@ function ConvertTo-LambekAnswer {
         # What happens next
         if ($Execution) {
             if ($Execution.Status -eq 'Completed') {
+                # What each step did, in numbers: "I deleted 3 files (1.2 GB)."
+                $reports = @(foreach ($result in $Execution.Steps) {
+                        if (-not $result.PSObject.Properties['Summary'] -or -not $result.Summary) { continue }
+                        $done = $Plan.Steps[$result.Step - 1]
+                        # Rows speak for a reading step in a brief answer
+                        if ($Brief -and -not @($done.Writes).Count) { continue }
+                        Get-LambekReport -Step $done -Summary $result.Summary -Language $language -Short:$Brief
+                    })
                 if ($onlyCode) { $lines.Add($answer.DoneCode) }
+                elseif ($reports.Count -gt 0) {
+                    if ($Brief) { $lines.Add($answer.DoneBrief) }
+                    foreach ($report in $reports) { $lines.Add($report) }
+                }
                 elseif ($Brief) {
                     # Rows speak for a reading step; a change is only said to be done
                     if (@($commandSteps | Where-Object { @($_.Writes).Count -gt 0 }).Count -gt 0) { $lines.Add($answer.DoneBrief) }
@@ -107,8 +160,16 @@ function ConvertTo-LambekAnswer {
                 elseif ($commandSteps.Count -gt 0 -or $mcpSteps.Count -eq 0) {
                     $mcpNumbers = @($mcpSteps | ForEach-Object { $_.Step })
                     $count = ($Execution.Steps | Where-Object { $_.Step -notin $mcpNumbers } | Measure-Object -Property Count -Sum).Sum
-                    $lines.Add(($answer.Done -f [int] $count))
+                    $lines.Add((Format-LambekPlural -Template $answer.Done -Language $language -Values @([int] $count)))
                 }
+                # The check after the run: only said when something did not change as planned
+                $unverified = @($Execution.Steps | ForEach-Object { if ($_.PSObject.Properties['Unverified']) { $_.Unverified } })
+                if ($unverified.Count -gt 0) { $lines.Add((Format-LambekPlural -Template $answer.Unverified -Language $language -Values @($unverified.Count))) }
+                # Words understood from a rephrasing, learned while the plan ran
+                if ($Execution.PSObject.Properties['Learned']) {
+                    foreach ($word in $Execution.Learned) { $lines.Add(($answer.LearnedSeen -f $word.Word, $word.Meaning)) }
+                }
+
                 # What each MCP server replied
                 foreach ($step in $mcpSteps) {
                     $result = $Execution.Steps | Where-Object Step -EQ $step.Step
@@ -117,6 +178,7 @@ function ConvertTo-LambekAnswer {
                     if (-not $reply) { $lines.Add(($answer.McpEmpty -f $server)); continue }
                     if ($reply.Length -gt 1200) { $reply = $reply.Substring(0, 1200) + '...' }
                     $lines.Add(($answer.McpReply -f $server))
+                    [void] $raw.Add($lines.Count)
                     $lines.Add($reply)
                 }
             }
@@ -151,10 +213,10 @@ function ConvertTo-LambekAnswer {
                 }
                 elseif ($bytes -gt 0) {
                     $size = Format-LambekHumanValue -Name 'Size' -Value $bytes -Units $answer.Units
-                    $lines.Add(($answer.Matches -f $count, $size))
+                    $lines.Add((Format-LambekPlural -Template $answer.Matches -Language $language -Values @($count, $size)))
                 }
                 else {
-                    $lines.Add(($answer.MatchesCount -f $count))
+                    $lines.Add((Format-LambekPlural -Template $answer.MatchesCount -Language $language -Values @($count)))
                 }
             }
             # Nothing to change: no confirmation to ask for
@@ -175,18 +237,44 @@ function ConvertTo-LambekAnswer {
             $lines.Add($answer.RiskCreate)
         }
         else {
-            $lines.Add(@{ low = $answer.RiskLow; medium = $answer.RiskMedium; high = $answer.RiskHigh }[$Plan.Risk])
+            # A change that can be undone is not said to be final ("delete" puts the files in Lambek's trash)
+            $risk = @{ low = $answer.RiskLow; medium = $answer.RiskMedium; high = $answer.RiskHigh }[$Plan.Risk]
+            $final = @($commandSteps | Where-Object {
+                    $action = (Get-LambekAction -Id $_.Action).Action
+                    $_.Risk -eq 'high' -and -not ($action.ContainsKey('Reversible') -and (Test-LambekCondition -Condition $action.Reversible -Parameters $_.Parameters))
+                })
+            if ($Plan.Risk -eq 'high' -and $final.Count -eq 0) { $risk = $answer.RiskUndo }
+            $lines.Add($risk)
         }
 
-        return $lines -join "`n"
+        return Complete-LambekAnswer -Lines $lines -Raw $raw -Language $language -Register $Register
     }
+}
+
+function Complete-LambekAnswer {
+    param(
+        [System.Collections.Generic.List[string]] $Lines,
+        [System.Collections.Generic.HashSet[int]] $Raw,
+        [string] $Language,
+        [string] $Register
+    )
+
+    # Every line Lambek wrote follows the rules of its language, in the user's register
+    $spoken = for ($i = 0; $i -lt $Lines.Count; $i++) {
+        if ($Raw.Contains($i)) { $Lines[$i]; continue }
+        ConvertTo-LambekSpoken -Text $Lines[$i] -Language $Language -Register $Register
+    }
+    return @($spoken) -join "`n"
 }
 
 function Get-LambekStepSentence {
     param(
         [pscustomobject] $Step,
         [string] $Language,
-        [hashtable] $Units
+        [hashtable] $Units,
+
+        # Say it without reading it back (the reading back itself uses this)
+        [switch] $Unchecked
     )
 
     $action = (Get-LambekAction -Id $Step.Action).Action
@@ -195,5 +283,111 @@ function Get-LambekStepSentence {
         if ($action.Say.ContainsKey($Language)) { $template = $action.Say[$Language] }
         else { $template = $action.Say['en'] }
     }
-    return ConvertTo-LambekSentence -Template $template -Parameters $Step.Parameters -Units $Units
+
+    # The values that are words of the pack are said in the language of the answer ("Class": "classe")
+    $values = [ordered]@{}
+    foreach ($name in $Step.Parameters.Keys) {
+        $value = $Step.Parameters[$name]
+        # A kind the language has its own words for ("temporary": "fichiers temporaires") is said with them
+        if ($value -is [string] -and $Units.ContainsKey($value)) { $values[$name] = $value; continue }
+        $values[$name] = ConvertTo-LambekLocalValue -Action $action -Name $name -Value $value -Language $Language
+    }
+    $plain = @($action.Parameters | Where-Object { $_.ContainsKey('Words') } | ForEach-Object { $_.Name })
+
+    # The sentence must say the plan: it is read back with the same grammar, and kept when it gives the same action
+    # and the same values. Names and places go between quotes when needed. A value the sentence does not give back
+    # is said as it is, after the sentence; when even the action differs, the whole plan is said as it is
+    $best = $null
+    foreach ($quote in 'None', 'Needed', 'All') {
+        $sentence = ConvertTo-LambekSentence -Template $template -Parameters $values -Units $Units -Quote $quote -Plain $plain
+        $sentence = ConvertTo-LambekSpoken -Text $sentence -Language $Language
+        if ($Unchecked -or $Step.Output -eq 'mcp') { return $sentence }
+        $differ = Test-LambekRoundTrip -Step $Step -Sentence $sentence -Language $Language
+        if ($null -eq $differ) { continue }
+        if (@($differ).Count -eq 0) { return $sentence }
+        if (-not $best -or @($differ).Count -lt @($best.Differ).Count) { $best = [pscustomobject]@{ Sentence = $sentence; Differ = @($differ) } }
+    }
+    if (-not $best) {
+        Write-Verbose "Read back, the sentence does not give the action: the plan is said as it is."
+        return Format-LambekLiteralStep -Step $Step -Action $action -Language $Language -Units $Units
+    }
+    $exact = foreach ($name in $best.Differ) {
+        if ($Step.Parameters.Contains($name)) { "$name = $(Format-LambekHumanValue -Name $name -Value $Step.Parameters[$name] -Units $Units)" }
+        else { "$name = -" }
+    }
+    return "$($best.Sentence) ($($exact -join ', '))"
+}
+
+function ConvertTo-LambekLocalValue {
+    param([hashtable] $Action, [string] $Name, [object] $Value, [string] $Language)
+
+    # A value named by the words of a parameter: the first of its words that belongs to this language
+    $parameter = @($Action.Parameters | Where-Object { $_.Name -eq $Name })[0]
+    if (-not $parameter -or -not $parameter.ContainsKey('Words') -or $Value -isnot [string]) { return $Value }
+    $pack = $null
+    foreach ($candidate in $script:Packs.Values) { if (@($candidate.Actions | Where-Object { $_.Id -eq $Action.Id }).Count -gt 0) { $pack = $candidate } }
+    # A value that is already a word of this language stays as it is
+    if ($pack -and $pack.Words.ContainsKey($Language) -and $pack.Words[$Language].ContainsKey($Value.ToLowerInvariant())) { return $Value }
+    foreach ($word in @($parameter.Words.Keys | Sort-Object)) {
+        if ($parameter.Words[$word] -cne $Value) { continue }
+        if ($pack -and $pack.Words.ContainsKey($Language) -and $pack.Words[$Language].ContainsKey($word)) {
+            # The word as the pack writes it, unless it is only the value in lower case
+            if ($word -ne $Value.ToLowerInvariant()) { return $word }
+        }
+    }
+    return $Value
+}
+
+function Test-LambekRoundTrip {
+    param([pscustomobject] $Step, [string] $Sentence, [string] $Language)
+
+    # The names of the values the sentence does not give back (none: it says the plan), or nothing when the action differs.
+    # Read back once for each sentence and plan
+    $key = "$Language|$($Step.Action)|$(Get-LambekStepValueKey -Parameters $Step.Parameters)|$Sentence"
+    if ($script:RoundTripCache.ContainsKey($key)) { return , $script:RoundTripCache[$key] }
+
+    $differ = $null
+    $handler = $script:ProgressHandler
+    try {
+        $script:ProgressHandler = $null
+        $card = ConvertTo-LambekRequest -Text $Sentence -Language $Language | Resolve-LambekIntent
+        if ($card.Action -eq $Step.Action) {
+            # Values the user did not say (a habit, what was implied) are not in the sentence either
+            $skip = @()
+            if ($Step.PSObject.Properties['FromHabit']) { $skip += @($Step.FromHabit) }
+            if ($Step.PSObject.Properties['Implied']) { $skip += @($Step.Implied) }
+            $names = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
+            foreach ($name in @($Step.Parameters.Keys) + @($card.Parameters.Keys)) { if ($name -notin $skip) { [void] $names.Add($name) } }
+            $differ = [string[]] @(foreach ($name in $names) {
+                    $mine = if ($Step.Parameters.Contains($name)) { Format-LambekValue -Value $Step.Parameters[$name] } else { $null }
+                    $theirs = if ($card.Parameters.Contains($name)) { Format-LambekValue -Value $card.Parameters[$name] } else { $null }
+                    if ($mine -cne $theirs) { $name }
+                })
+        }
+    }
+    catch { Write-Verbose "The sentence could not be read back: $($_.Exception.Message)" }
+    finally { $script:ProgressHandler = $handler }
+
+    if ($script:RoundTripCache.Count -gt 500) { $script:RoundTripCache.Clear() }
+    $script:RoundTripCache[$key] = $differ
+    return , $differ
+}
+
+function Get-LambekStepValueKey {
+    param([System.Collections.IDictionary] $Parameters)
+
+    # The values in canonical form, sorted by name
+    return (@($Parameters.Keys | Sort-Object -CaseSensitive | ForEach-Object { "$_=$(Format-LambekValue -Value $Parameters[$_])" }) -join ';')
+}
+
+function Format-LambekLiteralStep {
+    param([pscustomobject] $Step, [hashtable] $Action, [string] $Language, [hashtable] $Units)
+
+    # The plan as it is: the title of the action, then each value by name
+    $title = $Step.Action
+    if ($Action.ContainsKey('Title') -and $Action.Title.ContainsKey($Language)) { $title = $Action.Title[$Language] }
+    $pairs = foreach ($name in $Step.Parameters.Keys) {
+        "$name = $(Format-LambekHumanValue -Name $name -Value (Add-LambekQuote -Value $Step.Parameters[$name] -Units $Units) -Units $Units)"
+    }
+    return "$($title.ToLowerInvariant()) ($($pairs -join ', '))"
 }

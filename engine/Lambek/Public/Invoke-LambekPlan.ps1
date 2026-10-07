@@ -100,6 +100,10 @@ function Invoke-LambekPlan {
             }
         }
 
+        # Deletions kept longer than the trash keeps them are gone for good now
+        try { Clear-LambekTrash -Confirm:$false }
+        catch { Write-Verbose "The trash could not be emptied: $($_.Exception.Message)" }
+
         # Run the steps in order, stop at the first failure
         $status = 'Completed'
         foreach ($number in $Plan.Order) {
@@ -126,8 +130,24 @@ function Invoke-LambekPlan {
             }
 
             if ($run.Succeeded) {
-                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Completed'; Output = $run.Output; Error = $null; Count = $run.Items.Count })
-                Write-LambekAudit -Path $AuditPath -EventName 'StepCompleted' -PlanHash $planHash -Step $number -Action $step.Action -Detail "$($run.Items.Count) item(s)"
+                # The postcondition, checked on the disk: what should be gone is gone, what should be there is there
+                $wrong = @()
+                if ($step.Output -eq 'command') { $wrong = @((Test-LambekEffect -Step $step -Items @($run.Items)).Wrong) }
+                $summary = $null
+                if ($step.Output -eq 'command') { $summary = Get-LambekItemSummary -Items @($run.Items) }
+                $results.Add([pscustomobject]@{ Step = $number; Action = $step.Action; Status = 'Completed'; Output = $run.Output; Error = $null; Count = $run.Items.Count; Unverified = $wrong; Summary = $summary })
+                # Remembered for the adaptation: the scorers that agreed with a plan the user ran, the places used
+                Add-LambekHistory -Step $step
+                # And each scorer's bias moves towards what this run showed (Kalman)
+                Add-LambekDrift -Step $step
+                # The user's own adapter of the proposer (LoRA) learns the request that was run; the base never changes
+                if (-not $script:Incognito -and $step.PSObject.Properties['Clause'] -and $step.Clause) {
+                    try { $null = Add-LambekProposalExample -Text $step.Clause -Action $step.Action }
+                    catch { Write-Verbose "The proposer did not learn this request: $($_.Exception.Message)" }
+                }
+                $detail = "$($run.Items.Count) item(s), checked"
+                if ($wrong.Count -gt 0) { $detail = "$($run.Items.Count) item(s), $($wrong.Count) not as planned" }
+                Write-LambekAudit -Path $AuditPath -EventName 'StepCompleted' -PlanHash $planHash -Step $number -Action $step.Action -Detail $detail
             }
             else {
                 $status = 'Failed'
@@ -138,6 +158,16 @@ function Invoke-LambekPlan {
 
         Write-LambekAudit -Path $AuditPath -EventName $status -PlanHash $planHash
 
+        # A plan that ran is remembered, and the words not understood before it may now be learned
+        $learned = @()
+        if ($status -eq 'Completed') {
+            try {
+                Add-LambekMemory -Plan $Plan | Out-Null
+                $learned = @(Invoke-LambekPursuit -Plan $Plan)
+            }
+            catch { Write-Verbose "The memory could not learn from this plan: $($_.Exception.Message)" }
+        }
+
         [pscustomobject]@{
             PSTypeName = 'Lambek.Execution'
             Status     = $status
@@ -145,6 +175,7 @@ function Invoke-LambekPlan {
             PlanHash   = $planHash
             Steps      = $results.ToArray()
             AuditPath  = $AuditPath
+            Learned    = $learned
         }
     }
 }

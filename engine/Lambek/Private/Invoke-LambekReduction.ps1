@@ -14,38 +14,14 @@ function Invoke-LambekReduction {
         return [pscustomobject]@{ Leftover = $leftover.ToArray(); Pairs = $pairs.ToArray() }
     }
 
-    # cost[i, j] = smallest number of simple types left over in positions i..j
-    # choice[i, j] = -1 when i stays, otherwise the position that i cancels with
-    $cost = [int[, ]]::new($n + 1, $n + 1)
-    $choice = [int[, ]]::new($n + 1, $n + 1)
-
-    for ($length = 1; $length -le $n; $length++) {
-        for ($i = 0; $i -le $n - $length; $i++) {
-            $j = $i + $length - 1
-
-            # Option 1: i is not cancelled
-            $best = 1 + (Get-LambekCost -Cost $cost -From ($i + 1) -To $j)
-            $bestChoice = -1
-
-            # Option 2: i cancels with m (x^(k) . x^(k+1) -> 1), everything between must cancel first
-            for ($m = $i + 1; $m -le $j; $m++) {
-                $left = $SimpleTypes[$i]
-                $right = $SimpleTypes[$m]
-                $canCancel = $left.Base -eq $right.Base -and $right.Order -eq $left.Order + 1
-
-                if ($canCancel -and (Get-LambekCost -Cost $cost -From ($i + 1) -To ($m - 1)) -eq 0) {
-                    $candidate = Get-LambekCost -Cost $cost -From ($m + 1) -To $j
-                    if ($candidate -lt $best) {
-                        $best = $candidate
-                        $bestChoice = $m
-                    }
-                }
-            }
-
-            $cost[$i, $j] = $best
-            $choice[$i, $j] = $bestChoice
-        }
+    # Interval dynamic programming, in the compiled chart class: for each span, the fewest simple types left
+    $bases = [string[]]::new($n)
+    $orders = [int[]]::new($n)
+    for ($x = 0; $x -lt $n; $x++) {
+        $bases[$x] = $SimpleTypes[$x].Base
+        $orders[$x] = $SimpleTypes[$x].Order
     }
+    $choice = [LambekChart]::Reduce($bases, $orders)
 
     # Rebuild the cancellations
     $ranges = [System.Collections.Generic.Stack[int[]]]::new()
@@ -73,17 +49,4 @@ function Invoke-LambekReduction {
         Leftover = @($leftover | Sort-Object)
         Pairs    = @($pairs | Sort-Object Left)
     }
-}
-
-function Get-LambekCost {
-    param(
-        [int[, ]] $Cost,
-        [int] $From,
-        [int] $To
-    )
-
-    if ($From -gt $To) {
-        return 0
-    }
-    return $Cost[$From, $To]
 }

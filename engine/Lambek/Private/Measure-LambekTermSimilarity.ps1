@@ -21,35 +21,13 @@ function Measure-LambekTermSimilarity {
         [pscustomobject] $Model
     )
 
-    # Edit similarity (best match per term, then average)
-    $editTotal = 0.0
-    foreach ($term in $Terms) {
-        $best = 0.0
-        foreach ($candidate in $ReferenceTerms) {
-            $score = (Measure-LambekEditDistance -Source $term -Target $candidate).Similarity
-            if ($score -gt $best) { $best = $score }
-        }
-        $editTotal += $best
-    }
-
-    $editSimilarity = 0.0
-    if ($Terms.Count -gt 0) {
-        $editSimilarity = $editTotal / $Terms.Count
-    }
-
-    # Jaccard
-    $wordJaccard = Measure-LambekJaccard -SetA $Terms -SetB $ReferenceTerms
-    $nGramJaccard = Measure-LambekJaccard -SetA $NGrams -SetB $ReferenceNGrams
-
-    # TF-IDF cosine
-    $vectorA = ConvertTo-LambekTfIdfVector -Terms $Terms -Model $Model
-    $vectorB = ConvertTo-LambekTfIdfVector -Terms $ReferenceTerms -Model $Model
-    $cosine = Measure-LambekCosine -VectorA $vectorA -VectorB $vectorB
+    # Edit similarity (best match per term, then average), word and n-gram Jaccard, TF-IDF cosine, in Native/Lambek.cs
+    $scores = [LambekMeasure]::Similarity($Terms, $NGrams, $ReferenceTerms, $ReferenceNGrams, $Model.Idf, $Model.UnknownIdf)
 
     return [pscustomobject]@{
-        EditSimilarity = $editSimilarity
-        WordJaccard    = $wordJaccard
-        NGramJaccard   = $nGramJaccard
-        Cosine         = $cosine
+        EditSimilarity = $scores[0]
+        WordJaccard    = $scores[1]
+        NGramJaccard   = $scores[2]
+        Cosine         = $scores[3]
     }
 }

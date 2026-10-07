@@ -15,6 +15,7 @@ function Get-LambekSimulation {
         $step = $Plan.Steps[$number - 1]
         Send-LambekProgress -Stage 'Simulate' -Step $number -Percent (100 * [array]::IndexOf(@($Plan.Order), $number) / @($Plan.Order).Count)
         $affected = @()
+        $summary = $null
         $bytes = 0L
         $stepStatus = 'Ready'
         $message = $null
@@ -32,7 +33,8 @@ function Get-LambekSimulation {
             # Every command that is not read-only must support -WhatIf
             $commands = (Get-LambekAction -Id $step.Action).Pack.Commands
             foreach ($name in $commands) {
-                $isReadOnly = $name -match '^(Get|Select|Where|Sort|Measure|Test|Group|Format)-'
+                # (path arithmetic and discarding output change nothing either)
+                $isReadOnly = $name -match '^(Get|Select|Where|Sort|Measure|Test|Group|Format)-' -or $name -in 'Join-Path', 'Split-Path', 'Out-Null'
                 $supportsWhatIf = (Get-Command -Name $name).Parameters.ContainsKey('WhatIf')
                 if (-not $isReadOnly -and -not $supportsWhatIf) {
                     throw "Command '$name' cannot be simulated because it does not support -WhatIf."
@@ -48,6 +50,7 @@ function Get-LambekSimulation {
                 $status = 'Failed'
             }
             elseif ($run.Items.Count -gt 0) {
+                $summary = Get-LambekItemSummary -Items @($run.Items)
                 foreach ($item in $run.Items) {
                     $affected += [string] $item.FullName
                     if ($item.PSObject.Properties['Length'] -and $item.Length -is [long]) { $bytes += $item.Length }
@@ -79,6 +82,7 @@ function Get-LambekSimulation {
                 Count    = $affected.Count
                 Bytes    = $bytes
                 Affected = $affected
+                Summary  = $summary
                 Message  = $message
             })
     }

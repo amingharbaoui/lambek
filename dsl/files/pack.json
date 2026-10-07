@@ -17,7 +17,7 @@
     },
     "c": {
       "en": "Compared to what?",
-      "fr": "Par rapport \u00e0 quoi ?"
+      "fr": "Par rapport à quoi ?"
     },
     "z": {
       "en": "What size?",
@@ -25,7 +25,7 @@
     },
     "t": {
       "en": "What age or duration?",
-      "fr": "Quelle dur\u00e9e ?"
+      "fr": "Quelle durée ?"
     },
     "q": {
       "en": "What name should it have?",
@@ -37,19 +37,25 @@
       "Name": "path",
       "Priority": 40,
       "Kind": "path",
-      "Pattern": "(?:(?i)(?<=\\b(?:in|inside|under|on|from|into|to|dans|sous|sur|vers|de|du|des|depuis)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:dossier|folder|r[e\u00e9]pertoire|directory)\\s+)?(?<v>(?:[A-Za-z]:\\\\|\\\\\\\\|\\.{1,2}\\\\)(?:[^\\s,;\"\\\\:]+(?: [^\\s,;\"\\\\:]+)*\\\\)*(?:[^\\s,;\"\\\\]*[^\\s,;\"\\\\.])?|%[A-Za-z_]+%(?:\\\\[^\\s,;\"]*)?|\\$env:[A-Za-z_]+(?:\\\\[^\\s,;\"]*)?|\\$HOME(?:/[^\\s,;\"]*)?|(?<![\\w/:.~])(?:~|\\.{1,2})?/(?:[^\\s,;\"/]+/)*[^\\s,;\"/.]+(?:\\.[^\\s,;\"/.]+)*/?|(?<![\\w/])~(?=\\s|$))"
+      "Pattern": "(?:(?i)(?<=\\b(?:in|inside|under|on|from|into|to|dans|sous|sur|vers|de|du|des|depuis)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:dossier|folder|r[eé]pertoire|directory)\\s+)?(?<v>(?:[A-Za-z]:\\\\|\\\\\\\\|\\.{1,2}\\\\)(?:[^\\s,;\"\\\\:]+(?: [^\\s,;\"\\\\:]+)*\\\\)*(?:[^\\s,;\"\\\\]*[^\\s,;\"\\\\.])?|%[A-Za-z_]+%(?:\\\\[^\\s,;\"]*)?|\\$env:[A-Za-z_]+(?:\\\\[^\\s,;\"]*)?|\\$HOME(?:/[^\\s,;\"]*)?|(?<![\\w/:.~])(?:~|\\.{1,2})?/(?:[^\\s,;\"/]+/)*[^\\s,;\"/.]+(?:\\.[^\\s,;\"/.]+)*/?|(?<![\\w/])~(?=\\s|$))"
     },
     {
       "Name": "path",
       "Priority": 41,
       "Kind": "path",
-      "Pattern": "(?i)(?<=\\b(?:in|inside|under|on|to|into|dans|sous|sur|vers)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:(?:dossier|folder|r[e\u00e9]pertoire|directory)\\s+)?(?<v>desktop|bureau|documents|downloads|t[e\u00e9]l[e\u00e9]chargements|pictures|images|music|musique|videos|vid[e\u00e9]os)\\b(?![\\\\/.\\w])"
+      "Pattern": "(?i)(?<=\\b(?:in|inside|under|on|from|to|into|dans|sous|sur|vers|depuis)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:(?:dossier|folder|r[eé]pertoire|directory)\\s+)?(?<v>{folders})\\b(?![\\\\/.\\w])"
+    },
+    {
+      "Name": "path",
+      "Priority": 43,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:{kinds})\\b(?:\\s+\\w+){0,4}?\\s+(?:de|du|des|d')\\s*(?:(?:le|la|les|mon|ma|mes)\\s+)?)(?:(?:dossier|r[eé]pertoire)\\s+)?(?<v>{folders})\\b(?![\\\\/.\\w])"
     },
     {
       "Name": "path",
       "Priority": 42,
       "Kind": "path",
-      "Pattern": "(?i)(?:(?<=\\b(?:my|mes|mon|ma)\\s+)(?<v>documents|pictures|images|music|musique|videos|vid[e\u00e9]os)|(?:(?<=\\b(?:in|inside|under|on|from|into|to|dans|sous|sur|vers|de|du|des|depuis)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:dossier|folder|r[e\u00e9]pertoire|directory)\\s+)?(?<![\\w\\\\/.])(?<v>desktop|bureau|downloads|t[e\u00e9]l[e\u00e9]chargements))\\b(?![\\\\/.\\w])"
+      "Pattern": "(?i)(?:(?<!\\b(?:in|inside|dans|from|de|du|des|depuis)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?(?:{folders}\\b|\\u0001).*)(?<=\\b(?:my|mes|mon|ma)\\s+)(?<v>{folders})(?!.*\\b(?:from|depuis|de|du|des)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?(?:{folders}\\b|\\u0001))|(?:(?<=\\b(?:in|inside|under|on|from|into|to|dans|sous|sur|vers|de|du|des|depuis)\\s+(?:(?:the|my|le|la|les|mon|ma|mes)\\s+)?)(?:dossier|folder|r[eé]pertoire|directory)\\s+)?(?<![\\w\\\\/.])(?<v>desktop|bureau|downloads|t[eé]l[eé]chargements))\\b(?![\\\\/.\\w])"
     },
     {
       "Name": "filename",
@@ -84,8 +90,546 @@
       "Priority": 70,
       "Kind": "lower",
       "Pattern": "(?<![\\w\\\\])(?<v>\\.[A-Za-z0-9]{1,5})\\b"
+    },
+    {
+      "Name": "order",
+      "Priority": 55,
+      "Kind": "order",
+      "Pattern": "(?i)\\b(?<v>(?:par|by)\\s+(?:ordre\\s+de\\s+)?(?:taille|size|date)|du\\s+plus\\s+(?:petit|l[eé]ger|gros|grand|lourd|r[eé]cent|ancien|vieux)\\s+au\\s+plus\\s+(?:petit|l[eé]ger|gros|grand|lourd|r[eé]cent|ancien|vieux)|from\\s+(?:smallest|largest|newest|oldest)\\s+to\\s+(?:smallest|largest|newest|oldest)|newest|latest|most\\s+recent|(?:the\\s+)?most\\s+(?:space|room)|(?:the\\s+)?least\\s+(?:space|room)|(?:le\\s+)?(?:plus|moins)\\s+d(?:e\\s+|')(?:place|espace)|plus\\s+volumineu(?:x|ses?)|oldest|largest|biggest|heaviest|smallest|lightest|plus\\s+(?:r[eé]cente?s?|ancienn?e?s?|vieux|vieilles?|gross?e?s?|grande?s?|lourde?s?|petite?s?|l[eé]g[eè]re?s?))\\b",
+      "Orders": {
+        "newest": "newest",
+        "latest": "newest",
+        "most recent": "newest",
+        "oldest": "oldest",
+        "largest": "largest",
+        "biggest": "largest",
+        "heaviest": "largest",
+        "smallest": "smallest",
+        "lightest": "smallest",
+        "plus recent": "newest",
+        "plus recents": "newest",
+        "plus ancien": "oldest",
+        "plus anciens": "oldest",
+        "plus vieux": "oldest",
+        "plus vieille": "oldest",
+        "plus vieilles": "oldest",
+        "plus gros": "largest",
+        "plus grosse": "largest",
+        "plus grosses": "largest",
+        "plus grand": "largest",
+        "plus grands": "largest",
+        "plus grande": "largest",
+        "plus grandes": "largest",
+        "plus lourd": "largest",
+        "plus lourds": "largest",
+        "plus lourde": "largest",
+        "plus lourdes": "largest",
+        "plus petit": "smallest",
+        "plus petits": "smallest",
+        "plus petite": "smallest",
+        "plus petites": "smallest",
+        "plus leger": "smallest",
+        "plus legers": "smallest",
+        "plus legere": "smallest",
+        "plus legeres": "smallest",
+        "plus recente": "newest",
+        "plus recentes": "newest",
+        "plus ancienne": "oldest",
+        "plus anciennes": "oldest",
+        "most space": "largest",
+        "the most space": "largest",
+        "most room": "largest",
+        "the most room": "largest",
+        "least space": "smallest",
+        "the least space": "smallest",
+        "least room": "smallest",
+        "the least room": "smallest",
+        "plus de place": "largest",
+        "le plus de place": "largest",
+        "plus d espace": "largest",
+        "le plus d espace": "largest",
+        "plus de espace": "largest",
+        "le plus de espace": "largest",
+        "moins de place": "smallest",
+        "le moins de place": "smallest",
+        "moins d espace": "smallest",
+        "le moins d espace": "smallest",
+        "moins de espace": "smallest",
+        "le moins de espace": "smallest",
+        "plus volumineux": "largest",
+        "plus volumineuse": "largest",
+        "plus volumineuses": "largest",
+        "par taille": "largest",
+        "by size": "largest",
+        "par ordre de taille": "largest",
+        "par date": "newest",
+        "by date": "newest",
+        "par ordre de date": "newest",
+        "du plus petit au plus gros": "smallest",
+        "du plus gros au plus petit": "largest",
+        "du plus petit au plus grand": "smallest",
+        "du plus grand au plus petit": "largest",
+        "du plus petit au plus lourd": "smallest",
+        "du plus lourd au plus petit": "largest",
+        "du plus leger au plus gros": "smallest",
+        "du plus gros au plus leger": "largest",
+        "du plus leger au plus grand": "smallest",
+        "du plus grand au plus leger": "largest",
+        "du plus leger au plus lourd": "smallest",
+        "du plus lourd au plus leger": "largest",
+        "du plus recent au plus ancien": "newest",
+        "du plus recent au plus vieux": "newest",
+        "du plus ancien au plus recent": "oldest",
+        "du plus vieux au plus recent": "oldest",
+        "from smallest to largest": "smallest",
+        "from largest to smallest": "largest",
+        "from newest to oldest": "newest",
+        "from oldest to newest": "oldest"
+      }
+    },
+    {
+      "Name": "extension",
+      "Priority": 71,
+      "Kind": "extension",
+      "Pattern": "(?i)(?:(?<![\\w.\\\\/:])(?<v>(?=[a-z0-9]*[a-z])[a-z0-9]{2,5})(?=\\s+(?:files?|fichiers?|documents?)\\b)|(?<=\\b(?:files?|fichiers?|documents?|les|des|aux|the|all|my|mes|ces|these|those|nos|vos|leurs)\\s+)(?<v>(?=[a-z0-9]*[a-z])[a-z0-9]{2,5})(?![\\w.\\\\/:@-]))"
     }
   ],
+  "Folders": {
+    "desktop": "Desktop",
+    "bureau": "Desktop",
+    "documents": "MyDocuments",
+    "pictures": "MyPictures",
+    "images": "MyPictures",
+    "music": "MyMusic",
+    "musique": "MyMusic",
+    "videos": "MyVideos",
+    "downloads": "Downloads",
+    "telechargements": "Downloads"
+  },
+  "Kinds": {
+    "image": [
+      ".bmp",
+      ".gif",
+      ".heic",
+      ".jpeg",
+      ".jpg",
+      ".png",
+      ".svg",
+      ".tif",
+      ".tiff",
+      ".webp"
+    ],
+    "video": [
+      ".avi",
+      ".m4v",
+      ".mkv",
+      ".mov",
+      ".mp4",
+      ".webm",
+      ".wmv"
+    ],
+    "audio": [
+      ".aac",
+      ".flac",
+      ".m4a",
+      ".mp3",
+      ".ogg",
+      ".wav",
+      ".wma"
+    ],
+    "document": [
+      ".doc",
+      ".docx",
+      ".odp",
+      ".ods",
+      ".odt",
+      ".pdf",
+      ".ppt",
+      ".pptx",
+      ".rtf",
+      ".xls",
+      ".xlsx"
+    ],
+    "compressed": [
+      ".7z",
+      ".bz2",
+      ".gz",
+      ".rar",
+      ".tar",
+      ".xz",
+      ".zip"
+    ],
+    "text": [
+      ".csv",
+      ".log",
+      ".md",
+      ".txt"
+    ],
+    "temporary": [
+      ".temp",
+      ".tmp"
+    ],
+    "backup": [
+      ".backup",
+      ".bak",
+      ".old"
+    ]
+  },
+  "Taxonomy": {
+    "media": [
+      "image",
+      "video",
+      "audio"
+    ]
+  },
+  "Vague": {
+    "old": {
+      "Parameter": "OlderThan",
+      "Unit": "day",
+      "Membership": [
+        7,
+        30,
+        null,
+        null
+      ],
+      "Words": {
+        "en": [
+          "old",
+          "stale",
+          "ancient",
+          "aged"
+        ],
+        "fr": [
+          "vieux",
+          "vieil",
+          "vieille",
+          "vieilles",
+          "ancien",
+          "anciens",
+          "ancienne",
+          "anciennes"
+        ],
+        "es": [
+          "viejo",
+          "viejos",
+          "vieja",
+          "viejas",
+          "antiguo",
+          "antiguos",
+          "antigua",
+          "antiguas"
+        ],
+        "de": [
+          "alt",
+          "alte",
+          "alten",
+          "alter",
+          "altes"
+        ],
+        "it": [
+          "vecchio",
+          "vecchi",
+          "vecchia",
+          "vecchie"
+        ],
+        "nl": [
+          "oud",
+          "oude"
+        ],
+        "pt": [
+          "velho",
+          "velhos",
+          "velha",
+          "velhas",
+          "antigo",
+          "antigos",
+          "antiga",
+          "antigas"
+        ]
+      }
+    },
+    "recent": {
+      "Parameter": "NewerThan",
+      "Unit": "day",
+      "Membership": [
+        null,
+        null,
+        1,
+        7
+      ],
+      "Words": {
+        "en": [
+          "recent",
+          "new",
+          "fresh"
+        ],
+        "fr": [
+          "recent",
+          "recents",
+          "recente",
+          "recentes",
+          "nouveaux",
+          "nouvelles"
+        ],
+        "es": [
+          "reciente",
+          "recientes",
+          "nuevos",
+          "nuevas"
+        ],
+        "de": [
+          "neu",
+          "neue",
+          "neuen",
+          "neuer",
+          "neues",
+          "aktuelle",
+          "aktuellen"
+        ],
+        "it": [
+          "recente",
+          "recenti",
+          "nuovi",
+          "nuove"
+        ],
+        "nl": [
+          "recent",
+          "recente",
+          "nieuw",
+          "nieuwe"
+        ],
+        "pt": [
+          "recente",
+          "recentes",
+          "novos",
+          "novas"
+        ]
+      }
+    },
+    "large": {
+      "Parameter": "MinSize",
+      "Unit": "MB",
+      "Membership": [
+        10,
+        100,
+        null,
+        null
+      ],
+      "Words": {
+        "en": [
+          "large",
+          "big",
+          "huge",
+          "heavy",
+          "bulky"
+        ],
+        "fr": [
+          "gros",
+          "grosse",
+          "grosses",
+          "grand",
+          "grands",
+          "grande",
+          "grandes",
+          "volumineux",
+          "volumineuse",
+          "volumineuses",
+          "enormes",
+          "lourds",
+          "lourdes"
+        ],
+        "es": [
+          "grande",
+          "grandes",
+          "enormes",
+          "pesados",
+          "pesadas"
+        ],
+        "de": [
+          "gross",
+          "grosse",
+          "grossen",
+          "grosser",
+          "riesige",
+          "riesigen",
+          "schwere",
+          "schweren"
+        ],
+        "it": [
+          "grande",
+          "grandi",
+          "enormi",
+          "pesanti"
+        ],
+        "nl": [
+          "groot",
+          "grote",
+          "enorme",
+          "zware"
+        ],
+        "pt": [
+          "grande",
+          "grandes",
+          "enormes",
+          "pesados",
+          "pesadas"
+        ]
+      }
+    },
+    "small": {
+      "Parameter": "MaxSize",
+      "Unit": "KB",
+      "Membership": [
+        null,
+        null,
+        100,
+        1024
+      ],
+      "Words": {
+        "en": [
+          "small",
+          "tiny",
+          "little"
+        ],
+        "fr": [
+          "petit",
+          "petits",
+          "petite",
+          "petites",
+          "minuscules",
+          "legers",
+          "legeres"
+        ],
+        "es": [
+          "pequeno",
+          "pequenos",
+          "pequena",
+          "pequenas",
+          "diminutos"
+        ],
+        "de": [
+          "klein",
+          "kleine",
+          "kleinen",
+          "kleiner",
+          "winzige",
+          "winzigen"
+        ],
+        "it": [
+          "piccolo",
+          "piccoli",
+          "piccola",
+          "piccole",
+          "minuscoli"
+        ],
+        "nl": [
+          "klein",
+          "kleine",
+          "piepkleine"
+        ],
+        "pt": [
+          "pequeno",
+          "pequenos",
+          "pequena",
+          "pequenas",
+          "minusculos"
+        ]
+      }
+    }
+  },
+  "Methods": {
+    "clean": {
+      "Words": {
+        "en": [
+          "clean up",
+          "clean",
+          "cleanup",
+          "tidy up"
+        ],
+        "fr": [
+          "fais le menage dans",
+          "fais le menage de",
+          "nettoie",
+          "nettoyer",
+          "nettoyez"
+        ]
+      },
+      "Steps": {
+        "en": [
+          "delete the temporary files in {Path}",
+          "delete the backup files older than 30 days in {Path}"
+        ],
+        "fr": [
+          "supprime les fichiers temporaires dans {Path}",
+          "supprime les sauvegardes de plus de 30 jours dans {Path}"
+        ]
+      }
+    },
+    "organize": {
+      "Words": {
+        "en": [
+          "organize",
+          "organise",
+          "sort out"
+        ],
+        "fr": [
+          "range",
+          "ranger",
+          "organise",
+          "organiser"
+        ]
+      },
+      "Steps": {
+        "en": [
+          "create the folder {Path}{/}Images",
+          "move the images in {Path} to {Path}{/}Images",
+          "create the folder {Path}{/}Videos",
+          "move the videos in {Path} to {Path}{/}Videos",
+          "create the folder {Path}{/}Documents",
+          "move the documents in {Path} to {Path}{/}Documents"
+        ],
+        "fr": [
+          "crée le dossier {Path}{/}Images",
+          "déplace les images de {Path} vers {Path}{/}Images",
+          "crée le dossier {Path}{/}Vidéos",
+          "déplace les vidéos de {Path} vers {Path}{/}Vidéos",
+          "crée le dossier {Path}{/}Documents",
+          "déplace les documents de {Path} vers {Path}{/}Documents"
+        ]
+      }
+    }
+  },
+  "Sorts": {
+    "o": {
+      "file": [
+        "file",
+        "fichier",
+        "image",
+        "photo",
+        "picture",
+        "media",
+        "video",
+        "music",
+        "musique",
+        "song",
+        "chanson",
+        "audio",
+        "document",
+        "archive",
+        "text",
+        "texte",
+        "temporary",
+        "temporaire",
+        "backup",
+        "sauvegarde",
+        "_filename_"
+      ],
+      "folder": [
+        "folder",
+        "dossier"
+      ]
+    }
+  },
   "Words": {
     "*": {
       "_path_": [
@@ -95,6 +639,7 @@
       ],
       "_filename_": [
         "o",
+        "o^r o",
         "q"
       ],
       "_quoted_": [
@@ -104,14 +649,23 @@
         "q"
       ],
       "_size_": [
-        "z"
+        "z",
+        "o"
       ],
       "_duration_": [
         "t"
       ],
       "_extension_": [
+        "o",
         "o o^l",
         "o^r o"
+      ],
+      "_order_": [
+        "o o^l",
+        "o^r o"
+      ],
+      "_number_": [
+        "o o^l"
       ]
     },
     "en": {
@@ -156,10 +710,12 @@
         "o^r o d^l"
       ],
       "to": [
-        "p d^l"
+        "p d^l",
+        "p q^l"
       ],
       "into": [
-        "p d^l"
+        "p d^l",
+        "p q^l"
       ],
       "old": [
         "o o^l",
@@ -201,8 +757,100 @@
       "photo": [
         "o"
       ],
+      "media": [
+        "o"
+      ],
       "picture": [
         "o"
+      ],
+      "video": [
+        "o"
+      ],
+      "music": [
+        "o"
+      ],
+      "song": [
+        "o"
+      ],
+      "audio": [
+        "o"
+      ],
+      "document": [
+        "o"
+      ],
+      "archive": [
+        "o"
+      ],
+      "except": [
+        "o^r o o^l"
+      ],
+      "among": [
+        "o^r o o^l"
+      ],
+      "amongst": [
+        "o^r o o^l"
+      ],
+      "excluding": [
+        "o^r o o^l"
+      ],
+      "besides": [
+        "o^r o o^l"
+      ],
+      "and": [
+        "o^r o o^l"
+      ],
+      "free": [
+        "s o^l"
+      ],
+      "space": [
+        "o^r o",
+        "o"
+      ],
+      "text": [
+        "o"
+      ],
+      "temporary": [
+        "o o^l",
+        "o"
+      ],
+      "backup": [
+        "o o^l",
+        "o"
+      ],
+      "which": [
+        "s o^l"
+      ],
+      "what": [
+        "s o^l"
+      ],
+      "restore": [
+        "s o^l",
+        "s"
+      ],
+      "undo": [
+        "s o^l",
+        "s"
+      ],
+      "permanently": [
+        "o o^l",
+        "s^r s",
+        "s s^l"
+      ],
+      "forever": [
+        "s^r s"
+      ],
+      "deletion": [
+        "o"
+      ],
+      "last": [
+        "o o^l",
+        "o^r o"
+      ],
+      "trash": [
+        "o"
+      ],
+      "sort": [
+        "s o^l"
       ]
     },
     "fr": {
@@ -244,10 +892,12 @@
         "o^r o d^l"
       ],
       "vers": [
-        "p d^l"
+        "p d^l",
+        "p q^l"
       ],
       "en": [
-        "p d^l"
+        "p d^l",
+        "p q^l"
       ],
       "ancien": [
         "o o^l",
@@ -284,8 +934,98 @@
       "photo": [
         "o"
       ],
+      "media": [
+        "o"
+      ],
       "remettre": [
         "s p^l o^l"
+      ],
+      "video": [
+        "o"
+      ],
+      "musique": [
+        "o"
+      ],
+      "chanson": [
+        "o"
+      ],
+      "audio": [
+        "o"
+      ],
+      "document": [
+        "o"
+      ],
+      "archive": [
+        "o"
+      ],
+      "sauf": [
+        "o^r o o^l"
+      ],
+      "parmi": [
+        "o^r o o^l"
+      ],
+      "excepte": [
+        "o^r o o^l"
+      ],
+      "hormis": [
+        "o^r o o^l"
+      ],
+      "et": [
+        "o^r o o^l"
+      ],
+      "liberer": [
+        "s o^l"
+      ],
+      "espace": [
+        "o^r o",
+        "o"
+      ],
+      "texte": [
+        "o"
+      ],
+      "temporaire": [
+        "o^r o",
+        "o"
+      ],
+      "sauvegarde": [
+        "o^r o",
+        "o"
+      ],
+      "quel": [
+        "s o^l"
+      ],
+      "restaurer": [
+        "s o^l",
+        "s"
+      ],
+      "annuler": [
+        "s o^l",
+        "s"
+      ],
+      "recuperer": [
+        "s o^l",
+        "s"
+      ],
+      "definitivement": [
+        "o o^l",
+        "s^r s",
+        "s s^l"
+      ],
+      "suppression": [
+        "o"
+      ],
+      "dernier": [
+        "o o^l",
+        "o^r o"
+      ],
+      "corbeille": [
+        "o"
+      ],
+      "trier": [
+        "s o^l"
+      ],
+      "classer": [
+        "s o^l"
       ]
     }
   },
@@ -318,7 +1058,40 @@
       "directories": "folder",
       "images": "image",
       "photos": "photo",
-      "pictures": "picture"
+      "medias": "media",
+      "multimedia": "media",
+      "pictures": "picture",
+      "videos": "video",
+      "songs": "song",
+      "documents": "document",
+      "archives": "archive",
+      "texts": "text",
+      "backups": "backup",
+      "restores": "restore",
+      "restored": "restore",
+      "restoring": "restore",
+      "sorts": "sort",
+      "sorted": "sort",
+      "sorting": "sort",
+      "wipe": "delete",
+      "expunge": "delete",
+      "efface": "delete",
+      "purge": "delete",
+      "discard": "delete",
+      "eliminate": "delete",
+      "destroy": "delete",
+      "enumerate": "list",
+      "itemize": "list",
+      "itemise": "list",
+      "locate": "find",
+      "seek": "find",
+      "duplicate": "copy",
+      "clone": "copy",
+      "replicate": "copy",
+      "relocate": "move",
+      "transfer": "move",
+      "displace": "move",
+      "recover": "restore"
     },
     "fr": {
       "supprime": "supprimer",
@@ -343,9 +1116,112 @@
       "appelee": "appele",
       "images": "image",
       "photos": "photo",
+      "medias": "media",
+      "multimedia": "media",
+      "multimedias": "media",
       "remets": "remettre",
       "remet": "remettre",
-      "remettez": "remettre"
+      "remettez": "remettre",
+      "videos": "video",
+      "chansons": "chanson",
+      "documents": "document",
+      "archives": "archive",
+      "libere": "liberer",
+      "liberez": "liberer",
+      "liberes": "liberer",
+      "textes": "texte",
+      "temporaires": "temporaire",
+      "sauvegardes": "sauvegarde",
+      "quels": "quel",
+      "quelle": "quel",
+      "quelles": "quel",
+      "lesquels": "quel",
+      "lesquelles": "quel",
+      "restaure": "restaurer",
+      "restaurez": "restaurer",
+      "annule": "annuler",
+      "annulez": "annuler",
+      "recupere": "recuperer",
+      "recuperez": "recuperer",
+      "derniere": "dernier",
+      "derniers": "dernier",
+      "dernieres": "dernier",
+      "trie": "trier",
+      "tries": "trier",
+      "triez": "trier",
+      "trions": "trier",
+      "trient": "trier",
+      "classez": "classer",
+      "classons": "classer",
+      "classent": "classer",
+      "eliminer": "supprimer",
+      "detruire": "supprimer",
+      "jeter": "supprimer",
+      "purger": "supprimer",
+      "enlever": "supprimer",
+      "enumerer": "lister",
+      "rechercher": "chercher",
+      "localiser": "chercher",
+      "dupliquer": "copier",
+      "cloner": "copier",
+      "transferer": "deplacer",
+      "bouger": "deplacer",
+      "retablir": "restaurer"
+    }
+  },
+  "Gloss": {
+    "fr": {
+      "supprimer": "delete",
+      "lister": "list",
+      "afficher": "show",
+      "chercher": "find",
+      "creer": "create",
+      "copier": "copy",
+      "deplacer": "move",
+      "renommer": "rename",
+      "fichier": "file",
+      "dossier": "folder",
+      "dans": "in",
+      "sous": "under",
+      "vers": "to",
+      "en": "to",
+      "ancien": "old",
+      "grand": "large",
+      "plus": "larger",
+      "moins": "smaller",
+      "nomme": "named",
+      "appele": "called",
+      "sur": "on",
+      "tout": "everything",
+      "image": "image",
+      "photo": "photo",
+      "media": "media",
+      "remettre": "move",
+      "video": "video",
+      "musique": "music",
+      "chanson": "song",
+      "audio": "audio",
+      "document": "document",
+      "archive": "archive",
+      "sauf": "except",
+      "excepte": "except",
+      "hormis": "besides",
+      "et": "and",
+      "liberer": "free",
+      "espace": "space",
+      "texte": "text",
+      "temporaire": "temporary",
+      "sauvegarde": "backup",
+      "quel": "which",
+      "restaurer": "restore",
+      "annuler": "undo",
+      "recuperer": "restore",
+      "definitivement": "permanently",
+      "suppression": "deletion",
+      "dernier": "last",
+      "corbeille": "trash",
+      "trier": "sort",
+      "classer": "sort"
     }
   },
   "Actions": [
@@ -406,7 +1282,33 @@
           "Name": "Extension",
           "Entities": [
             "extension"
-          ]
+          ],
+          "Many": true
+        },
+        {
+          "Name": "Kind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "Expand": "Extensions",
+          "Many": true
         },
         {
           "Name": "OlderThan",
@@ -447,9 +1349,131 @@
             "smaller",
             "moins"
           ]
+        },
+        {
+          "Name": "ExceptExtension",
+          "Entities": [
+            "extension"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Many": true
+        },
+        {
+          "Name": "ExceptKind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Expand": "Extensions",
+          "Many": true
+        },
+        {
+          "Name": "ExceptName",
+          "Entities": [
+            "filename",
+            "quoted"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ]
+        },
+        {
+          "Name": "Order",
+          "Entities": [
+            "order"
+          ],
+          "Question": {
+            "en": "Which ones: the newest, oldest, largest or smallest?",
+            "fr": "Lesquels : les plus récents, anciens, gros ou petits ?"
+          }
+        },
+        {
+          "Name": "Count",
+          "Entities": [
+            "number"
+          ],
+          "RequiredWith": "Order",
+          "Singular": 1,
+          "Question": {
+            "en": "How many?",
+            "fr": "Combien ?"
+          }
+        },
+        {
+          "Name": "Permanent",
+          "Words": {
+            "definitivement": "yes",
+            "permanently": "yes",
+            "forever": "yes"
+          }
         }
       ],
+      "Which": {
+        "Among": [
+          "among",
+          "amongst",
+          "parmi"
+        ],
+        "Nouns": [
+          "file",
+          "fichier"
+        ],
+        "By": [
+          "Order",
+          "Name",
+          "Count"
+        ],
+        "All": [
+          "all",
+          "every",
+          "everything",
+          "tous",
+          "toutes",
+          "tout"
+        ],
+        "Question": {
+          "en": "Which file exactly? Give its name, or say the newest, oldest, largest or smallest.",
+          "fr": "Quel fichier exactement ? Donnez son nom, ou dites le plus récent, ancien, gros ou petit."
+        }
+      },
       "Output": "command",
+      "Command": "Remove-Item",
       "Reads": [],
       "Writes": [
         "Path"
@@ -457,37 +1481,84 @@
       "Template": [
         "$items = Get-ChildItem -LiteralPath {{Path}} -File -Recurse",
         "?Name $items = $items | Where-Object Name -EQ {{Name}}",
-        "?Extension $items = $items | Where-Object Extension -EQ {{Extension}}",
+        "?Extension $items = $items | Where-Object Extension -In {{Extension}}",
+        "?Kind $items = $items | Where-Object Extension -In {{Kind}}",
         "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
         "?NewerThan $items = $items | Where-Object LastWriteTime -GE ((Get-Date) - {{NewerThan}})",
         "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
         "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
-        "$items | Remove-Item"
+        "?ExceptExtension $items = $items | Where-Object Extension -NotIn {{ExceptExtension}}",
+        "?ExceptKind $items = $items | Where-Object Extension -NotIn {{ExceptKind}}",
+        "?ExceptName $items = $items | Where-Object Name -NE {{ExceptName}}",
+        "?Order=newest $items = $items | Sort-Object LastWriteTime -Descending",
+        "?Order=oldest $items = $items | Sort-Object LastWriteTime",
+        "?Order=largest $items = $items | Sort-Object Length -Descending",
+        "?Order=smallest $items = $items | Sort-Object Length",
+        "?Count $items = $items | Select-Object -First {{Count}}",
+        "?Permanent $items | Remove-Item",
+        "!Permanent $trash = Join-Path {{Trash}} (Get-Date -Format 'yyyyMMdd-HHmmss')",
+        "!Permanent foreach ($item in $items) { $place = Join-Path $trash ($item.FullName -replace '^([A-Za-z]):', '$1'); New-Item -ItemType Directory -Path (Split-Path -Path $place -Parent) -Force | Out-Null; Move-Item -LiteralPath $item.FullName -Destination $place }"
       ],
       "Say": {
         "en": [
           "delete the",
+          "!Count=1 ?Count {Count}",
+          "?Order {Order}",
           "?Extension {Extension}",
-          "files",
+          "?Count=1 file",
+          "!Count=1 !Kind files",
+          "!Count=1 ?Kind {Kind}",
+          "?Count=1 ?Kind among the {Kind}",
           "?Name named {Name}",
           "?OlderThan older than {OlderThan}",
           "?NewerThan newer than {NewerThan}",
           "?MinSize larger than {MinSize}",
           "?MaxSize smaller than {MaxSize}",
-          "in {Path}"
+          "in {Path}",
+          "?ExceptExtension except the {ExceptExtension} files",
+          "?ExceptKind except the {ExceptKind}",
+          "?ExceptName except {ExceptName}",
+          "?Permanent permanently"
         ],
         "fr": [
-          "supprimer les",
-          "fichiers",
+          "supprimer",
+          "?Permanent définitivement",
+          "?Count=1 le fichier",
+          "!Count=1 les",
+          "!Count=1 ?Count {Count}",
+          "!Count=1 ?Order fichiers",
+          "!Count=1 !Order !Kind fichiers",
+          "!Count=1 !Order ?Kind {Kind}",
           "?Extension {Extension}",
-          "?Name nomm\u00e9s {Name}",
+          "!Count=1 ?Order {Order}",
+          "?Count=1 ?Order=newest le plus récent",
+          "?Count=1 ?Order=oldest le plus ancien",
+          "?Count=1 ?Order=largest le plus gros",
+          "?Count=1 ?Order=smallest le plus petit",
+          "?Order ?Kind parmi les {Kind}",
+          "?Name nommés {Name}",
           "?OlderThan de plus de {OlderThan}",
           "?NewerThan de moins de {NewerThan}",
           "?MinSize de plus de {MinSize}",
           "?MaxSize de moins de {MaxSize}",
-          "dans {Path}"
+          "dans {Path}",
+          "?ExceptExtension sauf les fichiers {ExceptExtension}",
+          "?ExceptKind sauf les {ExceptKind}",
+          "?ExceptName sauf {ExceptName}"
         ]
-      }
+      },
+      "Effect": [
+        "gone"
+      ],
+      "Note": {
+        "en": [
+          "!Permanent They stay in Lambek's trash for 30 days: say \"restore them\" to put them back."
+        ],
+        "fr": [
+          "!Permanent Ils restent 30 jours dans la corbeille de Lambek : dites « restaure-les » pour les remettre."
+        ]
+      },
+      "Reversible": "!Permanent"
     },
     {
       "Id": "files.list",
@@ -502,19 +1573,27 @@
         "find",
         "lister",
         "afficher",
-        "chercher"
+        "chercher",
+        "which",
+        "what",
+        "quel",
+        "trier",
+        "classer",
+        "sort"
       ],
       "Examples": {
         "en": [
           "list the files",
           "show the files in a folder",
           "find the large files",
-          "search files"
+          "search files",
+          "sort the files by size in a folder"
         ],
         "fr": [
           "lister les fichiers",
           "afficher les fichiers dans un dossier",
-          "chercher les gros fichiers"
+          "chercher les gros fichiers",
+          "trier les fichiers par taille dans un dossier"
         ]
       },
       "Parameters": [
@@ -545,7 +1624,33 @@
           "Name": "Extension",
           "Entities": [
             "extension"
-          ]
+          ],
+          "Many": true
+        },
+        {
+          "Name": "Kind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "Expand": "Extensions",
+          "Many": true
         },
         {
           "Name": "OlderThan",
@@ -586,6 +1691,92 @@
             "smaller",
             "moins"
           ]
+        },
+        {
+          "Name": "ExceptExtension",
+          "Entities": [
+            "extension"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Many": true
+        },
+        {
+          "Name": "ExceptKind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Expand": "Extensions",
+          "Many": true
+        },
+        {
+          "Name": "ExceptName",
+          "Entities": [
+            "filename",
+            "quoted"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ]
+        },
+        {
+          "Name": "Order",
+          "Entities": [
+            "order"
+          ],
+          "Question": {
+            "en": "Which ones: the newest, oldest, largest or smallest?",
+            "fr": "Lesquels : les plus récents, anciens, gros ou petits ?"
+          }
+        },
+        {
+          "Name": "Count",
+          "Entities": [
+            "number"
+          ],
+          "RequiredWith": "Order",
+          "Singular": 1,
+          "Question": {
+            "en": "How many?",
+            "fr": "Combien ?"
+          },
+          "AllWhenMissing": true
         }
       ],
       "Output": "command",
@@ -597,35 +1788,66 @@
         "?Path $items = Get-ChildItem -LiteralPath {{Path}} -File -Recurse",
         "!Path $items = Get-ChildItem -File -Recurse",
         "?Name $items = $items | Where-Object Name -EQ {{Name}}",
-        "?Extension $items = $items | Where-Object Extension -EQ {{Extension}}",
+        "?Extension $items = $items | Where-Object Extension -In {{Extension}}",
+        "?Kind $items = $items | Where-Object Extension -In {{Kind}}",
         "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
         "?NewerThan $items = $items | Where-Object LastWriteTime -GE ((Get-Date) - {{NewerThan}})",
         "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
         "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
+        "?ExceptExtension $items = $items | Where-Object Extension -NotIn {{ExceptExtension}}",
+        "?ExceptKind $items = $items | Where-Object Extension -NotIn {{ExceptKind}}",
+        "?ExceptName $items = $items | Where-Object Name -NE {{ExceptName}}",
+        "?Order=newest $items = $items | Sort-Object LastWriteTime -Descending",
+        "?Order=oldest $items = $items | Sort-Object LastWriteTime",
+        "?Order=largest $items = $items | Sort-Object Length -Descending",
+        "?Order=smallest $items = $items | Sort-Object Length",
+        "?Count $items = $items | Select-Object -First {{Count}}",
         "$items | Select-Object FullName, Length, LastWriteTime"
       ],
       "Say": {
         "en": [
           "list the",
+          "!Count=1 ?Count {Count}",
+          "?Order {Order}",
           "?Extension {Extension}",
-          "files",
+          "?Count=1 file",
+          "!Count=1 !Kind files",
+          "!Count=1 ?Kind {Kind}",
+          "?Count=1 ?Kind among the {Kind}",
           "?Name named {Name}",
           "?OlderThan older than {OlderThan}",
           "?NewerThan newer than {NewerThan}",
           "?MinSize larger than {MinSize}",
           "?MaxSize smaller than {MaxSize}",
-          "?Path in {Path}"
+          "?Path in {Path}",
+          "?ExceptExtension except the {ExceptExtension} files",
+          "?ExceptKind except the {ExceptKind}",
+          "?ExceptName except {ExceptName}"
         ],
         "fr": [
-          "lister les",
-          "fichiers",
+          "lister",
+          "?Count=1 le fichier",
+          "!Count=1 les",
+          "!Count=1 ?Count {Count}",
+          "!Count=1 ?Order fichiers",
+          "!Count=1 !Order !Kind fichiers",
+          "!Count=1 !Order ?Kind {Kind}",
           "?Extension {Extension}",
-          "?Name nomm\u00e9s {Name}",
+          "!Count=1 ?Order {Order}",
+          "?Count=1 ?Order=newest le plus récent",
+          "?Count=1 ?Order=oldest le plus ancien",
+          "?Count=1 ?Order=largest le plus gros",
+          "?Count=1 ?Order=smallest le plus petit",
+          "?Order ?Kind parmi les {Kind}",
+          "?Name nommés {Name}",
           "?OlderThan de plus de {OlderThan}",
           "?NewerThan de moins de {NewerThan}",
           "?MinSize de plus de {MinSize}",
           "?MaxSize de moins de {MaxSize}",
-          "?Path dans {Path}"
+          "?Path dans {Path}",
+          "?ExceptExtension sauf les fichiers {ExceptExtension}",
+          "?ExceptKind sauf les {ExceptKind}",
+          "?ExceptName sauf {ExceptName}"
         ]
       }
     },
@@ -685,7 +1907,8 @@
           "Question": {
             "en": "Where to?",
             "fr": "Vers quel emplacement ?"
-          }
+          },
+          "Habit": true
         },
         {
           "Name": "Name",
@@ -697,7 +1920,33 @@
           "Name": "Extension",
           "Entities": [
             "extension"
-          ]
+          ],
+          "Many": true
+        },
+        {
+          "Name": "Kind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "Expand": "Extensions",
+          "Many": true
         },
         {
           "Name": "OlderThan",
@@ -738,8 +1987,135 @@
             "smaller",
             "moins"
           ]
+        },
+        {
+          "Name": "ExceptExtension",
+          "Entities": [
+            "extension"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Many": true
+        },
+        {
+          "Name": "ExceptKind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Expand": "Extensions",
+          "Many": true
+        },
+        {
+          "Name": "ExceptName",
+          "Entities": [
+            "filename",
+            "quoted"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ]
+        },
+        {
+          "Name": "Order",
+          "Entities": [
+            "order"
+          ],
+          "Question": {
+            "en": "Which ones: the newest, oldest, largest or smallest?",
+            "fr": "Lesquels : les plus récents, anciens, gros ou petits ?"
+          }
+        },
+        {
+          "Name": "Count",
+          "Entities": [
+            "number"
+          ],
+          "RequiredWith": "Order",
+          "Singular": 1,
+          "Question": {
+            "en": "How many?",
+            "fr": "Combien ?"
+          }
         }
       ],
+      "Which": {
+        "Among": [
+          "among",
+          "amongst",
+          "parmi"
+        ],
+        "Nouns": [
+          "file",
+          "fichier"
+        ],
+        "By": [
+          "Order",
+          "Name",
+          "Count"
+        ],
+        "All": [
+          "all",
+          "every",
+          "everything",
+          "tous",
+          "toutes",
+          "tout"
+        ],
+        "Question": {
+          "en": "Which file exactly? Give its name, or say the newest, oldest, largest or smallest.",
+          "fr": "Quel fichier exactement ? Donnez son nom, ou dites le plus récent, ancien, gros ou petit."
+        }
+      },
+      "RequireOneOf": {
+        "Sets": [
+          [
+            "Source"
+          ],
+          [
+            "Name"
+          ]
+        ],
+        "Question": {
+          "en": "From which folder?",
+          "fr": "Depuis quel dossier ?"
+        }
+      },
       "Output": "command",
       "Reads": [
         "Source"
@@ -751,46 +2127,80 @@
         "?Source $items = Get-ChildItem -LiteralPath {{Source}} -File",
         "!Source $items = Get-ChildItem -File",
         "?Name $items = $items | Where-Object Name -EQ {{Name}}",
-        "?Extension $items = $items | Where-Object Extension -EQ {{Extension}}",
+        "?Extension $items = $items | Where-Object Extension -In {{Extension}}",
+        "?Kind $items = $items | Where-Object Extension -In {{Kind}}",
         "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
         "?NewerThan $items = $items | Where-Object LastWriteTime -GE ((Get-Date) - {{NewerThan}})",
         "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
         "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
+        "?ExceptExtension $items = $items | Where-Object Extension -NotIn {{ExceptExtension}}",
+        "?ExceptKind $items = $items | Where-Object Extension -NotIn {{ExceptKind}}",
+        "?ExceptName $items = $items | Where-Object Name -NE {{ExceptName}}",
+        "?Order=newest $items = $items | Sort-Object LastWriteTime -Descending",
+        "?Order=oldest $items = $items | Sort-Object LastWriteTime",
+        "?Order=largest $items = $items | Sort-Object Length -Descending",
+        "?Order=smallest $items = $items | Sort-Object Length",
+        "?Count $items = $items | Select-Object -First {{Count}}",
         "$items | Copy-Item -Destination {{Destination}}"
       ],
       "Say": {
         "en": [
           "copy the",
+          "!Count=1 ?Count {Count}",
+          "?Order {Order}",
           "?Extension {Extension}",
-          "files",
+          "?Count=1 file",
+          "!Count=1 !Kind files",
+          "!Count=1 ?Kind {Kind}",
+          "?Count=1 ?Kind among the {Kind}",
           "?Name named {Name}",
           "?OlderThan older than {OlderThan}",
           "?NewerThan newer than {NewerThan}",
           "?MinSize larger than {MinSize}",
           "?MaxSize smaller than {MaxSize}",
           "?Source from {Source}",
-          "to {Destination}"
+          "to {Destination}",
+          "?ExceptExtension except the {ExceptExtension} files",
+          "?ExceptKind except the {ExceptKind}",
+          "?ExceptName except {ExceptName}"
         ],
         "fr": [
-          "copier les",
-          "fichiers",
+          "copier",
+          "?Count=1 le fichier",
+          "!Count=1 les",
+          "!Count=1 ?Count {Count}",
+          "!Count=1 ?Order fichiers",
+          "!Count=1 !Order !Kind fichiers",
+          "!Count=1 !Order ?Kind {Kind}",
           "?Extension {Extension}",
-          "?Name nomm\u00e9s {Name}",
+          "!Count=1 ?Order {Order}",
+          "?Count=1 ?Order=newest le plus récent",
+          "?Count=1 ?Order=oldest le plus ancien",
+          "?Count=1 ?Order=largest le plus gros",
+          "?Count=1 ?Order=smallest le plus petit",
+          "?Order ?Kind parmi les {Kind}",
+          "?Name nommés {Name}",
           "?OlderThan de plus de {OlderThan}",
           "?NewerThan de moins de {NewerThan}",
           "?MinSize de plus de {MinSize}",
           "?MaxSize de moins de {MaxSize}",
           "?Source de {Source}",
-          "vers {Destination}"
+          "vers {Destination}",
+          "?ExceptExtension sauf les fichiers {ExceptExtension}",
+          "?ExceptKind sauf les {ExceptKind}",
+          "?ExceptName sauf {ExceptName}"
         ]
-      }
+      },
+      "Effect": [
+        "arrived"
+      ]
     },
     {
       "Id": "files.move",
       "Risk": "medium",
       "Title": {
         "en": "Move files",
-        "fr": "D\u00e9placer des fichiers"
+        "fr": "Déplacer des fichiers"
       },
       "Verbs": [
         "move",
@@ -843,7 +2253,8 @@
           "Question": {
             "en": "Where to?",
             "fr": "Vers quel emplacement ?"
-          }
+          },
+          "Habit": true
         },
         {
           "Name": "Name",
@@ -855,7 +2266,33 @@
           "Name": "Extension",
           "Entities": [
             "extension"
-          ]
+          ],
+          "Many": true
+        },
+        {
+          "Name": "Kind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "Expand": "Extensions",
+          "Many": true
         },
         {
           "Name": "OlderThan",
@@ -896,8 +2333,135 @@
             "smaller",
             "moins"
           ]
+        },
+        {
+          "Name": "ExceptExtension",
+          "Entities": [
+            "extension"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Many": true
+        },
+        {
+          "Name": "ExceptKind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Expand": "Extensions",
+          "Many": true
+        },
+        {
+          "Name": "ExceptName",
+          "Entities": [
+            "filename",
+            "quoted"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ]
+        },
+        {
+          "Name": "Order",
+          "Entities": [
+            "order"
+          ],
+          "Question": {
+            "en": "Which ones: the newest, oldest, largest or smallest?",
+            "fr": "Lesquels : les plus récents, anciens, gros ou petits ?"
+          }
+        },
+        {
+          "Name": "Count",
+          "Entities": [
+            "number"
+          ],
+          "RequiredWith": "Order",
+          "Singular": 1,
+          "Question": {
+            "en": "How many?",
+            "fr": "Combien ?"
+          }
         }
       ],
+      "Which": {
+        "Among": [
+          "among",
+          "amongst",
+          "parmi"
+        ],
+        "Nouns": [
+          "file",
+          "fichier"
+        ],
+        "By": [
+          "Order",
+          "Name",
+          "Count"
+        ],
+        "All": [
+          "all",
+          "every",
+          "everything",
+          "tous",
+          "toutes",
+          "tout"
+        ],
+        "Question": {
+          "en": "Which file exactly? Give its name, or say the newest, oldest, largest or smallest.",
+          "fr": "Quel fichier exactement ? Donnez son nom, ou dites le plus récent, ancien, gros ou petit."
+        }
+      },
+      "RequireOneOf": {
+        "Sets": [
+          [
+            "Source"
+          ],
+          [
+            "Name"
+          ]
+        ],
+        "Question": {
+          "en": "From which folder?",
+          "fr": "Depuis quel dossier ?"
+        }
+      },
       "Output": "command",
       "Reads": [
         "Source"
@@ -910,39 +2474,74 @@
         "?Source $items = Get-ChildItem -LiteralPath {{Source}} -File",
         "!Source $items = Get-ChildItem -File",
         "?Name $items = $items | Where-Object Name -EQ {{Name}}",
-        "?Extension $items = $items | Where-Object Extension -EQ {{Extension}}",
+        "?Extension $items = $items | Where-Object Extension -In {{Extension}}",
+        "?Kind $items = $items | Where-Object Extension -In {{Kind}}",
         "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
         "?NewerThan $items = $items | Where-Object LastWriteTime -GE ((Get-Date) - {{NewerThan}})",
         "?MinSize $items = $items | Where-Object Length -GT {{MinSize}}",
         "?MaxSize $items = $items | Where-Object Length -LT {{MaxSize}}",
+        "?ExceptExtension $items = $items | Where-Object Extension -NotIn {{ExceptExtension}}",
+        "?ExceptKind $items = $items | Where-Object Extension -NotIn {{ExceptKind}}",
+        "?ExceptName $items = $items | Where-Object Name -NE {{ExceptName}}",
+        "?Order=newest $items = $items | Sort-Object LastWriteTime -Descending",
+        "?Order=oldest $items = $items | Sort-Object LastWriteTime",
+        "?Order=largest $items = $items | Sort-Object Length -Descending",
+        "?Order=smallest $items = $items | Sort-Object Length",
+        "?Count $items = $items | Select-Object -First {{Count}}",
         "$items | Move-Item -Destination {{Destination}}"
       ],
       "Say": {
         "en": [
           "move the",
+          "!Count=1 ?Count {Count}",
+          "?Order {Order}",
           "?Extension {Extension}",
-          "files",
+          "?Count=1 file",
+          "!Count=1 !Kind files",
+          "!Count=1 ?Kind {Kind}",
+          "?Count=1 ?Kind among the {Kind}",
           "?Name named {Name}",
           "?OlderThan older than {OlderThan}",
           "?NewerThan newer than {NewerThan}",
           "?MinSize larger than {MinSize}",
           "?MaxSize smaller than {MaxSize}",
           "?Source from {Source}",
-          "to {Destination}"
+          "to {Destination}",
+          "?ExceptExtension except the {ExceptExtension} files",
+          "?ExceptKind except the {ExceptKind}",
+          "?ExceptName except {ExceptName}"
         ],
         "fr": [
-          "d\u00e9placer les",
-          "fichiers",
+          "déplacer",
+          "?Count=1 le fichier",
+          "!Count=1 les",
+          "!Count=1 ?Count {Count}",
+          "!Count=1 ?Order fichiers",
+          "!Count=1 !Order !Kind fichiers",
+          "!Count=1 !Order ?Kind {Kind}",
           "?Extension {Extension}",
-          "?Name nomm\u00e9s {Name}",
+          "!Count=1 ?Order {Order}",
+          "?Count=1 ?Order=newest le plus récent",
+          "?Count=1 ?Order=oldest le plus ancien",
+          "?Count=1 ?Order=largest le plus gros",
+          "?Count=1 ?Order=smallest le plus petit",
+          "?Order ?Kind parmi les {Kind}",
+          "?Name nommés {Name}",
           "?OlderThan de plus de {OlderThan}",
           "?NewerThan de moins de {NewerThan}",
           "?MinSize de plus de {MinSize}",
           "?MaxSize de moins de {MaxSize}",
           "?Source de {Source}",
-          "vers {Destination}"
+          "vers {Destination}",
+          "?ExceptExtension sauf les fichiers {ExceptExtension}",
+          "?ExceptKind sauf les {ExceptKind}",
+          "?ExceptName sauf {ExceptName}"
         ]
-      }
+      },
+      "Effect": [
+        "gone",
+        "arrived"
+      ]
     },
     {
       "Id": "files.rename",
@@ -1013,14 +2612,17 @@
         "fr": [
           "renommer {Name} en {NewName}"
         ]
-      }
+      },
+      "Effect": [
+        "renamed"
+      ]
     },
     {
       "Id": "files.create",
       "Risk": "low",
       "Title": {
         "en": "Create a file or folder",
-        "fr": "Cr\u00e9er un fichier ou un dossier"
+        "fr": "Créer un fichier ou un dossier"
       },
       "Verbs": [
         "create",
@@ -1108,9 +2710,9 @@
           "!Path ?Name a {Kind|lower} named {Name} in {Parent}"
         ],
         "fr": [
-          "cr\u00e9er",
+          "créer",
           "?Path le {Kind|lower} {Path}",
-          "!Path ?Name un {Kind|lower} nomm\u00e9 {Name} dans {Parent}"
+          "!Path ?Name un {Kind|lower} nommé {Name} dans {Parent}"
         ]
       },
       "RequireOneOf": {
@@ -1127,6 +2729,335 @@
           "en": "What name should it have?",
           "fr": "Quel nom doit-il porter ?"
         }
+      },
+      "Effect": [
+        "exists"
+      ]
+    },
+    {
+      "Id": "files.free",
+      "Risk": "high",
+      "Title": {
+        "en": "Free up disk space",
+        "fr": "Libérer de l'espace disque"
+      },
+      "Verbs": [
+        "free",
+        "liberer"
+      ],
+      "Objects": {
+        "o": [
+          "file"
+        ]
+      },
+      "Examples": {
+        "en": [
+          "free up space",
+          "free 10 GB in a folder",
+          "free up disk space"
+        ],
+        "fr": [
+          "libérer de l'espace",
+          "libérer 10 Go dans un dossier"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Path",
+          "Entities": [
+            "path",
+            "quoted"
+          ],
+          "After": [
+            "in",
+            "inside",
+            "under",
+            "dans",
+            "sous",
+            "on",
+            "sur"
+          ],
+          "Fallback": true,
+          "Required": true,
+          "Question": {
+            "en": "In which folder?",
+            "fr": "Dans quel dossier ?"
+          }
+        },
+        {
+          "Name": "FreeSize",
+          "Entities": [
+            "size"
+          ],
+          "Required": true,
+          "Question": {
+            "en": "How much space?",
+            "fr": "Combien d'espace ?"
+          }
+        },
+        {
+          "Name": "Extension",
+          "Entities": [
+            "extension"
+          ],
+          "Many": true
+        },
+        {
+          "Name": "Kind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "Expand": "Extensions",
+          "Many": true
+        },
+        {
+          "Name": "OlderThan",
+          "Entities": [
+            "duration"
+          ],
+          "After": [
+            "old",
+            "plus"
+          ]
+        },
+        {
+          "Name": "ExceptExtension",
+          "Entities": [
+            "extension"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Many": true
+        },
+        {
+          "Name": "ExceptKind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ],
+          "Expand": "Extensions",
+          "Many": true
+        },
+        {
+          "Name": "ExceptName",
+          "Entities": [
+            "filename",
+            "quoted"
+          ],
+          "After": [
+            "except",
+            "excluding",
+            "besides",
+            "sauf",
+            "excepte",
+            "hormis"
+          ]
+        }
+      ],
+      "Output": "command",
+      "Reads": [],
+      "Writes": [
+        "Path"
+      ],
+      "Effect": [
+        "gone"
+      ],
+      "Template": [
+        "$items = Get-ChildItem -LiteralPath {{Path}} -File -Recurse",
+        "?Extension $items = $items | Where-Object Extension -In {{Extension}}",
+        "?Kind $items = $items | Where-Object Extension -In {{Kind}}",
+        "?OlderThan $items = $items | Where-Object LastWriteTime -LT ((Get-Date) - {{OlderThan}})",
+        "?ExceptExtension $items = $items | Where-Object Extension -NotIn {{ExceptExtension}}",
+        "?ExceptKind $items = $items | Where-Object Extension -NotIn {{ExceptKind}}",
+        "?ExceptName $items = $items | Where-Object Name -NE {{ExceptName}}",
+        "$items = $items | Sort-Object Length -Descending",
+        "$freed = 0",
+        "$items = foreach ($item in $items) { if ($freed -ge {{FreeSize}}) { break }; $freed += $item.Length; $item }",
+        "$items | Remove-Item"
+      ],
+      "Say": {
+        "en": [
+          "free {FreeSize} in {Path}",
+          "?Extension of {Extension} files",
+          "?Kind of {Kind}",
+          "?OlderThan older than {OlderThan}",
+          "?ExceptExtension , except the {ExceptExtension} files",
+          "?ExceptKind , except the {ExceptKind}",
+          "?ExceptName , except {ExceptName}"
+        ],
+        "fr": [
+          "libérer {FreeSize} dans {Path}",
+          "?Extension de fichiers {Extension}",
+          "?Kind de {Kind}",
+          "?OlderThan de plus de {OlderThan}",
+          "?ExceptExtension , sauf les fichiers {ExceptExtension}",
+          "?ExceptKind , sauf les {ExceptKind}",
+          "?ExceptName , sauf {ExceptName}"
+        ]
+      },
+      "Uses": [
+        "space",
+        "espace"
+      ],
+      "Note": {
+        "en": "The largest files go first, so as few files as possible are deleted.",
+        "fr": "Les plus gros fichiers partent d'abord, pour en supprimer le moins possible."
+      }
+    },
+    {
+      "Id": "files.restore",
+      "Risk": "medium",
+      "Title": {
+        "en": "Restore deleted files",
+        "fr": "Restaurer des fichiers supprimés"
+      },
+      "Verbs": [
+        "restore",
+        "undo",
+        "restaurer",
+        "annuler",
+        "recuperer"
+      ],
+      "Output": "command",
+      "Reads": [],
+      "Writes": [],
+      "Uses": [
+        "deletion",
+        "suppression",
+        "last",
+        "dernier",
+        "trash",
+        "corbeille"
+      ],
+      "Examples": {
+        "en": [
+          "restore the deleted files",
+          "restore the files",
+          "undo the last deletion"
+        ],
+        "fr": [
+          "restaurer les fichiers",
+          "annuler la derniere suppression",
+          "recuperer les fichiers de la corbeille"
+        ]
+      },
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Entities": [
+            "filename"
+          ]
+        },
+        {
+          "Name": "Extension",
+          "Entities": [
+            "extension"
+          ],
+          "Many": true
+        },
+        {
+          "Name": "Kind",
+          "Words": {
+            "image": "image",
+            "photo": "image",
+            "media": "media",
+            "picture": "image",
+            "video": "video",
+            "music": "audio",
+            "musique": "audio",
+            "song": "audio",
+            "chanson": "audio",
+            "audio": "audio",
+            "document": "document",
+            "archive": "compressed",
+            "text": "text",
+            "texte": "text",
+            "temporary": "temporary",
+            "temporaire": "temporary",
+            "backup": "backup",
+            "sauvegarde": "backup"
+          },
+          "Expand": "Extensions",
+          "Many": true
+        }
+      ],
+      "Say": {
+        "en": [
+          "restore the files deleted last",
+          "?Extension ({Extension})",
+          "?Kind ({Kind})",
+          "?Name ({Name})"
+        ],
+        "fr": [
+          "restaurer les fichiers supprimés en dernier",
+          "?Extension ({Extension})",
+          "?Kind ({Kind})",
+          "?Name ({Name})"
+        ]
+      },
+      "Template": [
+        "$batch = Get-ChildItem -LiteralPath {{Trash}} -Directory -ErrorAction SilentlyContinue | Where-Object { Get-ChildItem -LiteralPath $_.FullName -File -Recurse } | Sort-Object Name | Select-Object -Last 1",
+        "$items = @()",
+        "if ($batch) { $items = Get-ChildItem -LiteralPath $batch.FullName -File -Recurse }",
+        "?Name $items = $items | Where-Object Name -EQ {{Name}}",
+        "?Extension $items = $items | Where-Object Extension -In {{Extension}}",
+        "?Kind $items = $items | Where-Object Extension -In {{Kind}}",
+        "foreach ($item in $items) { $place = $item.FullName -replace '^.*?[\\\\/]\\d{8}-\\d{6}[\\\\/]', ''; if (-not $IsWindows) { $place = '/' + $place } elseif ($place -match '^[A-Za-z]\\\\') { $place = $place -replace '^([A-Za-z])\\\\', '$1:\\' } else { $place = '\\\\' + $place }; New-Item -ItemType Directory -Path (Split-Path -Path $place -Parent) -Force | Out-Null; Move-Item -LiteralPath $item.FullName -Destination $place }",
+        "if ($batch -and -not (Get-ChildItem -LiteralPath $batch.FullName -File -Recurse)) { Remove-Item -LiteralPath $batch.FullName -Recurse }"
+      ],
+      "Effect": [
+        "gone"
+      ],
+      "Note": {
+        "en": "Each file goes back to the folder it was deleted from.",
+        "fr": "Chaque fichier retourne dans le dossier d'où il a été supprimé."
       }
     }
   ],
@@ -1139,12 +3070,16 @@
     "Copy-Item",
     "Move-Item",
     "Rename-Item",
-    "New-Item"
+    "New-Item",
+    "Sort-Object",
+    "Join-Path",
+    "Split-Path",
+    "Out-Null"
   ],
   "Category": {
     "en": {
       "Title": "Files",
-      "Summary": "Find, copy, move, rename, and clean up files and folders.",
+      "Summary": "Find, copy, move, rename, clean up files and folders, and free up space.",
       "Examples": [
         "list the files larger than 100 MB in C:\\Users",
         "delete the .tmp files older than 30 days in C:\\Temp",
@@ -1153,11 +3088,69 @@
     },
     "fr": {
       "Title": "Fichiers",
-      "Summary": "Chercher, copier, d\u00e9placer, renommer et nettoyer des fichiers et dossiers.",
+      "Summary": "Chercher, copier, déplacer, renommer, nettoyer des fichiers et dossiers, et libérer de l'espace.",
       "Examples": [
         "affiche les fichiers de plus de 100 Mo dans C:\\Users",
         "supprime les fichiers .tmp de plus de 30 jours dans C:\\Temp"
       ]
     }
-  }
+  },
+  "Rewrites": [
+    {
+      "Pattern": "(?i)\\bet\\s+(?:re)?mets?(?:[- ](?:le|la|les))?\\s+(?:dans|sur)\\b",
+      "Replacement": "vers"
+    },
+    {
+      "Pattern": "(?i)\\b(?:re)?(?:mets|met|mettez|mettre)\\b(.*)\\b(?:dans|sur)\\b(?!.*\\b(?:dans|sur|vers)\\b)",
+      "Replacement": "déplace$1vers"
+    },
+    {
+      "Pattern": "(?i)\\band\\s+put\\s+(?:it|them)\\s+(?:in|into|on)\\b",
+      "Replacement": "to"
+    },
+    {
+      "Pattern": "(?i)\\bput\\b(.*)\\b(?:in|into|on)\\b(?!.*\\b(?:in|into|on|to)\\b)",
+      "Replacement": "move$1to"
+    },
+    {
+      "Pattern": "(?i)\\bsans\\s+toucher\\s+(?:aux|au|à\\s+la|à\\s+l'|à|a)\\s*",
+      "Replacement": "sauf les "
+    },
+    {
+      "Pattern": "(?i)\\bwithout\\s+touching\\s+(?:the\\s+|my\\s+)?",
+      "Replacement": "except the "
+    },
+    {
+      "Pattern": "(?i)\\b(?:deleted|removed|erased)\\s+(?=files?\\b|images?\\b|photos?\\b|documents?\\b|videos?\\b)",
+      "Replacement": ""
+    },
+    {
+      "Pattern": "(?i)(?<=\\b(?:fichiers?|images?|photos?|documents?|vid[eé]os?)\\s+)(?:supprim|effac)[eé]e?s?\\b",
+      "Replacement": ""
+    },
+    {
+      "Pattern": "(?i)\\b(?:get|gets|getting|got)\\s+rid\\s+of\\b",
+      "Replacement": "delete"
+    },
+    {
+      "Pattern": "(?i)\\b(?:throw|throws|throwing|threw)\\s+(?:away|out)\\b",
+      "Replacement": "delete"
+    },
+    {
+      "Pattern": "(?i)\\bdispose\\s+of\\b",
+      "Replacement": "delete"
+    },
+    {
+      "Pattern": "(?i)\\blook\\s+for\\b",
+      "Replacement": "find"
+    },
+    {
+      "Pattern": "(?i)\\bd[ée]barrasse[sz]?[- ](?:toi|vous|moi|nous)\\s+(?=de\\b|des\\b|du\\b|d')",
+      "Replacement": "supprime "
+    },
+    {
+      "Pattern": "(?i)\\b(?:se\\s+)?d[ée]barrasser\\s+(?=de\\b|des\\b|du\\b|d')",
+      "Replacement": "supprimer "
+    }
+  ]
 }

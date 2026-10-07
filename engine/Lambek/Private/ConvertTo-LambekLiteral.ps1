@@ -21,6 +21,12 @@ function ConvertTo-LambekLiteral {
         return ([double] $Value).ToString('R', [cultureinfo]::InvariantCulture)
     }
 
+    # Lists: @('a', 'b')
+    if ($Value -is [array]) {
+        $items = foreach ($item in $Value) { ConvertTo-LambekLiteral -Value $item }
+        return "@($($items -join ', '))"
+    }
+
     # Strings always become single-quoted literals, so they are never executed
     $escaped = [System.Management.Automation.Language.CodeGeneration]::EscapeSingleQuotedStringContent([string] $Value)
     return "'$escaped'"

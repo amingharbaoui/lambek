@@ -9,7 +9,7 @@ function Get-LambekMcpConfig {
         return @()
     }
 
-    # Same format as claude_desktop_config.json: { "mcpServers": { "name": { "command", "args", "env" } } }
+    # The standard MCP config format: { "mcpServers": { "name": { "command", "args", "env" } } }
     try {
         $data = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json -AsHashtable
     }

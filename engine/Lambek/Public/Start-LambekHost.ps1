@@ -52,9 +52,14 @@ function Start-LambekHost {
         $script:HostWriter.WriteLine($line)
     }
 
-    # One request per line until standard input closes
+    # One request per line until standard input closes; while none is waiting, the caches warm up
+    $warmUp = [System.Collections.Generic.Queue[object]]::new([object[]] @(Get-LambekWarmUp))
     while ($true) {
-        $line = $reader.ReadLine()
+        $pending = $reader.ReadLineAsync()
+        while (-not $pending.IsCompleted -and $warmUp.Count -gt 0) {
+            Invoke-LambekWarmUpPiece -Piece $warmUp.Dequeue()
+        }
+        $line = $pending.GetAwaiter().GetResult()
         if ($null -eq $line) { break }
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
 

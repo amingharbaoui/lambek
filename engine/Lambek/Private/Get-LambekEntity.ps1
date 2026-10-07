@@ -9,7 +9,19 @@ function Get-LambekEntity {
     $entities = [System.Collections.Generic.List[object]]::new()
     $remainder = $Text
 
+    $numbersRead = $false
+    $language = $null
     foreach ($rule in Get-LambekEntityRule) {
+        # The rules of a language file only read a sentence of that language
+        if ($rule.ContainsKey('Language')) {
+            if ($null -eq $language) { $language = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) }
+            if ($rule['Language'] -ne $language) { continue }
+        }
+        # Numbers said in words ("deux jours", "three GB") are numbers for every rule that reads quantities
+        if (-not $numbersRead -and $rule.Priority -ge 50) {
+            $remainder = ConvertTo-LambekDigit -Text $remainder
+            $numbersRead = $true
+        }
         $found = [regex]::Matches($remainder, $rule.Pattern)
 
         for ($i = $found.Count - 1; $i -ge 0; $i--) {
@@ -33,13 +45,28 @@ function Get-LambekEntity {
                 'lower' {
                     $value = $match.Groups['v'].Value.ToLowerInvariant()
                 }
+                'extension' {
+                    # "pdf files", "les pdf": a word the machine knows as a file extension, and no word of the languages
+                    $word = $match.Groups['v'].Value.ToLowerInvariant()
+                    $value = ".$word"
+                    if (-not (Test-LambekKnownExtension -Extension $value) -or (Test-LambekLanguageWord -Word $word)) { $value = $null }
+                }
+                'order' {
+                    # "most recent", "plus recents": one of the orders the pack names (newest, oldest, largest...)
+                    $said = (ConvertTo-LambekNormalizedText -Text $match.Groups['v'].Value) -replace '\s+', ' '
+                    $value = $rule.Orders[$said]
+                }
                 'path' {
-                    $value = Expand-LambekPath -Text $match.Groups['v'].Value
+                    # A question mark or an exclamation mark after the path ends the sentence, not the path
+                    $value = Expand-LambekPath -Text ($match.Groups['v'].Value -replace '(?<=.)[?!]+$', '')
                 }
                 default {
                     $value = $match.Groups['v'].Value
                 }
             }
+
+            # A match the rule turns down stays as text
+            if ($null -eq $value) { continue }
 
             $entity = [pscustomobject]@{
                 Type  = $rule.Name
@@ -70,6 +97,23 @@ function Get-LambekEntity {
     }
 }
 
+function ConvertTo-LambekDigit {
+    param([string] $Text)
+
+    # The number words of every language, longest first ("dix-sept" before "dix")
+    if (-not $script:NumberWords) {
+        $words = @{}
+        foreach ($language in Get-LambekAvailableLanguage) {
+            $numbers = (Get-LambekLexicon -Language $language).Numbers
+            if ($numbers) { foreach ($name in $numbers.Keys) { $words[$name] = [string] $numbers[$name] } }
+        }
+        $pattern = (@($words.Keys | Sort-Object @{ Expression = { $_.Length }; Descending = $true }, { $_ } | ForEach-Object { [regex]::Escape($_) }) -join '|')
+        $script:NumberWords = [pscustomobject]@{ Values = $words; Pattern = "(?i)(?<![\p{L}\p{N}_\\/.-])($pattern)(?![\p{L}\p{N}_\\/.-])" }
+    }
+    if ($script:NumberWords.Values.Count -eq 0) { return $Text }
+    return [regex]::Replace($Text, $script:NumberWords.Pattern, { param($match) $script:NumberWords.Values[$match.Value.ToLowerInvariant()] })
+}
+
 function ConvertTo-LambekNumber {
     param([string] $Text)
 
@@ -92,21 +136,39 @@ function Expand-LambekPath {
     }
 
     # Folder names like Desktop or Documents become the folder of the user
-    $known = @{
-        desktop = 'Desktop'; bureau = 'Desktop'
-        documents = 'MyDocuments'
-        pictures = 'MyPictures'; images = 'MyPictures'
-        music = 'MyMusic'; musique = 'MyMusic'
-        videos = 'MyVideos'
-    }
-    $name = ConvertTo-LambekNormalizedText -Text $path
+    $name = (ConvertTo-LambekNormalizedText -Text $path) -replace '\s+', ' '
+    $known = Get-LambekKnownFolder
     if ($known.ContainsKey($name)) {
-        $folder = [Environment]::GetFolderPath($known[$name])
-        if (-not $folder) { $folder = Join-Path $userFolder $known[$name].Replace('My', '') }
+        $special = $known[$name]
+        if ($special -eq 'Downloads') { return Join-Path $userFolder 'Downloads' }
+        $folder = [Environment]::GetFolderPath($special, [Environment+SpecialFolderOption]::DoNotVerify)
+        if (-not $folder) { $folder = Join-Path $userFolder $special.Replace('My', '') }
         return $folder
     }
-    if ($name -in 'downloads', 'telechargements') {
-        return Join-Path $userFolder 'Downloads'
-    }
     return $path
+}
+
+function Test-LambekKnownExtension {
+    param([string] $Extension)
+
+    # Extensions of every kind the machine or the packs know
+    $system = Get-LambekSystemVocabulary
+    if (-not $script:KnownExtensions) {
+        $known = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+        foreach ($list in $system.Kinds.Values) { $known.UnionWith([string[]] $list) }
+        foreach ($pack in $script:Packs.Values) { foreach ($list in $pack.Kinds.Values) { $known.UnionWith([string[]] @($list)) } }
+        $script:KnownExtensions = $known
+    }
+    return $script:KnownExtensions.Contains($Extension)
+}
+
+function Test-LambekLanguageWord {
+    param([string] $Word)
+
+    # "les", "old", "one" are file extensions somewhere, but first words of a sentence
+    foreach ($language in Get-LambekAvailableLanguage) {
+        $lexicon = Get-LambekLexicon -Language $language
+        if ($lexicon.Signals.Contains($Word) -or $lexicon.Vocabulary.Contains($Word)) { return $true }
+    }
+    return $false
 }

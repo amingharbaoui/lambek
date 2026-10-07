@@ -5,11 +5,24 @@
   "Types": {
     "a": {
       "en": "What should be generated (script, function, class)?",
-      "fr": "Que faut-il g\u00e9n\u00e9rer (script, fonction, classe) ?"
+      "fr": "Que faut-il générer (script, fonction, classe) ?"
     },
     "n": {
       "en": "What name should it have?",
       "fr": "Quel nom doit-il porter ?"
+    }
+  },
+  "Sorts": {
+    "a": {
+      "code": [
+        "script",
+        "function",
+        "fonction",
+        "class",
+        "classe",
+        "module",
+        "test"
+      ]
     }
   },
   "Entities": [
@@ -68,6 +81,30 @@
       ],
       "called": [
         "a^r a n^l"
+      ],
+      "javascript": [
+        "a a^l"
+      ],
+      "js": [
+        "a a^l"
+      ],
+      "node": [
+        "a a^l"
+      ],
+      "nodejs": [
+        "a a^l"
+      ],
+      "csharp": [
+        "a a^l"
+      ],
+      "cs": [
+        "a a^l"
+      ],
+      "rust": [
+        "a a^l"
+      ],
+      "shell": [
+        "a a^l"
       ]
     },
     "fr": {
@@ -109,6 +146,30 @@
       ],
       "appele": [
         "a^r a n^l"
+      ],
+      "javascript": [
+        "a^r a"
+      ],
+      "js": [
+        "a^r a"
+      ],
+      "node": [
+        "a^r a"
+      ],
+      "nodejs": [
+        "a^r a"
+      ],
+      "csharp": [
+        "a^r a"
+      ],
+      "cs": [
+        "a^r a"
+      ],
+      "rust": [
+        "a^r a"
+      ],
+      "shell": [
+        "a^r a"
       ]
     }
   },
@@ -130,13 +191,38 @@
       "appelee": "appele"
     }
   },
+  "Gloss": {
+    "fr": {
+      "generer": "generate",
+      "creer": "create",
+      "ecrire": "write",
+      "script": "script",
+      "fonction": "function",
+      "classe": "class",
+      "module": "module",
+      "test": "test",
+      "powershell": "powershell",
+      "python": "python",
+      "bash": "bash",
+      "nomme": "named",
+      "appele": "called",
+      "javascript": "javascript",
+      "js": "js",
+      "node": "node",
+      "nodejs": "nodejs",
+      "csharp": "csharp",
+      "cs": "cs",
+      "rust": "rust",
+      "shell": "shell"
+    }
+  },
   "Actions": [
     {
       "Id": "code.generate",
       "Risk": "low",
       "Title": {
         "en": "Generate code",
-        "fr": "G\u00e9n\u00e9rer du code"
+        "fr": "Générer du code"
       },
       "Verbs": [
         "generate",
@@ -176,7 +262,7 @@
           "Required": true,
           "Question": {
             "en": "What should be generated (script, function, class)?",
-            "fr": "Que faut-il g\u00e9n\u00e9rer (script, fonction, classe) ?"
+            "fr": "Que faut-il générer (script, fonction, classe) ?"
           }
         },
         {
@@ -184,7 +270,15 @@
           "Words": {
             "powershell": "PowerShell",
             "python": "Python",
-            "bash": "Bash"
+            "bash": "Bash",
+            "javascript": "JavaScript",
+            "js": "JavaScript",
+            "node": "JavaScript",
+            "nodejs": "JavaScript",
+            "csharp": "CSharp",
+            "cs": "CSharp",
+            "rust": "Rust",
+            "shell": "Bash"
           },
           "Default": "PowerShell"
         },
@@ -208,29 +302,235 @@
       "Writes": [],
       "Supported": {
         "Language": [
-          "PowerShell"
+          "PowerShell",
+          "Python",
+          "JavaScript",
+          "CSharp",
+          "Rust",
+          "Bash"
         ]
       },
       "TemplateKey": "Kind",
       "Templates": {
         "Function": [
-          "?Name function {{Name!}} {",
-          "!Name function Invoke-Task {",
-          "    [CmdletBinding()]",
-          "    param()",
-          "",
-          "}"
+          "?Language=PowerShell ?Name function {{Name!}} {",
+          "?Language=PowerShell !Name function Invoke-Task {",
+          "?Language=PowerShell     [CmdletBinding()]",
+          "?Language=PowerShell     param()",
+          "?Language=PowerShell ",
+          "?Language=PowerShell }",
+          "?Language=Python ?Name def {{Name!snake}}():",
+          "?Language=Python !Name def run_task():",
+          "?Language=Python     \"\"\"Say what this function does.\"\"\"",
+          "?Language=Python     return None",
+          "?Language=JavaScript ?Name function {{Name!camel}}() {",
+          "?Language=JavaScript !Name function runTask() {",
+          "?Language=JavaScript }",
+          "?Language=CSharp static class Tasks",
+          "?Language=CSharp {",
+          "?Language=CSharp ?Name     public static void {{Name!pascal}}()",
+          "?Language=CSharp !Name     public static void RunTask()",
+          "?Language=CSharp     {",
+          "?Language=CSharp     }",
+          "?Language=CSharp }",
+          "?Language=Rust ?Name fn {{Name!snake}}() {",
+          "?Language=Rust !Name fn run_task() {",
+          "?Language=Rust }",
+          "?Language=Bash ?Name {{Name!snake}}() {",
+          "?Language=Bash !Name run_task() {",
+          "?Language=Bash   :",
+          "?Language=Bash }"
         ],
         "Script": [
-          "[CmdletBinding()]",
-          "param()",
-          ""
+          "?Language=PowerShell [CmdletBinding()]",
+          "?Language=PowerShell param()",
+          "?Language=PowerShell ",
+          "?Language=Python #!/usr/bin/env python3",
+          "?Language=Python \"\"\"Say what this script does.\"\"\"",
+          "?Language=Python import sys",
+          "?Language=Python ",
+          "?Language=Python ",
+          "?Language=Python def main():",
+          "?Language=Python     return 0",
+          "?Language=Python ",
+          "?Language=Python ",
+          "?Language=Python if __name__ == \"__main__\":",
+          "?Language=Python     sys.exit(main())",
+          "?Language=JavaScript #!/usr/bin/env node",
+          "?Language=JavaScript \"use strict\";",
+          "?Language=JavaScript ",
+          "?Language=JavaScript function main() {",
+          "?Language=JavaScript }",
+          "?Language=JavaScript ",
+          "?Language=JavaScript main();",
+          "?Language=CSharp using System;",
+          "?Language=CSharp ",
+          "?Language=CSharp class Program",
+          "?Language=CSharp {",
+          "?Language=CSharp     static int Main(string[] args)",
+          "?Language=CSharp     {",
+          "?Language=CSharp         return 0;",
+          "?Language=CSharp     }",
+          "?Language=CSharp }",
+          "?Language=Rust fn main() {",
+          "?Language=Rust }",
+          "?Language=Bash #!/usr/bin/env bash",
+          "?Language=Bash set -euo pipefail",
+          "?Language=Bash ",
+          "?Language=Bash main() {",
+          "?Language=Bash   :",
+          "?Language=Bash }",
+          "?Language=Bash ",
+          "?Language=Bash main \"$@\""
         ],
         "Class": [
-          "?Name class {{Name!}} {",
-          "!Name class NewClass {",
-          "",
-          "}"
+          "?Language=PowerShell ?Name class {{Name!}} {",
+          "?Language=PowerShell !Name class NewClass {",
+          "?Language=PowerShell ",
+          "?Language=PowerShell }",
+          "?Language=Python ?Name class {{Name!pascal}}:",
+          "?Language=Python !Name class NewClass:",
+          "?Language=Python     \"\"\"Say what this class holds.\"\"\"",
+          "?Language=Python ",
+          "?Language=Python     def __init__(self):",
+          "?Language=Python         pass",
+          "?Language=JavaScript ?Name class {{Name!pascal}} {",
+          "?Language=JavaScript !Name class NewClass {",
+          "?Language=JavaScript   constructor() {",
+          "?Language=JavaScript   }",
+          "?Language=JavaScript }",
+          "?Language=CSharp ?Name class {{Name!pascal}}",
+          "?Language=CSharp !Name class NewClass",
+          "?Language=CSharp {",
+          "?Language=CSharp ?Name     public {{Name!pascal}}()",
+          "?Language=CSharp !Name     public NewClass()",
+          "?Language=CSharp     {",
+          "?Language=CSharp     }",
+          "?Language=CSharp }",
+          "?Language=Rust ?Name pub struct {{Name!pascal}} {",
+          "?Language=Rust !Name pub struct NewStruct {",
+          "?Language=Rust }",
+          "?Language=Rust ",
+          "?Language=Rust ?Name impl {{Name!pascal}} {",
+          "?Language=Rust !Name impl NewStruct {",
+          "?Language=Rust     pub fn new() -> Self {",
+          "?Language=Rust         Self {}",
+          "?Language=Rust     }",
+          "?Language=Rust }",
+          "?Language=Bash # Bash has no classes: functions that share a prefix play that part",
+          "?Language=Bash ?Name {{Name!snake}}_new() {",
+          "?Language=Bash !Name object_new() {",
+          "?Language=Bash   :",
+          "?Language=Bash }"
+        ],
+        "Module": [
+          "?Language=PowerShell # Save as a .psm1 file: every function in it is exported",
+          "?Language=PowerShell ?Name function {{Name!}} {",
+          "?Language=PowerShell !Name function Invoke-Task {",
+          "?Language=PowerShell     [CmdletBinding()]",
+          "?Language=PowerShell     param()",
+          "?Language=PowerShell ",
+          "?Language=PowerShell }",
+          "?Language=Python \"\"\"Say what this module offers.\"\"\"",
+          "?Language=Python ",
+          "?Language=Python ",
+          "?Language=Python ?Name def {{Name!snake}}():",
+          "?Language=Python !Name def run_task():",
+          "?Language=Python     \"\"\"Say what this function does.\"\"\"",
+          "?Language=Python     return None",
+          "?Language=JavaScript \"use strict\";",
+          "?Language=JavaScript ",
+          "?Language=JavaScript ?Name function {{Name!camel}}() {",
+          "?Language=JavaScript !Name function runTask() {",
+          "?Language=JavaScript }",
+          "?Language=JavaScript ",
+          "?Language=JavaScript ?Name module.exports = { {{Name!camel}} };",
+          "?Language=JavaScript !Name module.exports = { runTask };",
+          "?Language=CSharp ?Name namespace {{Name!pascal}}",
+          "?Language=CSharp !Name namespace NewModule",
+          "?Language=CSharp {",
+          "?Language=CSharp     public static class Tasks",
+          "?Language=CSharp     {",
+          "?Language=CSharp         public static void RunTask()",
+          "?Language=CSharp         {",
+          "?Language=CSharp         }",
+          "?Language=CSharp     }",
+          "?Language=CSharp }",
+          "?Language=Rust ?Name pub mod {{Name!snake}} {",
+          "?Language=Rust !Name pub mod new_module {",
+          "?Language=Rust     pub fn run() {",
+          "?Language=Rust     }",
+          "?Language=Rust }",
+          "?Language=Bash # A library: load it with \"source\" from another script",
+          "?Language=Bash ?Name {{Name!snake}}() {",
+          "?Language=Bash !Name run_task() {",
+          "?Language=Bash   :",
+          "?Language=Bash }"
+        ],
+        "Test": [
+          "?Language=PowerShell ?Name Describe '{{Name!}}' {",
+          "?Language=PowerShell !Name Describe 'Task' {",
+          "?Language=PowerShell     It 'works' {",
+          "?Language=PowerShell         $true | Should -BeTrue",
+          "?Language=PowerShell     }",
+          "?Language=PowerShell }",
+          "?Language=Python import unittest",
+          "?Language=Python ",
+          "?Language=Python ",
+          "?Language=Python ?Name class Test{{Name!pascal}}(unittest.TestCase):",
+          "?Language=Python !Name class TestTask(unittest.TestCase):",
+          "?Language=Python     def test_works(self):",
+          "?Language=Python         self.assertEqual(1 + 1, 2)",
+          "?Language=Python ",
+          "?Language=Python ",
+          "?Language=Python if __name__ == \"__main__\":",
+          "?Language=Python     unittest.main()",
+          "?Language=JavaScript const test = require(\"node:test\");",
+          "?Language=JavaScript const assert = require(\"node:assert\");",
+          "?Language=JavaScript ",
+          "?Language=JavaScript ?Name test(\"{{Name!camel}} works\", () => {",
+          "?Language=JavaScript !Name test(\"it works\", () => {",
+          "?Language=JavaScript   assert.strictEqual(1 + 1, 2);",
+          "?Language=JavaScript });",
+          "?Language=CSharp using System;",
+          "?Language=CSharp ",
+          "?Language=CSharp ?Name static class {{Name!pascal}}Tests",
+          "?Language=CSharp !Name static class TaskTests",
+          "?Language=CSharp {",
+          "?Language=CSharp     static void Check(bool condition, string message)",
+          "?Language=CSharp     {",
+          "?Language=CSharp         if (!condition)",
+          "?Language=CSharp         {",
+          "?Language=CSharp             throw new Exception(message);",
+          "?Language=CSharp         }",
+          "?Language=CSharp     }",
+          "?Language=CSharp ",
+          "?Language=CSharp     static int Main()",
+          "?Language=CSharp     {",
+          "?Language=CSharp         Check(1 + 1 == 2, \"one plus one is two\");",
+          "?Language=CSharp         Console.WriteLine(\"All tests passed.\");",
+          "?Language=CSharp         return 0;",
+          "?Language=CSharp     }",
+          "?Language=CSharp }",
+          "?Language=Rust #[cfg(test)]",
+          "?Language=Rust mod tests {",
+          "?Language=Rust     #[test]",
+          "?Language=Rust ?Name     fn {{Name!snake}}_works() {",
+          "?Language=Rust !Name     fn it_works() {",
+          "?Language=Rust         assert_eq!(1 + 1, 2);",
+          "?Language=Rust     }",
+          "?Language=Rust }",
+          "?Language=Bash #!/usr/bin/env bash",
+          "?Language=Bash set -euo pipefail",
+          "?Language=Bash ",
+          "?Language=Bash ?Name test_{{Name!snake}}() {",
+          "?Language=Bash !Name test_task() {",
+          "?Language=Bash   [ \"$((1 + 1))\" -eq 2 ]",
+          "?Language=Bash }",
+          "?Language=Bash ",
+          "?Language=Bash ?Name test_{{Name!snake}}",
+          "?Language=Bash !Name test_task",
+          "?Language=Bash echo \"ok\""
         ]
       },
       "Say": {
@@ -239,30 +539,46 @@
           "?Name named {Name}"
         ],
         "fr": [
-          "g\u00e9n\u00e9rer un {Kind|lower} {Language}",
-          "?Name nomm\u00e9 {Name}"
+          "générer un {Kind|lower} {Language}",
+          "?Name nommé {Name}"
         ]
       }
     }
   ],
-  "Commands": [],
+  "Commands": [
+    "Describe",
+    "It",
+    "Should"
+  ],
   "Category": {
     "en": {
       "Title": "Code",
-      "Summary": "Generate PowerShell functions, scripts, and classes.",
+      "Summary": "Generate functions, scripts, classes, modules and tests in PowerShell, Python, JavaScript, C#, Rust or Bash.",
       "Examples": [
         "generate a powershell function named Get-Report",
         "write a script",
-        "create a class named \"Invoice\""
+        "create a class named \"Invoice\"",
+        "write a rust function named parse_line"
       ]
     },
     "fr": {
       "Title": "Code",
-      "Summary": "G\u00e9n\u00e9rer des fonctions, scripts et classes PowerShell.",
+      "Summary": "Générer des fonctions, scripts, classes, modules et tests en PowerShell, Python, JavaScript, C#, Rust ou Bash.",
       "Examples": [
         "genere une fonction nommee Get-Report",
-        "ecris un script"
+        "ecris un script",
+        "ecris une classe python nommee \"Facture\""
       ]
     }
-  }
+  },
+  "Rewrites": [
+    {
+      "Pattern": "(?i)(?<![\\w#])c\\s?#(?![\\w#])|\\bc[- ]sharp\\b",
+      "Replacement": "csharp"
+    },
+    {
+      "Pattern": "(?i)\\bnode\\.js\\b",
+      "Replacement": "node"
+    }
+  ]
 }

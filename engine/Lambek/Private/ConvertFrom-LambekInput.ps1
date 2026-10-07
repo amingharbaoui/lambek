@@ -13,6 +13,16 @@ function ConvertFrom-LambekInput {
         throw "$($Parameter.Name) cannot be empty."
     }
 
+    # Several values ("image video", ".pdf, .log") for a parameter that holds several
+    if ($Parameter['Many']) {
+        $parts = @($text -split '[\s,;]+' | Where-Object { $_ })
+        if ($parts.Count -gt 1) {
+            $single = $Parameter.Clone()
+            $single.Remove('Many')
+            return , [object[]] @($parts | ForEach-Object { ConvertFrom-LambekInput -Parameter $single -Value $_ } | Select-Object -Unique)
+        }
+    }
+
     # Choices (Kind, Language...)
     if ($Parameter.ContainsKey('Words')) {
         $choices = @($Parameter.Words.Values | Select-Object -Unique)

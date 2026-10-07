@@ -15,25 +15,29 @@ function ConvertTo-LambekScript {
     foreach ($line in $Template) {
         $text = $line
 
-        # ?Name: keep only when Name is set, !Name: only when it is not (several conditions allowed)
+        # ?Name: keep only when Name is set, !Name: only when it is not, ?Name=value: only when Name is that value
         $keep = $true
-        while ($text -match '^(?<sign>[?!])(?<name>[A-Za-z]+) (?<rest>.*)$') {
+        while ($text -match '^(?<sign>[?!])(?<name>[A-Za-z]+)(?:=(?<value>[\w.-]+))? (?<rest>.*)$') {
             $isSet = $Parameters.Contains($Matches['name'])
+            if ($isSet -and $Matches['value']) { $isSet = [string] $Parameters[$Matches['name']] -eq $Matches['value'] }
             if ($Matches['sign'] -eq '?' -and -not $isSet) { $keep = $false }
             if ($Matches['sign'] -eq '!' -and $isSet) { $keep = $false }
             $text = $Matches['rest']
         }
         if (-not $keep) { continue }
 
-        # {{Name!}}: raw identifier, {{Name}}: escaped literal
-        foreach ($placeholder in [regex]::Matches($text, '\{\{(?<name>[A-Za-z]+)(?<raw>!?)\}\}')) {
+        # {{Name!}}: raw identifier, {{Name!snake}}: identifier written the way a language names things, {{Name}}: escaped literal
+        foreach ($placeholder in [regex]::Matches($text, '\{\{(?<name>[A-Za-z]+)(?<raw>!?)(?<style>[a-z]*)\}\}')) {
             $name = $placeholder.Groups['name'].Value
             if (-not $Parameters.Contains($name)) {
                 throw "The template needs the parameter '$name'."
             }
 
             $value = $Parameters[$name]
-            if ($placeholder.Groups['raw'].Value -eq '!') {
+            if ($placeholder.Groups['raw'].Value -eq '!' -and $placeholder.Groups['style'].Value) {
+                $replacement = ConvertTo-LambekCodeIdentifier -Name ([string] $value) -Style $placeholder.Groups['style'].Value
+            }
+            elseif ($placeholder.Groups['raw'].Value -eq '!') {
                 if ([string] $value -notmatch '^[A-Za-z_][A-Za-z0-9_-]*$') {
                     throw "'$value' is not a valid name."
                 }

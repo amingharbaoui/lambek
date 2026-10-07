@@ -85,9 +85,30 @@ function Invoke-LambekHostRequest {
                 # A message about the current plan edits it, explains it, or runs it
                 $kind = 'new'
                 $answer = $null
+                $followUp = $null
                 $context = [string] $params['context']
                 $selected = 0
                 if ($params['step']) { $selected = [int] $params['step'] }
+                # What the chat believes the user wants: it may settle a close call between two reading actions
+                $chat = [string] $params['chat']
+                if (-not $chat) { $chat = $context }
+                if (-not $state.Contains('Beliefs')) { $state.Beliefs = @{} }
+                $belief = $null
+                if ($chat -and $state.Beliefs.ContainsKey($chat)) { $belief = $state.Beliefs[$chat] }
+                $script:Belief = $(if ($belief) { $belief.Belief } else { $null })
+
+                # The languages of the chat: a hidden Markov model filtered one turn at a time. The user mostly stays in a
+                # language, a word of one language only is evidence for it, "ok" or a path says nothing. The most probable
+                # language settles a message that could be in several (the app's own hint starts a chat it has no belief for)
+                if (-not $state.Contains('Languages')) { $state.Languages = @{} }
+                $words = @(Get-LambekLanguageToken -Text $params.text)
+                $previous = $null
+                if ($chat -and $state.Languages.ContainsKey($chat)) { $previous = $state.Languages[$chat] }
+                elseif ($script:LanguageHint) { $previous = @{ $script:LanguageHint = 1.0 } }
+                $languages = Get-LambekLanguageBelief -Belief $previous -Tokens $words
+                $script:LanguageHint = Select-LambekLanguage -Belief $languages
+                if ($chat) { $state.Languages[$chat] = $languages }
+
                 if ($context -and $state.Plans.Contains($context)) {
                     $followUp = Resolve-LambekFollowUp -Plan $state.Plans[$context] -Text $params.text -Step $selected
                     $kind = $followUp.Kind
@@ -95,7 +116,25 @@ function Invoke-LambekHostRequest {
                     $answer = $followUp.Answer
                 }
                 else {
-                    $plan = New-LambekPlan -Text $params.text
+                    # "write a python script that deletes ...": the plan of the task, and its program as the answer
+                    $followUp = Resolve-LambekCodeRequest -Text $params.text
+                    if ($followUp) {
+                        $plan = $followUp.Plan
+                        $answer = $followUp.Answer
+                    }
+                    else {
+                        $plan = New-LambekPlan -Text $params.text
+                    }
+                }
+
+                $script:Belief = $null
+
+                # The belief follows the chat: predicted from the turns before, weighed by this one (a Bayes filter)
+                $rows = @($plan.Steps | Where-Object { $_.PSObject.Properties['Reading'] -and $_.Reading } | Select-Object -First 1 | ForEach-Object { $_.Reading.Rows })
+                if ($chat -and $rows.Count -gt 0 -and $kind -ne 'explain') {
+                    $turns = 0
+                    if ($belief) { $turns = $belief.Turns + 1 }
+                    $state.Beliefs[$chat] = [pscustomobject]@{ Belief = Get-LambekBelief -Belief $(if ($belief) { $belief.Belief } else { $null }) -Rows $rows -Turns $turns; Turns = $turns; Plan = $plan.PlanHash }
                 }
 
                 if ($kind -in 'explain', 'run') {
@@ -113,16 +152,23 @@ function Invoke-LambekHostRequest {
                     # A new or edited plan speaks through its status; only questions and small talk need words
                     if ($answer -and $plan.Status -ne 'Ready') { $result.answer = $answer }
                     if ($plan.Status -ne 'Ready' -and $kind -ne 'new') { $result.answer = ConvertTo-LambekAnswer -Plan $plan -Brief }
+                    # The plan written as a program: the code is the answer
+                    if ($followUp -and $followUp.PSObject.Properties['Code'] -and $followUp.Code) { $result.answer = $answer }
+                    # A word just learned: say it, the plan follows
+                    if ($followUp -and $followUp.PSObject.Properties['Learned']) {
+                        $result.answer = @(($answer -split "`n")[0], $result['answer'] | Where-Object { $_ }) -join "`n"
+                    }
                 }
 
-                # The language of the message, so the app can keep the chat in it
-                $words = @((ConvertTo-LambekNormalizedText -Text $params.text) -split '[^\p{L}\p{N}]+' | Where-Object { $_ })
+                # The language of the message (its frame, the chat's on a tie), so the app can keep the chat in it
                 $result.language = Get-LambekLanguage -Tokens $words
 
                 # Small talk: nothing to prove, the app shows no reading for it
                 $result.talk = $false
                 if ($kind -eq 'new' -and @($plan.Steps | Where-Object { $_.Action }).Count -eq 0) {
                     $result.talk = [bool](Get-LambekTalk -Text $params.text -Language $result.language)
+                    # A definition or a calculation is words too, not a plan
+                    if ($plan.PSObject.Properties['Reply'] -and $plan.Reply) { $result.talk = $true }
                 }
             }
             'edit' {
@@ -175,6 +221,10 @@ function Invoke-LambekHostRequest {
                 if ($state.Approvals.ContainsKey($params.id)) { $approval = $state.Approvals[$params.id] }
 
                 $execution = Invoke-LambekPlan -Plan $plan -Approval $approval -AuditPath $AuditPath
+                # A plan the user ran is a confirmation: the belief of its chat is sure again (no drift since)
+                if ($execution.Status -eq 'Completed' -and $state.Contains('Beliefs')) {
+                    foreach ($entry in $state.Beliefs.Values) { if ($entry.Plan -eq $plan.PlanHash) { $entry.Turns = 0 } }
+                }
                 $result = [ordered]@{
                     id     = $params.id
                     status = $execution.Status

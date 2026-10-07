@@ -34,6 +34,20 @@ Describe 'New-LambekPlan' {
             $plan.Steps.Action | Should -Be @('files.create', 'files.move', 'files.delete')
         }
 
+        It 'starts a new step at "and" before an action: <Text>' -ForEach @(
+            @{ Text = 'list the files in C:\A and delete the .tmp files in C:\A' }
+            @{ Text = 'liste les fichiers dans C:\A et supprime les .tmp dans C:\A' }
+        ) {
+            $plan = New-LambekPlan $Text
+            $plan.Steps.Count | Should -Be 2
+            $plan.Status | Should -Be 'Ready'
+        }
+
+        It 'keeps "and" inside a step when it goes on with the same files' {
+            (New-LambekPlan 'déplace les fichiers de C:\A et remets-les dans D:\B').Steps.Count | Should -Be 1
+            (New-LambekPlan 'find the files named "copy and delete" in C:\A').Steps.Count | Should -Be 1
+        }
+
         It 'links steps that use the same folder' {
             $plan.Edges.Count | Should -Be 2
             ($plan.Edges | Where-Object { $_.From -eq 1 -and $_.To -eq 2 }) | Should -Not -BeNullOrEmpty
@@ -91,7 +105,6 @@ Describe 'New-LambekPlan' {
         It 'reads the first folder as the source and the next one as the place: <Text>' -ForEach @(
             @{ Text = 'déplace mes téléchargements sur le bureau'; Source = 'Downloads'; Destination = 'Desktop' }
             @{ Text = 'deplace le fichiers dans pictures et mets le dans desktop'; Source = 'Pictures'; Destination = 'Desktop' }
-            @{ Text = 'remet le fichier qui est dans desktop vers pictures'; Source = 'Desktop'; Destination = 'Pictures' }
             @{ Text = 'déplace les images de mes téléchargements dans mes images'; Source = 'Downloads'; Destination = 'Pictures' }
             @{ Text = 'copy the pdf files from C:\A into C:\B'; Source = 'C:\A'; Destination = 'C:\B' }
             @{ Text = 'move the files in C:\A to C:\B'; Source = 'C:\A'; Destination = 'C:\B' }
@@ -103,7 +116,7 @@ Describe 'New-LambekPlan' {
         }
 
         It 'reads "the folder X" as the folder itself: <Text>' -ForEach @(
-            @{ Text = 'dans le dossier Pictures sais tu déplacer mon image vers Downloads'; Source = 'Pictures'; Destination = 'Downloads' }
+            @{ Text = 'dans le dossier Pictures sais tu déplacer mes images vers Downloads'; Source = 'Pictures'; Destination = 'Downloads' }
             @{ Text = 'déplace les fichiers dans le dossier C:\Temp vers D:\X'; Source = 'C:\Temp'; Destination = 'D:\X' }
         ) {
             $plan = New-LambekPlan $Text
@@ -112,10 +125,47 @@ Describe 'New-LambekPlan' {
             $plan.Steps[0].Parameters.Destination | Should -BeLike "*$Destination"
         }
 
+        It 'reads the folder after the kind of file: <Text>' -ForEach @(
+            @{ Text = 'deplace les images de pictures vers desktop'; Source = 'Pictures'; Destination = 'Desktop' }
+            @{ Text = 'move all my pictures from pictures to desktop'; Source = 'Pictures'; Destination = 'Desktop' }
+            @{ Text = 'copie les images depuis documents vers C:\Out'; Source = 'Documents'; Destination = 'C:\Out' }
+            @{ Text = 'deplace toutes mes images de pictures vers desktop'; Source = 'Pictures'; Destination = 'Desktop' }
+        ) {
+            $plan = New-LambekPlan $Text
+            $plan.Status | Should -Be 'Ready'
+            $plan.Steps[0].Parameters.Source | Should -BeLike "*$Source"
+            $plan.Steps[0].Parameters.Destination | Should -BeLike "*$Destination"
+            $plan.Steps[0].Parameters.Kind | Should -Be 'image'
+        }
+
+        It 'keeps "de musique" a kind of file when no kind came before' {
+            $plan = New-LambekPlan 'copie les fichiers de musique vers C:\Out'
+            $plan.Steps[0].Parameters.Kind | Should -Be 'audio'
+            $plan.Steps[0].Parameters.Contains('Source') | Should -BeFalse
+            $plan.Questions | Should -Contain 'Step 1: Depuis quel dossier ?'
+        }
+
         It 'reads a place said before the verb as part of the sentence' {
             $plan = New-LambekPlan 'dans le dossier Pictures sais tu déplacer mon image vers Downloads'
             $plan.Steps[0].Types | Should -BeLike 's s^l d^l d s *'
             $plan.Steps[0].Implied | Should -BeNullOrEmpty
+        }
+
+        It 'reads put and mettre as a move to the place that follows: <Text>' -ForEach @(
+            @{ Text = 'mets les images de mes téléchargements dans mes images'; Source = 'Downloads'; Destination = 'Pictures' }
+            @{ Text = 'move the .log files in C:\Temp and put them in D:\Old'; Source = 'C:\Temp'; Destination = 'D:\Old' }
+            @{ Text = 'remet les fichiers qui sont dans desktop verrs pictures'; Source = 'Desktop'; Destination = 'Pictures' }
+            @{ Text = 'déplace les fichiers de C:\A dnas D:\B'; Source = 'C:\A'; Destination = 'D:\B' }
+        ) {
+            $plan = New-LambekPlan $Text
+            $plan.Status | Should -Be 'Ready'
+            $plan.Steps[0].Action | Should -Be 'files.move'
+            $plan.Steps[0].Parameters.Source | Should -BeLike "*$Source"
+            $plan.Steps[0].Parameters.Destination | Should -BeLike "*$Destination"
+        }
+
+        It 'never repairs a word inside a path' {
+            (New-LambekPlan 'list the files in C:\Vera\docs').Steps[0].Parameters.Path | Should -Be 'C:\Vera\docs'
         }
 
         It 'says which type the folder supplies' {
@@ -142,9 +192,10 @@ Describe 'New-LambekPlan' {
             $plan.Steps[0].Status | Should -Be 'Blocked'
         }
 
-        It 'marks an unsupported language' {
+        It 'writes a function in another language than PowerShell' {
             $plan = New-LambekPlan 'generate a python function named Get-Report'
-            $plan.Steps[0].Status | Should -Be 'Unsupported'
+            $plan.Steps[0].Status | Should -Be 'Ready'
+            $plan.Steps[0].Script | Should -BeLike 'def get_report():*'
         }
 
         It 'keeps an injection attempt inside a string' {

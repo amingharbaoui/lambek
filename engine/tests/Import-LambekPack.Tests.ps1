@@ -73,6 +73,21 @@ Describe 'Import-LambekPack' {
             { Import-LambekPack -Path $folder } | Should -Throw '*not valid JSON*'
         }
 
+        It 'rejects a rewrite that does not compile' {
+            $folder = New-TestPack @{ Name = 'test'; Version = '1.0.0'; Types = @{}; Words = @{}; Rewrites = @(@{ Pattern = '(unclosed'; Replacement = 'x' }) }
+            { Import-LambekPack -Path $folder } | Should -Throw '*rewrite*'
+        }
+
+        It 'rejects a folder that is not a special folder' {
+            $folder = New-TestPack @{ Name = 'test'; Version = '1.0.0'; Types = @{}; Words = @{}; Folders = @{ secret = 'C:\Secret' } }
+            { Import-LambekPack -Path $folder } | Should -Throw '*folder*'
+        }
+
+        It 'rejects a kind with an invalid extension' {
+            $folder = New-TestPack @{ Name = 'test'; Version = '1.0.0'; Types = @{}; Words = @{}; Kinds = @{ image = @('png') } }
+            { Import-LambekPack -Path $folder } | Should -Throw '*extension*'
+        }
+
         It 'rejects a pack without Words' {
             $folder = New-TestPack @{ Name = 'test'; Version = '1.0.0'; Types = @{} }
             { Import-LambekPack -Path $folder } | Should -Throw '*Words*'

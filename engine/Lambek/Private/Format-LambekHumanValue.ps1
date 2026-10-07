@@ -12,6 +12,15 @@ function Format-LambekHumanValue {
         [hashtable] $Units
     )
 
+    # Lists: ".log, .tmp and .bak"
+    if ($Value -is [array]) {
+        $items = @($Value | ForEach-Object { Format-LambekHumanValue -Name $Name -Value $_ -Units $Units })
+        if ($items.Count -le 1) { return "$items" }
+        $and = 'and'
+        if ($Units.ContainsKey('and')) { $and = $Units['and'] }
+        return ($items[0..($items.Count - 2)] -join ', ') + " $and " + $items[-1]
+    }
+
     # Durations: years, weeks, days, hours, or minutes
     if ($Value -is [timespan]) {
         $seconds = [long] $Value.TotalSeconds
@@ -32,7 +41,9 @@ function Format-LambekHumanValue {
         foreach ($unit in @(@('TB', 1TB), @('GB', 1GB), @('MB', 1MB), @('KB', 1KB))) {
             if ($bytes -ge $unit[1]) {
                 $amount = [math]::Round($bytes / $unit[1], 1)
-                return "$($amount.ToString([cultureinfo]::InvariantCulture)) $($Units[$unit[0]])"
+                $text = $amount.ToString([cultureinfo]::InvariantCulture)
+                if ($Units.ContainsKey('Decimal')) { $text = $text.Replace('.', $Units['Decimal']) }
+                return "$text $($Units[$unit[0]])"
             }
         }
         return "$bytes $($Units['B'])"

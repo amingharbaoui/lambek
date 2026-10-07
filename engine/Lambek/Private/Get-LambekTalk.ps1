@@ -11,7 +11,10 @@ function Get-LambekTalk {
         # What Lambek can help with, and one example request
         [string] $Topics = '',
 
-        [string] $Example = ''
+        [string] $Example = '',
+
+        # Pick among the phrasings (only when the answer is said, once per message)
+        [switch] $Vary
     )
 
     $lexicon = Get-LambekLexicon -Language $Language
@@ -51,7 +54,24 @@ function Get-LambekTalk {
     # Some answers depend on the chat: incognito or saved
     $talk = $lexicon.Talk[$found[0]]
     if ($talk.ReplyOff -and -not $script:Incognito) { return $talk.ReplyOff }
-    return $talk.Reply -f $Topics, $Example
+    $reply = @($talk.Reply)[0]
+    if ($Vary) { $reply = Select-LambekVariant -Key "$Language|talk|$($found[0])" -Variants @($talk.Reply) }
+    return $reply -f $Topics, $Example
+}
+
+function Select-LambekVariant {
+    param([string] $Key, [string[]] $Variants)
+
+    # Variety without chance: the first phrasing the first time, then a stable hash picks one not said in the last two turns
+    if ($Variants.Count -le 1) { return $Variants[0] }
+    if (-not $script:SpeechRecent.ContainsKey($Key)) { $script:SpeechRecent[$Key] = [System.Collections.Generic.List[int]]::new() }
+    $recent = $script:SpeechRecent[$Key]
+    $index = 0
+    if ($recent.Count -gt 0) { $index = [LambekSpeech]::Pick("$Key|$($script:SpeechTurn)", $Variants.Count, [int[]] @($recent | Select-Object -Last 2)) }
+    $recent.Add($index)
+    if ($recent.Count -gt 8) { $recent.RemoveAt(0) }
+    $script:SpeechTurn++
+    return $Variants[$index]
 }
 
 function Test-LambekTalkWord {

@@ -9,11 +9,15 @@ function Resolve-LambekIntent {
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
         [PSTypeName('Lambek.Request')]
-        [pscustomobject] $Request
+        [pscustomobject] $Request,
+
+        # The parameters of the step before, for a pronoun
+        [System.Collections.IDictionary] $Referent
     )
 
     process {
         $evidence = Get-LambekIntentEvidence -Request $Request
-        New-LambekIntentCard -Evidence $evidence -Scoring (Get-LambekScoring)
+        $scoring = Get-LambekScoring
+        New-LambekIntentCard -Evidence $evidence -Scoring $scoring -Adapted (Get-LambekAdaptedScoring -Scoring $scoring) -Referent $Referent
     }
 }

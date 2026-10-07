@@ -29,6 +29,16 @@ function Import-LambekPack {
             throw "Pack file is not valid JSON: $file"
         }
 
+        # Its languages, one file each next to it (languages/nl.json)
+        $folder = Join-Path (Split-Path -Path $file -Parent) 'languages'
+        if (Test-Path -LiteralPath $folder -PathType Container) {
+            foreach ($language in Get-ChildItem -LiteralPath $folder -Filter '*.json' | Sort-Object Name) {
+                try { $overlay = Get-Content -LiteralPath $language.FullName -Raw | ConvertFrom-Json -AsHashtable }
+                catch { throw "Language file is not valid JSON: $($language.FullName)" }
+                $data = Merge-LambekPackLanguage -Data $data -Overlay $overlay -Source $language.FullName
+            }
+        }
+
         # Check and register
         $name = Register-LambekPack -Data $data -Source (Resolve-Path -LiteralPath $file).Path
         Get-LambekPack -Name $name

@@ -12,13 +12,28 @@ function Resolve-LambekGrammar {
         [pscustomobject] $Request,
 
         [ValidateRange(1, 100000)]
-        [int] $MaxCombinations = 4096
+        [int] $MaxCombinations = 4096,
+
+        # Types to try for words the grammar does not know: @{ purge = @('s o^l') }
+        [hashtable] $Hypothesis = @{},
+
+        # Only say whether the words reduce to s: combinations that cannot are skipped without reducing them
+        [switch] $SentenceOnly
     )
 
     process {
         $language = $Request.Language
         $lexicon = Get-LambekLexicon -Language $language
         $grammar = Get-LambekGrammarLexicon -Language $language
+
+        # A word of another language keeps its types there: the types are the same in every language (s, o, d...)
+        if ($Request.PSObject.Properties['Borrowed'] -and $Request.Borrowed -and $Request.Borrowed.Count -gt 0) {
+            foreach ($word in @($Request.Borrowed.Keys)) {
+                if ($grammar.Words.ContainsKey($word)) { continue }
+                $other = Get-LambekGrammarLexicon -Language $Request.Borrowed[$word]
+                if ($other.Words.ContainsKey($word)) { $grammar.Words[$word] = $other.Words[$word] }
+            }
+        }
 
         # Candidate types per word
         $typedWords = [System.Collections.Generic.List[object]]::new()
@@ -29,58 +44,85 @@ function Resolve-LambekGrammar {
             if ($grammar.Words.ContainsKey($word)) {
                 $typedWords.Add([pscustomobject]@{ Word = $word; Position = $position; Candidates = $grammar.Words[$word].ToArray() })
             }
+            elseif ($Hypothesis.ContainsKey($word)) {
+                $typedWords.Add([pscustomobject]@{ Word = $word; Position = $position; Candidates = [string[]] @($Hypothesis[$word]) })
+            }
             elseif (-not $lexicon.StopWords.Contains($word)) {
                 $unknown.Add($word)
             }
         }
 
-        # Try every combination of candidate types, keep the best one
-        $choice = [int[]]::new($typedWords.Count)
-        $best = $null
-        $tried = 0
+        # Every combination of candidate types at once, in one chart; the smallest choice wins among equals
+        # First only the forms that can still become a sentence; without one, the shortest forms for the questions
+        $root = Invoke-LambekChart -TypedWords $typedWords -Keep 4 -Fuel ([long] $MaxCombinations * 64) -SentenceOnly
+        if (-not $root.ContainsKey('s|0') -and -not $SentenceOnly) {
+            $root = Invoke-LambekChart -TypedWords $typedWords -Keep 1 -Fuel ([long] $MaxCombinations * 64) -Beam 6
+        }
+        $choice = [int[]] @()
+        $readings = 0
+        $sentence = $null
+        $shortest = $null
+        foreach ($form in $root.Keys) {
+            $first = $root[$form][0]
+            if ($form -ceq 's|0') {
+                $sentence = $first
+                $readings = $root[$form].Count
+            }
+            $size = Get-LambekFormCount -Form $form
+            if ($null -eq $shortest -or $size -lt $shortest.Size -or ($size -eq $shortest.Size -and (Compare-LambekChoice -First $first -Second $shortest.Choice) -lt 0)) {
+                $shortest = [pscustomobject]@{ Size = $size; Choice = $first }
+            }
+        }
+        if ($sentence) { $choice = $sentence }
+        elseif ($shortest) { $choice = $shortest.Choice }
+        if ($SentenceOnly -and -not $sentence) {
+            return [pscustomobject]@{ PSTypeName = 'Lambek.Grammar'; IsSentence = $false }
+        }
 
-        while ($tried -lt $MaxCombinations) {
-            $tried++
+        # The chosen reading, reduced once more to know which types cancel which
+        $simpleTypes = [System.Collections.Generic.List[object]]::new()
+        $owners = [System.Collections.Generic.List[int]]::new()
+        for ($w = 0; $w -lt $typedWords.Count; $w++) {
+            foreach ($simpleType in ConvertFrom-LambekType -Type $typedWords[$w].Candidates[$choice[$w]]) {
+                $simpleTypes.Add($simpleType)
+                $owners.Add($w)
+            }
+        }
+        $reduction = Invoke-LambekReduction -SimpleTypes $simpleTypes.ToArray()
+        $left = @($reduction.Leftover | ForEach-Object { $simpleTypes[$_] })
 
-            $simpleTypes = [System.Collections.Generic.List[object]]::new()
-            $owners = [System.Collections.Generic.List[int]]::new()
-            for ($w = 0; $w -lt $typedWords.Count; $w++) {
-                $type = $typedWords[$w].Candidates[$choice[$w]]
-                foreach ($simpleType in ConvertFrom-LambekType -Type $type) {
-                    $simpleTypes.Add($simpleType)
-                    $owners.Add($w)
+        # The head of the sentence: the word whose s is left once everything else cancels (the main verb).
+        # A sentence modifier ("in C:\Logs, delete...": s s^l d^l) passes the s on: follow its s^l to the verb it takes.
+        $head = $null
+        if ($sentence) {
+            $at = @($reduction.Leftover | Where-Object { $simpleTypes[$_].Base -eq 's' -and $simpleTypes[$_].Order -eq 0 })[0]
+            for ($step = 0; $null -ne $at -and $step -lt $simpleTypes.Count; $step++) {
+                $word = $owners[$at]
+                $takes = @(for ($x = 0; $x -lt $simpleTypes.Count; $x++) {
+                        if ($owners[$x] -eq $word -and $simpleTypes[$x].Base -eq 's' -and $simpleTypes[$x].Order -ne 0) { $x }
+                    })
+                $next = $null
+                foreach ($pair in $reduction.Pairs) {
+                    foreach ($index in $takes) {
+                        if ($pair.Right -eq $index -and $simpleTypes[$pair.Left].Order -eq 0) { $next = $pair.Left }
+                        if ($pair.Left -eq $index -and $simpleTypes[$pair.Right].Order -eq 0) { $next = $pair.Right }
+                    }
                 }
-            }
-
-            $reduction = Invoke-LambekReduction -SimpleTypes $simpleTypes.ToArray()
-            $left = @($reduction.Leftover | ForEach-Object { $simpleTypes[$_] })
-            $isSentence = $left.Count -eq 1 -and $left[0].Base -eq 's' -and $left[0].Order -eq 0
-
-            $score = $left.Count
-            if ($isSentence) { $score = 0 }
-
-            if ($null -eq $best -or $score -lt $best.Score) {
-                $best = [pscustomobject]@{
-                    Score       = $score
-                    IsSentence  = $isSentence
-                    Choice      = [int[]] $choice.Clone()
-                    SimpleTypes = $simpleTypes.ToArray()
-                    Owners      = $owners.ToArray()
-                    Reduction   = $reduction
-                    Left        = $left
+                if ($null -eq $next) {
+                    $owner = $typedWords[$word]
+                    $head = [pscustomobject]@{ Word = $owner.Word; Position = $owner.Position }
+                    break
                 }
+                $at = $next
             }
-            if ($isSentence) { break }
-
-            # Next combination (odometer)
-            $position = $typedWords.Count - 1
-            while ($position -ge 0) {
-                $choice[$position]++
-                if ($choice[$position] -lt $typedWords[$position].Candidates.Count) { break }
-                $choice[$position] = 0
-                $position--
-            }
-            if ($position -lt 0) { break }
+        }
+        $best = [pscustomobject]@{
+            IsSentence  = [bool] $sentence
+            Choice      = $choice
+            SimpleTypes = $simpleTypes.ToArray()
+            Owners      = $owners.ToArray()
+            Reduction   = $reduction
+            Left        = $left
         }
 
         # Assignment
@@ -113,6 +155,11 @@ function Resolve-LambekGrammar {
             "$leftType $rightType -> 1 ($leftWord, $rightWord)"
         }
 
+        # Distance to a sentence: one missing s, or every type left besides one s
+        $sentenceTypes = @($best.Left | Where-Object { $_.Base -eq 's' -and $_.Order -eq 0 }).Count
+        $distance = @($best.Left).Count - [math]::Min($sentenceTypes, 1)
+        if ($sentenceTypes -eq 0) { $distance++ }
+
         # Missing parts and questions
         $missing = [System.Collections.Generic.List[string]]::new()
         $hasSentence = @($best.Left | Where-Object { $_.Base -eq 's' -and $_.Order -eq 0 }).Count -gt 0
@@ -144,12 +191,25 @@ function Resolve-LambekGrammar {
             }
         }
 
+        # The reduction as a diagram: the base of each simple type, the word it belongs to, the pairs that cancel,
+        # and the s left open (the meaning is computed on it)
+        $open = @($best.Reduction.Leftover | Where-Object { $best.SimpleTypes[$_].Base -eq 's' -and $best.SimpleTypes[$_].Order -eq 0 } | Select-Object -First 1)
+        $linkage = [pscustomobject]@{
+            Bases  = [string[]] @($best.SimpleTypes | ForEach-Object { $_.Base })
+            Owners = [int[]] @($best.Owners)
+            Pairs  = @($best.Reduction.Pairs | ForEach-Object { , [int[]] @($_.Left, $_.Right) })
+            Output = $(if ($open.Count -gt 0) { [int] $open[0] } else { -1 })
+        }
+
         [pscustomobject]@{
             PSTypeName = 'Lambek.Grammar'
             Canonical  = $Request.Canonical
             Language   = $language
             Words      = $Request.Words
             IsSentence = $best.IsSentence
+            Readings   = $readings
+            Head       = $head
+            Distance   = $distance
             Assignment = @($assignment)
             Types      = Format-LambekType -SimpleTypes $best.SimpleTypes
             Steps      = @($steps)
@@ -158,6 +218,24 @@ function Resolve-LambekGrammar {
             Missing    = $missing.ToArray()
             Questions  = @($questions)
             Unknown    = $unknown.ToArray()
+            Linkage    = $linkage
         }
     }
+}
+
+function Test-LambekTypeCount {
+    param([System.Collections.Generic.List[object]] $SimpleTypes)
+
+    $count = @{}
+    foreach ($simpleType in $SimpleTypes) {
+        $sign = 1
+        if ([math]::Abs($simpleType.Order) % 2 -eq 1) { $sign = -1 }
+        $count[$simpleType.Base] = $count[$simpleType.Base] + $sign
+    }
+    foreach ($base in $count.Keys) {
+        $expected = 0
+        if ($base -eq 's') { $expected = 1 }
+        if ($count[$base] -ne $expected) { return $false }
+    }
+    return $count.ContainsKey('s')
 }

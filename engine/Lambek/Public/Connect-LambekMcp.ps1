@@ -3,7 +3,7 @@ function Connect-LambekMcp {
     .SYNOPSIS
         Reads the MCP config and turns the tools of every server into Lambek actions.
     .DESCRIPTION
-        The config uses the claude_desktop_config.json format. Tool lists are cached, so servers
+        The config uses the standard "mcpServers" format. Tool lists are cached, so servers
         only start when one of their tools runs, or when -Refresh is used.
     .EXAMPLE
         Connect-LambekMcp -Path ./mcp.json -Refresh

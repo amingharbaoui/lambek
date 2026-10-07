@@ -9,6 +9,9 @@ function Format-LambekValue {
     if ($null -eq $Value) {
         return ''
     }
+    if ($Value -is [array]) {
+        return (@($Value | ForEach-Object { Format-LambekValue -Value $_ }) -join ' ')
+    }
     if ($Value -is [timespan]) {
         return $Value.TotalSeconds.ToString([cultureinfo]::InvariantCulture) + 's'
     }

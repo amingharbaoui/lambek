@@ -11,6 +11,7 @@
     "du",
     "de",
     "d",
+    "depuis",
     "au",
     "aux",
     "et",
@@ -29,6 +30,9 @@
     "mon",
     "ma",
     "mes",
+    "tous",
+    "toute",
+    "toutes",
     "tu",
     "te",
     "t",
@@ -76,7 +80,28 @@
     "faire",
     "fais",
     "s",
-    "y"
+    "y",
+    "dois",
+    "doit",
+    "doivent",
+    "faut",
+    "faudrait",
+    "sais",
+    "savez",
+    "saurais",
+    "sauriez",
+    "pourrais",
+    "pourriez",
+    "veuillez",
+    "peut-etre",
+    "ceux",
+    "celles",
+    "vite",
+    "maintenant",
+    "juste",
+    "savoir",
+    "connaitre",
+    "voir"
   ],
   "BaseForms": {
     "vieux": "ancien",
@@ -92,6 +117,7 @@
   },
   "SentenceQuestion": "Que voulez-vous faire ?",
   "AmbiguityQuestion": "Voulez-vous dire \"{0}\" ou \"{1}\" ?",
+  "AmbiguityQuestion3": "Voulez-vous dire \"{0}\", \"{1}\" ou \"{2}\" ?",
   "RephraseQuestion": "Pouvez-vous le dire autrement ?",
   "Negations": [
     "pas",
@@ -105,51 +131,430 @@
     "hormis",
     "sans"
   ],
-  "NegationQuestion": "Lambek n'agit pas sur une demande n\u00e9gative. Que doit-il faire \u00e0 la place ?",
-  "ExclusionQuestion": "Les exclusions ne sont pas encore prises en charge. Quels fichiers faut-il utiliser ?",
+  "MannerSuffixes": [
+    "ment"
+  ],
+  "Numbers": {
+    "deux": 2,
+    "trois": 3,
+    "quatre": 4,
+    "cinq": 5,
+    "six": 6,
+    "sept": 7,
+    "huit": 8,
+    "neuf": 9,
+    "dix": 10,
+    "onze": 11,
+    "douze": 12,
+    "treize": 13,
+    "quatorze": 14,
+    "quinze": 15,
+    "seize": 16,
+    "dix-sept": 17,
+    "dix-huit": 18,
+    "dix-neuf": 19,
+    "vingt": 20,
+    "trente": 30,
+    "quarante": 40,
+    "cinquante": 50,
+    "soixante": 60,
+    "cent": 100,
+    "mille": 1000
+  },
+  "HowMany": [
+    "combien"
+  ],
+  "Again": [
+    "comme la derniere fois",
+    "comme l autre fois",
+    "comme d habitude",
+    "comme avant",
+    "comme hier",
+    "pareil que la derniere fois",
+    "la meme chose que la derniere fois",
+    "refais la meme chose",
+    "refais pareil",
+    "refais ca",
+    "recommence"
+  ],
+  "Define": {
+    "Phrases": [
+      "que veut dire",
+      "que signifie",
+      "ca veut dire quoi",
+      "c est quoi un",
+      "c est quoi une",
+      "qu est ce qu un",
+      "qu est ce qu une",
+      "definition de",
+      "definition du",
+      "definis",
+      "definit",
+      "donne la definition de",
+      "le sens de",
+      "le sens du",
+      "sens de",
+      "sens du"
+    ],
+    "Fillers": [
+      "le",
+      "la",
+      "les",
+      "l",
+      "un",
+      "une",
+      "mot",
+      "terme",
+      "verbe",
+      "nom",
+      "dire",
+      "veut",
+      "signifie",
+      "quoi",
+      "ca"
+    ]
+  },
+  "Calculate": {
+    "Phrases": [
+      "combien font",
+      "combien fait",
+      "combien vaut",
+      "combien ca fait",
+      "que vaut",
+      "que font",
+      "calcule",
+      "calculer",
+      "resous",
+      "resoudre",
+      "evalue"
+    ],
+    "Operators": {
+      "multiplie par": "*",
+      "divise par": "/",
+      "racine carree de": "sqrt ",
+      "racine de": "sqrt ",
+      "au carre": "^2",
+      "au cube": "^3",
+      "puissance": "^",
+      "plus": "+",
+      "moins": "-",
+      "fois": "*",
+      "sur": "/"
+    },
+    "Units": {
+      "km": "km",
+      "kilometres": "km",
+      "kilometre": "km",
+      "m": "m",
+      "metres": "m",
+      "metre": "m",
+      "cm": "cm",
+      "mm": "mm",
+      "miles": "mi",
+      "mile": "mi",
+      "mi": "mi",
+      "pieds": "ft",
+      "pied": "ft",
+      "pouces": "in",
+      "pouce": "in",
+      "kg": "kg",
+      "kilos": "kg",
+      "kilo": "kg",
+      "g": "g",
+      "grammes": "g",
+      "gramme": "g",
+      "livres": "lb",
+      "livre": "lb",
+      "onces": "oz",
+      "once": "oz",
+      "tonnes": "t",
+      "tonne": "t",
+      "c": "c",
+      "celsius": "c",
+      "degres celsius": "c",
+      "f": "f",
+      "fahrenheit": "f",
+      "degres fahrenheit": "f",
+      "k": "k",
+      "kelvin": "k",
+      "l": "l",
+      "litres": "l",
+      "litre": "l",
+      "ml": "ml",
+      "cl": "cl",
+      "gallons": "gal",
+      "gallon": "gal",
+      "h": "h",
+      "heures": "h",
+      "heure": "h",
+      "min": "min",
+      "minutes": "min",
+      "minute": "min",
+      "s": "s",
+      "secondes": "s",
+      "seconde": "s",
+      "jours": "d",
+      "jour": "d",
+      "semaines": "wk",
+      "semaine": "wk",
+      "octets": "b",
+      "ko": "kb",
+      "mo": "mb",
+      "go": "gb",
+      "to": "tb",
+      "km/h": "kmh",
+      "mph": "mph"
+    },
+    "Into": [
+      "en",
+      "vers"
+    ],
+    "Months": {
+      "janvier": 1,
+      "fevrier": 2,
+      "mars": 3,
+      "avril": 4,
+      "mai": 5,
+      "juin": 6,
+      "juillet": 7,
+      "aout": 8,
+      "septembre": 9,
+      "octobre": 10,
+      "novembre": 11,
+      "decembre": 12
+    },
+    "Between": "\\bjours?\\b.*\\bentre\\b",
+    "Weekday": "\\bquel jour\\b(?!.*\\bdans\\b)",
+    "InDays": "\\bquel(?:le)? (?:date|jour)\\b.*\\bdans (?<n>\\d+) jours?\\b",
+    "Functions": {
+      "derivative": [
+        "derivee de",
+        "derivee",
+        "derive",
+        "deriver",
+        "derivez"
+      ],
+      "integral": [
+        "integrale de",
+        "integrale",
+        "integre",
+        "integrer",
+        "integrez",
+        "primitive de",
+        "primitive"
+      ],
+      "simplify": [
+        "simplifie",
+        "simplifier",
+        "simplifiez",
+        "reduis",
+        "reduire"
+      ],
+      "expand": [
+        "developpe",
+        "developper",
+        "developpez"
+      ],
+      "factor": [
+        "factorise",
+        "factoriser",
+        "factorisez",
+        "decompose",
+        "decomposer",
+        "decomposition de",
+        "facteurs premiers de"
+      ],
+      "prime": [
+        "est il premier",
+        "est premier",
+        "est un nombre premier",
+        "est il un nombre premier",
+        "premier"
+      ],
+      "gcd": [
+        "pgcd de",
+        "pgcd"
+      ],
+      "lcm": [
+        "ppcm de",
+        "ppcm"
+      ],
+      "base": [
+        "en binaire",
+        "en hexadecimal",
+        "en octal",
+        "en base"
+      ],
+      "choose": [
+        "combinaisons de",
+        "parmi",
+        "coefficient binomial"
+      ],
+      "arrange": [
+        "arrangements de"
+      ],
+      "mean": [
+        "moyenne de",
+        "moyenne"
+      ],
+      "median": [
+        "mediane de",
+        "mediane"
+      ],
+      "variance": [
+        "variance de",
+        "variance"
+      ],
+      "stddev": [
+        "ecart type de",
+        "ecart type"
+      ],
+      "statistics": [
+        "statistiques de",
+        "statistiques",
+        "stats de"
+      ],
+      "words": [
+        "en toutes lettres",
+        "en lettres"
+      ],
+      "system": [
+        "le systeme",
+        "systeme"
+      ],
+      "determinant": [
+        "determinant de",
+        "determinant"
+      ],
+      "inverse": [
+        "inverse de la matrice",
+        "inverse de",
+        "inverse"
+      ],
+      "rank": [
+        "rang de la matrice",
+        "rang de"
+      ],
+      "eigen": [
+        "valeurs propres de",
+        "valeurs propres"
+      ],
+      "transpose": [
+        "transposee de",
+        "transposee"
+      ],
+      "fibonacci": [
+        "fibonacci"
+      ],
+      "totient": [
+        "indicatrice d euler de",
+        "phi d euler de"
+      ],
+      "divisors": [
+        "diviseurs de",
+        "les diviseurs de"
+      ]
+    },
+    "Bases": {
+      "binaire": 2,
+      "hexadecimal": 16,
+      "octal": 8
+    },
+    "And": [
+      "et"
+    ],
+    "Range": "\\s(?:entre|de)\\s+(?<a>\\S+)\\s+(?:et|a)\\s+(?<b>\\S+?)\\s*[?.!]*$",
+    "Respect": "\\s(?:par rapport a|selon)\\s+(?<v>[a-z])\\b",
+    "Lead": [
+      "quelle est",
+      "quel est",
+      "quels sont",
+      "quelles sont",
+      "donne moi",
+      "donne",
+      "calcule",
+      "calculer",
+      "trouve",
+      "peux tu",
+      "pouvez vous",
+      "la",
+      "le",
+      "les",
+      "l",
+      "de",
+      "du",
+      "des",
+      "moi",
+      "svp",
+      "stp"
+    ]
+  },
+  "Interrogatives": [
+    "quel"
+  ],
+  "NegationQuestion": "Lambek n'agit pas sur une demande négative. Que doit-il faire à la place ?",
+  "ExclusionQuestion": "Que faut-il laisser de côté ?",
   "UnusedQuestion": "Je n'ai pas pu utiliser : {0}. Pouvez-vous le dire autrement ?",
+  "GuessQuestion": "Que veut dire « {0} » ici : {1} ?",
+  "GuessOpenQuestion": "Que veut dire « {0} » ici ?",
+  "Protected": {
+    "Text": "{0} est {1} : Lambek n'y touche pas.",
+    "Reasons": {
+      "system": "un dossier du système",
+      "root": "la racine d'un disque",
+      "home": "tout votre dossier utilisateur",
+      "user": "protégé par vos règles",
+      "users": "le dossier de tous les utilisateurs",
+      "other": "dans le dossier d'un autre utilisateur"
+    }
+  },
   "Answer": {
     "Single": "Je vais {0}.",
-    "Steps": "Je vais le faire en {0} \u00e9tapes :",
+    "Steps": "Je vais le faire en {0} étapes :",
     "RiskLow": "Ceci ne fait que lire. Rien ne change sur votre ordinateur.",
     "RiskCreate": "Ceci ajoute seulement quelque chose de nouveau. Rien d'existant ne change.",
     "RiskMedium": "Ceci modifie des choses sur votre ordinateur. Simulez d'abord pour voir exactement quoi.",
-    "RiskHigh": "Ceci est irr\u00e9versible. Simulez d'abord, puis confirmez avec un code.",
-    "CodeOnly": "Voici le code, pr\u00eat \u00e0 copier.",
-    "Waits": "L'\u00e9tape {0} attend l'\u00e9tape {1} car {2}.",
-    "NeedOne": "Il me manque un d\u00e9tail. {0}",
-    "NeedMany": "Il me manque quelques d\u00e9tails :",
+    "RiskHigh": "Ceci est irréversible. Simulez d'abord, puis confirmez avec un code.",
+    "RiskUndo": "Ceci modifie des fichiers, mais ils restent récupérables. Simulez d'abord, puis confirmez avec un code.",
+    "CodeOnly": "Voici le code, prêt à copier.",
+    "Waits": "L'étape {0} attend l'étape {1} car {2}.",
+    "NeedOne": "Il me manque un détail. {0}",
+    "NeedMany": "Il me manque quelques détails :",
     "Unknown": "Sur cet ordinateur, je m'occupe de : {0}. Dites-moi ce que vous voulez faire.",
-    "Stopped": "Je me suis arr\u00eat\u00e9 avant d'ex\u00e9cuter quoi que ce soit.",
-    "Matches": "{0} \u00e9l\u00e9ment(s) concern\u00e9(s), {1} au total.",
-    "MatchesCount": "{0} \u00e9l\u00e9ment(s) concern\u00e9(s).",
+    "Stopped": "Je me suis arrêté avant d'exécuter quoi que ce soit.",
+    "Matches": "{0} {0:élément concerné|éléments concernés}, {1} au total.",
+    "MatchesCount": "{0} {0:élément concerné|éléments concernés}.",
     "Nothing": "Rien ne correspond, donc rien ne changerait.",
     "Approval": "Tapez {0} pour confirmer.",
-    "ReadyToRun": "R\u00e9pondez oui pour continuer.",
+    "ReadyToRun": "Répondez oui pour continuer.",
     "DoneBrief": "Terminé.",
-    "Done": "Termin\u00e9. {0} \u00e9l\u00e9ment(s) trait\u00e9(s).",
-    "DoneCode": "Termin\u00e9. Le code est pr\u00eat \u00e0 copier.",
-    "Failed": "L'\u00e9tape {0} a \u00e9chou\u00e9 : {1}",
-    "AfterFail": "Les \u00e9tapes suivantes n'ont pas \u00e9t\u00e9 ex\u00e9cut\u00e9es.",
-    "Refused": "Je ne l'ai pas ex\u00e9cut\u00e9 : {0}",
-    "ExplainStep": "\u00c9tape {0} : {1}.",
+    "Done": "Terminé. {0} {0:élément traité|éléments traités}.",
+    "DoneCode": "Terminé. Le code est prêt à copier.",
+    "Failed": "L'étape {0} a échoué : {1}",
+    "AfterFail": "Les étapes suivantes n'ont pas été exécutées.",
+    "Refused": "Je ne l'ai pas exécuté : {0}",
+    "ExplainStep": "Étape {0} : {1}.",
     "ExplainAction": "Action {0}, risque {1}.",
-    "ExplainParams": "Param\u00e8tres : {0}.",
-    "ExplainGrammar": "Types de Lambek : {0}, qui se r\u00e9duisent \u00e0 s.",
-    "ExplainGrammarOpen": "Types de Lambek : {0}, qui ne se r\u00e9duisent pas encore \u00e0 s.",
-    "ExplainSafe": "Le script a pass\u00e9 le pare-feu AST.",
-    "ExplainBlocked": "Le script a \u00e9t\u00e9 bloqu\u00e9 : {0}.",
-    "ExplainOrder": "Ordre d'ex\u00e9cution : {0}.",
-    "Edited": "Mis \u00e0 jour. {0}",
+    "ExplainParams": "Paramètres : {0}.",
+    "ExplainGrammar": "Types de Lambek : {0}, qui se réduisent à s.",
+    "ExplainGrammarOpen": "Types de Lambek : {0}, qui ne se réduisent pas encore à s.",
+    "ExplainSafe": "Le script a passé le pare-feu AST.",
+    "ExplainBlocked": "Le script a été bloqué : {0}.",
+    "ExplainOrder": "Ordre d'exécution : {0}.",
+    "Edited": "Mis à jour. {0}",
     "McpLow": "Le serveur {0} indique que cet outil ne fait que lire.",
-    "McpMedium": "Ceci envoie des donn\u00e9es au serveur {0}. Simulez d'abord pour voir l'appel exact.",
-    "McpHigh": "Le serveur {0} peut modifier ou supprimer des donn\u00e9es avec cet outil. Simulez d'abord, puis confirmez avec un code.",
-    "McpCall": "Rien n'a \u00e9t\u00e9 envoy\u00e9. Lambek appellera {0} sur {1} avec {2}.",
+    "McpMedium": "Ceci envoie des données au serveur {0}. Simulez d'abord pour voir l'appel exact.",
+    "McpHigh": "Le serveur {0} peut modifier ou supprimer des données avec cet outil. Simulez d'abord, puis confirmez avec un code.",
+    "McpCall": "Rien n'a été envoyé. Lambek appellera {0} sur {1} avec {2}.",
     "McpNoArguments": "aucun argument",
-    "McpReply": "{0} a r\u00e9pondu :",
-    "McpEmpty": "{0} a r\u00e9pondu sans contenu.",
-    "ExplainMcp": "L'appel respecte le sch\u00e9ma d'entr\u00e9e de l'outil.",
-    "ExplainMcpBlocked": "L'appel ne respecte pas le sch\u00e9ma d'entr\u00e9e : {0}.",
+    "McpReply": "{0} a répondu :",
+    "McpEmpty": "{0} a répondu sans contenu.",
+    "ExplainMcp": "L'appel respecte le schéma d'entrée de l'outil.",
+    "ExplainMcpBlocked": "L'appel ne respecte pas le schéma d'entrée : {0}.",
+    "Recalled": "Comme le {0} : « {1} ».",
+    "NoMemory": "Je ne me souviens d'aucune demande que vous avez confirmée pour l'instant.",
+    "DidYouMean": "Vouliez-vous dire « {0} » ? Répondez oui pour le faire.",
+    "LearnedSeen": "J'ai compris en vous voyant reformuler : « {0} » veut dire « {1} ».",
     "Units": {
       "B": "octets",
       "KB": "Ko",
@@ -177,26 +582,205 @@
       "year": [
         "an",
         "ans"
-      ]
+      ],
+      "image": "images",
+      "video": "vidéos",
+      "audio": "fichiers audio",
+      "media": "médias",
+      "document": "documents",
+      "compressed": "archives",
+      "text": "fichiers texte",
+      "temporary": "fichiers temporaires",
+      "backup": "fichiers de sauvegarde",
+      "newest": "les plus récents",
+      "oldest": "les plus anciens",
+      "largest": "les plus gros",
+      "smallest": "les plus petits",
+      "and": "et",
+      "Quotes": [
+        "« ",
+        " »"
+      ],
+      "Decimal": ","
     },
     "And": "et",
     "Files": {
       "Culture": "fr-FR",
       "DateFormat": "d MMM yyyy",
-      "Image": "{0} est une image {1} de {2} \u00d7 {3} pixels, {4}, modifi\u00e9e le {5}.",
-      "ImageNoSize": "{0} est une image {1}, {2}, modifi\u00e9e le {3}.",
+      "Image": "{0} est une image {1} de {2} × {3} pixels, {4}, modifiée le {5}.",
+      "ImageNoSize": "{0} est une image {1}, {2}, modifiée le {3}.",
       "TakenWith": "Prise le {0} avec {1}.",
       "Taken": "Prise le {0}.",
       "Camera": "Prise avec {0}.",
       "Location": "Lieu : {0}, {1}.",
-      "Text": "{0} est un fichier texte de {1} lignes, {2}, modifi\u00e9 le {3}.",
-      "Pdf": "{0} est un document PDF de {1} pages, {2}, modifi\u00e9 le {3}.",
-      "Other": "{0} est un fichier {1}, {2}, modifi\u00e9 le {3}.",
-      "Folder": "{0} est un dossier de {1} \u00e9l\u00e9ments, modifi\u00e9 le {2}.",
+      "Text": "{0} est un fichier texte de {1} lignes, {2}, modifié le {3}.",
+      "Pdf": "{0} est un document PDF de {1} pages, {2}, modifié le {3}.",
+      "Other": "{0} est un fichier {1}, {2}, modifié le {3}.",
+      "Folder": "{0} est un dossier de {1} éléments, modifié le {2}.",
       "Missing": "Je ne trouve pas {0}.",
-      "Next": "Dites-moi quoi en faire, par exemple le copier, le d\u00e9placer ou le renommer.",
-      "NextMany": "Dites-moi quoi en faire, par exemple les copier, les d\u00e9placer ou les renommer."
-    }
+      "Next": "Dites-moi quoi en faire, par exemple le copier, le déplacer ou le renommer.",
+      "NextMany": "Dites-moi quoi en faire, par exemple les copier, les déplacer ou les renommer."
+    },
+    "Or": "ou",
+    "Learned": "Noté : « {0} » veut dire « {1} ».",
+    "Unverified": "Vérifié après coup : {0} {0:élément n'a|éléments n'ont} pas changé comme prévu.",
+    "Habit": "J’ai repris {0}, comme d’habitude.",
+    "Understood": "« {0} » : compris comme {1}.",
+    "Count": "Il y en a {0}.",
+    "Dictionary": {
+      "form": "« {0} » : forme de « {1} ».",
+      "synonym": "« {0} » : compris comme « {1} », son synonyme (dictionnaire).",
+      "hyper": "« {0} » : compris comme « {1} », dont c'est une façon (dictionnaire).",
+      "hypo": "« {0} » : compris comme « {1} », un sens plus précis (dictionnaire).",
+      "near": "« {0} » : compris comme « {1} », un sens voisin (dictionnaire)."
+    },
+    "DictionaryPropose": "Par « {0} », voulez-vous dire « {1} » ? Répondez oui pour le faire, et je retiendrai ce mot.",
+    "Report": {
+      "Read": "J'ai trouvé {0}{1}.",
+      "Did": "J'ai {0} {1}{2}.",
+      "To": " vers {0}",
+      "Total": ", {0} au total",
+      "Size": " ({0})",
+      "Largest": "Le plus volumineux : {0} ({1}).",
+      "Newest": "Le plus récent : {0}, modifié le {1}.",
+      "None": "Rien ne correspondait : rien n'a changé.",
+      "Nouns": {
+        "file": "{0} {0:fichier|fichiers}",
+        "folder": "{0} {0:dossier|dossiers}",
+        "item": "{0} {0:élément|éléments}"
+      }
+    },
+    "Explain": {
+      "Verb": "Le verbe est « {0} » : la phrase se réduit à s, en {1} {1:lecture|lectures}.",
+      "Spelling": "J'ai lu « {0} » comme « {1} » (faute de frappe).",
+      "Choice": "J'ai choisi « {0} » plutôt que « {1} », avec une marge de {2}.",
+      "Only": "Une seule action convient : « {0} ».",
+      "Signals": "Les {0} signaux sont d'accord (environ {1} indépendants).",
+      "Disagree": "Les {0} signaux ne sont pas tous d'accord (environ {1} indépendants) : je demande avant d'agir.",
+      "Meaning": "Le sens calculé sur la réduction donne : {0}.",
+      "Form": "Forme logique : {0}.",
+      "ReadBack": "J'ai relu ma phrase avec ma grammaire : elle redonne exactement ce plan.",
+      "Gps": "Intégrité : marge {0} pour un niveau de protection de {1}, résidus χ² {2} sous {3}, probabilité {4} pour {5} demandés : {6}.",
+      "Available": "disponible",
+      "Unavailable": "indisponible ({0}), je demande avant d'agir",
+      "Reasons": {
+        "protection": "un seul signal décide",
+        "chisquare": "les signaux se contredisent",
+        "probability": "probabilité trop basse"
+      },
+      "Borrowed": "« {0} » : lu comme le mot {1} pour « {2} »."
+    },
+    "Define": {
+      "Head": "« {0} » :",
+      "Pos": {
+        "n": "nom",
+        "v": "verbe",
+        "a": "adjectif",
+        "r": "adverbe"
+      },
+      "Synonyms": "Synonymes : {0}.",
+      "Source": "(Définitions de {0}, en anglais.)",
+      "Unknown": "Je ne trouve pas « {0} » dans mes dictionnaires."
+    },
+    "Math": {
+      "Value": "{0} = {1}",
+      "ValueExact": "{0} = {1} = {2}",
+      "ValueAbout": "{0} = {1} ≈ {2}",
+      "Roots": "{0:La solution est|Les solutions sont} {1} = {2}.",
+      "Separator": " ou ",
+      "About": "(environ {0})",
+      "Always": "Toute valeur convient : l'égalité est toujours vraie.",
+      "Never": "Aucune solution : l'égalité est toujours fausse.",
+      "Complex": "Aucune solution réelle : le discriminant est négatif.",
+      "Error": "Je ne peux pas le calculer : {0}",
+      "Converted": "{0} {1} = {2} {3}.",
+      "Days": "{0} {0:jour|jours} entre le {1} et le {2}.",
+      "Weekday": "Le {0} est un {1}.",
+      "Later": "Dans {0} jours, nous serons le {1}.",
+      "DateFormat": "d MMMM yyyy",
+      "Symbols": {
+        "c": "°C",
+        "f": "°F",
+        "k": "K",
+        "b": "octets",
+        "kb": "Ko",
+        "mb": "Mo",
+        "gb": "Go",
+        "tb": "To",
+        "kmh": "km/h"
+      },
+      "Derivative": "d/d{0} ({1}) = {2}",
+      "Primitive": "∫ {1} d{0} = {2} + C",
+      "NoPrimitive": "Je ne trouve pas de primitive exacte de {0}.",
+      "Definite": "∫ de {1} à {2} de {3} d{0} = {4}",
+      "Equal": "{0} = {1}",
+      "Factors": "{0} = {1}",
+      "Prime": "{0} est un nombre premier.",
+      "ProbablePrime": "{0} est premier (test de Miller-Rabin, sûr à 1 - 4^-13 près).",
+      "NotPrime": "{0} n'est pas premier : {0} = {1}.",
+      "Gcd": "PGCD({0}) = {1}",
+      "Lcm": "PPCM({0}) = {1}",
+      "Base": "{0} en base {1} = {2}",
+      "Choose": "C({0}, {1}) = {2}",
+      "Arrange": "A({0}, {1}) = {2}",
+      "Stat": "{0} = {1}",
+      "Words": "{0} s'écrit « {1} ».",
+      "SystemOne": "Solution unique : {0}.",
+      "SystemNone": "Le système n'a aucune solution.",
+      "SystemMany": "Une infinité de solutions : {0} ({1} libre).",
+      "Determinant": "det = {0}",
+      "Inverse": "Inverse : {0}",
+      "Rank": "Rang : {0}",
+      "Eigen": "Valeurs propres : {0} (polynôme caractéristique {1}).",
+      "Transpose": "Transposée : {0}",
+      "Fibonacci": "F({0}) = {1}",
+      "Totient": "φ({0}) = {1}",
+      "Divisors": "Diviseurs de {0} : {1} ({2} en tout).",
+      "Mod": "{0} mod {1} = {2}",
+      "ModInverse": "L'inverse de {0} modulo {1} est {2}.",
+      "RootsAbout": "{0:La solution est|Les solutions sont} {1} ≈ {2} ({0:certifiée|certifiées} par le théorème de Sturm).",
+      "Certified": "certifiée",
+      "Statistics": {
+        "count": "effectif",
+        "sum": "somme",
+        "mean": "moyenne",
+        "median": "médiane",
+        "mode": "mode",
+        "min": "minimum",
+        "max": "maximum",
+        "range": "étendue",
+        "variance": "variance",
+        "stddev": "écart type",
+        "samplevariance": "variance corrigée",
+        "samplestddev": "écart type corrigé"
+      }
+    },
+    "VaguePropose": "Par « {0} », voulez-vous dire {1} ? Répondez oui pour le faire, ou donnez un autre seuil.",
+    "VagueNote": "« {0} » : compris comme {1} (mot flou) ; donnez un autre seuil si besoin.",
+    "VagueDirection": {
+      "MinSize": "plus de {0}",
+      "MaxSize": "moins de {0}",
+      "OlderThan": "plus de {0}",
+      "NewerThan": "moins de {0}"
+    },
+    "LanguageNames": {
+      "en": "anglais",
+      "fr": "français",
+      "es": "espagnol",
+      "de": "allemand",
+      "it": "italien",
+      "nl": "néerlandais",
+      "pt": "portugais"
+    },
+    "Method": "« {0} » se décompose en {1} étapes :",
+    "Code": "Voici le plan sous forme de programme {0} ({1}) :",
+    "CodeChecked": "Syntaxe vérifiée avec {0} : aucune erreur.",
+    "CodeInvalid": "Syntaxe vérifiée avec {0} : {1}",
+    "CodeUnchecked": "Syntaxe non vérifiée : {0}",
+    "CodeApply": "Il montre seulement ce qu'il ferait ; lancez-le avec {0} pour le faire vraiment.",
+    "CodeDelete": "Lancé avec {0}, il supprime définitivement : rien ne va à la corbeille.",
+    "CodeUnsupported": "Je ne peux pas écrire l'étape {0} sous forme de programme : {1}.",
+    "CodeNotReady": "Le plan n'est pas encore complet, je ne peux donc pas l'écrire sous forme de programme."
   },
   "FollowUp": {
     "Run": [
@@ -232,6 +816,116 @@
       "ca",
       "plan",
       "y"
+    ],
+    "Also": [
+      "aussi",
+      "egalement"
+    ],
+    "Pronouns": [
+      "les",
+      "le",
+      "la",
+      "l",
+      "ceux",
+      "celles",
+      "ceux-ci",
+      "celles-ci",
+      "celui",
+      "celle"
+    ],
+    "Singular": [
+      "le",
+      "la",
+      "l",
+      "celui",
+      "celle"
+    ],
+    "Export": [
+      "montre",
+      "montrer",
+      "montrez",
+      "donne",
+      "donner",
+      "donnez",
+      "veux",
+      "voudrais",
+      "voir",
+      "peux",
+      "pouvez",
+      "peut",
+      "avoir",
+      "convertis",
+      "convertir",
+      "traduis",
+      "traduire",
+      "exporte",
+      "exporter",
+      "code",
+      "script",
+      "programme",
+      "version",
+      "equivalent",
+      "meme",
+      "pareil",
+      "en",
+      "moi",
+      "je",
+      "j",
+      "tu",
+      "vous",
+      "un",
+      "une",
+      "pour",
+      "avec",
+      "aussi",
+      "stp",
+      "svp",
+      "s",
+      "il",
+      "te",
+      "plait",
+      "comment",
+      "fait",
+      "on",
+      "c",
+      "est",
+      "quoi",
+      "et",
+      "maintenant",
+      "langage"
+    ],
+    "ExportMake": [
+      "ecris",
+      "ecrire",
+      "ecrivez",
+      "genere",
+      "generer",
+      "generez",
+      "cree",
+      "creer",
+      "creez",
+      "fais",
+      "faire",
+      "faites",
+      "redige",
+      "reecris"
+    ],
+    "ExportThis": [
+      "ca",
+      "cela",
+      "ceci",
+      "le",
+      "la",
+      "les",
+      "ce",
+      "cette",
+      "meme",
+      "plan",
+      "tache"
+    ],
+    "ExportThat": [
+      "qui",
+      "pour"
     ]
   },
   "Talk": {
@@ -248,7 +942,7 @@
         "est ce enregistre"
       ],
       "Reply": "Oui. Ce chat reste hors de votre historique.",
-      "ReplyOff": "Non, ce chat est enregistr\u00e9 dans votre historique. Appuyez sur Ctrl+Maj+N pour un chat incognito."
+      "ReplyOff": "Non, ce chat est enregistré dans votre historique. Appuyez sur Ctrl+Maj+N pour un chat incognito."
     },
     "Identity": {
       "Phrases": [
@@ -265,7 +959,7 @@
         "t es quoi",
         "tu es quoi"
       ],
-      "Reply": "Je suis Lambek. Je transforme des phrases simples en actions sur votre ordinateur, et je vous montre chaque \u00e9tape avant d'ex\u00e9cuter quoi que ce soit."
+      "Reply": "Je suis Lambek. Je transforme des phrases simples en actions sur votre ordinateur, et je vous montre chaque étape avant d'exécuter quoi que ce soit."
     },
     "Abilities": {
       "Phrases": [
@@ -308,7 +1002,7 @@
         "tu parles francais",
         "tu parles anglais"
       ],
-      "Reply": "Je comprends le fran\u00e7ais et l'anglais. \u00c9crivez dans la langue que vous pr\u00e9f\u00e9rez."
+      "Reply": "Je comprends le français et l'anglais. Écrivez dans la langue que vous préférez."
     },
     "HowAreYou": {
       "Phrases": [
@@ -321,7 +1015,11 @@
         "ca roule",
         "quoi de neuf"
       ],
-      "Reply": "Tr\u00e8s bien, merci. Que voulez-vous faire ?"
+      "Reply": [
+        "Très bien, merci. Que voulez-vous faire ?",
+        "Ça va bien, merci. Qu'est-ce que je peux faire pour vous ?",
+        "Bien, merci de demander. Que puis-je faire pour vous ?"
+      ]
     },
     "Thanks": {
       "Phrases": [
@@ -331,7 +1029,11 @@
         "je te remercie",
         "je vous remercie"
       ],
-      "Reply": "Avec plaisir."
+      "Reply": [
+        "Avec plaisir.",
+        "De rien.",
+        "Je vous en prie."
+      ]
     },
     "Bye": {
       "Phrases": [
@@ -345,7 +1047,11 @@
         "ciao",
         "bye"
       ],
-      "Reply": "\u00c0 bient\u00f4t."
+      "Reply": [
+        "À bientôt.",
+        "Au revoir, à bientôt.",
+        "Bonne continuation."
+      ]
     },
     "Greeting": {
       "Phrases": [
@@ -360,7 +1066,11 @@
         "salut a toi",
         "bonjour a toi"
       ],
-      "Reply": "Bonjour ! Que voulez-vous faire ?"
+      "Reply": [
+        "Bonjour ! Que voulez-vous faire ?",
+        "Bonjour. Qu'est-ce que je peux faire pour vous ?",
+        "Bonjour ! Dites-moi ce que vous voulez faire."
+      ]
     },
     "Okay": {
       "Phrases": [
@@ -376,7 +1086,11 @@
         "ca marche",
         "compris"
       ],
-      "Reply": "Tr\u00e8s bien. Dites-moi quand vous avez besoin de quelque chose."
+      "Reply": [
+        "Très bien. Dites-moi quand vous avez besoin de quelque chose.",
+        "D'accord. Je reste là si vous avez besoin de moi.",
+        "Parfait. Dites-moi ce que vous voulez faire ensuite."
+      ]
     }
   }
 }

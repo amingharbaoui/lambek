@@ -66,7 +66,7 @@ Describe 'Benchmark scoring' {
 
     It 'counts a question as Clarified, not Wrong' {
         $path = New-TestBenchmark @(@{
-                Id = 'T1'; Split = 'test'; Text = 'wipe the .log files in C:\Temp'; Tags = @('paraphrase')
+                Id = 'T1'; Split = 'test'; Text = 'zap the .log files in C:\Temp'; Tags = @('paraphrase')
                 Expected = @{ Status = 'Ready'; Action = 'files.delete'; Parameters = @{ Path = 'C:\Temp'; Extension = '.log' } }
             })
         $report = Invoke-LambekBenchmark -Path $path

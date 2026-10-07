@@ -79,8 +79,8 @@ Describe 'Resolve-LambekGrammar' {
         }
 
         It 'reports unknown words' {
-            $result = Resolve-Text 'delete the files quickly'
-            $result.Unknown | Should -Contain 'quickly'
+            $result = Resolve-Text 'delete the files zorblax'
+            $result.Unknown | Should -Contain 'zorblax'
         }
     }
 
@@ -89,6 +89,55 @@ Describe 'Resolve-LambekGrammar' {
             $first = Resolve-Text 'Delete the files older than 30 days in C:\Temp larger than 5 GB'
             $second = Resolve-Text 'Delete the files older than 30 days in C:\Temp larger than 5 GB'
             ($first | ConvertTo-Json -Depth 5) | Should -Be ($second | ConvertTo-Json -Depth 5)
+        }
+    }
+}
+
+Describe 'One chart for every choice of types' {
+
+    It 'finds the same sentences as trying every combination, on random words' {
+        InModuleScope Lambek {
+            # Brute force: every combination of types, each reduced on its own
+            $types = @('s o^l', 's p^l o^l', 'o', 'o^r o', 'o o^l', 'p d^l', 'd', 'o^r o d^l', 's s^l d^l', 'o^r o c^l', 'c z^l', 'z')
+            $random = [System.Random]::new(7)
+            for ($case = 0; $case -lt 60; $case++) {
+                $words = [System.Collections.Generic.List[object]]::new()
+                for ($w = 0; $w -lt $random.Next(1, 6); $w++) {
+                    $candidates = @(for ($c = 0; $c -lt $random.Next(1, 3); $c++) { $types[$random.Next($types.Count)] }) | Select-Object -Unique
+                    $words.Add([pscustomobject]@{ Candidates = [string[]] @($candidates) })
+                }
+
+                $expected = $false
+                $choice = [int[]]::new($words.Count)
+                do {
+                    $simple = @(for ($w = 0; $w -lt $words.Count; $w++) { ConvertFrom-LambekType -Type $words[$w].Candidates[$choice[$w]] })
+                    $left = @((Invoke-LambekReduction -SimpleTypes $simple).Leftover | ForEach-Object { $simple[$_] })
+                    if ($left.Count -eq 1 -and $left[0].Base -eq 's' -and $left[0].Order -eq 0) { $expected = $true }
+                    $position = $words.Count - 1
+                    while ($position -ge 0) {
+                        $choice[$position]++
+                        if ($choice[$position] -lt $words[$position].Candidates.Count) { break }
+                        $choice[$position] = 0
+                        $position--
+                    }
+                } while ($position -ge 0 -and -not $expected)
+
+                $root = Invoke-LambekChart -TypedWords $words -SentenceOnly
+                $root.ContainsKey('s|0') | Should -Be $expected -Because (($words | ForEach-Object { $_.Candidates -join ' / ' }) -join ' + ')
+            }
+        }
+    }
+
+    It 'says how many readings make a sentence' {
+        (Resolve-Text 'delete the old files').Readings | Should -Be 1
+        (Resolve-Text 'move the files').Readings | Should -Be 0
+    }
+
+    It 'stops at a fixed amount of work, not at a time' {
+        InModuleScope Lambek {
+            $words = [System.Collections.Generic.List[object]]::new()
+            1..6 | ForEach-Object { $words.Add([pscustomobject]@{ Candidates = [string[]] @('o', 'o^r o', 'o o^l') }) }
+            { Invoke-LambekChart -TypedWords $words -Fuel 5 } | Should -Throw '*too many readings*'
         }
     }
 }

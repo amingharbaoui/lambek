@@ -18,11 +18,14 @@ function Get-LambekLexicon {
 
     $data = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json -AsHashtable
     foreach ($key in 'StopWords', 'BaseForms', 'SentenceQuestion', 'AmbiguityQuestion', 'RephraseQuestion',
-        'Negations', 'Exclusions', 'NegationQuestion', 'ExclusionQuestion', 'UnusedQuestion', 'Answer', 'FollowUp') {
+        'Negations', 'Exclusions', 'NegationQuestion', 'ExclusionQuestion', 'UnusedQuestion', 'GuessQuestion', 'GuessOpenQuestion', 'Protected', 'Answer', 'FollowUp') {
         if (-not $data.ContainsKey($key)) {
             throw "Language file '$Language' must contain $key."
         }
     }
+
+    # A negation or an exception in any language stops or limits an action, whatever the language of the sentence
+    $guards = Get-LambekGuardWord
 
     $stopWords = [System.Collections.Generic.HashSet[string]]::new()
     foreach ($word in $data.StopWords) {
@@ -40,6 +43,23 @@ function Get-LambekLexicon {
             $packForms = $pack.BaseForms[$Language]
             foreach ($key in $packForms.Keys) {
                 $baseForms[$key] = $packForms[$key]
+            }
+        }
+    }
+
+    # PowerShell's own words for the commands (del, ren, gci), when no pack already uses them, then the words learned
+    $packWords = [System.Collections.Generic.HashSet[string]]::new()
+    foreach ($pack in $script:Packs.Values) {
+        foreach ($key in $pack.Words.Keys) { $packWords.UnionWith([string[]] @($pack.Words[$key].Keys)) }
+        foreach ($key in $pack.BaseForms.Keys) { $packWords.UnionWith([string[]] @($pack.BaseForms[$key].Keys)) }
+    }
+    $taught = @{}
+    $learned = Get-LambekLearnedWord
+    if ($learned.ContainsKey($Language)) { $taught = $learned[$Language] }
+    foreach ($words in (Get-LambekCommandWord -Language $Language), $taught) {
+        foreach ($word in $words.Keys) {
+            if (-not $packWords.Contains($word) -and -not $stopWords.Contains($word) -and -not $baseForms.ContainsKey($word)) {
+                $baseForms[$word] = $words[$word]
             }
         }
     }
@@ -90,19 +110,45 @@ function Get-LambekLexicon {
         Vocabulary        = $vocabulary
         SentenceQuestion  = $data.SentenceQuestion
         AmbiguityQuestion = $data.AmbiguityQuestion
+        AmbiguityQuestion3 = $data['AmbiguityQuestion3']
         RephraseQuestion  = $data.RephraseQuestion
-        Negations         = @($data.Negations)
-        Exclusions        = @($data.Exclusions)
+        Negations         = @(@($data.Negations) + @($guards.Negations) | Select-Object -Unique)
+        Exclusions        = @(@($data.Exclusions) + @($guards.Exclusions) | Select-Object -Unique)
+        MannerSuffixes    = @($data['MannerSuffixes'])
+        Interrogatives    = @($data['Interrogatives'])
+        Numbers           = $data['Numbers']
+        HowMany           = @($data['HowMany'])
+        Again             = @($data['Again'])
+        Define            = $data['Define']
+        Calculate         = $data['Calculate']
         NegationQuestion  = $data.NegationQuestion
         ExclusionQuestion = $data.ExclusionQuestion
         UnusedQuestion    = $data.UnusedQuestion
+        GuessQuestion     = $data.GuessQuestion
+        GuessOpenQuestion = $data.GuessOpenQuestion
+        Protected         = $data.Protected
         Answer            = $data.Answer
         FollowUp          = $data.FollowUp
         Talk              = $talk
         TalkWords         = $talkWords
         Signals           = $signals
+        Spelling          = @{}
     }
 
     $script:LexiconCache[$Language] = $lexicon
     return $lexicon
+}
+
+function Get-LambekGuardWord {
+    # The negations and exceptions of every language file, read once
+    if ($script:GuardWords) { return $script:GuardWords }
+    $negations = [System.Collections.Generic.List[string]]::new()
+    $exclusions = [System.Collections.Generic.List[string]]::new()
+    foreach ($file in Get-ChildItem -Path (Join-Path $PSScriptRoot '../Data/Languages') -Filter '*.json' | Sort-Object Name) {
+        $data = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json -AsHashtable
+        foreach ($word in @($data['Negations'])) { if ($word -and -not $negations.Contains($word)) { $negations.Add($word) } }
+        foreach ($word in @($data['Exclusions'])) { if ($word -and -not $exclusions.Contains($word)) { $exclusions.Add($word) } }
+    }
+    $script:GuardWords = [pscustomobject]@{ Negations = $negations.ToArray(); Exclusions = $exclusions.ToArray() }
+    return $script:GuardWords
 }

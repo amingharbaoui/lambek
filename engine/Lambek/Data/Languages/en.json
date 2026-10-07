@@ -28,6 +28,8 @@
     "i",
     "me",
     "my",
+    "all",
+    "every",
     "we",
     "our",
     "you",
@@ -58,7 +60,20 @@
     "about",
     "which",
     "what",
-    "want"
+    "want",
+    "must",
+    "need",
+    "needs",
+    "shall",
+    "may",
+    "might",
+    "them",
+    "now",
+    "fast",
+    "quick",
+    "asap",
+    "know",
+    "see"
   ],
   "BaseForms": {
     "older": "old",
@@ -72,6 +87,7 @@
   },
   "SentenceQuestion": "What do you want to do?",
   "AmbiguityQuestion": "Did you mean \"{0}\" or \"{1}\"?",
+  "AmbiguityQuestion3": "Did you mean \"{0}\", \"{1}\" or \"{2}\"?",
   "RephraseQuestion": "Could you say it another way?",
   "Negations": [
     "not",
@@ -90,9 +106,383 @@
     "apart",
     "besides"
   ],
+  "MannerSuffixes": [
+    "ly"
+  ],
+  "Numbers": {
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
+    "seventeen": 17,
+    "eighteen": 18,
+    "nineteen": 19,
+    "twenty": 20,
+    "thirty": 30,
+    "forty": 40,
+    "fifty": 50,
+    "sixty": 60,
+    "hundred": 100,
+    "thousand": 1000
+  },
+  "HowMany": [
+    "how many"
+  ],
+  "Again": [
+    "like last time",
+    "same as last time",
+    "the same as last time",
+    "as usual",
+    "like before",
+    "same as before",
+    "like yesterday",
+    "do it again",
+    "do that again",
+    "same again"
+  ],
+  "Define": {
+    "Phrases": [
+      "what does",
+      "what do",
+      "what is the meaning of",
+      "what s the meaning of",
+      "meaning of",
+      "define",
+      "definition of",
+      "what is a",
+      "what is an",
+      "what s a",
+      "what s an"
+    ],
+    "Fillers": [
+      "mean",
+      "means",
+      "meaning",
+      "the",
+      "word",
+      "term",
+      "a",
+      "an",
+      "verb",
+      "noun"
+    ]
+  },
+  "Calculate": {
+    "Phrases": [
+      "what is",
+      "what s",
+      "how much is",
+      "calculate",
+      "compute",
+      "evaluate",
+      "solve"
+    ],
+    "Operators": {
+      "multiplied by": "*",
+      "divided by": "/",
+      "to the power of": "^",
+      "square root of": "sqrt ",
+      "squared": "^2",
+      "cubed": "^3",
+      "plus": "+",
+      "minus": "-",
+      "times": "*",
+      "over": "/"
+    },
+    "Units": {
+      "km": "km",
+      "kilometers": "km",
+      "kilometres": "km",
+      "kilometer": "km",
+      "m": "m",
+      "meters": "m",
+      "metres": "m",
+      "meter": "m",
+      "cm": "cm",
+      "mm": "mm",
+      "miles": "mi",
+      "mile": "mi",
+      "mi": "mi",
+      "feet": "ft",
+      "foot": "ft",
+      "ft": "ft",
+      "inches": "in",
+      "inch": "in",
+      "yards": "yd",
+      "yard": "yd",
+      "kg": "kg",
+      "kilograms": "kg",
+      "kilos": "kg",
+      "g": "g",
+      "grams": "g",
+      "pounds": "lb",
+      "pound": "lb",
+      "lb": "lb",
+      "lbs": "lb",
+      "ounces": "oz",
+      "ounce": "oz",
+      "oz": "oz",
+      "tons": "t",
+      "c": "c",
+      "celsius": "c",
+      "f": "f",
+      "fahrenheit": "f",
+      "k": "k",
+      "kelvin": "k",
+      "l": "l",
+      "liters": "l",
+      "litres": "l",
+      "liter": "l",
+      "ml": "ml",
+      "gallons": "gal",
+      "gallon": "gal",
+      "h": "h",
+      "hours": "h",
+      "hour": "h",
+      "min": "min",
+      "minutes": "min",
+      "minute": "min",
+      "s": "s",
+      "seconds": "s",
+      "second": "s",
+      "days": "d",
+      "day": "d",
+      "weeks": "wk",
+      "week": "wk",
+      "bytes": "b",
+      "kb": "kb",
+      "mb": "mb",
+      "gb": "gb",
+      "tb": "tb",
+      "km/h": "kmh",
+      "mph": "mph"
+    },
+    "Into": [
+      "in",
+      "into",
+      "to"
+    ],
+    "Months": {
+      "january": 1,
+      "february": 2,
+      "march": 3,
+      "april": 4,
+      "may": 5,
+      "june": 6,
+      "july": 7,
+      "august": 8,
+      "september": 9,
+      "october": 10,
+      "november": 11,
+      "december": 12,
+      "jan": 1,
+      "feb": 2,
+      "mar": 3,
+      "apr": 4,
+      "jun": 6,
+      "jul": 7,
+      "aug": 8,
+      "sep": 9,
+      "sept": 9,
+      "oct": 10,
+      "nov": 11,
+      "dec": 12
+    },
+    "Between": "\\bdays?\\b.*\\bbetween\\b",
+    "Weekday": "\\b(?:what|which) day\\b(?!.*\\bin \\d)|\\bday of the week\\b",
+    "InDays": "\\b(?:what|which) (?:date|day)\\b.*\\bin (?<n>\\d+) days?\\b",
+    "Functions": {
+      "derivative": [
+        "derivative of",
+        "derivative",
+        "derive",
+        "differentiate"
+      ],
+      "integral": [
+        "integral of",
+        "integral",
+        "integrate",
+        "antiderivative of",
+        "antiderivative",
+        "primitive of"
+      ],
+      "simplify": [
+        "simplify",
+        "reduce"
+      ],
+      "expand": [
+        "expand"
+      ],
+      "factor": [
+        "factorize",
+        "factorise",
+        "factor",
+        "prime factors of",
+        "prime factorization of",
+        "decompose"
+      ],
+      "prime": [
+        "is prime",
+        "a prime",
+        "a prime number",
+        "prime number",
+        "prime"
+      ],
+      "gcd": [
+        "gcd of",
+        "gcd",
+        "greatest common divisor of",
+        "hcf of"
+      ],
+      "lcm": [
+        "lcm of",
+        "lcm",
+        "least common multiple of"
+      ],
+      "base": [
+        "in binary",
+        "to binary",
+        "in hexadecimal",
+        "to hexadecimal",
+        "in hex",
+        "to hex",
+        "in octal",
+        "to octal",
+        "in base",
+        "to base"
+      ],
+      "choose": [
+        "choose",
+        "combinations of",
+        "binomial coefficient"
+      ],
+      "arrange": [
+        "permutations of",
+        "arrangements of"
+      ],
+      "mean": [
+        "mean of",
+        "average of",
+        "mean",
+        "average"
+      ],
+      "median": [
+        "median of",
+        "median"
+      ],
+      "variance": [
+        "variance of",
+        "variance"
+      ],
+      "stddev": [
+        "standard deviation of",
+        "standard deviation",
+        "std dev of"
+      ],
+      "statistics": [
+        "statistics of",
+        "statistics",
+        "stats of"
+      ],
+      "words": [
+        "in words",
+        "in letters"
+      ],
+      "system": [
+        "the system",
+        "system"
+      ],
+      "determinant": [
+        "determinant of",
+        "determinant"
+      ],
+      "inverse": [
+        "inverse of the matrix",
+        "inverse of",
+        "inverse"
+      ],
+      "rank": [
+        "rank of the matrix",
+        "rank of"
+      ],
+      "eigen": [
+        "eigenvalues of",
+        "eigenvalues"
+      ],
+      "transpose": [
+        "transpose of",
+        "transpose"
+      ],
+      "fibonacci": [
+        "fibonacci"
+      ],
+      "totient": [
+        "euler totient of",
+        "totient of",
+        "phi of"
+      ],
+      "divisors": [
+        "divisors of",
+        "the divisors of"
+      ]
+    },
+    "Bases": {
+      "binary": 2,
+      "hexadecimal": 16,
+      "hex": 16,
+      "octal": 8
+    },
+    "And": [
+      "and"
+    ],
+    "Range": "\\s(?:from|between)\\s+(?<a>\\S+)\\s+(?:to|and)\\s+(?<b>\\S+?)\\s*[?.!]*$",
+    "Respect": "\\s(?:with respect to|wrt|in)\\s+(?<v>[a-z])\\b",
+    "Lead": [
+      "what is",
+      "what are",
+      "what s",
+      "give me",
+      "find",
+      "compute",
+      "calculate",
+      "can you",
+      "please",
+      "the",
+      "of",
+      "me"
+    ]
+  },
+  "Interrogatives": [
+    "which",
+    "what"
+  ],
   "NegationQuestion": "Lambek does not act on negative requests. What should it do instead?",
-  "ExclusionQuestion": "Exclusions are not supported yet. Which files should be used?",
+  "ExclusionQuestion": "What should be left out?",
   "UnusedQuestion": "I could not use: {0}. Could you say it another way?",
+  "GuessQuestion": "What does \"{0}\" mean here: {1}?",
+  "GuessOpenQuestion": "What does \"{0}\" mean here?",
+  "Protected": {
+    "Text": "{0} is {1}: Lambek does not change it.",
+    "Reasons": {
+      "system": "a folder of the system",
+      "root": "the root of a drive",
+      "home": "your whole user folder",
+      "user": "kept safe by your rules",
+      "users": "the folder of every user",
+      "other": "in another user's folder"
+    }
+  },
   "Answer": {
     "Single": "I'll {0}.",
     "Steps": "I'll do this in {0} steps:",
@@ -100,19 +490,20 @@
     "RiskCreate": "This only adds something new. Nothing that exists changes.",
     "RiskMedium": "This changes things on your computer. Simulate first to see exactly what.",
     "RiskHigh": "This cannot be undone. Simulate first, then confirm with a code.",
+    "RiskUndo": "This changes files, but they can be brought back. Simulate first, then confirm with a code.",
     "CodeOnly": "Here is the code, ready to copy.",
     "Waits": "Step {0} waits for step {1} because {2}.",
     "NeedOne": "I need one more detail. {0}",
     "NeedMany": "I need a few details:",
     "Unknown": "On this computer, I take care of {0}. Tell me what you'd like to do.",
     "Stopped": "I stopped before running anything.",
-    "Matches": "{0} item(s) match, {1} in total.",
-    "MatchesCount": "{0} item(s) match.",
+    "Matches": "{0} {0:item matches|items match}, {1} in total.",
+    "MatchesCount": "{0} {0:item matches|items match}.",
     "Nothing": "Nothing matches, so nothing would change.",
     "Approval": "Type {0} to confirm.",
     "ReadyToRun": "Reply yes to go ahead.",
     "DoneBrief": "Done.",
-    "Done": "Done. {0} item(s) processed.",
+    "Done": "Done. {0} {0:item|items} processed.",
     "DoneCode": "Done. The code is ready to copy.",
     "Failed": "Step {0} failed: {1}",
     "AfterFail": "The steps after it did not run.",
@@ -135,6 +526,10 @@
     "McpEmpty": "{0} replied with no content.",
     "ExplainMcp": "The call matches the input schema of the tool.",
     "ExplainMcpBlocked": "The call does not match the input schema: {0}.",
+    "Recalled": "Like on {0}: \"{1}\".",
+    "NoMemory": "I don't remember any request you confirmed yet.",
+    "DidYouMean": "Did you mean \"{0}\"? Answer yes to do it.",
+    "LearnedSeen": "I understood from your rephrasing: \"{0}\" means \"{1}\".",
     "Units": {
       "B": "bytes",
       "KB": "KB",
@@ -162,13 +557,32 @@
       "year": [
         "year",
         "years"
-      ]
+      ],
+      "image": "images",
+      "video": "videos",
+      "audio": "audio files",
+      "media": "media files",
+      "document": "documents",
+      "compressed": "archives",
+      "text": "text files",
+      "temporary": "temporary files",
+      "backup": "backup files",
+      "newest": "newest",
+      "oldest": "oldest",
+      "largest": "largest",
+      "smallest": "smallest",
+      "and": "and",
+      "Quotes": [
+        "\"",
+        "\""
+      ],
+      "Decimal": "."
     },
     "And": "and",
     "Files": {
       "Culture": "en-US",
       "DateFormat": "MMM d, yyyy",
-      "Image": "{0} is a {1} image of {2} \u00d7 {3} pixels, {4}, changed on {5}.",
+      "Image": "{0} is a {1} image of {2} × {3} pixels, {4}, changed on {5}.",
       "ImageNoSize": "{0} is a {1} image, {2}, changed on {3}.",
       "TakenWith": "Taken on {0} with {1}.",
       "Taken": "Taken on {0}.",
@@ -181,7 +595,167 @@
       "Missing": "I can't find {0}.",
       "Next": "Tell me what to do with it, for example copy, move, or rename it.",
       "NextMany": "Tell me what to do with them, for example copy, move, or rename them."
-    }
+    },
+    "Or": "or",
+    "Learned": "Noted: \"{0}\" means \"{1}\".",
+    "Unverified": "Checked afterwards: {0} {0:item|items} did not change as planned.",
+    "Habit": "I used {0}, as usual.",
+    "Understood": "\"{0}\": read as {1}.",
+    "Count": "There are {0}.",
+    "Dictionary": {
+      "form": "\"{0}\": a form of \"{1}\".",
+      "synonym": "\"{0}\": read as \"{1}\", its synonym (dictionary).",
+      "hyper": "\"{0}\": read as \"{1}\", a way to {1} (dictionary).",
+      "hypo": "\"{0}\": read as \"{1}\", a narrower sense (dictionary).",
+      "near": "\"{0}\": read as \"{1}\", a close sense (dictionary)."
+    },
+    "DictionaryPropose": "By \"{0}\", do you mean \"{1}\"? Answer yes to do it, and I will remember the word.",
+    "Report": {
+      "Read": "I found {0}{1}.",
+      "Did": "I {0} {1}{2}.",
+      "To": " to {0}",
+      "Total": ", {0} in total",
+      "Size": " ({0})",
+      "Largest": "The largest: {0} ({1}).",
+      "Newest": "The newest: {0}, changed on {1}.",
+      "None": "Nothing matched: nothing changed.",
+      "Nouns": {
+        "file": "{0} {0:file|files}",
+        "folder": "{0} {0:folder|folders}",
+        "item": "{0} {0:item|items}"
+      }
+    },
+    "Explain": {
+      "Verb": "The verb is \"{0}\": the sentence reduces to s, in {1} {1:reading|readings}.",
+      "Spelling": "I read \"{0}\" as \"{1}\" (a typo).",
+      "Choice": "I chose \"{0}\" over \"{1}\", by a margin of {2}.",
+      "Only": "Only one action fits: \"{0}\".",
+      "Signals": "All {0} signals agree (about {1} independent).",
+      "Disagree": "The {0} signals do not all agree (about {1} independent): I ask before acting.",
+      "Meaning": "The meaning computed on the reduction gives: {0}.",
+      "Form": "Logical form: {0}.",
+      "ReadBack": "I read my sentence back with my grammar: it gives exactly this plan.",
+      "Gps": "Integrity: margin {0} for a protection level of {1}, χ² residuals {2} under {3}, probability {4} for {5} needed: {6}.",
+      "Available": "available",
+      "Unavailable": "unavailable ({0}), I ask before acting",
+      "Reasons": {
+        "protection": "one signal alone decides",
+        "chisquare": "the signals contradict each other",
+        "probability": "probability too low"
+      },
+      "Borrowed": "\"{0}\": read as the {1} word for \"{2}\"."
+    },
+    "Define": {
+      "Head": "\"{0}\":",
+      "Pos": {
+        "n": "noun",
+        "v": "verb",
+        "a": "adjective",
+        "r": "adverb"
+      },
+      "Synonyms": "Synonyms: {0}.",
+      "Source": "(Definitions from {0}.)",
+      "Unknown": "I cannot find \"{0}\" in my dictionaries."
+    },
+    "Math": {
+      "Value": "{0} = {1}",
+      "ValueExact": "{0} = {1} = {2}",
+      "ValueAbout": "{0} = {1} ≈ {2}",
+      "Roots": "{0:The solution is|The solutions are} {1} = {2}.",
+      "Separator": " or ",
+      "About": "(about {0})",
+      "Always": "Every value works: the equality is always true.",
+      "Never": "No solution: the equality is always false.",
+      "Complex": "No real solution: the discriminant is negative.",
+      "Error": "I cannot calculate it: {0}",
+      "Converted": "{0} {1} = {2} {3}.",
+      "Days": "{0} {0:day|days} between {1} and {2}.",
+      "Weekday": "{0} is a {1}.",
+      "Later": "In {0} days it will be {1}.",
+      "DateFormat": "MMMM d, yyyy",
+      "Symbols": {
+        "c": "°C",
+        "f": "°F",
+        "k": "K",
+        "b": "bytes",
+        "kb": "KB",
+        "mb": "MB",
+        "gb": "GB",
+        "tb": "TB",
+        "kmh": "km/h"
+      },
+      "Derivative": "d/d{0} ({1}) = {2}",
+      "Primitive": "∫ {1} d{0} = {2} + C",
+      "NoPrimitive": "I can't find an exact antiderivative of {0}.",
+      "Definite": "∫ from {1} to {2} of {3} d{0} = {4}",
+      "Equal": "{0} = {1}",
+      "Factors": "{0} = {1}",
+      "Prime": "{0} is a prime number.",
+      "ProbablePrime": "{0} is prime (Miller-Rabin test, sure up to 1 - 4^-13).",
+      "NotPrime": "{0} is not prime: {0} = {1}.",
+      "Gcd": "gcd({0}) = {1}",
+      "Lcm": "lcm({0}) = {1}",
+      "Base": "{0} in base {1} = {2}",
+      "Choose": "C({0}, {1}) = {2}",
+      "Arrange": "P({0}, {1}) = {2}",
+      "Stat": "{0} = {1}",
+      "Words": "{0} is written \"{1}\".",
+      "SystemOne": "One solution: {0}.",
+      "SystemNone": "The system has no solution.",
+      "SystemMany": "Infinitely many solutions: {0} ({1} free).",
+      "Determinant": "det = {0}",
+      "Inverse": "Inverse: {0}",
+      "Rank": "Rank: {0}",
+      "Eigen": "Eigenvalues: {0} (characteristic polynomial {1}).",
+      "Transpose": "Transpose: {0}",
+      "Fibonacci": "F({0}) = {1}",
+      "Totient": "φ({0}) = {1}",
+      "Divisors": "Divisors of {0}: {1} ({2} in all).",
+      "Mod": "{0} mod {1} = {2}",
+      "ModInverse": "The inverse of {0} modulo {1} is {2}.",
+      "RootsAbout": "{0:The solution is|The solutions are} {1} ≈ {2} (certified by Sturm's theorem).",
+      "Certified": "certified",
+      "Statistics": {
+        "count": "count",
+        "sum": "sum",
+        "mean": "mean",
+        "median": "median",
+        "mode": "mode",
+        "min": "minimum",
+        "max": "maximum",
+        "range": "range",
+        "variance": "variance",
+        "stddev": "standard deviation",
+        "samplevariance": "sample variance",
+        "samplestddev": "sample standard deviation"
+      }
+    },
+    "VaguePropose": "By \"{0}\", do you mean {1}? Say yes to do it, or give another threshold.",
+    "VagueNote": "\"{0}\": read as {1} (a vague word); give another threshold if needed.",
+    "VagueDirection": {
+      "MinSize": "larger than {0}",
+      "MaxSize": "smaller than {0}",
+      "OlderThan": "older than {0}",
+      "NewerThan": "newer than {0}"
+    },
+    "LanguageNames": {
+      "en": "English",
+      "fr": "French",
+      "es": "Spanish",
+      "de": "German",
+      "it": "Italian",
+      "nl": "Dutch",
+      "pt": "Portuguese"
+    },
+    "Method": "\"{0}\" breaks down into {1} steps:",
+    "Code": "Here is the plan as a {0} program ({1}):",
+    "CodeChecked": "Syntax checked with {0}: no error.",
+    "CodeInvalid": "Syntax checked with {0}: {1}",
+    "CodeUnchecked": "Syntax not checked: {0}",
+    "CodeApply": "It only shows what it would do; start it with {0} to really do it.",
+    "CodeDelete": "Started with {0}, it deletes for good: nothing goes to the trash.",
+    "CodeUnsupported": "I cannot write step {0} as a program: {1}.",
+    "CodeNotReady": "The plan is not complete yet, so I cannot write it as a program."
   },
   "FollowUp": {
     "Run": [
@@ -215,6 +789,92 @@
       "instead",
       "the",
       "plan"
+    ],
+    "Also": [
+      "also",
+      "too"
+    ],
+    "Pronouns": [
+      "them",
+      "it",
+      "those",
+      "these"
+    ],
+    "Singular": [
+      "it"
+    ],
+    "Export": [
+      "show",
+      "give",
+      "get",
+      "want",
+      "need",
+      "see",
+      "like",
+      "would",
+      "could",
+      "can",
+      "have",
+      "convert",
+      "translate",
+      "export",
+      "turn",
+      "port",
+      "code",
+      "script",
+      "program",
+      "version",
+      "equivalent",
+      "same",
+      "as",
+      "in",
+      "into",
+      "to",
+      "me",
+      "i",
+      "you",
+      "a",
+      "an",
+      "for",
+      "please",
+      "with",
+      "using",
+      "also",
+      "too",
+      "how",
+      "does",
+      "look",
+      "what",
+      "about",
+      "and",
+      "now",
+      "language"
+    ],
+    "ExportMake": [
+      "write",
+      "generate",
+      "create",
+      "make",
+      "rewrite",
+      "produce",
+      "build"
+    ],
+    "ExportThis": [
+      "this",
+      "that",
+      "it",
+      "same",
+      "plan",
+      "task",
+      "them",
+      "these",
+      "those",
+      "the"
+    ],
+    "ExportThat": [
+      "that",
+      "which",
+      "to"
     ]
   },
   "Talk": {
@@ -287,7 +947,11 @@
         "whats up",
         "how do you do"
       ],
-      "Reply": "I'm good, thanks. What would you like to do?"
+      "Reply": [
+        "I'm good, thanks. What would you like to do?",
+        "Fine, thanks. What can I do for you?",
+        "All good, thanks for asking. What do you need?"
+      ]
     },
     "Thanks": {
       "Phrases": [
@@ -298,7 +962,11 @@
         "thx",
         "cheers"
       ],
-      "Reply": "You're welcome."
+      "Reply": [
+        "You're welcome.",
+        "Glad to help.",
+        "Any time."
+      ]
     },
     "Bye": {
       "Phrases": [
@@ -309,7 +977,11 @@
         "see you later",
         "good night"
       ],
-      "Reply": "See you soon."
+      "Reply": [
+        "See you soon.",
+        "Goodbye, see you soon.",
+        "Take care."
+      ]
     },
     "Greeting": {
       "Phrases": [
@@ -323,7 +995,11 @@
         "good evening",
         "yo"
       ],
-      "Reply": "Hello! What would you like to do?"
+      "Reply": [
+        "Hello! What would you like to do?",
+        "Hi. What can I do for you?",
+        "Hello! Tell me what you'd like to do."
+      ]
     },
     "Okay": {
       "Phrases": [
@@ -337,7 +1013,11 @@
         "got it",
         "sounds good"
       ],
-      "Reply": "Good. Tell me whenever you need something."
+      "Reply": [
+        "Good. Tell me whenever you need something.",
+        "All right. I'm here if you need me.",
+        "Great. Tell me what to do next."
+      ]
     }
   }
 }

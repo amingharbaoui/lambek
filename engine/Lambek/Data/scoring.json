@@ -7,5 +7,47 @@
     "Edit": 0.14
   },
   "Threshold": 0.55,
-  "Margin": 0.08
+  "Margin": 0.08,
+  "Margins": {
+    "low": 0.05,
+    "medium": 0.08,
+    "high": 0.1
+  },
+  "Correlation": {
+    "Grammar": {
+      "Grammar": 1.0,
+      "Cosine": 0.849,
+      "WordJaccard": 0.726,
+      "NGramJaccard": 0.763,
+      "Edit": 0.576
+    },
+    "Cosine": {
+      "Grammar": 0.849,
+      "Cosine": 1.0,
+      "WordJaccard": 0.908,
+      "NGramJaccard": 0.859,
+      "Edit": 0.811
+    },
+    "WordJaccard": {
+      "Grammar": 0.726,
+      "Cosine": 0.908,
+      "WordJaccard": 1.0,
+      "NGramJaccard": 0.947,
+      "Edit": 0.808
+    },
+    "NGramJaccard": {
+      "Grammar": 0.763,
+      "Cosine": 0.859,
+      "WordJaccard": 0.947,
+      "NGramJaccard": 1.0,
+      "Edit": 0.733
+    },
+    "Edit": {
+      "Grammar": 0.576,
+      "Cosine": 0.811,
+      "WordJaccard": 0.808,
+      "NGramJaccard": 0.733,
+      "Edit": 1.0
+    }
+  }
 }

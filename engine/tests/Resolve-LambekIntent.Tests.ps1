@@ -14,7 +14,7 @@ Describe 'Resolve-LambekIntent' {
     Context 'Recognition' {
         It 'recognizes <Action> in "<Text>"' -ForEach @(
             @{ Text = 'delete the .log files in C:\Temp'; Action = 'files.delete' }
-            @{ Text = 'remove the old files in C:\Temp'; Action = 'files.delete' }
+            @{ Text = 'remove the files older than 30 days in C:\Temp'; Action = 'files.delete' }
             @{ Text = 'list the files in C:\Users'; Action = 'files.list' }
             @{ Text = 'find the large files in C:\Data'; Action = 'files.list' }
             @{ Text = 'copy report.txt to D:\Backup'; Action = 'files.copy' }
@@ -24,7 +24,7 @@ Describe 'Resolve-LambekIntent' {
             @{ Text = 'create a script'; Action = 'code.generate' }
             @{ Text = 'generate a powershell function named Get-Report'; Action = 'code.generate' }
             @{ Text = 'supprime les fichiers .log dans C:\Temp'; Action = 'files.delete' }
-            @{ Text = 'deplace les fichiers vers D:\Archive'; Action = 'files.move' }
+            @{ Text = 'deplace les fichiers de C:\Temp vers D:\Archive'; Action = 'files.move' }
             @{ Text = 'genere une fonction python nommee "rapport"'; Action = 'code.generate' }
         ) {
             $card = Resolve-Text $Text
@@ -33,9 +33,16 @@ Describe 'Resolve-LambekIntent' {
         }
 
         It 'understands a request with typos' {
-            $card = Resolve-Text 'delet the old fils in C:\Temp'
+            $card = Resolve-Text 'delet the fils in C:\Temp'
             $card.Status | Should -Be 'Ready'
             $card.Action | Should -Be 'files.delete'
+        }
+
+        It 'asks how old when a delete only says "old"' {
+            $card = Resolve-Text 'delet the old fils in C:\Temp'
+            $card.Status | Should -Be 'NeedsInput'
+            $card.Action | Should -Be 'files.delete'
+            $card.Questions | Should -Contain 'What age or duration?'
         }
     }
 
@@ -116,11 +123,12 @@ Describe 'Resolve-LambekIntent' {
         It 'does not act on "<Text>"' -ForEach @(
             @{ Text = "don't delete the files in C:\Temp" }
             @{ Text = 'never delete the files in C:\Temp' }
-            @{ Text = 'delete the files in C:\Temp except the .log files' }
-            @{ Text = 'delete the .log and .tmp files in C:\Temp' }
             @{ Text = 'ne supprime pas les fichiers dans C:\Temp' }
             @{ Text = "n'efface jamais les fichiers dans C:\Temp" }
-            @{ Text = 'supprime les fichiers sauf les .log dans C:\Temp' }
+            @{ Text = 'delete the files except in C:\Temp' }
+            @{ Text = 'delete the obsolete files in C:\Temp' }
+            @{ Text = 'delete the largest files in C:\Temp' }
+            @{ Text = 'delete 5 files in C:\Temp' }
         ) {
             $card = Resolve-Text $Text
             $card.Status | Should -Be 'NeedsInput'
@@ -128,7 +136,7 @@ Describe 'Resolve-LambekIntent' {
         }
 
         It 'says which value it could not use' {
-            (Resolve-Text 'delete the .log and .tmp files in C:\Temp').Questions | Should -Contain 'I could not use: .tmp. Could you say it another way?'
+            (Resolve-Text 'delete report.txt notes.txt in C:\Temp').Questions | Should -Contain 'I could not use: notes.txt. Could you say it another way?'
         }
     }
 

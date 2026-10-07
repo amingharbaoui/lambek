@@ -49,6 +49,18 @@ function ConvertTo-LambekHostPlan {
         $title = $null
         if ($step.Action) { $title = Get-LambekTitle -Action (Get-LambekAction -Id $step.Action).Action -Language $step.Language }
 
+        # The GPS panel of the choice: signals, margin and its protection level, residuals, probability, and the verdict
+        $integrity = $null
+        $gps = $null
+        if ($step.PSObject.Properties['Reading'] -and $step.Reading -and $step.Reading.Integrity -and $step.Reading.Integrity.PSObject.Properties['Gps']) { $gps = $step.Reading.Integrity.Gps }
+        if ($gps) {
+            $integrity = [ordered]@{
+                signals = $gps.Signals; independent = $gps.Independent; margin = $gps.Margin; sigma = $gps.Sigma
+                protection = $gps.Protection; chiSquare = $gps.ChiSquare; limit = $gps.Limit; probability = $gps.Probability
+                needed = $gps.Needed; conflict = $gps.Conflict; available = $gps.Available; reasons = @($gps.Reasons)
+            }
+        }
+
         [ordered]@{
             step       = $step.Step
             title      = $title
@@ -67,6 +79,7 @@ function ConvertTo-LambekHostPlan {
             script     = $step.Script
             safe       = ($null -ne $step.Check -and $step.Check.IsValid)
             violations = $violations
+            integrity  = $integrity
         }
     }
 

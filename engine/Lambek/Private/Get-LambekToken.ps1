@@ -18,12 +18,14 @@ function Get-LambekToken {
     if ($errors.Count -eq 0) {
         $words = [System.Collections.Generic.List[string]]::new()
 
+        # Every token made only of letters, digits, or _: words, numbers, and keywords like "in" or "for"
         foreach ($token in $tokens) {
-            $isWord = $token.Kind -in @('Identifier', 'Generic', 'Number')
-            $isKeyword = $token.TokenFlags.HasFlag([System.Management.Automation.Language.TokenFlags]::Keyword)
-
-            if (($isWord -or $isKeyword) -and $token.Text -match '^[\p{L}\p{N}_]+$') {
+            if ($token.Text -match '^[\p{L}\p{N}_]+$') {
                 $words.Add($token.Text)
+            }
+            # A word with the punctuation that ends a sentence glued to it ("why?", "ok!")
+            elseif ($token.Text -match '^(?<word>[\p{L}\p{N}_]+)[?!.,;:]+$') {
+                $words.Add($Matches['word'])
             }
         }
 

@@ -13,7 +13,7 @@ Describe 'Set-LambekPlanParameter' {
     It 'changes a parameter and renders a new checked script' {
         $edited = Set-LambekPlanParameter -Plan $plan -Step 1 -Name Extension -Value '.tmp'
         $edited.Status | Should -Be 'Ready'
-        $edited.Steps[0].Script | Should -BeLike "*Extension -EQ '.tmp'*"
+        $edited.Steps[0].Script | Should -BeLike "*Extension -In '.tmp'*"
         $edited.Steps[0].Check.IsValid | Should -BeTrue
     }
 

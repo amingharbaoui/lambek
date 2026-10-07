@@ -30,6 +30,8 @@ function Clear-LambekMcpPack {
         $script:Packs.Remove($Name)
         $script:LexiconCache.Clear()
         $script:ActionIndexCache.Clear()
+        $script:DomainSenseCache.Clear()
+        $script:EntityRules = $null
     }
 }
 

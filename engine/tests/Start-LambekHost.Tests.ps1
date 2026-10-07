@@ -146,7 +146,7 @@ Describe 'Invoke-LambekHostRequest' {
 
         $run = Send-HostRequest @{ id = 4; method = 'run'; params = @{ id = $planId } } $audit
         $run.result.status | Should -Be 'Completed'
-        $run.result.answer | Should -Be 'Done.'
+        $run.result.answer | Should -BeLike "Done.*I deleted 1 file*"
         Test-Path (Join-Path $source 'a.log') | Should -BeFalse
         Test-Path (Join-Path $source 'b.tmp') | Should -BeTrue
     }
@@ -166,6 +166,17 @@ Describe 'Invoke-LambekHostRequest' {
         $next = Send-HostRequest @{ id = 2; method = 'ask'; params = @{ text = 'use .tmp instead'; context = $ask.result.id } } $audit
         $next.result.kind | Should -Be 'edit'
         $next.result.steps[0].parameters.Extension | Should -Be '.tmp'
+    }
+
+    It 'learns a word from the reply and says so' {
+        InModuleScope Lambek -Parameters @{ Path = (Join-Path $root 'words.json') } { $script:LearnedPath = $Path; $script:LearnedWords = $null; $script:LexiconCache.Clear() }
+        $ask = Send-HostRequest @{ id = 1; method = 'ask'; params = @{ text = "vire les .log dans ""$source""" } } $audit
+        $ask.result.answer | Should -BeLike '*vire*'
+        $next = Send-HostRequest @{ id = 2; method = 'ask'; params = @{ text = 'supprimer'; context = $ask.result.id } } $audit
+        $next.result.kind | Should -Be 'edit'
+        $next.result.status | Should -Be 'Ready'
+        $next.result.answer | Should -BeLike '*vire*supprimer*'
+        $next.result.steps[0].action | Should -Be 'files.delete'
     }
 
     It 'explains the current plan' {
@@ -297,6 +308,6 @@ Describe 'Start-LambekHost through a real process' {
         $strict = [System.Text.UTF8Encoding]::new($false, $true)
         $text = $strict.GetString($buffer.ToArray())
         $answer = @($text -split "`n" | Where-Object { $_ -like '{"id":1*' })[0] | ConvertFrom-Json
-        $answer.result.sentences[0] | Should -Be 'créer un dossier nommé Été dans C:\Temp'
+        $answer.result.sentences[0] | Should -Be 'créer un dossier nommé « Été » dans C:\Temp'
     }
 }

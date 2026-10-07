@@ -10,9 +10,9 @@ Describe 'ConvertTo-LambekAnswer' {
         @{ Text = 'Delete the files older than 30 days in C:\Temp larger than 5 GB'; Answer = 'I''ll delete the files older than 30 days larger than 5 GB in C:\Temp.' }
         @{ Text = 'list the files smaller than 500 KB in C:\Data'; Answer = 'I''ll list the files smaller than 500 KB in C:\Data.' }
         @{ Text = 'rename report.txt to "summary.txt"'; Answer = 'I''ll rename report.txt to summary.txt.' }
-        @{ Text = 'create a folder named "logs" in C:\Temp'; Answer = 'I''ll create a folder named logs in C:\Temp.' }
+        @{ Text = 'create a folder named "logs" in C:\Temp'; Answer = 'I''ll create a folder named "logs" in C:\Temp.' }
         @{ Text = 'generate a powershell function named Get-Report'; Answer = 'I''ll generate a PowerShell function named Get-Report.' }
-        @{ Text = 'supprime les fichiers .log de plus de 5 Go dans "D:\Mes Logs"'; Answer = 'Je vais supprimer les fichiers .log de plus de 5 Go dans D:\Mes Logs.' }
+        @{ Text = 'supprime les fichiers .log de plus de 5 Go dans "D:\Mes Logs"'; Answer = 'Je vais supprimer les fichiers .log de plus de 5 Go dans « D:\Mes Logs ».' }
         @{ Text = 'supprime les fichiers de plus de 1 an dans C:\Temp'; Answer = 'Je vais supprimer les fichiers de plus de 1 an dans C:\Temp.' }
     ) {
         $lines = (New-LambekPlan $Text | ConvertTo-LambekAnswer) -split "`n"
@@ -32,18 +32,19 @@ Describe 'ConvertTo-LambekAnswer' {
     }
 
     It 'keeps the questions when brief' {
-        New-LambekPlan 'move the files' | ConvertTo-LambekAnswer -Brief | Should -Be 'I need one more detail. Where to?'
+        New-LambekPlan 'move the files' | ConvertTo-LambekAnswer -Brief | Should -Be "I need a few details:`n- Where to?`n- From which folder?"
     }
 
     It 'asks the question when the plan is not ready' {
-        New-LambekPlan 'move the files' | ConvertTo-LambekAnswer | Should -Be 'I need one more detail. Where to?'
+        New-LambekPlan 'move the files in C:\A' | ConvertTo-LambekAnswer | Should -Be 'I need one more detail. Where to?'
     }
 
     It 'explains the risk: <Expected>' -ForEach @(
         @{ Text = 'list the files in C:\Data'; Expected = 'This only reads. Nothing on your computer changes.' }
         @{ Text = 'create the folder D:\Archive'; Expected = 'This only adds something new. Nothing that exists changes.' }
         @{ Text = 'move the files in C:\A to D:\B'; Expected = 'This changes things on your computer. Simulate first to see exactly what.' }
-        @{ Text = 'delete the .log files in C:\Temp'; Expected = 'This cannot be undone. Simulate first, then confirm with a code.' }
+        @{ Text = 'delete the .log files in C:\Temp'; Expected = 'This changes files, but they can be brought back. Simulate first, then confirm with a code.' }
+        @{ Text = 'delete the .log files in C:\Temp permanently'; Expected = 'This cannot be undone. Simulate first, then confirm with a code.' }
         @{ Text = 'generate a powershell function named Get-Report'; Expected = 'Here is the code, ready to copy.' }
     ) {
         $lines = (New-LambekPlan $Text | ConvertTo-LambekAnswer) -split "`n"
@@ -64,7 +65,7 @@ Describe 'ConvertTo-LambekAnswer' {
         @{ Text = 'Hello!'; Expected = 'Hello! What would you like to do?' }
         @{ Text = 'merci beaucoup'; Expected = 'Avec plaisir.' }
         @{ Text = 'Salut Lambek, ça va ?'; Expected = 'Très bien, merci. Que voulez-vous faire ?' }
-        @{ Text = 'parles tu anglais ?'; Expected = "Je comprends le français et l'anglais. Écrivez dans la langue que vous préférez." }
+        @{ Text = 'parles tu anglais ?'; Expected = "Je comprends le français et l'anglais. Écris dans la langue que tu préfères." }
         @{ Text = 'who are you?'; Expected = "I'm Lambek. *" }
     ) {
         New-LambekPlan $Text | ConvertTo-LambekAnswer | Should -BeLike $Expected

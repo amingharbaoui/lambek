@@ -538,7 +538,12 @@
         "guard"
       ],
       "Expected": {
-        "Status": "NeedsInput"
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log .tmp"
+        }
       }
     },
     {
@@ -1337,7 +1342,12 @@
         "guard"
       ],
       "Expected": {
-        "Status": "NeedsInput"
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "ExceptExtension": ".log"
+        }
       }
     },
     {
@@ -1734,11 +1744,7 @@
         "en"
       ],
       "Expected": {
-        "Status": "Ready",
-        "Action": "files.delete",
-        "Parameters": {
-          "Path": "C:\\Temp"
-        }
+        "Status": "NeedsInput"
       }
     },
     {
@@ -1956,7 +1962,12 @@
         "guard"
       ],
       "Expected": {
-        "Status": "NeedsInput"
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "ExceptExtension": ".log"
+        }
       }
     },
     {
@@ -3040,6 +3051,1134 @@
       ],
       "Expected": {
         "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B187",
+      "Split": "calibration",
+      "Text": "déplace les fichiers de C:\\A dans D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "move",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B188",
+      "Split": "calibration",
+      "Text": "move the files from C:\\A into D:\\B",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B189",
+      "Split": "calibration",
+      "Text": "dans le dossier C:\\Temp supprime les fichiers .tmp",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B190",
+      "Split": "calibration",
+      "Text": "in C:\\Logs delete the .log files",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Logs",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B191",
+      "Split": "calibration",
+      "Text": "mets le rapport.txt dans C:\\B",
+      "Language": "fr",
+      "Tags": [
+        "move",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Destination": "C:\\B",
+          "Name": "rapport.txt"
+        }
+      }
+    },
+    {
+      "Id": "B192",
+      "Split": "calibration",
+      "Text": "put report.txt in D:\\Archive",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Destination": "D:\\Archive",
+          "Name": "report.txt"
+        }
+      }
+    },
+    {
+      "Id": "B193",
+      "Split": "calibration",
+      "Text": "déplace les fichiers de C:\\A dnas D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "move",
+        "fr",
+        "typo",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B194",
+      "Split": "calibration",
+      "Text": "copy the files in C:\\A intoo D:\\B",
+      "Language": "en",
+      "Tags": [
+        "copy",
+        "typo",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B195",
+      "Split": "calibration",
+      "Text": "remets les fichiers de C:\\A vers D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "move",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B196",
+      "Split": "calibration",
+      "Text": "delete everything in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B197",
+      "Split": "calibration",
+      "Text": "supprime tout dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "delete",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp"
+        }
+      }
+    },
+    {
+      "Id": "B198",
+      "Split": "calibration",
+      "Text": "move C:\\A to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "move",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B199",
+      "Split": "calibration",
+      "Text": "sais-tu lister les fichiers dans C:\\A",
+      "Language": "fr",
+      "Tags": [
+        "list",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\A"
+        }
+      }
+    },
+    {
+      "Id": "B200",
+      "Split": "calibration",
+      "Text": "can you delete the .tmp files in C:\\A",
+      "Language": "en",
+      "Tags": [
+        "delete",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\A",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B201",
+      "Split": "calibration",
+      "Text": "déplace les fichiers du dossier C:\\A vers D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "move",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B202",
+      "Split": "calibration",
+      "Text": "copie les fichiers .pdf de C:\\Docs dans D:\\Backup",
+      "Language": "fr",
+      "Tags": [
+        "copy",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\Docs",
+          "Destination": "D:\\Backup",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B203",
+      "Split": "calibration",
+      "Text": "list the files in the folder C:\\Logs",
+      "Language": "en",
+      "Tags": [
+        "list",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Logs"
+        }
+      }
+    },
+    {
+      "Id": "B204",
+      "Split": "calibration",
+      "Text": "mets les fichiers",
+      "Language": "fr",
+      "Tags": [
+        "incomplete",
+        "fr",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B205",
+      "Split": "calibration",
+      "Text": "move to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "incomplete",
+        "move",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B206",
+      "Split": "calibration",
+      "Text": "put the files",
+      "Language": "en",
+      "Tags": [
+        "incomplete",
+        "reading"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B207",
+      "Split": "calibration",
+      "Text": "del the .tmp files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "system",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B208",
+      "Split": "calibration",
+      "Text": "ren report.txt to old.txt",
+      "Language": "en",
+      "Tags": [
+        "system",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "report.txt",
+          "NewName": "old.txt"
+        }
+      }
+    },
+    {
+      "Id": "B209",
+      "Split": "calibration",
+      "Text": "renomme rapport.txt en ancien.txt",
+      "Language": "fr",
+      "Tags": [
+        "system",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.rename",
+        "Parameters": {
+          "Name": "rapport.txt",
+          "NewName": "ancien.txt"
+        }
+      }
+    },
+    {
+      "Id": "B210",
+      "Split": "calibration",
+      "Text": "delete the images in C:\\Photos",
+      "Language": "en",
+      "Tags": [
+        "system",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Photos",
+          "Kind": "image"
+        }
+      }
+    },
+    {
+      "Id": "B211",
+      "Split": "calibration",
+      "Text": "copie les vidéos de C:\\A vers D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "system",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Kind": "video"
+        }
+      }
+    },
+    {
+      "Id": "B212",
+      "Split": "calibration",
+      "Text": "move the documents in C:\\Inbox to D:\\Papers",
+      "Language": "en",
+      "Tags": [
+        "system",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\Inbox",
+          "Destination": "D:\\Papers",
+          "Kind": "document"
+        }
+      }
+    },
+    {
+      "Id": "B213",
+      "Split": "calibration",
+      "Text": "lsit the files in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "repair",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B214",
+      "Split": "calibration",
+      "Text": "suprime les .tmp dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "repair",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B215",
+      "Split": "calibration",
+      "Text": "the .log files in C:\\Temp must be deleted",
+      "Language": "en",
+      "Tags": [
+        "repair",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B216",
+      "Split": "calibration",
+      "Text": "delete the screenshots in C:\\A",
+      "Language": "en",
+      "Tags": [
+        "learn",
+        "en"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B217",
+      "Split": "calibration",
+      "Text": "vire les .tmp dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "learn",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B218",
+      "Split": "calibration",
+      "Text": "zap the files in C:\\A to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "learn",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B219",
+      "Split": "calibration",
+      "Text": "list the 5 largest files in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "meaning",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Order": "largest",
+          "Count": "5"
+        }
+      }
+    },
+    {
+      "Id": "B220",
+      "Split": "calibration",
+      "Text": "supprime le fichier le plus ancien dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Order": "oldest",
+          "Count": "1"
+        }
+      }
+    },
+    {
+      "Id": "B221",
+      "Split": "calibration",
+      "Text": "déplace les 3 plus gros fichiers de C:\\A vers D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Order": "largest",
+          "Count": "3"
+        }
+      }
+    },
+    {
+      "Id": "B222",
+      "Split": "calibration",
+      "Text": "delete the largest files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "meaning",
+        "en"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B223",
+      "Split": "calibration",
+      "Text": "delete the temporary files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "meaning",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Kind": "temporary"
+        }
+      }
+    },
+    {
+      "Id": "B224",
+      "Split": "calibration",
+      "Text": "delete the old files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "meaning",
+        "en"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B225",
+      "Split": "calibration",
+      "Text": "copy the images and videos from C:\\A to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "meaning",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Kind": "image video"
+        }
+      }
+    },
+    {
+      "Id": "B226",
+      "Split": "calibration",
+      "Text": "copy the pdf files from C:\\A to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "meaning",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B227",
+      "Split": "calibration",
+      "Text": "supprime les fichiers dans C:\\A sauf les images",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\A",
+          "ExceptKind": "image"
+        }
+      }
+    },
+    {
+      "Id": "B228",
+      "Split": "calibration",
+      "Text": "list the newest file in C:\\Logs",
+      "Language": "en",
+      "Tags": [
+        "meaning",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Logs",
+          "Order": "newest",
+          "Count": "1"
+        }
+      }
+    },
+    {
+      "Id": "B229",
+      "Split": "calibration",
+      "Text": "free 10 GB in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "goal",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.free",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "FreeSize": "10737418240"
+        }
+      }
+    },
+    {
+      "Id": "B230",
+      "Split": "calibration",
+      "Text": "libère 5 Go dans C:\\Temp sans toucher aux documents",
+      "Language": "fr",
+      "Tags": [
+        "goal",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.free",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "FreeSize": "5368709120",
+          "ExceptKind": "document"
+        }
+      }
+    },
+    {
+      "Id": "B231",
+      "Split": "calibration",
+      "Text": "free some space in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "goal",
+        "en"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B232",
+      "Split": "calibration",
+      "Text": "delete the obsolete files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "meaning",
+        "en"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B233",
+      "Split": "calibration",
+      "Text": "supprime les fichiers temporaires dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Kind": "temporary"
+        }
+      }
+    },
+    {
+      "Id": "B234",
+      "Split": "calibration",
+      "Text": "supprime rapidement les fichiers .log dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B235",
+      "Split": "calibration",
+      "Text": "supprime les fichiers zippes dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".zip"
+        }
+      }
+    },
+    {
+      "Id": "B236",
+      "Split": "calibration",
+      "Text": "supprime les screenshots dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "NeedsInput"
+      }
+    },
+    {
+      "Id": "B237",
+      "Split": "test",
+      "Text": "copie les pdf de C:\\A vers D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Extension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B238",
+      "Split": "test",
+      "Text": "supprime tout dans C:\\Temp sauf les images et les pdf",
+      "Language": "fr",
+      "Tags": [
+        "meaning",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "ExceptKind": "image",
+          "ExceptExtension": ".pdf"
+        }
+      }
+    },
+    {
+      "Id": "B239",
+      "Split": "calibration",
+      "Text": "je veux savoir quels fichiers prennent le plus de place dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "question",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Order": "largest"
+        }
+      }
+    },
+    {
+      "Id": "B240",
+      "Split": "calibration",
+      "Text": "which files take up the most space in C:\\Data?",
+      "Language": "en",
+      "Tags": [
+        "question",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Order": "largest"
+        }
+      }
+    },
+    {
+      "Id": "B241",
+      "Split": "test",
+      "Text": "quels fichiers .log sont dans C:\\Logs",
+      "Language": "fr",
+      "Tags": [
+        "question",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Logs",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B242",
+      "Split": "test",
+      "Text": "what are the newest files in C:\\Data",
+      "Language": "en",
+      "Tags": [
+        "question",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data",
+          "Order": "newest"
+        }
+      }
+    },
+    {
+      "Id": "B243",
+      "Split": "calibration",
+      "Text": "copie les images de C:\\A vers D:\\B puis supprime-les",
+      "Language": "fr",
+      "Tags": [
+        "pronoun",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B",
+          "Kind": "image"
+        }
+      }
+    },
+    {
+      "Id": "B244",
+      "Split": "test",
+      "Text": "supprimons les fichiers .log dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "dictionary",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".log"
+        }
+      }
+    },
+    {
+      "Id": "B245",
+      "Split": "test",
+      "Text": "effaçons les fichiers .tmp dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "dictionary",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.delete",
+        "Parameters": {
+          "Path": "C:\\Temp",
+          "Extension": ".tmp"
+        }
+      }
+    },
+    {
+      "Id": "B246",
+      "Split": "test",
+      "Text": "copions rapport.txt vers D:\\Backup",
+      "Language": "fr",
+      "Tags": [
+        "dictionary",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.copy",
+        "Parameters": {
+          "Name": "rapport.txt",
+          "Destination": "D:\\Backup"
+        }
+      }
+    },
+    {
+      "Id": "B247",
+      "Split": "test",
+      "Text": "déplaçons les fichiers de C:\\A vers D:\\B",
+      "Language": "fr",
+      "Tags": [
+        "dictionary",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B248",
+      "Split": "test",
+      "Text": "listons les fichiers dans C:\\Data",
+      "Language": "fr",
+      "Tags": [
+        "dictionary",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.list",
+        "Parameters": {
+          "Path": "C:\\Data"
+        }
+      }
+    },
+    {
+      "Id": "B249",
+      "Split": "test",
+      "Text": "transport the files in C:\\A to D:\\B",
+      "Language": "en",
+      "Tags": [
+        "dictionary",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Ready",
+        "Action": "files.move",
+        "Parameters": {
+          "Source": "C:\\A",
+          "Destination": "D:\\B"
+        }
+      }
+    },
+    {
+      "Id": "B250",
+      "Split": "test",
+      "Text": "kill the .log files in C:\\Temp",
+      "Language": "en",
+      "Tags": [
+        "dictionary",
+        "guard",
+        "en"
+      ],
+      "Expected": {
+        "Status": "Unknown"
+      }
+    },
+    {
+      "Id": "B251",
+      "Split": "test",
+      "Text": "tue les fichiers .log dans C:\\Temp",
+      "Language": "fr",
+      "Tags": [
+        "dictionary",
+        "guard",
+        "fr"
+      ],
+      "Expected": {
+        "Status": "Unknown"
       }
     }
   ]

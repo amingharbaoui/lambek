@@ -15,8 +15,10 @@ function Get-LambekScoring {
     }
 
     return [pscustomobject]@{
-        Weights   = $data.Weights
-        Threshold = [double] $data.Threshold
-        Margin    = [double] $data.Margin
+        Weights     = $data.Weights
+        Threshold   = [double] $data.Threshold
+        Margin      = [double] $data.Margin
+        Margins     = $data['Margins']
+        Correlation = $data['Correlation']
     }
 }
