@@ -1,0 +1,1104 @@
+{
+  "Language": "pt",
+  "Words": {
+    "apagar": [
+      "s o^l"
+    ],
+    "listar": [
+      "s o^l"
+    ],
+    "mostrar": [
+      "s o^l"
+    ],
+    "procurar": [
+      "s o^l"
+    ],
+    "criar": [
+      "s o^l"
+    ],
+    "copiar": [
+      "s p^l o^l"
+    ],
+    "mover": [
+      "s p^l o^l"
+    ],
+    "renomear": [
+      "s p^l o^l"
+    ],
+    "libertar": [
+      "s o^l"
+    ],
+    "restaurar": [
+      "s o^l",
+      "s"
+    ],
+    "desfazer": [
+      "s o^l",
+      "s"
+    ],
+    "recuperar": [
+      "s o^l",
+      "s"
+    ],
+    "ordenar": [
+      "s o^l"
+    ],
+    "qual": [
+      "s o^l"
+    ],
+    "ficheiro": [
+      "o"
+    ],
+    "pasta": [
+      "o"
+    ],
+    "tudo": [
+      "o"
+    ],
+    "imagem": [
+      "o"
+    ],
+    "video": [
+      "o"
+    ],
+    "musica": [
+      "o"
+    ],
+    "audio": [
+      "o",
+      "o^r o"
+    ],
+    "documento": [
+      "o"
+    ],
+    "comprimido": [
+      "o^r o",
+      "o"
+    ],
+    "texto": [
+      "o",
+      "o^r o"
+    ],
+    "temporario": [
+      "o^r o",
+      "o"
+    ],
+    "backup": [
+      "o^r o",
+      "o"
+    ],
+    "multimedia": [
+      "o^r o",
+      "o"
+    ],
+    "espaco": [
+      "o^r o",
+      "o"
+    ],
+    "eliminacao": [
+      "o"
+    ],
+    "ultimo": [
+      "o o^l",
+      "o^r o"
+    ],
+    "lixo": [
+      "o"
+    ],
+    "reciclagem": [
+      "o"
+    ],
+    "em": [
+      "o^r o d^l",
+      "s s^l d^l"
+    ],
+    "dentro": [
+      "o^r o d^l"
+    ],
+    "para": [
+      "p d^l",
+      "p q^l"
+    ],
+    "antigo": [
+      "o o^l",
+      "o^r o"
+    ],
+    "grande": [
+      "o o^l",
+      "o^r o"
+    ],
+    "mais": [
+      "o^r o z^l",
+      "o^r o t^l"
+    ],
+    "menos": [
+      "o^r o z^l",
+      "o^r o t^l"
+    ],
+    "chamado": [
+      "o^r o q^l"
+    ],
+    "nome": [
+      "o^r o q^l"
+    ],
+    "exceto": [
+      "o^r o o^l"
+    ],
+    "excluindo": [
+      "o^r o o^l"
+    ],
+    "salvo": [
+      "o^r o o^l"
+    ],
+    "sem": [
+      "o^r o o^l"
+    ],
+    "e": [
+      "o^r o o^l"
+    ],
+    "definitivamente": [
+      "o o^l",
+      "s^r s",
+      "s s^l"
+    ],
+    "permanentemente": [
+      "o o^l",
+      "s^r s",
+      "s s^l"
+    ]
+  },
+  "BaseForms": {
+    "apaga": "apagar",
+    "apague": "apagar",
+    "apaguem": "apagar",
+    "apagas": "apagar",
+    "apagues": "apagar",
+    "apagam": "apagar",
+    "apagamos": "apagar",
+    "apagando": "apagar",
+    "apago": "apagar",
+    "eliminar": "apagar",
+    "elimina": "apagar",
+    "elimine": "apagar",
+    "eliminem": "apagar",
+    "eliminas": "apagar",
+    "eliminando": "apagar",
+    "elimino": "apagar",
+    "excluir": "apagar",
+    "exclui": "apagar",
+    "exclua": "apagar",
+    "excluam": "apagar",
+    "excluis": "apagar",
+    "excluo": "apagar",
+    "deletar": "apagar",
+    "deleta": "apagar",
+    "deletem": "apagar",
+    "deletes": "apagar",
+    "deleto": "apagar",
+    "remover": "apagar",
+    "remove": "apagar",
+    "remova": "apagar",
+    "removam": "apagar",
+    "removes": "apagar",
+    "removo": "apagar",
+    "removendo": "apagar",
+    "suprimir": "apagar",
+    "suprime": "apagar",
+    "suprima": "apagar",
+    "descartar": "apagar",
+    "descarta": "apagar",
+    "descarte": "apagar",
+    "destruir": "apagar",
+    "destroi": "apagar",
+    "destrua": "apagar",
+    "limpar": "apagar",
+    "limpa": "apagar",
+    "limpe": "apagar",
+    "lista": "listar",
+    "liste": "listar",
+    "listem": "listar",
+    "listas": "listar",
+    "listando": "listar",
+    "listo": "listar",
+    "enumerar": "listar",
+    "enumera": "listar",
+    "enumere": "listar",
+    "mostra": "mostrar",
+    "mostre": "mostrar",
+    "mostrem": "mostrar",
+    "mostras": "mostrar",
+    "mostrando": "mostrar",
+    "mostro": "mostrar",
+    "exibir": "mostrar",
+    "exibe": "mostrar",
+    "exiba": "mostrar",
+    "exibam": "mostrar",
+    "apresentar": "mostrar",
+    "apresenta": "mostrar",
+    "apresente": "mostrar",
+    "procura": "procurar",
+    "procure": "procurar",
+    "procurem": "procurar",
+    "procuras": "procurar",
+    "procurando": "procurar",
+    "procuro": "procurar",
+    "encontrar": "procurar",
+    "encontra": "procurar",
+    "encontre": "procurar",
+    "encontrem": "procurar",
+    "encontras": "procurar",
+    "buscar": "procurar",
+    "busca": "procurar",
+    "busque": "procurar",
+    "busquem": "procurar",
+    "pesquisar": "procurar",
+    "pesquisa": "procurar",
+    "pesquise": "procurar",
+    "pesquisem": "procurar",
+    "localizar": "procurar",
+    "localiza": "procurar",
+    "localize": "procurar",
+    "cria": "criar",
+    "crie": "criar",
+    "criem": "criar",
+    "crias": "criar",
+    "criando": "criar",
+    "crio": "criar",
+    "copia": "copiar",
+    "copie": "copiar",
+    "copiem": "copiar",
+    "copias": "copiar",
+    "copiando": "copiar",
+    "copio": "copiar",
+    "duplicar": "copiar",
+    "duplica": "copiar",
+    "duplique": "copiar",
+    "move": "mover",
+    "mova": "mover",
+    "movam": "mover",
+    "moves": "mover",
+    "movendo": "mover",
+    "movo": "mover",
+    "transferir": "mover",
+    "transfere": "mover",
+    "transfira": "mover",
+    "transfiram": "mover",
+    "deslocar": "mover",
+    "desloca": "mover",
+    "desloque": "mover",
+    "passar": "mover",
+    "passa": "mover",
+    "passe": "mover",
+    "renomeia": "renomear",
+    "renomeie": "renomear",
+    "renomeiem": "renomear",
+    "renomeias": "renomear",
+    "renomeando": "renomear",
+    "renomeio": "renomear",
+    "liberta": "libertar",
+    "liberte": "libertar",
+    "libertem": "libertar",
+    "libertas": "libertar",
+    "liberar": "libertar",
+    "libera": "libertar",
+    "libere": "libertar",
+    "liberem": "libertar",
+    "liberas": "libertar",
+    "restaura": "restaurar",
+    "restaure": "restaurar",
+    "restaurem": "restaurar",
+    "restauras": "restaurar",
+    "repor": "restaurar",
+    "repoe": "restaurar",
+    "reponha": "restaurar",
+    "reponham": "restaurar",
+    "repoem": "restaurar",
+    "recupera": "recuperar",
+    "recupere": "recuperar",
+    "recuperem": "recuperar",
+    "recuperas": "recuperar",
+    "desfaz": "desfazer",
+    "desfaca": "desfazer",
+    "desfacam": "desfazer",
+    "anular": "desfazer",
+    "anula": "desfazer",
+    "anule": "desfazer",
+    "cancelar": "desfazer",
+    "cancela": "desfazer",
+    "cancele": "desfazer",
+    "ordena": "ordenar",
+    "ordene": "ordenar",
+    "ordenem": "ordenar",
+    "ordenas": "ordenar",
+    "classificar": "ordenar",
+    "classifica": "ordenar",
+    "classifique": "ordenar",
+    "organizar": "ordenar",
+    "organiza": "ordenar",
+    "organize": "ordenar",
+    "quais": "qual",
+    "ficheiros": "ficheiro",
+    "arquivo": "ficheiro",
+    "arquivos": "ficheiro",
+    "pastas": "pasta",
+    "diretorio": "pasta",
+    "diretorios": "pasta",
+    "directorio": "pasta",
+    "directorios": "pasta",
+    "imagens": "imagem",
+    "foto": "imagem",
+    "fotos": "imagem",
+    "fotografia": "imagem",
+    "fotografias": "imagem",
+    "videos": "video",
+    "filme": "video",
+    "filmes": "video",
+    "musicas": "musica",
+    "cancao": "musica",
+    "cancoes": "musica",
+    "audios": "audio",
+    "documentos": "documento",
+    "comprimidos": "comprimido",
+    "compactado": "comprimido",
+    "compactados": "comprimido",
+    "zipado": "comprimido",
+    "zipados": "comprimido",
+    "textos": "texto",
+    "temporarios": "temporario",
+    "temporaria": "temporario",
+    "temporarias": "temporario",
+    "backups": "backup",
+    "eliminacoes": "eliminacao",
+    "remocao": "eliminacao",
+    "supressao": "eliminacao",
+    "exclusao": "eliminacao",
+    "ultima": "ultimo",
+    "ultimos": "ultimo",
+    "ultimas": "ultimo",
+    "lixeira": "lixo",
+    "no": "em",
+    "na": "em",
+    "nos": "em",
+    "nas": "em",
+    "num": "em",
+    "numa": "em",
+    "pra": "para",
+    "chamada": "chamado",
+    "chamados": "chamado",
+    "chamadas": "chamado",
+    "excepto": "exceto"
+  },
+  "Gloss": {
+    "apagar": "delete",
+    "listar": "list",
+    "mostrar": "show",
+    "procurar": "find",
+    "criar": "create",
+    "copiar": "copy",
+    "mover": "move",
+    "renomear": "rename",
+    "libertar": "free",
+    "restaurar": "restore",
+    "desfazer": "undo",
+    "recuperar": "restore",
+    "ordenar": "sort",
+    "qual": "which",
+    "ficheiro": "file",
+    "pasta": "folder",
+    "tudo": "everything",
+    "imagem": "image",
+    "video": "video",
+    "musica": "music",
+    "audio": "audio",
+    "documento": "document",
+    "comprimido": "archive",
+    "texto": "text",
+    "temporario": "temporary",
+    "backup": "backup",
+    "multimedia": "media",
+    "espaco": "space",
+    "eliminacao": "deletion",
+    "ultimo": "last",
+    "lixo": "trash",
+    "reciclagem": "trash",
+    "em": "in",
+    "dentro": "inside",
+    "para": "to",
+    "antigo": "old",
+    "grande": "large",
+    "mais": "larger",
+    "menos": "smaller",
+    "chamado": "named",
+    "nome": "called",
+    "exceto": "except",
+    "excluindo": "excluding",
+    "salvo": "besides",
+    "sem": "except",
+    "e": "and",
+    "definitivamente": "permanently",
+    "permanentemente": "permanently"
+  },
+  "Rewrites": [
+    {
+      "Pattern": "(?i)\\bmais\\s+(?:antig[oa]s?|velh[oa]s?)\\s+(?:(?:do\\s+)?que|de)\\s+",
+      "Replacement": "com mais de "
+    },
+    {
+      "Pattern": "(?i)\\bmais\\s+(?:recentes?|nov[oa]s?)\\s+(?:(?:do\\s+)?que|de)\\s+",
+      "Replacement": "com menos de "
+    },
+    {
+      "Pattern": "(?i)\\b(?:maior(?:es)?|mais\\s+(?:pesad[oa]s?|volumos[oa]s?|grandes?))\\s+(?:(?:do\\s+)?que|de)\\s+",
+      "Replacement": "com mais de "
+    },
+    {
+      "Pattern": "(?i)\\b(?:menor(?:es)?|mais\\s+(?:pequen[oa]s?|leves?))\\s+(?:(?:do\\s+)?que|de)\\s+",
+      "Replacement": "com menos de "
+    },
+    {
+      "Pattern": "(?i)\\b(?:acima|al[eé]m)\\s+de\\s+(?=\\d)",
+      "Replacement": "com mais de "
+    },
+    {
+      "Pattern": "(?i)\\babaixo\\s+de\\s+(?=\\d)",
+      "Replacement": "com menos de "
+    },
+    {
+      "Pattern": "(?i)\\bh[aá]\\s+mais\\s+de\\s+",
+      "Replacement": "com mais de "
+    },
+    {
+      "Pattern": "(?i)\\bh[aá]\\s+menos\\s+de\\s+",
+      "Replacement": "com menos de "
+    },
+    {
+      "Pattern": "(?i)\\bpara\\s+sempre\\b",
+      "Replacement": "definitivamente"
+    },
+    {
+      "Pattern": "(?i)\\bsem\\s+tocar\\s+(?:n[oa]s?|em)\\s+",
+      "Replacement": "exceto os "
+    },
+    {
+      "Pattern": "(?i)\\bmud(?:a|e|ar|em)\\s+o\\s+nome\\s+(?:de|do|da|a|ao)\\s+",
+      "Replacement": "renomeia "
+    },
+    {
+      "Pattern": "(?i)(?<=\\b(?:ficheiros?|arquivos?|imagens?|fotos?|documentos?|v[ií]deos?)\\s+)(?:apagad|eliminad|exclu[ií]d|deletad|removid)[oa]s?\\b",
+      "Replacement": ""
+    },
+    {
+      "Pattern": "(?i)\\b(?:p[oõ]e|ponha|ponham|p[oô]r|coloca|coloque|coloquem|colocar|mete|meta|metam|meter)\\b(.*)\\b(?:em|n[oa]s?|dentro\\s+d[aeo]s?)\\s+(?!.*\\b(?:em|n[oa]s?|para)\\s)",
+      "Replacement": "move$1para "
+    },
+    {
+      "Pattern": "(?<=\\b\\p{Ll}{3,})-(?:me|te|nos|se|lhe)\\b",
+      "Replacement": ""
+    }
+  ],
+  "Folders": {
+    "ambiente de trabalho": "Desktop",
+    "area de trabalho": "Desktop",
+    "documentos": "MyDocuments",
+    "imagens": "MyPictures",
+    "musica": "MyMusic",
+    "videos": "MyVideos",
+    "transferencias": "Downloads"
+  },
+  "Category": {
+    "Title": "Ficheiros",
+    "Summary": "Procurar, copiar, mover, mudar o nome, limpar ficheiros e pastas, e libertar espaço.",
+    "Examples": [
+      "mostra os ficheiros com mais de 100 MB em C:\\Users",
+      "apaga os ficheiros .tmp com mais de 30 dias em C:\\Temp",
+      "move os ficheiros .log de C:\\Temp para D:\\Archive"
+    ]
+  },
+  "Types": {
+    "o": "Que ficheiros ou pastas?",
+    "d": "Em que pasta?",
+    "p": "Para onde?",
+    "c": "Em comparação com quê?",
+    "z": "Que tamanho?",
+    "t": "Que idade ou duração?",
+    "q": "Que nome deve ter?"
+  },
+  "Sorts": {
+    "o": {
+      "file": [
+        "ficheiro",
+        "imagem",
+        "video",
+        "musica",
+        "audio",
+        "documento",
+        "comprimido",
+        "texto",
+        "temporario",
+        "backup",
+        "multimedia"
+      ],
+      "folder": [
+        "pasta"
+      ]
+    }
+  },
+  "Entities": [
+    {
+      "Name": "path",
+      "Priority": 41,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:em|no|na|nos|nas|num|numa|para|de|do|da|dos|das|dentro\\s+d[aeo]s?)\\s+(?:(?:o|a|os|as|meu|minha|meus|minhas|tua|teu|tuas|teus)\\s+)?)(?:(?:pasta|diret[oó]rio|directorio)\\s+(?:d[aeo]s?\\s+)?)?(?<v>{folders})\\b(?![\\\\/.\\w])"
+    }
+  ],
+  "Units": {
+    "duration": {
+      "dia": 86400,
+      "dias": 86400,
+      "semana": 604800,
+      "semanas": 604800,
+      "mes": 2592000,
+      "meses": 2592000,
+      "ano": 31536000,
+      "anos": 31536000,
+      "hora": 3600,
+      "horas": 3600,
+      "minuto": 60,
+      "minutos": 60
+    },
+    "size": {
+      "gigas": 1073741824,
+      "gigabyte": 1073741824,
+      "gigabytes": 1073741824,
+      "megabyte": 1048576,
+      "megabytes": 1048576,
+      "megas": 1048576,
+      "kilobyte": 1024,
+      "kilobytes": 1024,
+      "terabyte": 1099511627776,
+      "terabytes": 1099511627776
+    }
+  },
+  "Orders": {
+    "mais recente": "newest",
+    "mais recentes": "newest",
+    "mais novo": "newest",
+    "mais novos": "newest",
+    "mais nova": "newest",
+    "mais novas": "newest",
+    "mais antigo": "oldest",
+    "mais antigos": "oldest",
+    "mais antiga": "oldest",
+    "mais antigas": "oldest",
+    "mais velho": "oldest",
+    "mais velhos": "oldest",
+    "mais velha": "oldest",
+    "mais velhas": "oldest",
+    "maior": "largest",
+    "maiores": "largest",
+    "mais pesado": "largest",
+    "mais pesados": "largest",
+    "mais pesada": "largest",
+    "mais pesadas": "largest",
+    "mais volumoso": "largest",
+    "mais volumosos": "largest",
+    "mais volumosa": "largest",
+    "mais volumosas": "largest",
+    "que ocupam mais espaco": "largest",
+    "que ocupa mais espaco": "largest",
+    "que ocupam menos espaco": "smallest",
+    "menor": "smallest",
+    "menores": "smallest",
+    "mais pequeno": "smallest",
+    "mais pequenos": "smallest",
+    "mais pequena": "smallest",
+    "mais pequenas": "smallest",
+    "mais leve": "smallest",
+    "mais leves": "smallest",
+    "por tamanho": "largest",
+    "por ordem de tamanho": "largest",
+    "por data": "newest",
+    "por ordem de data": "newest",
+    "do maior para o menor": "largest",
+    "do menor para o maior": "smallest",
+    "do maior ao menor": "largest",
+    "do menor ao maior": "smallest",
+    "do mais recente para o mais antigo": "newest",
+    "do mais antigo para o mais recente": "oldest",
+    "do mais recente ao mais antigo": "newest",
+    "do mais antigo ao mais recente": "oldest"
+  },
+  "Which": {
+    "Nouns": [
+      "ficheiro"
+    ],
+    "All": [
+      "todos",
+      "todas",
+      "tudo"
+    ],
+    "Question": "Que ficheiro exatamente? Diga o nome, ou diga o mais recente, o mais antigo, o maior ou o mais pequeno."
+  },
+  "Parameters": {
+    "Path": {
+      "After": [
+        "em",
+        "dentro"
+      ],
+      "Question": "Em que pasta?"
+    },
+    "Source": {
+      "After": [
+        "em",
+        "dentro"
+      ]
+    },
+    "Parent": {
+      "After": [
+        "em",
+        "dentro"
+      ]
+    },
+    "Destination": {
+      "After": [
+        "para"
+      ],
+      "Question": "Para onde?"
+    },
+    "OlderThan": {
+      "After": [
+        "mais"
+      ]
+    },
+    "NewerThan": {
+      "After": [
+        "menos"
+      ]
+    },
+    "MinSize": {
+      "After": [
+        "mais"
+      ]
+    },
+    "MaxSize": {
+      "After": [
+        "menos"
+      ]
+    },
+    "ExceptExtension": {
+      "After": [
+        "exceto",
+        "excluindo",
+        "salvo",
+        "sem"
+      ]
+    },
+    "ExceptKind": {
+      "After": [
+        "exceto",
+        "excluindo",
+        "salvo",
+        "sem"
+      ],
+      "Words": {
+        "imagem": "image",
+        "video": "video",
+        "musica": "audio",
+        "audio": "audio",
+        "documento": "document",
+        "comprimido": "compressed",
+        "texto": "text",
+        "temporario": "temporary",
+        "backup": "backup",
+        "multimedia": "media"
+      }
+    },
+    "ExceptName": {
+      "After": [
+        "exceto",
+        "excluindo",
+        "salvo",
+        "sem"
+      ]
+    },
+    "Kind": {
+      "Words": {
+        "imagem": "image",
+        "video": "video",
+        "musica": "audio",
+        "audio": "audio",
+        "documento": "document",
+        "comprimido": "compressed",
+        "texto": "text",
+        "temporario": "temporary",
+        "backup": "backup",
+        "multimedia": "media"
+      }
+    },
+    "Permanent": {
+      "Words": {
+        "definitivamente": "yes",
+        "permanentemente": "yes"
+      }
+    },
+    "Order": {
+      "Question": "Quais: os mais recentes, os mais antigos, os maiores ou os mais pequenos?"
+    },
+    "Count": {
+      "Question": "Quantos?"
+    }
+  },
+  "Actions": {
+    "files.delete": {
+      "Title": "Apagar ficheiros ou pastas",
+      "Verbs": [
+        "apagar"
+      ],
+      "Examples": [
+        "apagar ficheiros",
+        "apagar os ficheiros antigos numa pasta",
+        "elimina os ficheiros log",
+        "apaga uma pasta",
+        "excluir os arquivos"
+      ],
+      "Note": [
+        "!Permanent Ficam 30 dias no lixo do Lambek: diga «restaura-os» para os repor."
+      ],
+      "Say": [
+        "apagar",
+        "?Permanent definitivamente",
+        "?Count=1 !Kind o ficheiro",
+        "?Count=1 ?Kind=imagem a imagem",
+        "?Count=1 ?Kind=video o vídeo",
+        "?Count=1 ?Kind=documento o documento",
+        "?Count=1 ?Kind=audio o ficheiro de áudio",
+        "?Count=1 ?Kind=texto o ficheiro de texto",
+        "?Count=1 ?Kind=temporario o ficheiro temporário",
+        "?Count=1 ?Kind=backup o ficheiro de backup",
+        "?Count=1 ?Kind=comprimido o ficheiro comprimido",
+        "?Count=1 ?Kind=multimedia o ficheiro multimédia",
+        "!Count=1 !Kind=imagem os",
+        "!Count=1 ?Kind=imagem as",
+        "!Count=1 ?Count {Count}",
+        "!Count=1 !Kind ficheiros",
+        "!Count=1 ?Kind {Kind}",
+        "?Extension {Extension}",
+        "?Count=1 ?Order=newest mais recente",
+        "?Count=1 ?Order=oldest !Kind=imagem mais antigo",
+        "?Count=1 ?Order=oldest ?Kind=imagem mais antiga",
+        "?Count=1 ?Order=largest maior",
+        "?Count=1 ?Order=smallest !Kind=imagem mais pequeno",
+        "?Count=1 ?Order=smallest ?Kind=imagem mais pequena",
+        "!Count=1 ?Order !Kind=imagem {Order}",
+        "!Count=1 ?Order=newest ?Kind=imagem mais recentes",
+        "!Count=1 ?Order=oldest ?Kind=imagem mais antigas",
+        "!Count=1 ?Order=largest ?Kind=imagem maiores",
+        "!Count=1 ?Order=smallest ?Kind=imagem mais pequenas",
+        "?Name com o nome {Name}",
+        "?OlderThan com mais de {OlderThan}",
+        "?NewerThan com menos de {NewerThan}",
+        "?MinSize com mais de {MinSize}",
+        "?MaxSize com menos de {MaxSize}",
+        "em {Path}",
+        "?ExceptExtension exceto os ficheiros {ExceptExtension}",
+        "?ExceptKind !ExceptKind=imagem exceto os {ExceptKind}",
+        "?ExceptKind=imagem exceto as imagens",
+        "?ExceptName exceto {ExceptName}"
+      ]
+    },
+    "files.list": {
+      "Title": "Listar ou procurar ficheiros",
+      "Verbs": [
+        "listar",
+        "mostrar",
+        "procurar",
+        "qual",
+        "ordenar"
+      ],
+      "Examples": [
+        "listar os ficheiros",
+        "mostrar os ficheiros numa pasta",
+        "procurar os ficheiros grandes",
+        "encontra ficheiros",
+        "ordenar os ficheiros por tamanho numa pasta"
+      ],
+      "Say": [
+        "listar",
+        "?Count=1 !Kind o ficheiro",
+        "?Count=1 ?Kind=imagem a imagem",
+        "?Count=1 ?Kind=video o vídeo",
+        "?Count=1 ?Kind=documento o documento",
+        "?Count=1 ?Kind=audio o ficheiro de áudio",
+        "?Count=1 ?Kind=texto o ficheiro de texto",
+        "?Count=1 ?Kind=temporario o ficheiro temporário",
+        "?Count=1 ?Kind=backup o ficheiro de backup",
+        "?Count=1 ?Kind=comprimido o ficheiro comprimido",
+        "?Count=1 ?Kind=multimedia o ficheiro multimédia",
+        "!Count=1 !Kind=imagem os",
+        "!Count=1 ?Kind=imagem as",
+        "!Count=1 ?Count {Count}",
+        "!Count=1 !Kind ficheiros",
+        "!Count=1 ?Kind {Kind}",
+        "?Extension {Extension}",
+        "?Count=1 ?Order=newest mais recente",
+        "?Count=1 ?Order=oldest !Kind=imagem mais antigo",
+        "?Count=1 ?Order=oldest ?Kind=imagem mais antiga",
+        "?Count=1 ?Order=largest maior",
+        "?Count=1 ?Order=smallest !Kind=imagem mais pequeno",
+        "?Count=1 ?Order=smallest ?Kind=imagem mais pequena",
+        "!Count=1 ?Order !Kind=imagem {Order}",
+        "!Count=1 ?Order=newest ?Kind=imagem mais recentes",
+        "!Count=1 ?Order=oldest ?Kind=imagem mais antigas",
+        "!Count=1 ?Order=largest ?Kind=imagem maiores",
+        "!Count=1 ?Order=smallest ?Kind=imagem mais pequenas",
+        "?Name com o nome {Name}",
+        "?OlderThan com mais de {OlderThan}",
+        "?NewerThan com menos de {NewerThan}",
+        "?MinSize com mais de {MinSize}",
+        "?MaxSize com menos de {MaxSize}",
+        "?Path em {Path}",
+        "?ExceptExtension exceto os ficheiros {ExceptExtension}",
+        "?ExceptKind !ExceptKind=imagem exceto os {ExceptKind}",
+        "?ExceptKind=imagem exceto as imagens",
+        "?ExceptName exceto {ExceptName}"
+      ]
+    },
+    "files.copy": {
+      "Title": "Copiar ficheiros",
+      "Verbs": [
+        "copiar"
+      ],
+      "Examples": [
+        "copiar os ficheiros para uma pasta",
+        "copiar um ficheiro",
+        "copia as imagens para outra pasta"
+      ],
+      "Say": [
+        "copiar",
+        "?Count=1 !Kind o ficheiro",
+        "?Count=1 ?Kind=imagem a imagem",
+        "?Count=1 ?Kind=video o vídeo",
+        "?Count=1 ?Kind=documento o documento",
+        "?Count=1 ?Kind=audio o ficheiro de áudio",
+        "?Count=1 ?Kind=texto o ficheiro de texto",
+        "?Count=1 ?Kind=temporario o ficheiro temporário",
+        "?Count=1 ?Kind=backup o ficheiro de backup",
+        "?Count=1 ?Kind=comprimido o ficheiro comprimido",
+        "?Count=1 ?Kind=multimedia o ficheiro multimédia",
+        "!Count=1 !Kind=imagem os",
+        "!Count=1 ?Kind=imagem as",
+        "!Count=1 ?Count {Count}",
+        "!Count=1 !Kind ficheiros",
+        "!Count=1 ?Kind {Kind}",
+        "?Extension {Extension}",
+        "?Count=1 ?Order=newest mais recente",
+        "?Count=1 ?Order=oldest !Kind=imagem mais antigo",
+        "?Count=1 ?Order=oldest ?Kind=imagem mais antiga",
+        "?Count=1 ?Order=largest maior",
+        "?Count=1 ?Order=smallest !Kind=imagem mais pequeno",
+        "?Count=1 ?Order=smallest ?Kind=imagem mais pequena",
+        "!Count=1 ?Order !Kind=imagem {Order}",
+        "!Count=1 ?Order=newest ?Kind=imagem mais recentes",
+        "!Count=1 ?Order=oldest ?Kind=imagem mais antigas",
+        "!Count=1 ?Order=largest ?Kind=imagem maiores",
+        "!Count=1 ?Order=smallest ?Kind=imagem mais pequenas",
+        "?Name com o nome {Name}",
+        "?OlderThan com mais de {OlderThan}",
+        "?NewerThan com menos de {NewerThan}",
+        "?MinSize com mais de {MinSize}",
+        "?MaxSize com menos de {MaxSize}",
+        "?Source de {Source}",
+        "para {Destination}",
+        "?ExceptExtension exceto os ficheiros {ExceptExtension}",
+        "?ExceptKind !ExceptKind=imagem exceto os {ExceptKind}",
+        "?ExceptKind=imagem exceto as imagens",
+        "?ExceptName exceto {ExceptName}"
+      ],
+      "RequireOneOf": "De que pasta?"
+    },
+    "files.move": {
+      "Title": "Mover ficheiros",
+      "Verbs": [
+        "mover"
+      ],
+      "Examples": [
+        "mover os ficheiros para uma pasta",
+        "mover um ficheiro",
+        "move as fotos para outra pasta",
+        "transfere os documentos para uma pasta"
+      ],
+      "Say": [
+        "mover",
+        "?Count=1 !Kind o ficheiro",
+        "?Count=1 ?Kind=imagem a imagem",
+        "?Count=1 ?Kind=video o vídeo",
+        "?Count=1 ?Kind=documento o documento",
+        "?Count=1 ?Kind=audio o ficheiro de áudio",
+        "?Count=1 ?Kind=texto o ficheiro de texto",
+        "?Count=1 ?Kind=temporario o ficheiro temporário",
+        "?Count=1 ?Kind=backup o ficheiro de backup",
+        "?Count=1 ?Kind=comprimido o ficheiro comprimido",
+        "?Count=1 ?Kind=multimedia o ficheiro multimédia",
+        "!Count=1 !Kind=imagem os",
+        "!Count=1 ?Kind=imagem as",
+        "!Count=1 ?Count {Count}",
+        "!Count=1 !Kind ficheiros",
+        "!Count=1 ?Kind {Kind}",
+        "?Extension {Extension}",
+        "?Count=1 ?Order=newest mais recente",
+        "?Count=1 ?Order=oldest !Kind=imagem mais antigo",
+        "?Count=1 ?Order=oldest ?Kind=imagem mais antiga",
+        "?Count=1 ?Order=largest maior",
+        "?Count=1 ?Order=smallest !Kind=imagem mais pequeno",
+        "?Count=1 ?Order=smallest ?Kind=imagem mais pequena",
+        "!Count=1 ?Order !Kind=imagem {Order}",
+        "!Count=1 ?Order=newest ?Kind=imagem mais recentes",
+        "!Count=1 ?Order=oldest ?Kind=imagem mais antigas",
+        "!Count=1 ?Order=largest ?Kind=imagem maiores",
+        "!Count=1 ?Order=smallest ?Kind=imagem mais pequenas",
+        "?Name com o nome {Name}",
+        "?OlderThan com mais de {OlderThan}",
+        "?NewerThan com menos de {NewerThan}",
+        "?MinSize com mais de {MinSize}",
+        "?MaxSize com menos de {MaxSize}",
+        "?Source de {Source}",
+        "para {Destination}",
+        "?ExceptExtension exceto os ficheiros {ExceptExtension}",
+        "?ExceptKind !ExceptKind=imagem exceto os {ExceptKind}",
+        "?ExceptKind=imagem exceto as imagens",
+        "?ExceptName exceto {ExceptName}"
+      ],
+      "RequireOneOf": "De que pasta?"
+    },
+    "files.rename": {
+      "Title": "Mudar o nome de um ficheiro",
+      "Verbs": [
+        "renomear"
+      ],
+      "Examples": [
+        "renomear um ficheiro",
+        "renomear o ficheiro para um novo nome",
+        "renomeia o ficheiro para"
+      ],
+      "Parameters": {
+        "NewName": {
+          "After": [
+            "para"
+          ],
+          "Question": "Qual é o novo nome?"
+        },
+        "Name": {
+          "Question": "Que ficheiro?"
+        }
+      },
+      "Say": [
+        "renomear {Name} para {NewName}"
+      ]
+    },
+    "files.create": {
+      "Title": "Criar um ficheiro ou uma pasta",
+      "Verbs": [
+        "criar"
+      ],
+      "Examples": [
+        "criar uma pasta",
+        "criar um ficheiro novo numa pasta",
+        "cria uma pasta chamada",
+        "criar uma pasta com o nome"
+      ],
+      "RequireOneOf": "Que nome deve ter?",
+      "Parameters": {
+        "Kind": {
+          "Words": {
+            "ficheiro": "File",
+            "pasta": "Directory"
+          },
+          "Question": "Um ficheiro ou uma pasta?"
+        },
+        "Name": {
+          "After": [
+            "chamado",
+            "nome"
+          ]
+        }
+      },
+      "Say": [
+        "criar",
+        "?Path ?Kind=ficheiro o ficheiro {Path}",
+        "?Path ?Kind=pasta a pasta {Path}",
+        "!Path ?Name ?Kind=ficheiro um ficheiro chamado {Name} em {Parent}",
+        "!Path ?Name ?Kind=pasta uma pasta chamada {Name} em {Parent}"
+      ]
+    },
+    "files.free": {
+      "Title": "Libertar espaço em disco",
+      "Verbs": [
+        "libertar"
+      ],
+      "Examples": [
+        "libertar espaco",
+        "libertar 10 GB numa pasta",
+        "liberar espaco em disco"
+      ],
+      "Uses": [
+        "espaco"
+      ],
+      "Note": "Os ficheiros maiores saem primeiro, para apagar o menor número possível.",
+      "Parameters": {
+        "FreeSize": {
+          "Question": "Quanto espaço?"
+        }
+      },
+      "Say": [
+        "libertar {FreeSize} em {Path}",
+        "?Extension nos ficheiros {Extension}",
+        "?Kind nos {Kind}",
+        "?OlderThan com mais de {OlderThan}",
+        "?ExceptExtension , exceto os ficheiros {ExceptExtension}",
+        "?ExceptKind !ExceptKind=imagem , exceto os {ExceptKind}",
+        "?ExceptKind=imagem , exceto as imagens",
+        "?ExceptName , exceto {ExceptName}"
+      ]
+    },
+    "files.restore": {
+      "Title": "Restaurar ficheiros apagados",
+      "Verbs": [
+        "restaurar",
+        "desfazer",
+        "recuperar"
+      ],
+      "Examples": [
+        "restaurar os ficheiros apagados",
+        "restaurar os ficheiros",
+        "desfazer a ultima eliminacao",
+        "recuperar os ficheiros do lixo"
+      ],
+      "Uses": [
+        "eliminacao",
+        "ultimo",
+        "lixo",
+        "reciclagem"
+      ],
+      "Note": "Cada ficheiro volta para a pasta de onde foi apagado.",
+      "Say": [
+        "restaurar os últimos ficheiros apagados",
+        "?Extension ({Extension})",
+        "?Kind ({Kind})",
+        "?Name ({Name})"
+      ]
+    }
+  },
+  "Methods": {
+    "clean": {
+      "Words": [
+        "limpa",
+        "limpar",
+        "limpe"
+      ],
+      "Steps": [
+        "apaga os ficheiros temporários em {Path}",
+        "apaga as cópias de segurança com mais de 30 dias em {Path}"
+      ]
+    }
+  }
+}

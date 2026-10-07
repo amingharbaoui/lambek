@@ -1,0 +1,985 @@
+{
+  "Language": "nl",
+  "Words": {
+    "verwijder": [
+      "s o^l"
+    ],
+    "verwijderen": [
+      "s o^l",
+      "o^r s"
+    ],
+    "toon": [
+      "s o^l"
+    ],
+    "tonen": [
+      "s o^l",
+      "o^r s"
+    ],
+    "zoek": [
+      "s o^l"
+    ],
+    "zoeken": [
+      "s o^l",
+      "o^r s"
+    ],
+    "sorteer": [
+      "s o^l"
+    ],
+    "sorteren": [
+      "s o^l",
+      "o^r s"
+    ],
+    "welk": [
+      "s o^l"
+    ],
+    "maak": [
+      "s o^l"
+    ],
+    "maken": [
+      "s o^l",
+      "o^r s"
+    ],
+    "kopieer": [
+      "s p^l o^l"
+    ],
+    "kopieren": [
+      "s p^l o^l",
+      "p^r o^r s",
+      "o^r s p^l"
+    ],
+    "verplaats": [
+      "s p^l o^l"
+    ],
+    "verplaatsen": [
+      "s p^l o^l",
+      "p^r o^r s",
+      "o^r s p^l"
+    ],
+    "hernoem": [
+      "s p^l o^l"
+    ],
+    "hernoemen": [
+      "s p^l o^l",
+      "p^r o^r s",
+      "o^r s p^l"
+    ],
+    "vrijmaken": [
+      "s o^l",
+      "o^r s"
+    ],
+    "herstel": [
+      "s o^l",
+      "s"
+    ],
+    "herstellen": [
+      "s o^l",
+      "o^r s",
+      "s"
+    ],
+    "bestand": [
+      "o"
+    ],
+    "map": [
+      "o"
+    ],
+    "alles": [
+      "o"
+    ],
+    "afbeelding": [
+      "o"
+    ],
+    "foto": [
+      "o"
+    ],
+    "plaatje": [
+      "o"
+    ],
+    "media": [
+      "o"
+    ],
+    "video": [
+      "o"
+    ],
+    "film": [
+      "o"
+    ],
+    "muziek": [
+      "o"
+    ],
+    "liedje": [
+      "o"
+    ],
+    "audio": [
+      "o"
+    ],
+    "document": [
+      "o"
+    ],
+    "archief": [
+      "o"
+    ],
+    "tekst": [
+      "o"
+    ],
+    "tijdelijk": [
+      "o o^l",
+      "o"
+    ],
+    "backup": [
+      "o o^l",
+      "o"
+    ],
+    "ruimte": [
+      "o^r o",
+      "o"
+    ],
+    "verwijdering": [
+      "o"
+    ],
+    "prullenbak": [
+      "o"
+    ],
+    "in": [
+      "o^r o d^l",
+      "s s^l d^l",
+      "s^r s d^l"
+    ],
+    "op": [
+      "o^r o d^l",
+      "s s^l d^l",
+      "s^r s d^l"
+    ],
+    "onder": [
+      "o^r o d^l"
+    ],
+    "naar": [
+      "p d^l",
+      "p q^l"
+    ],
+    "oud": [
+      "o o^l",
+      "o^r o c^l",
+      "o^r o"
+    ],
+    "nieuw": [
+      "o o^l",
+      "o^r o c^l"
+    ],
+    "groot": [
+      "o o^l"
+    ],
+    "groter": [
+      "o^r o c^l"
+    ],
+    "kleiner": [
+      "o^r o c^l"
+    ],
+    "meer": [
+      "o^r o c^l"
+    ],
+    "minder": [
+      "o^r o c^l"
+    ],
+    "dan": [
+      "c z^l",
+      "c t^l"
+    ],
+    "genaamd": [
+      "o^r o q^l"
+    ],
+    "behalve": [
+      "o^r o o^l",
+      "s^r s o^l"
+    ],
+    "uitgezonderd": [
+      "o^r o o^l",
+      "s^r s o^l"
+    ],
+    "en": [
+      "o^r o o^l"
+    ],
+    "definitief": [
+      "o o^l",
+      "o^r o",
+      "s^r s",
+      "s s^l"
+    ],
+    "laatst": [
+      "o o^l",
+      "o^r o"
+    ]
+  },
+  "BaseForms": {
+    "verwijdert": "verwijder",
+    "wis": "verwijder",
+    "wist": "verwijder",
+    "wissen": "verwijderen",
+    "gooi": "verwijder",
+    "weggooien": "verwijderen",
+    "schrap": "verwijder",
+    "schrappen": "verwijderen",
+    "deleten": "verwijderen",
+    "verwijdere": "verwijder",
+    "toont": "toon",
+    "geef": "toon",
+    "weergeven": "tonen",
+    "lijst": "toon",
+    "oplijsten": "tonen",
+    "opsommen": "tonen",
+    "som": "toon",
+    "bekijk": "toon",
+    "bekijken": "tonen",
+    "laten": "tonen",
+    "zoekt": "zoek",
+    "vind": "zoek",
+    "vinden": "zoeken",
+    "opzoeken": "zoeken",
+    "doorzoek": "zoek",
+    "doorzoeken": "zoeken",
+    "sorteert": "sorteer",
+    "rangschik": "sorteer",
+    "rangschikken": "sorteren",
+    "orden": "sorteer",
+    "ordenen": "sorteren",
+    "welke": "welk",
+    "maakt": "maak",
+    "creeer": "maak",
+    "creeren": "maken",
+    "aanmaken": "maken",
+    "kopieert": "kopieer",
+    "dupliceer": "kopieer",
+    "dupliceren": "kopieren",
+    "verplaatst": "verplaats",
+    "breng": "verplaats",
+    "brengen": "verplaatsen",
+    "verschuif": "verplaats",
+    "verschuiven": "verplaatsen",
+    "verhuis": "verplaats",
+    "verhuizen": "verplaatsen",
+    "hernoemt": "hernoem",
+    "herbenoem": "hernoem",
+    "herstelt": "herstel",
+    "terugzetten": "herstellen",
+    "terughalen": "herstellen",
+    "recupereer": "herstel",
+    "recupereren": "herstellen",
+    "bestanden": "bestand",
+    "mappen": "map",
+    "folder": "map",
+    "folders": "map",
+    "mapje": "map",
+    "afbeeldingen": "afbeelding",
+    "fotos": "foto",
+    "plaatjes": "plaatje",
+    "prentjes": "plaatje",
+    "prentje": "plaatje",
+    "videos": "video",
+    "films": "film",
+    "filmpje": "film",
+    "filmpjes": "film",
+    "liedjes": "liedje",
+    "muziekbestand": "muziek",
+    "muziekbestanden": "muziek",
+    "audiobestand": "audio",
+    "audiobestanden": "audio",
+    "videobestand": "video",
+    "videobestanden": "video",
+    "fotobestanden": "foto",
+    "afbeeldingsbestanden": "afbeelding",
+    "beeldbestanden": "afbeelding",
+    "mediabestand": "media",
+    "mediabestanden": "media",
+    "multimedia": "media",
+    "documenten": "document",
+    "archieven": "archief",
+    "teksten": "tekst",
+    "tekstbestand": "tekst",
+    "tekstbestanden": "tekst",
+    "tijdelijke": "tijdelijk",
+    "backups": "backup",
+    "backupbestand": "backup",
+    "backupbestanden": "backup",
+    "reservekopie": "backup",
+    "reservekopieen": "backup",
+    "schijfruimte": "ruimte",
+    "opslagruimte": "ruimte",
+    "verwijderingen": "verwijdering",
+    "prullenmand": "prullenbak",
+    "vuilbak": "prullenbak",
+    "laatste": "laatst",
+    "geheten": "genaamd",
+    "getiteld": "genaamd",
+    "permanent": "definitief",
+    "voorgoed": "definitief",
+    "definitieve": "definitief"
+  },
+  "Gloss": {
+    "verwijder": "delete",
+    "verwijderen": "delete",
+    "toon": "show",
+    "tonen": "show",
+    "zoek": "find",
+    "zoeken": "find",
+    "sorteer": "sort",
+    "sorteren": "sort",
+    "welk": "which",
+    "maak": "create",
+    "maken": "create",
+    "kopieer": "copy",
+    "kopieren": "copy",
+    "verplaats": "move",
+    "verplaatsen": "move",
+    "hernoem": "rename",
+    "hernoemen": "rename",
+    "vrijmaken": "free",
+    "herstel": "restore",
+    "herstellen": "restore",
+    "bestand": "file",
+    "map": "folder",
+    "alles": "everything",
+    "afbeelding": "image",
+    "foto": "photo",
+    "plaatje": "picture",
+    "media": "media",
+    "video": "video",
+    "film": "video",
+    "muziek": "music",
+    "liedje": "song",
+    "audio": "audio",
+    "document": "document",
+    "archief": "archive",
+    "tekst": "text",
+    "tijdelijk": "temporary",
+    "backup": "backup",
+    "ruimte": "space",
+    "verwijdering": "deletion",
+    "prullenbak": "trash",
+    "in": "in",
+    "op": "on",
+    "onder": "under",
+    "naar": "to",
+    "oud": "old",
+    "nieuw": "new",
+    "groot": "large",
+    "groter": "larger",
+    "kleiner": "smaller",
+    "meer": "larger",
+    "minder": "smaller",
+    "dan": "than",
+    "genaamd": "named",
+    "behalve": "except",
+    "uitgezonderd": "excluding",
+    "en": "and",
+    "definitief": "permanently",
+    "laatst": "last"
+  },
+  "Rewrites": [
+    {
+      "Pattern": "(?i)\\b(pdf|mp3|mp4|jpe?g|png|gif|zip|rar|7z|docx?|xlsx?|pptx?|txt|log|tmp|csv|bak|iso|exe|mkv|avi|mov|wav|svg|heic)['’]s\\b",
+      "Replacement": "$1 bestanden"
+    },
+    {
+      "Pattern": "(?i)\\b(foto|video|audio|memo|logo|demo)['’]s\\b",
+      "Replacement": "$1s"
+    },
+    {
+      "Pattern": "(?i)\\bback-?up",
+      "Replacement": "backup"
+    },
+    {
+      "Pattern": "(?i)(?<=(?:^|[\\s.])[a-z0-9]{2,10})-(?=(?:bestand|bestanden|document|documenten|map|mappen|foto|fotos|afbeelding|afbeeldingen|video|videos|functie|functies|script|scripts|klasse|module|test)\\b)",
+      "Replacement": " "
+    },
+    {
+      "Pattern": "(?i)\\b(log|pdf|txt|tmp|zip|csv|mp3|mp4|jpg|png|exe|iso|bak)(bestand(?:en)?)\\b",
+      "Replacement": "$1 $2"
+    },
+    {
+      "Pattern": "(?i)\\b(?:verwijderde|gewiste|weggegooide)\\s+(?=(?:bestand|foto|afbeelding|document|video|map)\\w*)",
+      "Replacement": ""
+    },
+    {
+      "Pattern": "(?i)\\bmet\\s+uitzondering\\s+van\\b",
+      "Replacement": "behalve"
+    },
+    {
+      "Pattern": "(?i)\\bmaar\\s+niet\\b",
+      "Replacement": "behalve"
+    },
+    {
+      "Pattern": "(?i)\\bmet\\s+(?:de\\s+)?naam\\b",
+      "Replacement": "genaamd"
+    },
+    {
+      "Pattern": "(?i)\\b(?:zet|haal)\\b(.*?)\\bterug\\b",
+      "Replacement": "herstel$1"
+    },
+    {
+      "Pattern": "(?i)\\ben\\s+zet\\s+(?:ze|het|die|deze)\\s+(?:in|op)\\b",
+      "Replacement": "naar"
+    },
+    {
+      "Pattern": "(?i)\\bzet\\b(.*)\\b(?:in|op)\\b(?!.*\\b(?:in|op|naar)\\b)",
+      "Replacement": "verplaats$1naar"
+    },
+    {
+      "Pattern": "(?i)\\bmaak\\b(.*?)\\bvrij\\b",
+      "Replacement": "vrijmaken$1"
+    },
+    {
+      "Pattern": "(?i)\\bvrij\\s+maken\\b",
+      "Replacement": "vrijmaken"
+    },
+    {
+      "Pattern": "(?i)\\bmaak\\b(.*?)\\bongedaan\\b",
+      "Replacement": "herstel$1"
+    },
+    {
+      "Pattern": "(?i)\\bongedaan\\s+maken\\b",
+      "Replacement": "herstellen"
+    },
+    {
+      "Pattern": "(?i)\\b(?:wijzig|verander)\\s+de\\s+naam\\s+van\\s+(.+?)\\s+in\\s+",
+      "Replacement": "hernoem $1 naar "
+    },
+    {
+      "Pattern": "(?i)\\blaat\\s+(?:me\\s+|mij\\s+)?(.+?)\\s+zien\\b",
+      "Replacement": "toon $1"
+    }
+  ],
+  "Folders": {
+    "bureaublad": "Desktop",
+    "documenten": "MyDocuments",
+    "afbeeldingen": "MyPictures",
+    "muziek": "MyMusic",
+    "videos": "MyVideos",
+    "downloads": "Downloads"
+  },
+  "Category": {
+    "Title": "Bestanden",
+    "Summary": "Bestanden en mappen zoeken, kopiëren, verplaatsen, hernoemen, opruimen, en schijfruimte vrijmaken.",
+    "Examples": [
+      "toon de bestanden groter dan 100 MB in C:\\Users",
+      "verwijder de .tmp-bestanden ouder dan 30 dagen in C:\\Temp",
+      "verplaats de .log-bestanden in C:\\Temp naar D:\\Archive"
+    ]
+  },
+  "Types": {
+    "o": "Welke bestanden of mappen?",
+    "d": "In welke map?",
+    "p": "Waarheen?",
+    "c": "Vergeleken met wat?",
+    "z": "Welke grootte?",
+    "t": "Welke ouderdom of duur?",
+    "q": "Welke naam moet het krijgen?"
+  },
+  "Sorts": {
+    "o": {
+      "file": [
+        "bestand",
+        "afbeelding",
+        "foto",
+        "plaatje",
+        "video",
+        "film",
+        "muziek",
+        "liedje",
+        "audio",
+        "document",
+        "archief",
+        "tekst",
+        "tijdelijk",
+        "backup",
+        "media"
+      ],
+      "folder": [
+        "map"
+      ]
+    }
+  },
+  "Entities": [
+    {
+      "Name": "path",
+      "Priority": 41,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:in|op|onder|naar|van|uit|vanuit|binnen)\\s+(?:(?:de|het|mijn|m['’]n)\\s+)?)(?:(?:map|folder)\\s+)?(?<v>{folders})\\b(?![\\\\/.\\w])"
+    },
+    {
+      "Name": "path",
+      "Priority": 44,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:mijn|m['’]n)\\s+)(?:(?:map|folder)\\s+)?(?<v>{folders})\\b(?![\\\\/.\\w])"
+    },
+    {
+      "Name": "extension",
+      "Priority": 72,
+      "Kind": "extension",
+      "Pattern": "(?i)(?:(?<![\\w.\\\\/:])(?<v>(?=[a-z0-9]*[a-z])[a-z0-9]{2,5})(?=\\s+(?:bestand(?:en)?|documenten?)\\b)|(?<=\\b(?:bestand(?:en)?|documenten?|de|alle|mijn|die|deze|behalve)\\s+)(?<v>(?=[a-z0-9]*[a-z])[a-z0-9]{2,5})(?![\\w.\\\\/:@-]))"
+    }
+  ],
+  "Units": {
+    "duration": {
+      "dag": 86400,
+      "dagen": 86400,
+      "week": 604800,
+      "weken": 604800,
+      "maand": 2592000,
+      "maanden": 2592000,
+      "jaar": 31536000,
+      "jaren": 31536000,
+      "uur": 3600,
+      "uren": 3600,
+      "minuut": 60,
+      "minuten": 60
+    },
+    "size": {
+      "kilobyte": 1024,
+      "kilobytes": 1024,
+      "megabyte": 1048576,
+      "megabytes": 1048576,
+      "gigabyte": 1073741824,
+      "gigabytes": 1073741824,
+      "terabyte": 1099511627776
+    }
+  },
+  "Orders": {
+    "nieuwste": "newest",
+    "recentste": "newest",
+    "meest recente": "newest",
+    "jongste": "newest",
+    "oudste": "oldest",
+    "grootste": "largest",
+    "zwaarste": "largest",
+    "dikste": "largest",
+    "kleinste": "smallest",
+    "lichtste": "smallest",
+    "op grootte": "largest",
+    "op datum": "newest",
+    "van groot naar klein": "largest",
+    "van klein naar groot": "smallest",
+    "van nieuw naar oud": "newest",
+    "van oud naar nieuw": "oldest",
+    "meeste ruimte": "largest",
+    "de meeste ruimte": "largest",
+    "minste ruimte": "smallest",
+    "de minste ruimte": "smallest",
+    "meeste plaats": "largest",
+    "de meeste plaats": "largest"
+  },
+  "Which": {
+    "Nouns": [
+      "bestand"
+    ],
+    "All": [
+      "alle",
+      "allemaal",
+      "alles",
+      "elk",
+      "elke",
+      "ieder",
+      "iedere"
+    ],
+    "Question": "Welk bestand precies? Geef de naam, of zeg de nieuwste, oudste, grootste of kleinste."
+  },
+  "Parameters": {
+    "Path": {
+      "After": [
+        "in",
+        "op",
+        "onder"
+      ],
+      "Question": "In welke map?"
+    },
+    "Source": {
+      "After": [
+        "in",
+        "op",
+        "onder"
+      ]
+    },
+    "Parent": {
+      "After": [
+        "in",
+        "op",
+        "onder"
+      ]
+    },
+    "Destination": {
+      "After": [
+        "naar"
+      ],
+      "Question": "Naar welke map?"
+    },
+    "OlderThan": {
+      "After": [
+        "oud",
+        "ouder",
+        "meer"
+      ]
+    },
+    "NewerThan": {
+      "After": [
+        "nieuw",
+        "nieuwer",
+        "minder"
+      ]
+    },
+    "MinSize": {
+      "After": [
+        "groter",
+        "meer"
+      ]
+    },
+    "MaxSize": {
+      "After": [
+        "kleiner",
+        "minder"
+      ]
+    },
+    "ExceptExtension": {
+      "After": [
+        "behalve",
+        "uitgezonderd"
+      ]
+    },
+    "ExceptKind": {
+      "After": [
+        "behalve",
+        "uitgezonderd"
+      ],
+      "Words": {
+        "afbeelding": "image",
+        "foto": "image",
+        "plaatje": "image",
+        "media": "media",
+        "video": "video",
+        "film": "video",
+        "muziek": "audio",
+        "liedje": "audio",
+        "audio": "audio",
+        "document": "document",
+        "archief": "compressed",
+        "tekst": "text",
+        "tijdelijk": "temporary",
+        "backup": "backup"
+      }
+    },
+    "ExceptName": {
+      "After": [
+        "behalve",
+        "uitgezonderd"
+      ]
+    },
+    "Kind": {
+      "Words": {
+        "afbeelding": "image",
+        "foto": "image",
+        "plaatje": "image",
+        "media": "media",
+        "video": "video",
+        "film": "video",
+        "muziek": "audio",
+        "liedje": "audio",
+        "audio": "audio",
+        "document": "document",
+        "archief": "compressed",
+        "tekst": "text",
+        "tijdelijk": "temporary",
+        "backup": "backup"
+      }
+    },
+    "Permanent": {
+      "Words": {
+        "definitief": "yes"
+      }
+    },
+    "Order": {
+      "Question": "Welke: de nieuwste, oudste, grootste of kleinste?"
+    },
+    "Count": {
+      "Question": "Hoeveel?"
+    },
+    "FreeSize": {
+      "Question": "Hoeveel ruimte?"
+    }
+  },
+  "Actions": {
+    "files.delete": {
+      "Title": "Bestanden of mappen verwijderen",
+      "Verbs": [
+        "verwijder",
+        "verwijderen"
+      ],
+      "Examples": [
+        "verwijder de bestanden",
+        "verwijder de oude bestanden in een map",
+        "verwijder de logbestanden",
+        "wis een map",
+        "bestanden verwijderen"
+      ],
+      "Say": [
+        "?Count=1 het",
+        "!Count=1 de",
+        "!Count=1 ?Count {Count}",
+        "?Order {Order}",
+        "?Count=1 ?Extension {Extension}-bestand",
+        "?Count=1 !Extension bestand",
+        "?Count=1 ?Kind van de {Kind}",
+        "!Count=1 ?Extension !Kind {Extension}-bestanden",
+        "!Count=1 ?Extension ?Kind {Kind} {Extension}",
+        "!Count=1 !Extension !Kind bestanden",
+        "!Count=1 !Extension ?Kind {Kind}",
+        "?Name genaamd {Name}",
+        "?OlderThan ouder dan {OlderThan}",
+        "?NewerThan nieuwer dan {NewerThan}",
+        "?MinSize groter dan {MinSize}",
+        "?MaxSize kleiner dan {MaxSize}",
+        "in {Path}",
+        "?Permanent definitief",
+        "verwijderen",
+        "?ExceptExtension , behalve de {ExceptExtension}-bestanden",
+        "?ExceptKind , behalve de {ExceptKind}",
+        "?ExceptName , behalve {ExceptName}"
+      ],
+      "Note": [
+        "!Permanent Ze blijven 30 dagen in de prullenbak van Lambek: zeg “zet ze terug” om ze terug te halen."
+      ]
+    },
+    "files.list": {
+      "Title": "Bestanden tonen of zoeken",
+      "Verbs": [
+        "toon",
+        "tonen",
+        "zoek",
+        "zoeken",
+        "sorteer",
+        "sorteren",
+        "welk"
+      ],
+      "Examples": [
+        "toon de bestanden",
+        "toon de bestanden in een map",
+        "zoek de grote bestanden",
+        "zoek bestanden",
+        "sorteer de bestanden op grootte in een map"
+      ],
+      "Say": [
+        "?Count=1 het",
+        "!Count=1 de",
+        "!Count=1 ?Count {Count}",
+        "?Order {Order}",
+        "?Count=1 ?Extension {Extension}-bestand",
+        "?Count=1 !Extension bestand",
+        "?Count=1 ?Kind van de {Kind}",
+        "!Count=1 ?Extension !Kind {Extension}-bestanden",
+        "!Count=1 ?Extension ?Kind {Kind} {Extension}",
+        "!Count=1 !Extension !Kind bestanden",
+        "!Count=1 !Extension ?Kind {Kind}",
+        "?Name genaamd {Name}",
+        "?OlderThan ouder dan {OlderThan}",
+        "?NewerThan nieuwer dan {NewerThan}",
+        "?MinSize groter dan {MinSize}",
+        "?MaxSize kleiner dan {MaxSize}",
+        "?Path in {Path}",
+        "tonen",
+        "?ExceptExtension , behalve de {ExceptExtension}-bestanden",
+        "?ExceptKind , behalve de {ExceptKind}",
+        "?ExceptName , behalve {ExceptName}"
+      ]
+    },
+    "files.copy": {
+      "Title": "Bestanden kopiëren",
+      "Verbs": [
+        "kopieer",
+        "kopieren"
+      ],
+      "Examples": [
+        "kopieer de bestanden naar een map",
+        "kopieer een bestand",
+        "bestanden kopieren naar een map"
+      ],
+      "Say": [
+        "?Count=1 het",
+        "!Count=1 de",
+        "!Count=1 ?Count {Count}",
+        "?Order {Order}",
+        "?Count=1 ?Extension {Extension}-bestand",
+        "?Count=1 !Extension bestand",
+        "?Count=1 ?Kind van de {Kind}",
+        "!Count=1 ?Extension !Kind {Extension}-bestanden",
+        "!Count=1 ?Extension ?Kind {Kind} {Extension}",
+        "!Count=1 !Extension !Kind bestanden",
+        "!Count=1 !Extension ?Kind {Kind}",
+        "?Name genaamd {Name}",
+        "?OlderThan ouder dan {OlderThan}",
+        "?NewerThan nieuwer dan {NewerThan}",
+        "?MinSize groter dan {MinSize}",
+        "?MaxSize kleiner dan {MaxSize}",
+        "?Source uit {Source}",
+        "kopiëren naar {Destination}",
+        "?ExceptExtension , behalve de {ExceptExtension}-bestanden",
+        "?ExceptKind , behalve de {ExceptKind}",
+        "?ExceptName , behalve {ExceptName}"
+      ],
+      "RequireOneOf": "Uit welke map?"
+    },
+    "files.move": {
+      "Title": "Bestanden verplaatsen",
+      "Verbs": [
+        "verplaats",
+        "verplaatsen"
+      ],
+      "Examples": [
+        "verplaats de bestanden naar een map",
+        "verplaats een bestand",
+        "zet de bestanden in een andere map"
+      ],
+      "Say": [
+        "?Count=1 het",
+        "!Count=1 de",
+        "!Count=1 ?Count {Count}",
+        "?Order {Order}",
+        "?Count=1 ?Extension {Extension}-bestand",
+        "?Count=1 !Extension bestand",
+        "?Count=1 ?Kind van de {Kind}",
+        "!Count=1 ?Extension !Kind {Extension}-bestanden",
+        "!Count=1 ?Extension ?Kind {Kind} {Extension}",
+        "!Count=1 !Extension !Kind bestanden",
+        "!Count=1 !Extension ?Kind {Kind}",
+        "?Name genaamd {Name}",
+        "?OlderThan ouder dan {OlderThan}",
+        "?NewerThan nieuwer dan {NewerThan}",
+        "?MinSize groter dan {MinSize}",
+        "?MaxSize kleiner dan {MaxSize}",
+        "?Source uit {Source}",
+        "verplaatsen naar {Destination}",
+        "?ExceptExtension , behalve de {ExceptExtension}-bestanden",
+        "?ExceptKind , behalve de {ExceptKind}",
+        "?ExceptName , behalve {ExceptName}"
+      ],
+      "RequireOneOf": "Uit welke map?"
+    },
+    "files.rename": {
+      "Title": "Een bestand hernoemen",
+      "Verbs": [
+        "hernoem",
+        "hernoemen"
+      ],
+      "Examples": [
+        "hernoem een bestand",
+        "hernoem het bestand naar een nieuwe naam"
+      ],
+      "Say": [
+        "{Name} hernoemen naar {NewName}"
+      ],
+      "Parameters": {
+        "Name": {
+          "Question": "Welk bestand?"
+        },
+        "NewName": {
+          "After": [
+            "naar"
+          ],
+          "Question": "Wat is de nieuwe naam?"
+        }
+      }
+    },
+    "files.create": {
+      "Title": "Een bestand of map aanmaken",
+      "Verbs": [
+        "maak",
+        "maken"
+      ],
+      "Examples": [
+        "maak een map",
+        "maak een nieuw bestand in een map",
+        "maak een map aan",
+        "maak een map genaamd"
+      ],
+      "Say": [
+        "?Path ?Kind=map de map {Path}",
+        "?Path ?Kind=bestand het bestand {Path}",
+        "!Path ?Name ?Kind=map een map genaamd {Name} in {Parent}",
+        "!Path ?Name ?Kind=bestand een bestand genaamd {Name} in {Parent}",
+        "aanmaken"
+      ],
+      "RequireOneOf": "Welke naam moet het krijgen?",
+      "Parameters": {
+        "Kind": {
+          "Words": {
+            "bestand": "File",
+            "map": "Directory"
+          },
+          "Question": "Een bestand of een map?"
+        },
+        "Name": {
+          "After": [
+            "genaamd"
+          ]
+        }
+      }
+    },
+    "files.free": {
+      "Title": "Schijfruimte vrijmaken",
+      "Verbs": [
+        "vrijmaken"
+      ],
+      "Uses": [
+        "ruimte"
+      ],
+      "Examples": [
+        "ruimte vrijmaken",
+        "maak 10 GB vrij in een map",
+        "schijfruimte vrijmaken"
+      ],
+      "Say": [
+        "{FreeSize} vrijmaken in {Path}",
+        "?Extension met {Extension}-bestanden",
+        "?Kind met {Kind}",
+        "?OlderThan ouder dan {OlderThan}",
+        "?ExceptExtension , behalve de {ExceptExtension}-bestanden",
+        "?ExceptKind , behalve de {ExceptKind}",
+        "?ExceptName , behalve {ExceptName}"
+      ],
+      "Note": "De grootste bestanden gaan eerst, zodat er zo weinig mogelijk bestanden verdwijnen."
+    },
+    "files.restore": {
+      "Title": "Verwijderde bestanden terugzetten",
+      "Verbs": [
+        "herstel",
+        "herstellen"
+      ],
+      "Uses": [
+        "verwijdering",
+        "laatst",
+        "prullenbak"
+      ],
+      "Examples": [
+        "herstel de verwijderde bestanden",
+        "zet de bestanden terug",
+        "maak de laatste verwijdering ongedaan",
+        "haal de bestanden terug uit de prullenbak"
+      ],
+      "Say": [
+        "de laatst verwijderde bestanden terugzetten",
+        "?Extension ({Extension})",
+        "?Kind ({Kind})",
+        "?Name ({Name})"
+      ],
+      "Note": "Elk bestand gaat terug naar de map waaruit het verwijderd werd."
+    }
+  },
+  "Methods": {
+    "clean": {
+      "Words": [
+        "ruim op",
+        "maak schoon",
+        "opschonen"
+      ],
+      "Steps": [
+        "verwijder de tijdelijke bestanden in {Path}",
+        "verwijder de back-ups ouder dan 30 dagen in {Path}"
+      ]
+    }
+  }
+}

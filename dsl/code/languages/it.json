@@ -1,0 +1,120 @@
+{
+  "Language": "it",
+  "Words": {
+    "generare": ["s a^l"],
+    "creare": ["s a^l"],
+    "scrivere": ["s a^l"],
+    "script": ["a"],
+    "funzione": ["a"],
+    "classe": ["a"],
+    "modulo": ["a"],
+    "test": ["a"],
+    "powershell": ["a^r a"],
+    "python": ["a^r a"],
+    "javascript": ["a^r a"],
+    "js": ["a^r a"],
+    "node": ["a^r a"],
+    "nodejs": ["a^r a"],
+    "csharp": ["a^r a"],
+    "cs": ["a^r a"],
+    "rust": ["a^r a"],
+    "shell": ["a^r a"],
+    "bash": ["a^r a"],
+    "chiamato": ["a^r a n^l"]
+  },
+  "BaseForms": {
+    "genera": "generare",
+    "generi": "generare",
+    "generate": "generare",
+    "generiamo": "generare",
+    "generami": "generare",
+    "scrivi": "scrivere",
+    "scriva": "scrivere",
+    "scrivete": "scrivere",
+    "scriviamo": "scrivere",
+    "scrivimi": "scrivere",
+    "funzioni": "funzione",
+    "classi": "classe",
+    "moduli": "modulo",
+    "chiamata": "chiamato",
+    "chiamati": "chiamato",
+    "chiamate": "chiamato"
+  },
+  "Gloss": {
+    "generare": "generate",
+    "creare": "create",
+    "scrivere": "write",
+    "script": "script",
+    "funzione": "function",
+    "classe": "class",
+    "modulo": "module",
+    "test": "test",
+    "powershell": "powershell",
+    "javascript": "javascript",
+    "js": "js",
+    "node": "node",
+    "nodejs": "nodejs",
+    "csharp": "csharp",
+    "cs": "cs",
+    "rust": "rust",
+    "shell": "shell",
+    "python": "python",
+    "bash": "bash",
+    "chiamato": "named"
+  },
+  "Category": {
+    "Title": "Codice",
+    "Summary": "Generare funzioni, script e classi PowerShell.",
+    "Examples": [
+      "genera una funzione chiamata Get-Report",
+      "scrivi uno script",
+      "crea una classe chiamata \"Fattura\""
+    ]
+  },
+  "Types": {
+    "a": "Che cosa devo generare (script, funzione, classe)?",
+    "n": "Che nome deve avere?"
+  },
+  "Sorts": {
+    "a": {
+      "code": ["funzione", "modulo"]
+    }
+  },
+  "Actions": {
+    "code.generate": {
+      "Title": "Generare codice",
+      "Verbs": ["generare", "creare", "scrivere"],
+      "Examples": [
+        "generare una funzione",
+        "scrivere uno script",
+        "creare una classe",
+        "generare una funzione powershell chiamata",
+        "creare uno script"
+      ],
+      "Say": [
+        "generare",
+        "?Kind=funzione una funzione",
+        "?Kind=classe una classe",
+        "?Kind=Script uno script",
+        "?Kind=modulo un modulo",
+        "?Kind=Test un test",
+        "{Language}",
+        "?Name ?Kind=funzione chiamata {Name}",
+        "?Name ?Kind=classe chiamata {Name}",
+        "?Name !Kind=funzione !Kind=classe chiamato {Name}"
+      ],
+      "Parameters": {
+        "Kind": {
+          "Words": {
+            "funzione": "Function",
+            "modulo": "Module"
+          },
+          "Question": "Che cosa devo generare (script, funzione, classe)?"
+        },
+        "Name": {
+          "After": ["chiamato"]
+        }
+      }
+    }
+  }
+}

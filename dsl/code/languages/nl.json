@@ -1,0 +1,183 @@
+{
+  "Language": "nl",
+  "Words": {
+    "genereer": [
+      "s a^l"
+    ],
+    "genereren": [
+      "s a^l",
+      "a^r s"
+    ],
+    "schrijf": [
+      "s a^l"
+    ],
+    "schrijven": [
+      "s a^l",
+      "a^r s"
+    ],
+    "maak": [
+      "s a^l"
+    ],
+    "maken": [
+      "s a^l",
+      "a^r s"
+    ],
+    "script": [
+      "a"
+    ],
+    "functie": [
+      "a"
+    ],
+    "klasse": [
+      "a"
+    ],
+    "module": [
+      "a"
+    ],
+    "test": [
+      "a"
+    ],
+    "powershell": [
+      "a a^l"
+    ],
+    "python": [
+      "a a^l"
+    ],
+    "bash": [
+      "a a^l"
+    ],
+    "genaamd": [
+      "a^r a n^l"
+    ],
+    "javascript": [
+      "a a^l"
+    ],
+    "js": [
+      "a a^l"
+    ],
+    "node": [
+      "a a^l"
+    ],
+    "nodejs": [
+      "a a^l"
+    ],
+    "csharp": [
+      "a a^l"
+    ],
+    "cs": [
+      "a a^l"
+    ],
+    "rust": [
+      "a a^l"
+    ],
+    "shell": [
+      "a a^l"
+    ]
+  },
+  "BaseForms": {
+    "genereert": "genereer",
+    "schrijft": "schrijf",
+    "maakt": "maak",
+    "creeer": "maak",
+    "creeren": "maken",
+    "aanmaken": "maken",
+    "scripts": "script",
+    "functies": "functie",
+    "klassen": "klasse",
+    "klas": "klasse",
+    "modules": "module",
+    "tests": "test",
+    "geheten": "genaamd"
+  },
+  "Gloss": {
+    "genereer": "generate",
+    "genereren": "generate",
+    "schrijf": "write",
+    "schrijven": "write",
+    "maak": "create",
+    "maken": "create",
+    "script": "script",
+    "functie": "function",
+    "klasse": "class",
+    "module": "module",
+    "test": "test",
+    "powershell": "powershell",
+    "python": "python",
+    "bash": "bash",
+    "genaamd": "named",
+    "javascript": "javascript",
+    "js": "js",
+    "node": "node",
+    "nodejs": "nodejs",
+    "csharp": "csharp",
+    "cs": "cs",
+    "rust": "rust",
+    "shell": "shell"
+  },
+  "Category": {
+    "Title": "Code",
+    "Summary": "PowerShell-functies, -scripts en -klassen genereren.",
+    "Examples": [
+      "genereer een PowerShell-functie genaamd Get-Report",
+      "schrijf een script",
+      "maak een klasse genaamd \"Factuur\""
+    ]
+  },
+  "Types": {
+    "a": "Wat moet ik genereren (script, functie, klasse)?",
+    "n": "Welke naam moet het krijgen?"
+  },
+  "Sorts": {
+    "a": {
+      "code": [
+        "script",
+        "functie",
+        "klasse",
+        "module",
+        "test"
+      ]
+    }
+  },
+  "Parameters": {
+    "Kind": {
+      "Words": {
+        "functie": "Function",
+        "klasse": "Class",
+        "script": "Script",
+        "module": "Module",
+        "test": "Test"
+      },
+      "Question": "Wat moet ik genereren (script, functie, klasse)?"
+    },
+    "Name": {
+      "After": [
+        "genaamd"
+      ]
+    }
+  },
+  "Actions": {
+    "code.generate": {
+      "Title": "Code genereren",
+      "Verbs": [
+        "genereer",
+        "genereren",
+        "schrijf",
+        "schrijven",
+        "maak",
+        "maken"
+      ],
+      "Examples": [
+        "genereer een functie",
+        "schrijf een script",
+        "maak een klasse",
+        "genereer een powershell functie genaamd",
+        "maak een script"
+      ],
+      "Say": [
+        "een {Language}-{Kind|lower}",
+        "?Name genaamd {Name}",
+        "genereren"
+      ]
+    }
+  }
+}

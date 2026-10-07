@@ -1,0 +1,227 @@
+{
+  "Language": "de",
+  "Words": {
+    "generiere": [
+      "s a^l"
+    ],
+    "generieren": [
+      "s a^l",
+      "a^r s"
+    ],
+    "erstelle": [
+      "s a^l"
+    ],
+    "erstellen": [
+      "s a^l",
+      "a^r s"
+    ],
+    "schreibe": [
+      "s a^l"
+    ],
+    "schreiben": [
+      "s a^l",
+      "a^r s"
+    ],
+    "skript": [
+      "a"
+    ],
+    "funktion": [
+      "a"
+    ],
+    "klasse": [
+      "a"
+    ],
+    "modul": [
+      "a"
+    ],
+    "test": [
+      "a"
+    ],
+    "powershell": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "python": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "bash": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "in": [
+      "a^r a a^l"
+    ],
+    "namens": [
+      "a^r a n^l"
+    ],
+    "genannt": [
+      "a^r a n^l"
+    ],
+    "javascript": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "js": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "node": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "nodejs": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "csharp": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "cs": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "rust": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ],
+    "shell": [
+      "a a^l",
+      "a^r a",
+      "a"
+    ]
+  },
+  "BaseForms": {
+    "generier": "generiere",
+    "generiert": "generiere",
+    "erzeuge": "erstelle",
+    "erzeugen": "erstellen",
+    "schreib": "schreibe",
+    "schreibt": "schreibe",
+    "script": "skript",
+    "skripte": "skript",
+    "skripts": "skript",
+    "scripts": "skript",
+    "funktionen": "funktion",
+    "klassen": "klasse",
+    "module": "modul",
+    "tests": "test",
+    "genannte": "genannt",
+    "benannt": "genannt"
+  },
+  "Gloss": {
+    "generiere": "generate",
+    "generieren": "generate",
+    "erstelle": "create",
+    "erstellen": "create",
+    "schreibe": "write",
+    "schreiben": "write",
+    "skript": "script",
+    "funktion": "function",
+    "klasse": "class",
+    "modul": "module",
+    "test": "test",
+    "powershell": "powershell",
+    "python": "python",
+    "bash": "bash",
+    "in": "in",
+    "namens": "named",
+    "genannt": "called",
+    "javascript": "javascript",
+    "js": "js",
+    "node": "node",
+    "nodejs": "nodejs",
+    "csharp": "csharp",
+    "cs": "cs",
+    "rust": "rust",
+    "shell": "shell"
+  },
+  "Types": {
+    "a": "Was soll generiert werden (Skript, Funktion, Klasse)?",
+    "n": "Welchen Namen soll es tragen?"
+  },
+  "Sorts": {
+    "a": {
+      "code": [
+        "skript",
+        "funktion",
+        "klasse",
+        "modul",
+        "test"
+      ]
+    }
+  },
+  "Rewrites": [
+    {
+      "Pattern": "(?i)\\b(powershell|python|bash)-(funktion|skript|script|klasse|modul|test)(en|e|s)?\\b",
+      "Replacement": "$2$3 in $1"
+    }
+  ],
+  "Category": {
+    "Title": "Code",
+    "Summary": "PowerShell-Funktionen, -Skripte und -Klassen generieren.",
+    "Examples": [
+      "generiere eine PowerShell-Funktion namens Get-Report",
+      "schreibe ein Skript",
+      "erstelle eine Klasse namens \"Rechnung\""
+    ]
+  },
+  "Parameters": {
+    "Kind": {
+      "Words": {
+        "skript": "Script",
+        "funktion": "Function",
+        "klasse": "Class",
+        "modul": "Module"
+      },
+      "Question": "Was soll generiert werden (Skript, Funktion, Klasse)?"
+    },
+    "Name": {
+      "After": [
+        "namens",
+        "genannt"
+      ]
+    }
+  },
+  "Actions": {
+    "code.generate": {
+      "Title": "Code generieren",
+      "Verbs": [
+        "generiere",
+        "generieren",
+        "erstelle",
+        "erstellen",
+        "schreibe",
+        "schreiben"
+      ],
+      "Examples": [
+        "generiere eine funktion",
+        "schreibe ein skript",
+        "erstelle eine klasse",
+        "generiere eine powershell funktion namens",
+        "erstelle ein skript"
+      ],
+      "Say": [
+        "?Kind=funktion eine",
+        "?Kind=klasse eine",
+        "?Kind=skript ein",
+        "?Kind=modul ein",
+        "?Kind=test einen",
+        "{Kind} in {Language}",
+        "?Name namens {Name}",
+        "generieren"
+      ]
+    }
+  }
+}

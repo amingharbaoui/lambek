@@ -1,0 +1,557 @@
+[
+  {
+    "Text": "apaga os ficheiros .log com mais de 30 dias em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Extension": ".log",
+      "OlderThan": "30.00:00:00"
+    },
+    "Answer": "Vou apagar os ficheiros .log com mais de 30 dias em C:\\Temp.*"
+  },
+  {
+    "Text": "apague os ficheiros temporários em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Kind": "temporary"
+    },
+    "Answer": "Vou apagar os ficheiros temporários em C:\\Temp.*"
+  },
+  {
+    "Text": "eliminar as imagens com mais de 1 GB em C:\\Fotos",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Fotos",
+      "Kind": "image",
+      "MinSize": "1073741824"
+    },
+    "Answer": "Vou apagar as imagens com mais de 1 GB em C:\\Fotos.*"
+  },
+  {
+    "Text": "exclua os arquivos maiores que 1 GB em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "MinSize": "1073741824"
+    }
+  },
+  {
+    "Text": "deleta os arquivos .tmp mais antigos que 7 dias em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Extension": ".tmp",
+      "OlderThan": "7.00:00:00"
+    }
+  },
+  {
+    "Text": "apaga definitivamente os ficheiros .bak em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Extension": ".bak",
+      "Permanent": "yes"
+    },
+    "Answer": "Vou apagar definitivamente os ficheiros .bak em C:\\Temp.*"
+  },
+  {
+    "Text": "apaga todos os ficheiros em C:\\Temp exceto os .log",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "ExceptExtension": ".log"
+    },
+    "Answer": "Vou apagar os ficheiros em C:\\Temp exceto os ficheiros .log.*"
+  },
+  {
+    "Text": "remove os ficheiros em C:\\Temp excepto as imagens",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "ExceptKind": "image"
+    },
+    "Answer": "Vou apagar os ficheiros em C:\\Temp exceto as imagens.*"
+  },
+  {
+    "Text": "apaga a foto mais recente em C:\\Fotos",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Fotos",
+      "Kind": "image",
+      "Order": "newest",
+      "Count": "1"
+    },
+    "Answer": "Vou apagar a imagem mais recente em C:\\Fotos.*"
+  },
+  {
+    "Text": "apague os 2 ficheiros mais antigos em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Order": "oldest",
+      "Count": "2"
+    },
+    "Answer": "Vou apagar os 2 ficheiros mais antigos em C:\\Temp.*"
+  },
+  {
+    "Text": "por favor, apaga os ficheiros .tmp em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Extension": ".tmp"
+    }
+  },
+  {
+    "Text": "apaga os ficheiros de áudio em D:\\Musica",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "D:\\Musica",
+      "Kind": "audio"
+    },
+    "Answer": "Vou apagar os ficheiros de áudio em D:\\Musica.*"
+  },
+  {
+    "Text": "não apagues os ficheiros em C:\\Temp",
+    "Status": "NeedsInput",
+    "Language": "pt"
+  },
+  {
+    "Text": "nunca elimine as imagens em C:\\Fotos",
+    "Status": "NeedsInput",
+    "Language": "pt"
+  },
+  {
+    "Text": "apaga os ficheiros",
+    "Status": "NeedsInput",
+    "Action": "files.delete",
+    "Language": "pt",
+    "Answer": "*Em que pasta?*"
+  },
+  {
+    "Text": "lista os ficheiros em C:\\Users",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Users"
+    },
+    "Answer": "Vou listar os ficheiros em C:\\Users.*"
+  },
+  {
+    "Text": "mostra-me os 3 maiores ficheiros em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Order": "largest",
+      "Count": "3"
+    },
+    "Answer": "Vou listar os 3 ficheiros maiores em C:\\Temp.*"
+  },
+  {
+    "Text": "mostre os ficheiros com menos de 10 MB em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "MaxSize": "10485760"
+    },
+    "Answer": "Vou listar os ficheiros com menos de 10 MB em C:\\Temp.*"
+  },
+  {
+    "Text": "procura os documentos em C:\\Users",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Users",
+      "Kind": "document"
+    },
+    "Answer": "Vou listar os documentos em C:\\Users.*"
+  },
+  {
+    "Text": "listar os vídeos com menos de 7 dias em D:\\Media",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "D:\\Media",
+      "Kind": "video",
+      "NewerThan": "7.00:00:00"
+    },
+    "Answer": "Vou listar os vídeos com menos de 7 dias em D:\\Media.*"
+  },
+  {
+    "Text": "encontra os ficheiros mais recentes que 2 semanas em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "NewerThan": "14.00:00:00"
+    }
+  },
+  {
+    "Text": "ordena os ficheiros por tamanho em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Order": "largest"
+    }
+  },
+  {
+    "Text": "quais são os ficheiros maiores em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Order": "largest"
+    }
+  },
+  {
+    "Text": "mostra os ficheiros de texto em C:\\Notas",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Notas",
+      "Kind": "text"
+    },
+    "Answer": "Vou listar os ficheiros de texto em C:\\Notas.*"
+  },
+  {
+    "Text": "copia os ficheiros .pdf de C:\\Docs para D:\\Backup",
+    "Status": "Ready",
+    "Action": "files.copy",
+    "Language": "pt",
+    "Parameters": {
+      "Source": "C:\\Docs",
+      "Destination": "D:\\Backup",
+      "Extension": ".pdf"
+    },
+    "Answer": "Vou copiar os ficheiros .pdf de C:\\Docs para D:\\Backup.*"
+  },
+  {
+    "Text": "copie as imagens de C:\\Fotos para D:\\Arquivo",
+    "Status": "Ready",
+    "Action": "files.copy",
+    "Language": "pt",
+    "Parameters": {
+      "Source": "C:\\Fotos",
+      "Destination": "D:\\Arquivo",
+      "Kind": "image"
+    },
+    "Answer": "Vou copiar as imagens de C:\\Fotos para D:\\Arquivo.*"
+  },
+  {
+    "Text": "copiar os documentos em C:\\Docs para a pasta D:\\Backup",
+    "Status": "Ready",
+    "Action": "files.copy",
+    "Language": "pt",
+    "Parameters": {
+      "Source": "C:\\Docs",
+      "Destination": "D:\\Backup",
+      "Kind": "document"
+    }
+  },
+  {
+    "Text": "move os ficheiros .log em C:\\Temp para D:\\Archive",
+    "Status": "Ready",
+    "Action": "files.move",
+    "Language": "pt",
+    "Parameters": {
+      "Source": "C:\\Temp",
+      "Destination": "D:\\Archive",
+      "Extension": ".log"
+    },
+    "Answer": "Vou mover os ficheiros .log de C:\\Temp para D:\\Archive.*"
+  },
+  {
+    "Text": "mova as fotos de C:\\Fotos para D:\\Fotos",
+    "Status": "Ready",
+    "Action": "files.move",
+    "Language": "pt",
+    "Parameters": {
+      "Source": "C:\\Fotos",
+      "Destination": "D:\\Fotos",
+      "Kind": "image"
+    }
+  },
+  {
+    "Text": "põe os ficheiros .zip de C:\\Temp em D:\\Arquivo",
+    "Status": "Ready",
+    "Action": "files.move",
+    "Language": "pt",
+    "Parameters": {
+      "Source": "C:\\Temp",
+      "Destination": "D:\\Arquivo",
+      "Extension": ".zip"
+    }
+  },
+  {
+    "Text": "mover os ficheiros .log para D:\\Archive",
+    "Status": "NeedsInput",
+    "Action": "files.move",
+    "Language": "pt",
+    "Answer": "*De que pasta?*"
+  },
+  {
+    "Text": "renomeia C:\\Temp\\relatorio.txt para final.txt",
+    "Status": "Ready",
+    "Action": "files.rename",
+    "Language": "pt",
+    "Parameters": {
+      "Name": "C:\\Temp\\relatorio.txt",
+      "NewName": "final.txt"
+    },
+    "Answer": "Vou renomear C:\\Temp\\relatorio.txt para final.txt.*"
+  },
+  {
+    "Text": "muda o nome de C:\\Temp\\notas.txt para notas-2024.txt",
+    "Status": "Ready",
+    "Action": "files.rename",
+    "Language": "pt",
+    "Parameters": {
+      "Name": "C:\\Temp\\notas.txt",
+      "NewName": "notas-2024.txt"
+    }
+  },
+  {
+    "Text": "cria uma pasta chamada \"Projetos\" em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.create",
+    "Language": "pt",
+    "Parameters": {
+      "Kind": "Directory",
+      "Name": "Projetos",
+      "Parent": "C:\\Temp"
+    },
+    "Answer": "Vou criar uma pasta chamada*Projetos* em C:\\Temp.*"
+  },
+  {
+    "Text": "criar o ficheiro C:\\Temp\\notas.txt",
+    "Status": "Ready",
+    "Action": "files.create",
+    "Language": "pt",
+    "Parameters": {
+      "Kind": "File",
+      "Path": "C:\\Temp\\notas.txt"
+    },
+    "Answer": "Vou criar o ficheiro C:\\Temp\\notas.txt.*"
+  },
+  {
+    "Text": "liberta 10 GB em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.free",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "FreeSize": "10737418240"
+    },
+    "Answer": "Vou libertar 10 GB em C:\\Temp.*"
+  },
+  {
+    "Text": "libere 5 GB em D:\\Downloads apagando os ficheiros .iso",
+    "Status": "Ready",
+    "Action": "files.free",
+    "Language": "pt",
+    "Parameters": {
+      "Path": "D:\\Downloads",
+      "FreeSize": "5368709120",
+      "Extension": ".iso"
+    }
+  },
+  {
+    "Text": "restaura os ficheiros apagados",
+    "Status": "Ready",
+    "Action": "files.restore",
+    "Language": "pt",
+    "Answer": "Vou restaurar os últimos ficheiros apagados.*"
+  },
+  {
+    "Text": "desfaz a última eliminação",
+    "Status": "Ready",
+    "Action": "files.restore",
+    "Language": "pt"
+  },
+  {
+    "Text": "recupera as imagens do lixo",
+    "Status": "Ready",
+    "Action": "files.restore",
+    "Language": "pt",
+    "Parameters": {
+      "Kind": "image"
+    }
+  },
+  {
+    "Text": "gera uma função PowerShell chamada Get-Report",
+    "Status": "Ready",
+    "Action": "code.generate",
+    "Language": "pt",
+    "Parameters": {
+      "Kind": "Function",
+      "Name": "Get-Report"
+    },
+    "Answer": "*gerar uma função PowerShell chamada Get-Report*"
+  },
+  {
+    "Text": "escreve um script",
+    "Status": "Ready",
+    "Action": "code.generate",
+    "Language": "pt",
+    "Parameters": {
+      "Kind": "Script"
+    },
+    "Answer": "*gerar um script PowerShell*"
+  },
+  {
+    "Text": "cria uma classe chamada \"Fatura\"",
+    "Status": "Ready",
+    "Action": "code.generate",
+    "Language": "pt",
+    "Parameters": {
+      "Kind": "Class",
+      "Name": "Fatura"
+    }
+  },
+  {
+    "Text": "olá",
+    "Answer": "Olá*"
+  },
+  {
+    "Text": "bom dia",
+    "Answer": "Olá*"
+  },
+  {
+    "Text": "obrigado",
+    "Answer": "De nada.*"
+  },
+  {
+    "Text": "adeus",
+    "Answer": "Até breve.*"
+  },
+  {
+    "Text": "tudo bem?",
+    "Answer": "Muito bem, obrigado*"
+  },
+  {
+    "Text": "quem és tu?",
+    "Answer": "Sou o Lambek*"
+  },
+  {
+    "Text": "que línguas falas?",
+    "Answer": "*português*"
+  },
+  {
+    "Text": "quanto é 3/7 + 2/5",
+    "Answer": "*29/35*"
+  },
+  {
+    "Text": "calcula 12 vezes 3",
+    "Answer": "*36*"
+  },
+  {
+    "Text": "delete os ficheiros .tmp em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Extension": ".tmp"
+    }
+  },
+  {
+    "Text": "apaga the files older than 30 days in C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "OlderThan": "30.00:00:00"
+    }
+  },
+  {
+    "Text": "copia os files de C:\\Docs para D:\\Backup",
+    "Status": "Ready",
+    "Action": "files.copy",
+    "Parameters": {
+      "Source": "C:\\Docs",
+      "Destination": "D:\\Backup"
+    }
+  },
+  {
+    "Text": "list os ficheiros .pdf em C:\\Docs",
+    "Status": "Ready",
+    "Action": "files.list",
+    "Parameters": {
+      "Path": "C:\\Docs",
+      "Extension": ".pdf"
+    }
+  },
+  {
+    "Text": "supprime os ficheiros .log em C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Extension": ".log"
+    }
+  },
+  {
+    "Text": "apaga les fichiers .tmp dans C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Parameters": {
+      "Path": "C:\\Temp",
+      "Extension": ".tmp"
+    }
+  },
+  {
+    "Text": "move the images para D:\\Fotos de C:\\Temp",
+    "Status": "Ready",
+    "Action": "files.move",
+    "Parameters": {
+      "Source": "C:\\Temp",
+      "Destination": "D:\\Fotos",
+      "Kind": "image"
+    }
+  },
+  {
+    "Text": "delete as fotos com mais de 30 dias em C:\\Fotos",
+    "Status": "Ready",
+    "Action": "files.delete",
+    "Parameters": {
+      "Path": "C:\\Fotos",
+      "Kind": "image",
+      "OlderThan": "30.00:00:00"
+    }
+  }
+]

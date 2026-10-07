@@ -1,0 +1,194 @@
+{
+  "Language": "es",
+  "Words": {
+    "generar": [
+      "s a^l"
+    ],
+    "crear": [
+      "s a^l"
+    ],
+    "escribir": [
+      "s a^l"
+    ],
+    "script": [
+      "a"
+    ],
+    "funcion": [
+      "a"
+    ],
+    "clase": [
+      "a"
+    ],
+    "modulo": [
+      "a"
+    ],
+    "prueba": [
+      "a"
+    ],
+    "test": [
+      "a"
+    ],
+    "powershell": [
+      "a^r a"
+    ],
+    "python": [
+      "a^r a"
+    ],
+    "bash": [
+      "a^r a"
+    ],
+    "llamado": [
+      "a^r a n^l"
+    ],
+    "nombrado": [
+      "a^r a n^l"
+    ],
+    "javascript": [
+      "a^r a"
+    ],
+    "js": [
+      "a^r a"
+    ],
+    "node": [
+      "a^r a"
+    ],
+    "nodejs": [
+      "a^r a"
+    ],
+    "csharp": [
+      "a^r a"
+    ],
+    "cs": [
+      "a^r a"
+    ],
+    "rust": [
+      "a^r a"
+    ],
+    "shell": [
+      "a^r a"
+    ]
+  },
+  "BaseForms": {
+    "genera": "generar",
+    "genere": "generar",
+    "generad": "generar",
+    "generen": "generar",
+    "generame": "generar",
+    "generarme": "generar",
+    "crea": "crear",
+    "cree": "crear",
+    "cread": "crear",
+    "creen": "crear",
+    "creame": "crear",
+    "escribe": "escribir",
+    "escriba": "escribir",
+    "escribid": "escribir",
+    "escriban": "escribir",
+    "escribeme": "escribir",
+    "escribirme": "escribir",
+    "funciones": "funcion",
+    "clases": "clase",
+    "modulos": "modulo",
+    "pruebas": "prueba",
+    "scripts": "script",
+    "llamada": "llamado",
+    "llamados": "llamado",
+    "llamadas": "llamado",
+    "nombrada": "nombrado",
+    "nombrados": "nombrado",
+    "nombradas": "nombrado"
+  },
+  "Gloss": {
+    "generar": "generate",
+    "crear": "create",
+    "escribir": "write",
+    "script": "script",
+    "funcion": "function",
+    "clase": "class",
+    "modulo": "module",
+    "prueba": "test",
+    "test": "test",
+    "powershell": "powershell",
+    "python": "python",
+    "bash": "bash",
+    "llamado": "called",
+    "nombrado": "named",
+    "javascript": "javascript",
+    "js": "js",
+    "node": "node",
+    "nodejs": "nodejs",
+    "csharp": "csharp",
+    "cs": "cs",
+    "rust": "rust",
+    "shell": "shell"
+  },
+  "Types": {
+    "a": "¿Qué hay que generar (script, función, clase)?",
+    "n": "¿Qué nombre debe tener?"
+  },
+  "Sorts": {
+    "a": {
+      "code": [
+        "funcion",
+        "clase",
+        "modulo",
+        "prueba"
+      ]
+    }
+  },
+  "Category": {
+    "Title": "Código",
+    "Summary": "Generar funciones, scripts y clases de PowerShell.",
+    "Examples": [
+      "genera una función llamada Get-Report",
+      "escribe un script"
+    ]
+  },
+  "Actions": {
+    "code.generate": {
+      "Title": "Generar código",
+      "Verbs": [
+        "generar",
+        "crear",
+        "escribir"
+      ],
+      "Examples": [
+        "generar una funcion",
+        "escribir un script",
+        "crear una clase",
+        "crear un script"
+      ],
+      "Say": [
+        "generar",
+        "?Kind=funcion una función",
+        "?Kind=Script un script",
+        "?Kind=clase una clase",
+        "?Kind=modulo un módulo",
+        "?Kind=Test una prueba",
+        "de {Language}",
+        "?Name ?Kind=funcion llamada {Name}",
+        "?Name ?Kind=clase llamada {Name}",
+        "?Name ?Kind=Test llamada {Name}",
+        "?Name ?Kind=Script llamado {Name}",
+        "?Name ?Kind=modulo llamado {Name}"
+      ],
+      "Parameters": {
+        "Kind": {
+          "Words": {
+            "funcion": "Function",
+            "clase": "Class",
+            "modulo": "Module",
+            "prueba": "Test"
+          },
+          "Question": "¿Qué hay que generar (script, función, clase)?"
+        },
+        "Name": {
+          "After": [
+            "llamado",
+            "nombrado"
+          ]
+        }
+      }
+    }
+  }
+}

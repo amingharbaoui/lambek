@@ -1,0 +1,1036 @@
+{
+  "Language": "it",
+  "Words": {
+    "eliminare": [
+      "s o^l"
+    ],
+    "elencare": [
+      "s o^l"
+    ],
+    "mostrare": [
+      "s o^l"
+    ],
+    "cercare": [
+      "s o^l"
+    ],
+    "creare": [
+      "s o^l"
+    ],
+    "copiare": [
+      "s p^l o^l"
+    ],
+    "spostare": [
+      "s p^l o^l"
+    ],
+    "rinominare": [
+      "s p^l o^l"
+    ],
+    "liberare": [
+      "s o^l"
+    ],
+    "ripristinare": [
+      "s o^l",
+      "s"
+    ],
+    "annullare": [
+      "s o^l",
+      "s"
+    ],
+    "recuperare": [
+      "s o^l",
+      "s"
+    ],
+    "ordinare": [
+      "s o^l"
+    ],
+    "quale": [
+      "s o^l"
+    ],
+    "file": [
+      "o"
+    ],
+    "cartella": [
+      "o"
+    ],
+    "tutto": [
+      "o"
+    ],
+    "immagine": [
+      "o"
+    ],
+    "foto": [
+      "o"
+    ],
+    "video": [
+      "o"
+    ],
+    "musica": [
+      "o"
+    ],
+    "canzone": [
+      "o"
+    ],
+    "audio": [
+      "o",
+      "o^r o"
+    ],
+    "documento": [
+      "o"
+    ],
+    "archivio": [
+      "o"
+    ],
+    "testo": [
+      "o",
+      "o^r o"
+    ],
+    "multimediale": [
+      "o^r o",
+      "o"
+    ],
+    "temporaneo": [
+      "o^r o",
+      "o"
+    ],
+    "backup": [
+      "o^r o",
+      "o"
+    ],
+    "spazio": [
+      "o^r o",
+      "o"
+    ],
+    "eliminazione": [
+      "o"
+    ],
+    "cestino": [
+      "o",
+      "o^r o"
+    ],
+    "in": [
+      "o^r o d^l",
+      "s s^l d^l",
+      "p d^l",
+      "p q^l"
+    ],
+    "dentro": [
+      "o^r o d^l"
+    ],
+    "su": [
+      "o^r o d^l",
+      "s s^l d^l"
+    ],
+    "sotto": [
+      "o^r o d^l"
+    ],
+    "verso": [
+      "p d^l",
+      "p q^l"
+    ],
+    "a": [
+      "p d^l",
+      "p q^l"
+    ],
+    "vecchio": [
+      "o o^l",
+      "o^r o",
+      "o^r o t^l"
+    ],
+    "nuovo": [
+      "o o^l",
+      "o^r o",
+      "o^r o t^l"
+    ],
+    "recente": [
+      "o o^l",
+      "o^r o",
+      "o^r o t^l"
+    ],
+    "grande": [
+      "o o^l",
+      "o^r o",
+      "o^r o z^l"
+    ],
+    "piccolo": [
+      "o o^l",
+      "o^r o",
+      "o^r o z^l"
+    ],
+    "piu": [
+      "o^r o z^l",
+      "o^r o t^l",
+      "o^r o"
+    ],
+    "meno": [
+      "o^r o z^l",
+      "o^r o t^l",
+      "o^r o"
+    ],
+    "oltre": [
+      "o^r o z^l",
+      "o^r o t^l"
+    ],
+    "chiamato": [
+      "o^r o q^l"
+    ],
+    "tranne": [
+      "o^r o o^l"
+    ],
+    "eccetto": [
+      "o^r o o^l"
+    ],
+    "salvo": [
+      "o^r o o^l"
+    ],
+    "escluso": [
+      "o^r o o^l"
+    ],
+    "senza": [
+      "o^r o o^l"
+    ],
+    "e": [
+      "o^r o o^l"
+    ],
+    "tra": [
+      "o^r o o^l"
+    ],
+    "definitivamente": [
+      "o o^l",
+      "s^r s",
+      "s s^l"
+    ],
+    "sempre": [
+      "s^r s"
+    ],
+    "ultimo": [
+      "o o^l",
+      "o^r o"
+    ]
+  },
+  "BaseForms": {
+    "elimina": "eliminare",
+    "elimini": "eliminare",
+    "eliminate": "eliminare",
+    "eliminiamo": "eliminare",
+    "eliminami": "eliminare",
+    "cancella": "eliminare",
+    "cancelli": "eliminare",
+    "cancellate": "eliminare",
+    "cancelliamo": "eliminare",
+    "cancellare": "eliminare",
+    "rimuovi": "eliminare",
+    "rimuova": "eliminare",
+    "rimuovete": "eliminare",
+    "rimuoviamo": "eliminare",
+    "rimuovere": "eliminare",
+    "togli": "eliminare",
+    "tolga": "eliminare",
+    "togliete": "eliminare",
+    "togliamo": "eliminare",
+    "togliere": "eliminare",
+    "butta": "eliminare",
+    "butti": "eliminare",
+    "buttate": "eliminare",
+    "buttare": "eliminare",
+    "elenca": "elencare",
+    "elenchi": "elencare",
+    "elencate": "elencare",
+    "elenchiamo": "elencare",
+    "elencami": "elencare",
+    "mostra": "mostrare",
+    "mostri": "mostrare",
+    "mostrate": "mostrare",
+    "mostriamo": "mostrare",
+    "mostrami": "mostrare",
+    "mostrarmi": "mostrare",
+    "visualizza": "mostrare",
+    "visualizzi": "mostrare",
+    "visualizzate": "mostrare",
+    "visualizzare": "mostrare",
+    "cerca": "cercare",
+    "cerchi": "cercare",
+    "cercate": "cercare",
+    "cerchiamo": "cercare",
+    "cercami": "cercare",
+    "trova": "cercare",
+    "trovi": "cercare",
+    "trovate": "cercare",
+    "troviamo": "cercare",
+    "trovami": "cercare",
+    "trovare": "cercare",
+    "crea": "creare",
+    "crei": "creare",
+    "create": "creare",
+    "creiamo": "creare",
+    "creami": "creare",
+    "copia": "copiare",
+    "copi": "copiare",
+    "copiate": "copiare",
+    "copiamo": "copiare",
+    "duplica": "copiare",
+    "duplichi": "copiare",
+    "duplicate": "copiare",
+    "duplicare": "copiare",
+    "sposta": "spostare",
+    "sposti": "spostare",
+    "spostate": "spostare",
+    "spostiamo": "spostare",
+    "muovi": "spostare",
+    "muova": "spostare",
+    "muovete": "spostare",
+    "muovere": "spostare",
+    "trasferisci": "spostare",
+    "trasferisca": "spostare",
+    "trasferite": "spostare",
+    "trasferire": "spostare",
+    "metti": "spostare",
+    "metta": "spostare",
+    "mettete": "spostare",
+    "mettere": "spostare",
+    "rimetti": "spostare",
+    "rimetta": "spostare",
+    "rimettete": "spostare",
+    "rimettere": "spostare",
+    "rinomina": "rinominare",
+    "rinomini": "rinominare",
+    "rinominate": "rinominare",
+    "rinominiamo": "rinominare",
+    "libera": "liberare",
+    "liberi": "liberare",
+    "liberate": "liberare",
+    "liberiamo": "liberare",
+    "ripristina": "ripristinare",
+    "ripristini": "ripristinare",
+    "ripristinate": "ripristinare",
+    "ripristiniamo": "ripristinare",
+    "recupera": "recuperare",
+    "recuperi": "recuperare",
+    "recuperate": "recuperare",
+    "recuperiamo": "recuperare",
+    "annulla": "annullare",
+    "annulli": "annullare",
+    "annullate": "annullare",
+    "annulliamo": "annullare",
+    "ordina": "ordinare",
+    "ordini": "ordinare",
+    "ordinate": "ordinare",
+    "ordiniamo": "ordinare",
+    "quali": "quale",
+    "files": "file",
+    "cartelle": "cartella",
+    "directory": "cartella",
+    "immagini": "immagine",
+    "fotografia": "foto",
+    "fotografie": "foto",
+    "filmato": "video",
+    "filmati": "video",
+    "canzoni": "canzone",
+    "brano": "canzone",
+    "brani": "canzone",
+    "documenti": "documento",
+    "archivi": "archivio",
+    "testi": "testo",
+    "multimediali": "multimediale",
+    "temporanei": "temporaneo",
+    "temporanea": "temporaneo",
+    "temporanee": "temporaneo",
+    "eliminazioni": "eliminazione",
+    "cancellazione": "eliminazione",
+    "cancellazioni": "eliminazione",
+    "chiamati": "chiamato",
+    "chiamata": "chiamato",
+    "chiamate": "chiamato",
+    "denominato": "chiamato",
+    "denominati": "chiamato",
+    "denominata": "chiamato",
+    "nella": "in",
+    "nel": "in",
+    "nello": "in",
+    "nei": "in",
+    "negli": "in",
+    "nelle": "in",
+    "nell": "in",
+    "sul": "su",
+    "sulla": "su",
+    "sullo": "su",
+    "sui": "su",
+    "sugli": "su",
+    "sulle": "su",
+    "sull": "su",
+    "al": "a",
+    "alla": "a",
+    "allo": "a",
+    "ai": "a",
+    "agli": "a",
+    "alle": "a",
+    "all": "a",
+    "ed": "e",
+    "esclusi": "escluso",
+    "escluse": "escluso",
+    "esclusa": "escluso",
+    "fuorche": "tranne",
+    "permanentemente": "definitivamente"
+  },
+  "Gloss": {
+    "eliminare": "delete",
+    "elencare": "list",
+    "mostrare": "show",
+    "cercare": "find",
+    "creare": "create",
+    "copiare": "copy",
+    "spostare": "move",
+    "rinominare": "rename",
+    "liberare": "free",
+    "ripristinare": "restore",
+    "annullare": "undo",
+    "recuperare": "restore",
+    "ordinare": "sort",
+    "quale": "which",
+    "file": "file",
+    "cartella": "folder",
+    "tutto": "everything",
+    "immagine": "image",
+    "foto": "photo",
+    "video": "video",
+    "musica": "music",
+    "canzone": "song",
+    "audio": "audio",
+    "documento": "document",
+    "archivio": "archive",
+    "testo": "text",
+    "multimediale": "media",
+    "temporaneo": "temporary",
+    "backup": "backup",
+    "spazio": "space",
+    "eliminazione": "deletion",
+    "cestino": "trash",
+    "in": "in",
+    "dentro": "inside",
+    "su": "on",
+    "sotto": "under",
+    "verso": "to",
+    "a": "to",
+    "vecchio": "old",
+    "nuovo": "new",
+    "recente": "new",
+    "grande": "large",
+    "piccolo": "smaller",
+    "piu": "larger",
+    "meno": "smaller",
+    "oltre": "larger",
+    "chiamato": "named",
+    "tranne": "except",
+    "eccetto": "except",
+    "salvo": "except",
+    "escluso": "excluding",
+    "senza": "except",
+    "e": "and",
+    "tra": "among",
+    "definitivamente": "permanently",
+    "sempre": "forever",
+    "ultimo": "last"
+  },
+  "Rewrites": [
+    {
+      "Pattern": "(?i)\\b(elimin|cancell|spost|copi|mostr|elenc|ripristin|recuper|rinomin|trov|cerc|ordin|visualizz|sistem|annull|duplic|trasferisc|mett|rimett|butt)(a|ate|i)(li|le|lo|la)\\b",
+      "Replacement": "$1$2 $3"
+    },
+    {
+      "Pattern": "(?i)\\b(elimin|cancell|spost|copi|mostr|elenc|ripristin|recuper|rinomin|trov|cerc|ordin|visualizz|annull|duplic|butt)ar(li|le|lo|la)\\b",
+      "Replacement": "$1are $2"
+    },
+    {
+      "Pattern": "(?i)\\b(rimuov|togl|muov)(i|ete)(li|le|lo|la)\\b",
+      "Replacement": "$1$2 $3"
+    },
+    {
+      "Pattern": "(?i)\\b(rimuov|togli|muov|mett|rimett)er(li|le|lo|la)\\b",
+      "Replacement": "$1ere $2"
+    },
+    {
+      "Pattern": "(?i)\\bper\\s+sempre\\b",
+      "Replacement": "definitivamente"
+    },
+    {
+      "Pattern": "(?i)\\bspazio\\s+(?:su|sul|nel|in)\\s+(?:disco|hard\\s+disk)\\b",
+      "Replacement": "spazio"
+    },
+    {
+      "Pattern": "(?i)\\bfa(?:mmi|i|te)?\\s+spazio\\b",
+      "Replacement": "libera spazio"
+    },
+    {
+      "Pattern": "(?i)\\b(?:cambia|cambi|cambiate|cambiare)\\s+(?:il\\s+)?nome\\s+(?:a|al|alla|del|della|di)\\s+",
+      "Replacement": "rinomina "
+    },
+    {
+      "Pattern": "(?i)(?<=\\b(?:file|files|immagin[ei]|foto|fotografie|document[oi]|video|filmati|cartell[ae])\\s+)(?:eliminat|cancellat|rimoss|tolt)[oiae]\\b",
+      "Replacement": ""
+    },
+    {
+      "Pattern": "(?i)(?<=\\b(?:i|gli|dei|degli|ai|agli|coi|nei|negli|sui|sugli|dai|dagli|questi|quei|quegli|miei|tuoi|suoi|nostri|vostri|alcuni|certi|molti|pochi|troppi|vari|diversi|altri|tutti|due|tre|quattro|cinque|sei|sette|otto|nove|dieci|venti|trenta|cento|\\d+)\\s+(?:(?:\\d+|[\\p{L}]+[ie])\\s+)?)file(?=\\s|$|[,;.!?])",
+      "Replacement": "files"
+    },
+    {
+      "Pattern": "(?i)(?<=\\b(?:le|delle|alle|nelle|sulle|dalle|queste|quelle|mie|tue|sue|nostre|vostre|alcune|certe|molte|poche|troppe|varie|diverse|altre|tutte|due|tre|quattro|cinque|sei|sette|otto|nove|dieci|venti|trenta|cento|\\d+)\\s+(?:(?:\\d+|[\\p{L}]+[ie])\\s+)?)foto(?=\\s|$|[,;.!?])",
+      "Replacement": "fotografie"
+    },
+    {
+      "Pattern": "(?i)(?<=\\b(?:i|dei|ai|coi|nei|sui|dai|questi|quei|miei|tuoi|suoi|nostri|vostri|alcuni|certi|molti|pochi|troppi|vari|diversi|altri|tutti|due|tre|quattro|cinque|sei|sette|otto|nove|dieci|venti|trenta|cento|\\d+)\\s+(?:(?:\\d+|[\\p{L}]+[ie])\\s+)?)video(?=\\s|$|[,;.!?])",
+      "Replacement": "filmati"
+    },
+    {
+      "Pattern": "(?i)\\b((?:sposta|spostare|sposti|spostate|spostiamo|copia|copiare|copi|copiate|copiamo|muovi|muovere|muova|muovete|trasferisci|trasferire|trasferisca|trasferite|metti|mettere|metta|mettete|rimetti|rimettere|rimetta|rimettete|duplica|duplicare|duplichi)\\b.*?)\\b(?:in|nella|nel|nello|nei|negli|nelle|nell|dentro)\\b(?!.*\\b(?:in|nella|nel|nello|nei|negli|nelle|nell|dentro|verso|a|al|alla|ai|alle|su|sul|sulla|sui|sulle|to|into|vers|en)\\b)",
+      "Replacement": "$1verso"
+    }
+  ],
+  "Folders": {
+    "scrivania": "Desktop",
+    "documenti": "MyDocuments",
+    "immagini": "MyPictures",
+    "musica": "MyMusic",
+    "video": "MyVideos",
+    "download": "Downloads",
+    "scaricati": "Downloads"
+  },
+  "Category": {
+    "Title": "File",
+    "Summary": "Cercare, copiare, spostare, rinominare e ripulire file e cartelle, e liberare spazio.",
+    "Examples": [
+      "elenca i file più grandi di 100 MB in C:\\Users",
+      "elimina i file .tmp più vecchi di 30 giorni in C:\\Temp",
+      "sposta i file .log da C:\\Temp in D:\\Archive"
+    ]
+  },
+  "Types": {
+    "o": "Quali file o cartelle?",
+    "d": "In quale cartella?",
+    "p": "In quale cartella di destinazione?",
+    "c": "Rispetto a che cosa?",
+    "z": "Di che dimensione?",
+    "t": "Di che età o durata?",
+    "q": "Che nome deve avere?"
+  },
+  "Sorts": {
+    "o": {
+      "file": [
+        "file",
+        "immagine",
+        "foto",
+        "video",
+        "musica",
+        "canzone",
+        "audio",
+        "documento",
+        "archivio",
+        "testo",
+        "multimediale",
+        "temporaneo",
+        "backup"
+      ],
+      "folder": [
+        "cartella"
+      ]
+    }
+  },
+  "Entities": [
+    {
+      "Name": "path",
+      "Priority": 41,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:in|nella|nel|nei|nelle|dentro|su|sul|sulla|sulle|sui|da|dal|dalla|dai|dalle|a|al|alla|verso|sotto)\\s+(?:(?:la|il|i|le|mia|mio|miei|mie|tua|tuo|tuoi|tue)\\s+)?)(?:(?:cartella|directory)\\s+(?:(?:di|dei|delle)\\s+)?)?(?<v>{folders})\\b(?![\\\\/.\\w])"
+    },
+    {
+      "Name": "order",
+      "Priority": 54,
+      "Kind": "order",
+      "Pattern": "(?i)\\b(?<v>pi[uù]\\s+(?:recent[ei]|nuov[oiae]|vecchi[oae]?|grand[ei]|gross[oiae]|pesant[ei]|piccol[oiae]|legger[oiae]|leggeri)|meno\\s+recent[ei]|pi[uù]\\s+spazio)\\b(?!\\s+(?:di|del|dello|della|dei|degli|delle|dell|che|rispetto)\\b)",
+      "Orders": {
+        "piu recente": "newest",
+        "piu recenti": "newest",
+        "piu nuovo": "newest",
+        "piu nuovi": "newest",
+        "piu nuova": "newest",
+        "piu nuove": "newest",
+        "piu vecchio": "oldest",
+        "piu vecchi": "oldest",
+        "piu vecchia": "oldest",
+        "piu vecchie": "oldest",
+        "meno recente": "oldest",
+        "meno recenti": "oldest",
+        "piu grande": "largest",
+        "piu grandi": "largest",
+        "piu grosso": "largest",
+        "piu grossi": "largest",
+        "piu grossa": "largest",
+        "piu grosse": "largest",
+        "piu pesante": "largest",
+        "piu pesanti": "largest",
+        "piu spazio": "largest",
+        "piu piccolo": "smallest",
+        "piu piccoli": "smallest",
+        "piu piccola": "smallest",
+        "piu piccole": "smallest",
+        "piu leggero": "smallest",
+        "piu leggeri": "smallest",
+        "piu leggera": "smallest",
+        "piu leggere": "smallest"
+      }
+    }
+  ],
+  "Units": {
+    "duration": {
+      "giorno": 86400,
+      "giorni": 86400,
+      "settimana": 604800,
+      "settimane": 604800,
+      "mese": 2592000,
+      "mesi": 2592000,
+      "anno": 31536000,
+      "anni": 31536000,
+      "ora": 3600,
+      "ore": 3600,
+      "minuto": 60,
+      "minuti": 60
+    }
+  },
+  "Which": {
+    "Nouns": [
+      "file"
+    ],
+    "All": [
+      "tutti",
+      "tutte",
+      "tutto",
+      "ogni"
+    ],
+    "Question": "Quale file esattamente? Dimmi il nome, oppure il più recente, il più vecchio, il più grande o il più piccolo."
+  },
+  "Parameters": {
+    "Path": {
+      "After": [
+        "in",
+        "dentro",
+        "su",
+        "sotto"
+      ],
+      "Question": "In quale cartella?"
+    },
+    "Source": {
+      "After": [
+        "in",
+        "dentro",
+        "su",
+        "sotto"
+      ]
+    },
+    "Parent": {
+      "After": [
+        "in",
+        "dentro",
+        "su",
+        "sotto"
+      ]
+    },
+    "Destination": {
+      "After": [
+        "verso",
+        "a"
+      ],
+      "Question": "In quale cartella di destinazione?"
+    },
+    "Name": {
+      "After": [
+        "chiamato"
+      ]
+    },
+    "OlderThan": {
+      "After": [
+        "piu",
+        "vecchio",
+        "oltre"
+      ]
+    },
+    "NewerThan": {
+      "After": [
+        "meno",
+        "recente",
+        "nuovo"
+      ]
+    },
+    "MinSize": {
+      "After": [
+        "piu",
+        "grande",
+        "oltre"
+      ]
+    },
+    "MaxSize": {
+      "After": [
+        "meno",
+        "piccolo"
+      ]
+    },
+    "ExceptExtension": {
+      "After": [
+        "tranne",
+        "eccetto",
+        "salvo",
+        "escluso",
+        "senza"
+      ]
+    },
+    "ExceptKind": {
+      "After": [
+        "tranne",
+        "eccetto",
+        "salvo",
+        "escluso",
+        "senza"
+      ],
+      "Words": {
+        "immagine": "image",
+        "foto": "image",
+        "multimediale": "media",
+        "musica": "audio",
+        "canzone": "audio",
+        "documento": "document",
+        "archivio": "compressed",
+        "testo": "text",
+        "temporaneo": "temporary"
+      }
+    },
+    "ExceptName": {
+      "After": [
+        "tranne",
+        "eccetto",
+        "salvo",
+        "escluso",
+        "senza"
+      ]
+    },
+    "Kind": {
+      "Words": {
+        "immagine": "image",
+        "foto": "image",
+        "multimediale": "media",
+        "musica": "audio",
+        "canzone": "audio",
+        "documento": "document",
+        "archivio": "compressed",
+        "testo": "text",
+        "temporaneo": "temporary"
+      }
+    },
+    "Permanent": {
+      "Words": {
+        "definitivamente": "yes",
+        "sempre": "yes"
+      }
+    },
+    "Order": {
+      "Question": "Quali: i più recenti, i più vecchi, i più grandi o i più piccoli?"
+    },
+    "Count": {
+      "Question": "Quanti?"
+    },
+    "FreeSize": {
+      "Question": "Quanto spazio?"
+    }
+  },
+  "Actions": {
+    "files.delete": {
+      "Title": "Eliminare file o cartelle",
+      "Verbs": [
+        "eliminare"
+      ],
+      "Examples": [
+        "eliminare i file",
+        "eliminare i vecchi file in una cartella",
+        "cancellare i file log",
+        "eliminare una cartella",
+        "togli i file temporanei"
+      ],
+      "Say": [
+        "eliminare",
+        "?Permanent definitivamente",
+        "?Count=1 il file",
+        "!Count=1 !Order !Kind i file",
+        "!Count=1 !Order ?Kind {Kind}",
+        "!Count=1 ?Order i",
+        "!Count=1 ?Order ?Count {Count}",
+        "!Count=1 ?Order file",
+        "?Extension {Extension}",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Order=newest più recente",
+        "?Count=1 ?Order=oldest più vecchio",
+        "?Count=1 ?Order=largest più grande",
+        "?Count=1 ?Order=smallest più piccolo",
+        "?Order ?Kind tra {Kind}",
+        "?Name chiamati {Name}",
+        "?OlderThan ?Count=1 più vecchio di {OlderThan}",
+        "?OlderThan !Count=1 ?Kind=foto più vecchie di {OlderThan}",
+        "?OlderThan !Count=1 !Kind=foto più vecchi di {OlderThan}",
+        "?NewerThan ?Count=1 più recente di {NewerThan}",
+        "?NewerThan !Count=1 più recenti di {NewerThan}",
+        "?MinSize ?Count=1 più grande di {MinSize}",
+        "?MinSize !Count=1 più grandi di {MinSize}",
+        "?MaxSize di meno di {MaxSize}",
+        "in {Path}",
+        "?ExceptExtension tranne i file {ExceptExtension}",
+        "?ExceptKind tranne {ExceptKind}",
+        "?ExceptName tranne {ExceptName}"
+      ],
+      "Note": [
+        "!Permanent Restano 30 giorni nel cestino di Lambek: di' «ripristinali» per rimetterli al loro posto."
+      ]
+    },
+    "files.list": {
+      "Title": "Elencare o cercare file",
+      "Verbs": [
+        "elencare",
+        "mostrare",
+        "cercare",
+        "quale",
+        "ordinare"
+      ],
+      "Examples": [
+        "elencare i file",
+        "mostrare i file in una cartella",
+        "cercare i file grandi",
+        "trova i file",
+        "ordinare i file per dimensione in una cartella"
+      ],
+      "Say": [
+        "elencare",
+        "?Count=1 il file",
+        "!Count=1 !Order !Kind i file",
+        "!Count=1 !Order ?Kind {Kind}",
+        "!Count=1 ?Order i",
+        "!Count=1 ?Order ?Count {Count}",
+        "!Count=1 ?Order file",
+        "?Extension {Extension}",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Order=newest più recente",
+        "?Count=1 ?Order=oldest più vecchio",
+        "?Count=1 ?Order=largest più grande",
+        "?Count=1 ?Order=smallest più piccolo",
+        "?Order ?Kind tra {Kind}",
+        "?Name chiamati {Name}",
+        "?OlderThan ?Count=1 più vecchio di {OlderThan}",
+        "?OlderThan !Count=1 ?Kind=foto più vecchie di {OlderThan}",
+        "?OlderThan !Count=1 !Kind=foto più vecchi di {OlderThan}",
+        "?NewerThan ?Count=1 più recente di {NewerThan}",
+        "?NewerThan !Count=1 più recenti di {NewerThan}",
+        "?MinSize ?Count=1 più grande di {MinSize}",
+        "?MinSize !Count=1 più grandi di {MinSize}",
+        "?MaxSize di meno di {MaxSize}",
+        "?Path in {Path}",
+        "?ExceptExtension tranne i file {ExceptExtension}",
+        "?ExceptKind tranne {ExceptKind}",
+        "?ExceptName tranne {ExceptName}"
+      ]
+    },
+    "files.copy": {
+      "Title": "Copiare file",
+      "Verbs": [
+        "copiare"
+      ],
+      "Examples": [
+        "copiare i file in una cartella",
+        "copiare un file",
+        "copia le foto nella cartella"
+      ],
+      "Say": [
+        "copiare",
+        "?Count=1 il file",
+        "!Count=1 !Order !Kind i file",
+        "!Count=1 !Order ?Kind {Kind}",
+        "!Count=1 ?Order i",
+        "!Count=1 ?Order ?Count {Count}",
+        "!Count=1 ?Order file",
+        "?Extension {Extension}",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Order=newest più recente",
+        "?Count=1 ?Order=oldest più vecchio",
+        "?Count=1 ?Order=largest più grande",
+        "?Count=1 ?Order=smallest più piccolo",
+        "?Order ?Kind tra {Kind}",
+        "?Name chiamati {Name}",
+        "?OlderThan ?Count=1 più vecchio di {OlderThan}",
+        "?OlderThan !Count=1 ?Kind=foto più vecchie di {OlderThan}",
+        "?OlderThan !Count=1 !Kind=foto più vecchi di {OlderThan}",
+        "?NewerThan ?Count=1 più recente di {NewerThan}",
+        "?NewerThan !Count=1 più recenti di {NewerThan}",
+        "?MinSize ?Count=1 più grande di {MinSize}",
+        "?MinSize !Count=1 più grandi di {MinSize}",
+        "?MaxSize di meno di {MaxSize}",
+        "?Source da {Source}",
+        "in {Destination}",
+        "?ExceptExtension tranne i file {ExceptExtension}",
+        "?ExceptKind tranne {ExceptKind}",
+        "?ExceptName tranne {ExceptName}"
+      ]
+    },
+    "files.move": {
+      "Title": "Spostare file",
+      "Verbs": [
+        "spostare"
+      ],
+      "Examples": [
+        "spostare i file in una cartella",
+        "spostare un file",
+        "sposta i documenti in un altra cartella",
+        "metti le foto nella cartella"
+      ],
+      "Say": [
+        "spostare",
+        "?Count=1 il file",
+        "!Count=1 !Order !Kind i file",
+        "!Count=1 !Order ?Kind {Kind}",
+        "!Count=1 ?Order i",
+        "!Count=1 ?Order ?Count {Count}",
+        "!Count=1 ?Order file",
+        "?Extension {Extension}",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Order=newest più recente",
+        "?Count=1 ?Order=oldest più vecchio",
+        "?Count=1 ?Order=largest più grande",
+        "?Count=1 ?Order=smallest più piccolo",
+        "?Order ?Kind tra {Kind}",
+        "?Name chiamati {Name}",
+        "?OlderThan ?Count=1 più vecchio di {OlderThan}",
+        "?OlderThan !Count=1 ?Kind=foto più vecchie di {OlderThan}",
+        "?OlderThan !Count=1 !Kind=foto più vecchi di {OlderThan}",
+        "?NewerThan ?Count=1 più recente di {NewerThan}",
+        "?NewerThan !Count=1 più recenti di {NewerThan}",
+        "?MinSize ?Count=1 più grande di {MinSize}",
+        "?MinSize !Count=1 più grandi di {MinSize}",
+        "?MaxSize di meno di {MaxSize}",
+        "?Source da {Source}",
+        "in {Destination}",
+        "?ExceptExtension tranne i file {ExceptExtension}",
+        "?ExceptKind tranne {ExceptKind}",
+        "?ExceptName tranne {ExceptName}"
+      ]
+    },
+    "files.rename": {
+      "Title": "Rinominare un file",
+      "Verbs": [
+        "rinominare"
+      ],
+      "Examples": [
+        "rinominare un file",
+        "rinominare il file in un nuovo nome"
+      ],
+      "Say": [
+        "rinominare {Name} in {NewName}"
+      ],
+      "Parameters": {
+        "Name": {
+          "Question": "Quale file?"
+        },
+        "NewName": {
+          "After": [
+            "in",
+            "a",
+            "verso"
+          ],
+          "Question": "Qual è il nuovo nome?"
+        }
+      }
+    },
+    "files.create": {
+      "Title": "Creare un file o una cartella",
+      "Verbs": [
+        "creare"
+      ],
+      "Examples": [
+        "creare una cartella",
+        "creare un nuovo file in una cartella",
+        "creare una cartella chiamata"
+      ],
+      "Say": [
+        "creare",
+        "?Path ?Kind=File il file {Path}",
+        "?Path !Kind=File la cartella {Path}",
+        "!Path ?Name ?Kind=File un file chiamato {Name} in {Parent}",
+        "!Path ?Name !Kind=File una cartella chiamata {Name} in {Parent}"
+      ],
+      "RequireOneOf": "Che nome deve avere?",
+      "Parameters": {
+        "Kind": {
+          "Words": {
+            "cartella": "Directory"
+          },
+          "Question": "Un file o una cartella?"
+        }
+      }
+    },
+    "files.free": {
+      "Title": "Liberare spazio su disco",
+      "Verbs": [
+        "liberare"
+      ],
+      "Uses": [
+        "spazio"
+      ],
+      "Examples": [
+        "liberare spazio",
+        "liberare 10 GB in una cartella",
+        "liberare spazio su disco"
+      ],
+      "Say": [
+        "liberare {FreeSize} in {Path}",
+        "?Extension tra i file {Extension}",
+        "?Kind tra {Kind}",
+        "!Extension !Kind ?OlderThan tra i file",
+        "?OlderThan !Kind=foto più vecchi di {OlderThan}",
+        "?OlderThan ?Kind=foto più vecchie di {OlderThan}",
+        "?ExceptExtension , tranne i file {ExceptExtension}",
+        "?ExceptKind , tranne {ExceptKind}",
+        "?ExceptName , tranne {ExceptName}"
+      ],
+      "Note": "I file più grandi vengono eliminati per primi, così se ne elimina il meno possibile."
+    },
+    "files.restore": {
+      "Title": "Ripristinare i file eliminati",
+      "Verbs": [
+        "ripristinare",
+        "annullare",
+        "recuperare"
+      ],
+      "Uses": [
+        "eliminazione",
+        "ultimo",
+        "cestino"
+      ],
+      "Examples": [
+        "ripristinare i file eliminati",
+        "ripristinare i file",
+        "annullare l ultima eliminazione",
+        "recuperare i file dal cestino"
+      ],
+      "Say": [
+        "ripristinare gli ultimi file eliminati",
+        "?Extension ({Extension})",
+        "?Kind ({Kind})",
+        "?Name ({Name})"
+      ],
+      "Note": "Ogni file torna nella cartella da cui è stato eliminato."
+    }
+  },
+  "Methods": {
+    "clean": {
+      "Words": [
+        "ripulisci",
+        "pulisci",
+        "pulire"
+      ],
+      "Steps": [
+        "elimina i file temporanei in {Path}",
+        "elimina i backup più vecchi di 30 giorni in {Path}"
+      ]
+    }
+  }
+}

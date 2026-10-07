@@ -1,0 +1,1056 @@
+{
+  "Language": "de",
+  "Words": {
+    "losche": [
+      "s o^l"
+    ],
+    "loschen": [
+      "s o^l",
+      "o^r s"
+    ],
+    "liste": [
+      "s o^l"
+    ],
+    "auflisten": [
+      "s o^l",
+      "o^r s"
+    ],
+    "zeige": [
+      "s o^l"
+    ],
+    "anzeigen": [
+      "s o^l",
+      "o^r s"
+    ],
+    "finde": [
+      "s o^l"
+    ],
+    "finden": [
+      "s o^l",
+      "o^r s"
+    ],
+    "sortiere": [
+      "s o^l"
+    ],
+    "sortieren": [
+      "s o^l",
+      "o^r s"
+    ],
+    "welche": [
+      "s o^l"
+    ],
+    "erstelle": [
+      "s o^l"
+    ],
+    "erstellen": [
+      "s o^l",
+      "o^r s"
+    ],
+    "kopiere": [
+      "s p^l o^l"
+    ],
+    "kopieren": [
+      "s p^l o^l",
+      "p^r o^r s"
+    ],
+    "verschiebe": [
+      "s p^l o^l"
+    ],
+    "verschieben": [
+      "s p^l o^l",
+      "p^r o^r s"
+    ],
+    "benenne": [
+      "s p^l o^l"
+    ],
+    "umbenennen": [
+      "s p^l o^l",
+      "p^r o^r s"
+    ],
+    "freigeben": [
+      "s o^l",
+      "o^r s"
+    ],
+    "wiederherstellen": [
+      "s o^l",
+      "s",
+      "o^r s"
+    ],
+    "ruckgangig": [
+      "s o^l",
+      "s",
+      "o^r s"
+    ],
+    "datei": [
+      "o"
+    ],
+    "ordner": [
+      "o"
+    ],
+    "alles": [
+      "o"
+    ],
+    "bild": [
+      "o"
+    ],
+    "foto": [
+      "o"
+    ],
+    "video": [
+      "o"
+    ],
+    "musik": [
+      "o"
+    ],
+    "lied": [
+      "o"
+    ],
+    "audio": [
+      "o"
+    ],
+    "audiodatei": [
+      "o"
+    ],
+    "dokument": [
+      "o"
+    ],
+    "archiv": [
+      "o"
+    ],
+    "text": [
+      "o"
+    ],
+    "textdatei": [
+      "o"
+    ],
+    "medien": [
+      "o"
+    ],
+    "mediendatei": [
+      "o"
+    ],
+    "tempdatei": [
+      "o"
+    ],
+    "sicherungsdatei": [
+      "o"
+    ],
+    "loschung": [
+      "o"
+    ],
+    "papierkorb": [
+      "o"
+    ],
+    "temporar": [
+      "o o^l",
+      "o"
+    ],
+    "sicherung": [
+      "o o^l",
+      "o"
+    ],
+    "backup": [
+      "o o^l",
+      "o"
+    ],
+    "platz": [
+      "o^r o",
+      "o"
+    ],
+    "speicherplatz": [
+      "o^r o",
+      "o"
+    ],
+    "in": [
+      "o^r o d^l",
+      "s s^l d^l",
+      "p q^l"
+    ],
+    "im": [
+      "o^r o d^l",
+      "s s^l d^l"
+    ],
+    "auf": [
+      "o^r o d^l",
+      "s s^l d^l"
+    ],
+    "unter": [
+      "o^r o d^l",
+      "o^r o z^l",
+      "o^r o t^l"
+    ],
+    "innerhalb": [
+      "o^r o d^l"
+    ],
+    "nach": [
+      "p d^l",
+      "p q^l"
+    ],
+    "ins": [
+      "p d^l"
+    ],
+    "als": [
+      "c z^l",
+      "c t^l"
+    ],
+    "namens": [
+      "o^r o q^l"
+    ],
+    "genannt": [
+      "o^r o q^l"
+    ],
+    "ausser": [
+      "o^r o o^l"
+    ],
+    "ausgenommen": [
+      "o^r o o^l"
+    ],
+    "ohne": [
+      "o^r o o^l"
+    ],
+    "ausnahme": [
+      "o^r o o^l"
+    ],
+    "und": [
+      "o^r o o^l"
+    ],
+    "alt": [
+      "o o^l",
+      "o^r o c^l",
+      "o^r o"
+    ],
+    "neu": [
+      "o o^l",
+      "o^r o c^l"
+    ],
+    "gross": [
+      "o o^l"
+    ],
+    "grosser": [
+      "o^r o c^l"
+    ],
+    "kleiner": [
+      "o^r o c^l"
+    ],
+    "mehr": [
+      "o^r o c^l"
+    ],
+    "weniger": [
+      "o^r o c^l"
+    ],
+    "uber": [
+      "o^r o z^l",
+      "o^r o t^l"
+    ],
+    "endgultig": [
+      "o o^l",
+      "o^r o",
+      "s^r s",
+      "s s^l"
+    ],
+    "letzt": [
+      "o o^l",
+      "o^r o"
+    ]
+  },
+  "BaseForms": {
+    "losch": "losche",
+    "loscht": "losche",
+    "loesche": "losche",
+    "loesch": "losche",
+    "loeschen": "loschen",
+    "entferne": "losche",
+    "entfern": "losche",
+    "entfernen": "loschen",
+    "beseitige": "losche",
+    "beseitigen": "loschen",
+    "vernichte": "losche",
+    "vernichten": "loschen",
+    "listet": "liste",
+    "listen": "auflisten",
+    "zeig": "zeige",
+    "zeigt": "zeige",
+    "zeigen": "anzeigen",
+    "find": "finde",
+    "findet": "finde",
+    "such": "finde",
+    "suche": "finde",
+    "sucht": "finde",
+    "suchen": "finden",
+    "durchsuche": "finde",
+    "durchsuchen": "finden",
+    "sortier": "sortiere",
+    "sortiert": "sortiere",
+    "ordne": "sortiere",
+    "ordnen": "sortieren",
+    "welcher": "welche",
+    "welches": "welche",
+    "welchen": "welche",
+    "erstell": "erstelle",
+    "erstellt": "erstelle",
+    "erzeuge": "erstelle",
+    "erzeug": "erstelle",
+    "erzeugen": "erstellen",
+    "anlegen": "erstellen",
+    "kopier": "kopiere",
+    "kopiert": "kopiere",
+    "dupliziere": "kopiere",
+    "duplizieren": "kopieren",
+    "verschieb": "verschiebe",
+    "verschiebt": "verschiebe",
+    "bewege": "verschiebe",
+    "beweg": "verschiebe",
+    "bewegen": "verschieben",
+    "benenn": "benenne",
+    "benennt": "benenne",
+    "benennen": "benenne",
+    "umbenenne": "umbenennen",
+    "wiederherstelle": "wiederherstellen",
+    "zuruckholen": "wiederherstellen",
+    "widerrufe": "ruckgangig",
+    "dateien": "datei",
+    "verzeichnis": "ordner",
+    "verzeichnisse": "ordner",
+    "verzeichnissen": "ordner",
+    "ordnern": "ordner",
+    "bilder": "bild",
+    "bildern": "bild",
+    "fotos": "foto",
+    "videos": "video",
+    "lieder": "lied",
+    "songs": "lied",
+    "musikdatei": "audiodatei",
+    "musikdateien": "audiodatei",
+    "audiodateien": "audiodatei",
+    "dokumente": "dokument",
+    "dokumenten": "dokument",
+    "archive": "archiv",
+    "archiven": "archiv",
+    "texte": "text",
+    "textdateien": "textdatei",
+    "mediendateien": "mediendatei",
+    "temporare": "temporar",
+    "temporaren": "temporar",
+    "temporarer": "temporar",
+    "temporares": "temporar",
+    "tempdateien": "tempdatei",
+    "sicherungen": "sicherung",
+    "sicherungskopie": "sicherung",
+    "sicherungskopien": "sicherung",
+    "sicherungsdateien": "sicherungsdatei",
+    "backups": "backup",
+    "loschungen": "loschung",
+    "mulleimer": "papierkorb",
+    "papierkorbs": "papierkorb",
+    "letzte": "letzt",
+    "letzten": "letzt",
+    "letzter": "letzt",
+    "letztes": "letzt",
+    "endgultige": "endgultig",
+    "dauerhaft": "endgultig",
+    "unwiderruflich": "endgultig",
+    "genannte": "genannt",
+    "genannten": "genannt",
+    "benannt": "genannt",
+    "benannte": "genannt",
+    "speicher": "speicherplatz",
+    "freigabe": "freigeben",
+    "schaffe": "freigeben",
+    "schaffen": "freigeben",
+    "innen": "innerhalb"
+  },
+  "Gloss": {
+    "losche": "delete",
+    "loschen": "delete",
+    "liste": "list",
+    "auflisten": "list",
+    "zeige": "show",
+    "anzeigen": "show",
+    "finde": "find",
+    "finden": "find",
+    "sortiere": "sort",
+    "sortieren": "sort",
+    "welche": "which",
+    "erstelle": "create",
+    "erstellen": "create",
+    "kopiere": "copy",
+    "kopieren": "copy",
+    "verschiebe": "move",
+    "verschieben": "move",
+    "benenne": "rename",
+    "umbenennen": "rename",
+    "freigeben": "free",
+    "wiederherstellen": "restore",
+    "ruckgangig": "undo",
+    "datei": "file",
+    "ordner": "folder",
+    "alles": "everything",
+    "bild": "image",
+    "foto": "photo",
+    "video": "video",
+    "musik": "music",
+    "lied": "song",
+    "audio": "audio",
+    "audiodatei": "audio",
+    "dokument": "document",
+    "archiv": "archive",
+    "text": "text",
+    "textdatei": "text",
+    "medien": "media",
+    "mediendatei": "media",
+    "tempdatei": "temporary",
+    "temporar": "temporary",
+    "sicherungsdatei": "backup",
+    "sicherung": "backup",
+    "backup": "backup",
+    "loschung": "deletion",
+    "papierkorb": "trash",
+    "platz": "space",
+    "speicherplatz": "space",
+    "in": "in",
+    "im": "in",
+    "auf": "on",
+    "unter": "under",
+    "innerhalb": "inside",
+    "nach": "to",
+    "ins": "into",
+    "als": "than",
+    "namens": "named",
+    "genannt": "called",
+    "ausser": "except",
+    "ausgenommen": "excluding",
+    "ohne": "except",
+    "ausnahme": "except",
+    "und": "and",
+    "alt": "old",
+    "neu": "new",
+    "gross": "large",
+    "grosser": "larger",
+    "kleiner": "smaller",
+    "mehr": "larger",
+    "weniger": "smaller",
+    "uber": "larger",
+    "endgultig": "permanently",
+    "letzt": "last"
+  },
+  "Rewrites": [
+    {
+      "Pattern": "(?i)(?<=\\bgr[oö])ß",
+      "Replacement": "ss"
+    },
+    {
+      "Pattern": "(?i)\\b(desktop|downloads?|dokumente|bilder|musik|videos)-(?:ordner|verzeichnis)\\b",
+      "Replacement": "Ordner $1"
+    },
+    {
+      "Pattern": "(?i)(?<=[\\p{L}\\p{N}])-(?=(?:dateien|datei|ordner|dokumente?)\\b)",
+      "Replacement": " "
+    },
+    {
+      "Pattern": "(?i),\\s*welche\\b",
+      "Replacement": ", die"
+    },
+    {
+      "Pattern": "(?i)\\bmit\\s+(?:dem\\s+)?namen\\b",
+      "Replacement": "namens"
+    },
+    {
+      "Pattern": "(?i)\\bin\\s+(?:den|das)\\s+(?=(?:ordner|verzeichnis)\\s)",
+      "Replacement": "nach "
+    },
+    {
+      "Pattern": "(?i)\\b(list(?:e|et|en))\\b(.*?)\\s+auf(?=\\s*[.!?]*\\s*$)",
+      "Replacement": "$1$2"
+    },
+    {
+      "Pattern": "(?i)\\b(?:gib|gebe|gebt|geben)\\b(.*?)\\s+frei(?=\\s*[.!?]*\\s*$)",
+      "Replacement": "freigeben$1"
+    },
+    {
+      "Pattern": "(?i)\\b(?:stelle|stell|stellt|stellen)\\b(.*?)\\s+wieder\\s+her(?=\\s*[.!?]*\\s*$)",
+      "Replacement": "wiederherstellen$1"
+    },
+    {
+      "Pattern": "(?i)\\b(?:hole|hol|holt|holen)\\b(.*?)\\s+zur[uü]ck(?=\\s*[.!?]*\\s*$)",
+      "Replacement": "wiederherstellen$1"
+    },
+    {
+      "Pattern": "(?i)\\b(?:mache|mach|macht|machen)\\b(.*?)\\s+r[uü]ckg[aä]ngig(?=\\s*[.!?]*\\s*$)",
+      "Replacement": "rückgängig$1"
+    }
+  ],
+  "Folders": {
+    "schreibtisch": "Desktop",
+    "dokumente": "MyDocuments",
+    "bilder": "MyPictures",
+    "musik": "MyMusic",
+    "download": "Downloads"
+  },
+  "Category": {
+    "Title": "Dateien",
+    "Summary": "Dateien und Ordner suchen, kopieren, verschieben, umbenennen, aufräumen und Speicherplatz freigeben.",
+    "Examples": [
+      "zeige die Dateien größer als 100 MB in C:\\Users",
+      "lösche die .tmp-Dateien älter als 30 Tage in C:\\Temp",
+      "verschiebe die .log-Dateien aus C:\\Temp nach D:\\Archiv"
+    ]
+  },
+  "Types": {
+    "o": "Welche Dateien oder Ordner?",
+    "d": "In welchem Ordner?",
+    "p": "Wohin?",
+    "c": "Im Vergleich wozu?",
+    "z": "Welche Größe?",
+    "t": "Welches Alter oder welche Dauer?",
+    "q": "Welchen Namen soll es tragen?"
+  },
+  "Sorts": {
+    "o": {
+      "file": [
+        "datei",
+        "archiv",
+        "audio",
+        "audiodatei",
+        "backup",
+        "bild",
+        "dokument",
+        "foto",
+        "lied",
+        "medien",
+        "mediendatei",
+        "musik",
+        "sicherung",
+        "sicherungsdatei",
+        "tempdatei",
+        "temporar",
+        "text",
+        "textdatei",
+        "video"
+      ],
+      "folder": [
+        "ordner"
+      ]
+    }
+  },
+  "Entities": [
+    {
+      "Name": "path",
+      "Priority": 39,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:in|im|auf|aus|von|vom|nach|ins|unter)\\s+(?:(?:den|dem|das|der|die|meinen|meinem|meiner|mein|meine)\\s+)?)(?:ordner|verzeichnis)\\s+(?<v>(?:[A-Za-z]:\\\\|\\\\\\\\|\\.{1,2}\\\\)(?:[^\\s,;\"\\\\:]+(?: [^\\s,;\"\\\\:]+)*\\\\)*(?:[^\\s,;\"\\\\]*[^\\s,;\"\\\\.])?|%[A-Za-z_]+%(?:\\\\[^\\s,;\"]*)?|\\$env:[A-Za-z_]+(?:\\\\[^\\s,;\"]*)?|\\$HOME(?:/[^\\s,;\"]*)?|(?<![\\w/:.~])(?:~|\\.{1,2})?/(?:[^\\s,;\"/]+/)*[^\\s,;\"/.]+(?:\\.[^\\s,;\"/.]+)*/?|(?<![\\w/])~(?=\\s|$))"
+    },
+    {
+      "Name": "path",
+      "Priority": 41,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:in|im|auf|aus|von|vom|nach|ins|unter)\\s+(?:(?:den|dem|das|der|die|meinen|meinem|meiner|mein|meine)\\s+)?)(?:(?:ordner|verzeichnis)\\s+)?(?<v>{folders})\\b(?![\\\\/.\\w])"
+    },
+    {
+      "Name": "extension",
+      "Priority": 71,
+      "Kind": "extension",
+      "Pattern": "(?i)(?:(?<![\\w.\\\\/:])(?<v>(?=[a-z0-9]*[a-z])[a-z0-9]{2,5})(?=\\s+(?:dateien|datei|dokumente?)\\b)|(?<=\\b(?:dateien|datei|die|alle|meine|diese)\\s+)(?<v>(?=[a-z0-9]*[a-z])[a-z0-9]{2,5})(?![\\w.\\\\/:@-]))"
+    }
+  ],
+  "Units": {
+    "duration": {
+      "tag": 86400,
+      "tage": 86400,
+      "tagen": 86400,
+      "woche": 604800,
+      "wochen": 604800,
+      "monat": 2592000,
+      "monate": 2592000,
+      "monaten": 2592000,
+      "jahr": 31536000,
+      "jahre": 31536000,
+      "jahren": 31536000,
+      "stunde": 3600,
+      "stunden": 3600,
+      "minuten": 60
+    },
+    "size": {
+      "kilobyte": 1024,
+      "megabyte": 1048576,
+      "gigabyte": 1073741824,
+      "terabyte": 1099511627776
+    }
+  },
+  "Orders": {
+    "neueste": "newest",
+    "neuesten": "newest",
+    "jungste": "newest",
+    "jungsten": "newest",
+    "aktuellste": "newest",
+    "aktuellsten": "newest",
+    "alteste": "oldest",
+    "altesten": "oldest",
+    "grosste": "largest",
+    "grossten": "largest",
+    "kleinste": "smallest",
+    "kleinsten": "smallest",
+    "nach grosse": "largest",
+    "nach datum": "newest",
+    "nach alter": "oldest",
+    "von klein nach gross": "smallest",
+    "von gross nach klein": "largest",
+    "von neu nach alt": "newest",
+    "von alt nach neu": "oldest"
+  },
+  "Which": {
+    "Nouns": [
+      "datei"
+    ],
+    "All": [
+      "alle",
+      "alles",
+      "samtliche",
+      "jede",
+      "jeden"
+    ],
+    "Question": "Welche Datei genau? Nennen Sie ihren Namen oder sagen Sie die neueste, älteste, größte oder kleinste."
+  },
+  "Parameters": {
+    "Path": {
+      "After": [
+        "in",
+        "im",
+        "auf",
+        "unter",
+        "innerhalb"
+      ],
+      "Question": "In welchem Ordner?"
+    },
+    "Source": {
+      "After": [
+        "in",
+        "im",
+        "auf",
+        "unter",
+        "innerhalb"
+      ]
+    },
+    "Parent": {
+      "After": [
+        "in",
+        "im",
+        "auf",
+        "unter",
+        "innerhalb"
+      ]
+    },
+    "Destination": {
+      "After": [
+        "nach",
+        "ins"
+      ],
+      "Question": "Wohin?"
+    },
+    "OlderThan": {
+      "After": [
+        "alt",
+        "uber",
+        "mehr"
+      ]
+    },
+    "NewerThan": {
+      "After": [
+        "neu",
+        "unter",
+        "weniger"
+      ]
+    },
+    "MinSize": {
+      "After": [
+        "grosser",
+        "uber",
+        "mehr"
+      ]
+    },
+    "MaxSize": {
+      "After": [
+        "kleiner",
+        "unter",
+        "weniger"
+      ]
+    },
+    "ExceptExtension": {
+      "After": [
+        "ausser",
+        "ausgenommen",
+        "ohne",
+        "ausnahme"
+      ]
+    },
+    "ExceptKind": {
+      "After": [
+        "ausser",
+        "ausgenommen",
+        "ohne",
+        "ausnahme"
+      ],
+      "Words": {
+        "bild": "image",
+        "foto": "image",
+        "video": "video",
+        "musik": "audio",
+        "lied": "audio",
+        "audio": "audio",
+        "audiodatei": "audio",
+        "dokument": "document",
+        "archiv": "compressed",
+        "text": "text",
+        "textdatei": "text",
+        "medien": "media",
+        "mediendatei": "media",
+        "temporar": "temporary",
+        "tempdatei": "temporary",
+        "sicherung": "backup",
+        "sicherungsdatei": "backup",
+        "backup": "backup"
+      }
+    },
+    "ExceptName": {
+      "After": [
+        "ausser",
+        "ausgenommen",
+        "ohne",
+        "ausnahme"
+      ]
+    },
+    "Kind": {
+      "Words": {
+        "bild": "image",
+        "foto": "image",
+        "video": "video",
+        "musik": "audio",
+        "lied": "audio",
+        "audio": "audio",
+        "audiodatei": "audio",
+        "dokument": "document",
+        "archiv": "compressed",
+        "text": "text",
+        "textdatei": "text",
+        "medien": "media",
+        "mediendatei": "media",
+        "temporar": "temporary",
+        "tempdatei": "temporary",
+        "sicherung": "backup",
+        "sicherungsdatei": "backup",
+        "backup": "backup"
+      }
+    },
+    "Permanent": {
+      "Words": {
+        "endgultig": "yes"
+      }
+    },
+    "Order": {
+      "Question": "Welche: die neuesten, ältesten, größten oder kleinsten?"
+    },
+    "Count": {
+      "Question": "Wie viele?"
+    },
+    "FreeSize": {
+      "Question": "Wie viel Speicherplatz?"
+    }
+  },
+  "Actions": {
+    "files.delete": {
+      "Title": "Dateien oder Ordner löschen",
+      "Verbs": [
+        "losche",
+        "loschen"
+      ],
+      "Examples": [
+        "losche die dateien",
+        "losche die alten dateien in einem ordner",
+        "entferne die log dateien",
+        "loschen sie einen ordner",
+        "dateien loschen"
+      ],
+      "Say": [
+        "die",
+        "!Count=1 ?Count {Count}",
+        "?Count=1 ?Order=newest neueste",
+        "?Count=1 ?Order=oldest älteste",
+        "?Count=1 ?Order=largest größte",
+        "?Count=1 ?Order=smallest kleinste",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Extension {Extension}-Datei",
+        "?Count=1 !Extension Datei",
+        "!Count=1 ?Extension {Extension}-Dateien",
+        "!Count=1 !Extension !Kind Dateien",
+        "!Count=1 !Extension ?Kind {Kind}",
+        "?Count=1 ?Kind der Kategorie {Kind}",
+        "?Name namens {Name}",
+        "?OlderThan älter als {OlderThan}",
+        "?NewerThan neuer als {NewerThan}",
+        "?MinSize größer als {MinSize}",
+        "?MaxSize kleiner als {MaxSize}",
+        "in {Path}",
+        "?ExceptExtension mit Ausnahme der {ExceptExtension}-Dateien",
+        "?ExceptKind mit Ausnahme der {ExceptKind}",
+        "?ExceptName mit Ausnahme von {ExceptName}",
+        "?Permanent endgültig",
+        "löschen"
+      ],
+      "Note": [
+        "!Permanent Sie bleiben 30 Tage im Papierkorb von Lambek: Sagen Sie „stelle sie wieder her“, um sie zurückzuholen."
+      ]
+    },
+    "files.list": {
+      "Title": "Dateien auflisten oder suchen",
+      "Verbs": [
+        "liste",
+        "auflisten",
+        "zeige",
+        "anzeigen",
+        "finde",
+        "finden",
+        "welche",
+        "sortiere",
+        "sortieren"
+      ],
+      "Examples": [
+        "zeige die dateien",
+        "zeige die dateien in einem ordner",
+        "finde die grossen dateien",
+        "suche dateien",
+        "sortiere die dateien nach grosse in einem ordner",
+        "dateien auflisten"
+      ],
+      "Say": [
+        "die",
+        "!Count=1 ?Count {Count}",
+        "?Count=1 ?Order=newest neueste",
+        "?Count=1 ?Order=oldest älteste",
+        "?Count=1 ?Order=largest größte",
+        "?Count=1 ?Order=smallest kleinste",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Extension {Extension}-Datei",
+        "?Count=1 !Extension Datei",
+        "!Count=1 ?Extension {Extension}-Dateien",
+        "!Count=1 !Extension !Kind Dateien",
+        "!Count=1 !Extension ?Kind {Kind}",
+        "?Count=1 ?Kind der Kategorie {Kind}",
+        "?Name namens {Name}",
+        "?OlderThan älter als {OlderThan}",
+        "?NewerThan neuer als {NewerThan}",
+        "?MinSize größer als {MinSize}",
+        "?MaxSize kleiner als {MaxSize}",
+        "?Path in {Path}",
+        "?ExceptExtension mit Ausnahme der {ExceptExtension}-Dateien",
+        "?ExceptKind mit Ausnahme der {ExceptKind}",
+        "?ExceptName mit Ausnahme von {ExceptName}",
+        "anzeigen"
+      ]
+    },
+    "files.copy": {
+      "Title": "Dateien kopieren",
+      "Verbs": [
+        "kopiere",
+        "kopieren"
+      ],
+      "Examples": [
+        "kopiere die dateien in einen ordner",
+        "kopiere eine datei",
+        "dateien nach einem ordner kopieren"
+      ],
+      "Say": [
+        "die",
+        "!Count=1 ?Count {Count}",
+        "?Count=1 ?Order=newest neueste",
+        "?Count=1 ?Order=oldest älteste",
+        "?Count=1 ?Order=largest größte",
+        "?Count=1 ?Order=smallest kleinste",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Extension {Extension}-Datei",
+        "?Count=1 !Extension Datei",
+        "!Count=1 ?Extension {Extension}-Dateien",
+        "!Count=1 !Extension !Kind Dateien",
+        "!Count=1 !Extension ?Kind {Kind}",
+        "?Count=1 ?Kind der Kategorie {Kind}",
+        "?Name namens {Name}",
+        "?OlderThan älter als {OlderThan}",
+        "?NewerThan neuer als {NewerThan}",
+        "?MinSize größer als {MinSize}",
+        "?MaxSize kleiner als {MaxSize}",
+        "?Source aus {Source}",
+        "?ExceptExtension mit Ausnahme der {ExceptExtension}-Dateien",
+        "?ExceptKind mit Ausnahme der {ExceptKind}",
+        "?ExceptName mit Ausnahme von {ExceptName}",
+        "nach {Destination}",
+        "kopieren"
+      ],
+      "RequireOneOf": "Aus welchem Ordner?"
+    },
+    "files.move": {
+      "Title": "Dateien verschieben",
+      "Verbs": [
+        "verschiebe",
+        "verschieben"
+      ],
+      "Examples": [
+        "verschiebe die dateien in einen ordner",
+        "verschiebe eine datei",
+        "dateien nach einem ordner verschieben"
+      ],
+      "Say": [
+        "die",
+        "!Count=1 ?Count {Count}",
+        "?Count=1 ?Order=newest neueste",
+        "?Count=1 ?Order=oldest älteste",
+        "?Count=1 ?Order=largest größte",
+        "?Count=1 ?Order=smallest kleinste",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Extension {Extension}-Datei",
+        "?Count=1 !Extension Datei",
+        "!Count=1 ?Extension {Extension}-Dateien",
+        "!Count=1 !Extension !Kind Dateien",
+        "!Count=1 !Extension ?Kind {Kind}",
+        "?Count=1 ?Kind der Kategorie {Kind}",
+        "?Name namens {Name}",
+        "?OlderThan älter als {OlderThan}",
+        "?NewerThan neuer als {NewerThan}",
+        "?MinSize größer als {MinSize}",
+        "?MaxSize kleiner als {MaxSize}",
+        "?Source aus {Source}",
+        "?ExceptExtension mit Ausnahme der {ExceptExtension}-Dateien",
+        "?ExceptKind mit Ausnahme der {ExceptKind}",
+        "?ExceptName mit Ausnahme von {ExceptName}",
+        "nach {Destination}",
+        "verschieben"
+      ],
+      "RequireOneOf": "Aus welchem Ordner?"
+    },
+    "files.rename": {
+      "Title": "Eine Datei umbenennen",
+      "Verbs": [
+        "benenne",
+        "umbenennen"
+      ],
+      "Examples": [
+        "benenne eine datei um",
+        "benenne die datei in einen neuen namen um",
+        "eine datei umbenennen"
+      ],
+      "Say": [
+        "{Name} in {NewName} umbenennen"
+      ],
+      "Parameters": {
+        "Name": {
+          "Question": "Welche Datei?"
+        },
+        "NewName": {
+          "After": [
+            "in",
+            "nach"
+          ],
+          "Question": "Wie lautet der neue Name?"
+        }
+      }
+    },
+    "files.create": {
+      "Title": "Eine Datei oder einen Ordner erstellen",
+      "Verbs": [
+        "erstelle",
+        "erstellen"
+      ],
+      "Examples": [
+        "erstelle einen ordner",
+        "erstelle eine neue datei in einem ordner",
+        "lege ein verzeichnis an",
+        "erstelle einen ordner namens"
+      ],
+      "Say": [
+        "?Path ?Kind=ordner den Ordner {Path}",
+        "?Path !Kind=ordner die Datei {Path}",
+        "!Path ?Name ?Kind=ordner einen Ordner namens {Name} in {Parent}",
+        "!Path ?Name !Kind=ordner eine Datei namens {Name} in {Parent}",
+        "erstellen"
+      ],
+      "RequireOneOf": "Welchen Namen soll es tragen?",
+      "Parameters": {
+        "Kind": {
+          "Words": {
+            "datei": "File",
+            "ordner": "Directory"
+          },
+          "Question": "Eine Datei oder einen Ordner?"
+        },
+        "Name": {
+          "After": [
+            "namens",
+            "genannt"
+          ]
+        }
+      }
+    },
+    "files.free": {
+      "Title": "Speicherplatz freigeben",
+      "Verbs": [
+        "freigeben"
+      ],
+      "Uses": [
+        "platz",
+        "speicherplatz"
+      ],
+      "Examples": [
+        "speicherplatz freigeben",
+        "gib 10 gb in einem ordner frei",
+        "platz schaffen"
+      ],
+      "Say": [
+        "{FreeSize} in {Path}",
+        "?Extension mit {Extension}-Dateien",
+        "?Kind mit {Kind}",
+        "?OlderThan älter als {OlderThan}",
+        "?ExceptExtension mit Ausnahme der {ExceptExtension}-Dateien",
+        "?ExceptKind mit Ausnahme der {ExceptKind}",
+        "?ExceptName mit Ausnahme von {ExceptName}",
+        "freigeben"
+      ],
+      "Note": "Die größten Dateien werden zuerst gelöscht, damit so wenige Dateien wie möglich verschwinden."
+    },
+    "files.restore": {
+      "Title": "Gelöschte Dateien wiederherstellen",
+      "Verbs": [
+        "wiederherstellen",
+        "ruckgangig"
+      ],
+      "Uses": [
+        "loschung",
+        "letzt",
+        "papierkorb"
+      ],
+      "Examples": [
+        "stelle die geloschten dateien wieder her",
+        "die dateien wiederherstellen",
+        "mach die letzte loschung ruckgangig",
+        "hole die dateien aus dem papierkorb zuruck"
+      ],
+      "Say": [
+        "die zuletzt gelöschten Dateien",
+        "?Extension ({Extension})",
+        "?Kind ({Kind})",
+        "?Name ({Name})",
+        "wiederherstellen"
+      ],
+      "Note": "Jede Datei kehrt in den Ordner zurück, aus dem sie gelöscht wurde."
+    }
+  },
+  "Methods": {
+    "clean": {
+      "Words": [
+        "bereinige",
+        "saubere",
+        "raume auf"
+      ],
+      "Steps": [
+        "lösche die temporären Dateien in {Path}",
+        "lösche die Sicherungen älter als 30 Tage in {Path}"
+      ]
+    }
+  }
+}

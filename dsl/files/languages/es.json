@@ -1,0 +1,1059 @@
+{
+  "Language": "es",
+  "Words": {
+    "eliminar": [
+      "s o^l"
+    ],
+    "listar": [
+      "s o^l"
+    ],
+    "mostrar": [
+      "s o^l"
+    ],
+    "buscar": [
+      "s o^l"
+    ],
+    "crear": [
+      "s o^l"
+    ],
+    "liberar": [
+      "s o^l"
+    ],
+    "ordenar": [
+      "s o^l"
+    ],
+    "cual": [
+      "s o^l"
+    ],
+    "copiar": [
+      "s p^l o^l"
+    ],
+    "mover": [
+      "s p^l o^l"
+    ],
+    "renombrar": [
+      "s p^l o^l"
+    ],
+    "restaurar": [
+      "s o^l",
+      "s"
+    ],
+    "recuperar": [
+      "s o^l",
+      "s"
+    ],
+    "deshacer": [
+      "s o^l",
+      "s"
+    ],
+    "archivo": [
+      "o"
+    ],
+    "carpeta": [
+      "o"
+    ],
+    "todo": [
+      "o"
+    ],
+    "foto": [
+      "o"
+    ],
+    "video": [
+      "o"
+    ],
+    "cancion": [
+      "o"
+    ],
+    "documento": [
+      "o"
+    ],
+    "papelera": [
+      "o"
+    ],
+    "eliminacion": [
+      "o"
+    ],
+    "imagen": [
+      "o",
+      "o^r o"
+    ],
+    "musica": [
+      "o",
+      "o^r o"
+    ],
+    "audio": [
+      "o",
+      "o^r o"
+    ],
+    "texto": [
+      "o",
+      "o^r o"
+    ],
+    "multimedia": [
+      "o",
+      "o^r o"
+    ],
+    "comprimido": [
+      "o",
+      "o^r o"
+    ],
+    "temporal": [
+      "o^r o",
+      "o"
+    ],
+    "respaldo": [
+      "o^r o",
+      "o"
+    ],
+    "espacio": [
+      "o^r o",
+      "o"
+    ],
+    "en": [
+      "o^r o d^l",
+      "s s^l d^l"
+    ],
+    "dentro": [
+      "o^r o d^l"
+    ],
+    "a": [
+      "p d^l",
+      "p q^l"
+    ],
+    "al": [
+      "p d^l",
+      "p q^l"
+    ],
+    "hacia": [
+      "p d^l",
+      "p q^l"
+    ],
+    "mas": [
+      "o^r o z^l",
+      "o^r o t^l"
+    ],
+    "menos": [
+      "o^r o z^l",
+      "o^r o t^l"
+    ],
+    "mayor": [
+      "o^r o z^l"
+    ],
+    "menor": [
+      "o^r o z^l"
+    ],
+    "antiguo": [
+      "o o^l",
+      "o^r o"
+    ],
+    "nuevo": [
+      "o o^l",
+      "o^r o"
+    ],
+    "grande": [
+      "o o^l",
+      "o^r o"
+    ],
+    "ultimo": [
+      "o o^l",
+      "o^r o"
+    ],
+    "llamado": [
+      "o^r o q^l"
+    ],
+    "nombrado": [
+      "o^r o q^l"
+    ],
+    "excepto": [
+      "o^r o o^l"
+    ],
+    "exceptuando": [
+      "o^r o o^l"
+    ],
+    "y": [
+      "o^r o o^l"
+    ],
+    "definitivamente": [
+      "o o^l",
+      "s^r s",
+      "s s^l"
+    ],
+    "permanentemente": [
+      "o o^l",
+      "s^r s",
+      "s s^l"
+    ]
+  },
+  "BaseForms": {
+    "elimina": "eliminar",
+    "elimine": "eliminar",
+    "eliminad": "eliminar",
+    "eliminen": "eliminar",
+    "eliminas": "eliminar",
+    "elimines": "eliminar",
+    "eliminamos": "eliminar",
+    "eliminemos": "eliminar",
+    "eliminalo": "eliminar",
+    "eliminala": "eliminar",
+    "eliminalos": "eliminar",
+    "eliminalas": "eliminar",
+    "eliminelo": "eliminar",
+    "eliminela": "eliminar",
+    "eliminelos": "eliminar",
+    "eliminelas": "eliminar",
+    "eliminadlos": "eliminar",
+    "eliminadlas": "eliminar",
+    "eliminarlo": "eliminar",
+    "eliminarla": "eliminar",
+    "eliminarlos": "eliminar",
+    "eliminarlas": "eliminar",
+    "borrar": "eliminar",
+    "borra": "eliminar",
+    "borre": "eliminar",
+    "borrad": "eliminar",
+    "borren": "eliminar",
+    "borres": "eliminar",
+    "borramos": "eliminar",
+    "borremos": "eliminar",
+    "borralo": "eliminar",
+    "borrala": "eliminar",
+    "borralos": "eliminar",
+    "borralas": "eliminar",
+    "borrelo": "eliminar",
+    "borrela": "eliminar",
+    "borrelos": "eliminar",
+    "borrelas": "eliminar",
+    "borradlos": "eliminar",
+    "borradlas": "eliminar",
+    "borrarlo": "eliminar",
+    "borrarla": "eliminar",
+    "borrarlos": "eliminar",
+    "borrarlas": "eliminar",
+    "suprimir": "eliminar",
+    "suprime": "eliminar",
+    "suprima": "eliminar",
+    "suprimid": "eliminar",
+    "suprimelos": "eliminar",
+    "suprimelas": "eliminar",
+    "quitar": "eliminar",
+    "quita": "eliminar",
+    "quite": "eliminar",
+    "quitad": "eliminar",
+    "quiten": "eliminar",
+    "quitalos": "eliminar",
+    "quitalas": "eliminar",
+    "quitarlos": "eliminar",
+    "remover": "eliminar",
+    "remueve": "eliminar",
+    "remueva": "eliminar",
+    "descartar": "eliminar",
+    "descarta": "eliminar",
+    "descarte": "eliminar",
+    "destruir": "eliminar",
+    "destruye": "eliminar",
+    "destruya": "eliminar",
+    "purgar": "eliminar",
+    "purga": "eliminar",
+    "purgue": "eliminar",
+    "lista": "listar",
+    "liste": "listar",
+    "listad": "listar",
+    "listen": "listar",
+    "listame": "listar",
+    "listalos": "listar",
+    "enumerar": "listar",
+    "enumera": "listar",
+    "enumere": "listar",
+    "muestra": "mostrar",
+    "muestre": "mostrar",
+    "mostrad": "mostrar",
+    "muestren": "mostrar",
+    "muestrame": "mostrar",
+    "muestramelos": "mostrar",
+    "muestramelas": "mostrar",
+    "muestrelos": "mostrar",
+    "mostrarme": "mostrar",
+    "ensenar": "mostrar",
+    "ensena": "mostrar",
+    "ensene": "mostrar",
+    "ensenad": "mostrar",
+    "ensename": "mostrar",
+    "ver": "mostrar",
+    "veamos": "mostrar",
+    "visualizar": "mostrar",
+    "visualiza": "mostrar",
+    "visualice": "mostrar",
+    "busca": "buscar",
+    "busque": "buscar",
+    "buscad": "buscar",
+    "busquen": "buscar",
+    "buscame": "buscar",
+    "buscalos": "buscar",
+    "buscalas": "buscar",
+    "encontrar": "buscar",
+    "encuentra": "buscar",
+    "encuentre": "buscar",
+    "encuentrame": "buscar",
+    "localizar": "buscar",
+    "localiza": "buscar",
+    "localice": "buscar",
+    "crea": "crear",
+    "cree": "crear",
+    "cread": "crear",
+    "creen": "crear",
+    "creame": "crear",
+    "crealo": "crear",
+    "creala": "crear",
+    "copia": "copiar",
+    "copie": "copiar",
+    "copiad": "copiar",
+    "copien": "copiar",
+    "copialo": "copiar",
+    "copiala": "copiar",
+    "copialos": "copiar",
+    "copialas": "copiar",
+    "copielos": "copiar",
+    "copielas": "copiar",
+    "copiarlo": "copiar",
+    "copiarla": "copiar",
+    "copiarlos": "copiar",
+    "copiarlas": "copiar",
+    "duplicar": "copiar",
+    "duplica": "copiar",
+    "duplique": "copiar",
+    "mueve": "mover",
+    "mueva": "mover",
+    "moved": "mover",
+    "muevan": "mover",
+    "muevelo": "mover",
+    "muevela": "mover",
+    "muevelos": "mover",
+    "muevelas": "mover",
+    "muevalos": "mover",
+    "muevalas": "mover",
+    "moverlo": "mover",
+    "moverla": "mover",
+    "moverlos": "mover",
+    "moverlas": "mover",
+    "trasladar": "mover",
+    "traslada": "mover",
+    "traslade": "mover",
+    "trasladalos": "mover",
+    "trasladalas": "mover",
+    "llevar": "mover",
+    "lleva": "mover",
+    "lleve": "mover",
+    "llevalos": "mover",
+    "llevalas": "mover",
+    "renombra": "renombrar",
+    "renombre": "renombrar",
+    "renombrad": "renombrar",
+    "renombralo": "renombrar",
+    "renombrala": "renombrar",
+    "renombrarlo": "renombrar",
+    "renombrarla": "renombrar",
+    "libera": "liberar",
+    "libere": "liberar",
+    "liberad": "liberar",
+    "liberen": "liberar",
+    "liberame": "liberar",
+    "restaura": "restaurar",
+    "restaure": "restaurar",
+    "restaurad": "restaurar",
+    "restauralos": "restaurar",
+    "restauralas": "restaurar",
+    "restauralo": "restaurar",
+    "restaurala": "restaurar",
+    "restaurarlos": "restaurar",
+    "restaurarlas": "restaurar",
+    "restablecer": "restaurar",
+    "restablece": "restaurar",
+    "restablezca": "restaurar",
+    "recupera": "recuperar",
+    "recupere": "recuperar",
+    "recuperad": "recuperar",
+    "recuperalos": "recuperar",
+    "recuperalas": "recuperar",
+    "recuperalo": "recuperar",
+    "recuperala": "recuperar",
+    "recuperarlos": "recuperar",
+    "recuperarlas": "recuperar",
+    "deshaz": "deshacer",
+    "deshaga": "deshacer",
+    "deshaced": "deshacer",
+    "deshazlo": "deshacer",
+    "ordena": "ordenar",
+    "ordene": "ordenar",
+    "ordenad": "ordenar",
+    "ordenalos": "ordenar",
+    "ordenalas": "ordenar",
+    "clasificar": "ordenar",
+    "clasifica": "ordenar",
+    "clasifique": "ordenar",
+    "cuales": "cual",
+    "archivos": "archivo",
+    "fichero": "archivo",
+    "ficheros": "archivo",
+    "carpetas": "carpeta",
+    "directorio": "carpeta",
+    "directorios": "carpeta",
+    "imagenes": "imagen",
+    "fotos": "foto",
+    "fotografia": "foto",
+    "fotografias": "foto",
+    "videos": "video",
+    "musicas": "musica",
+    "canciones": "cancion",
+    "audios": "audio",
+    "documentos": "documento",
+    "comprimidos": "comprimido",
+    "comprimida": "comprimido",
+    "comprimidas": "comprimido",
+    "textos": "texto",
+    "temporales": "temporal",
+    "respaldos": "respaldo",
+    "eliminaciones": "eliminacion",
+    "borrado": "eliminacion",
+    "llamada": "llamado",
+    "llamados": "llamado",
+    "llamadas": "llamado",
+    "llama": "llamado",
+    "llaman": "llamado",
+    "nombrada": "nombrado",
+    "nombrados": "nombrado",
+    "nombradas": "nombrado",
+    "ultima": "ultimo",
+    "ultimos": "ultimo",
+    "ultimas": "ultimo",
+    "todito": "todo"
+  },
+  "Gloss": {
+    "eliminar": "delete",
+    "listar": "list",
+    "mostrar": "show",
+    "buscar": "find",
+    "crear": "create",
+    "copiar": "copy",
+    "mover": "move",
+    "renombrar": "rename",
+    "liberar": "free",
+    "restaurar": "restore",
+    "recuperar": "restore",
+    "deshacer": "undo",
+    "ordenar": "sort",
+    "cual": "which",
+    "archivo": "file",
+    "carpeta": "folder",
+    "todo": "everything",
+    "imagen": "image",
+    "foto": "photo",
+    "video": "video",
+    "musica": "music",
+    "cancion": "song",
+    "audio": "audio",
+    "documento": "document",
+    "comprimido": "archive",
+    "texto": "text",
+    "temporal": "temporary",
+    "respaldo": "backup",
+    "multimedia": "media",
+    "espacio": "space",
+    "papelera": "trash",
+    "eliminacion": "deletion",
+    "en": "in",
+    "dentro": "inside",
+    "a": "to",
+    "al": "to",
+    "hacia": "to",
+    "mas": "larger",
+    "menos": "smaller",
+    "mayor": "larger",
+    "menor": "smaller",
+    "antiguo": "old",
+    "nuevo": "new",
+    "grande": "large",
+    "ultimo": "last",
+    "llamado": "called",
+    "nombrado": "named",
+    "excepto": "except",
+    "exceptuando": "excluding",
+    "y": "and",
+    "definitivamente": "permanently",
+    "permanentemente": "permanently"
+  },
+  "Rewrites": [
+    {
+      "Pattern": "(?i)\\bcopias\\s+de\\s+(?:seguridad|respaldo)\\b",
+      "Replacement": "respaldos"
+    },
+    {
+      "Pattern": "(?i)\\bcopia\\s+de\\s+(?:seguridad|respaldo)\\b",
+      "Replacement": "respaldo"
+    },
+    {
+      "Pattern": "(?i)\\bpara\\s+siempre\\b",
+      "Replacement": "definitivamente"
+    },
+    {
+      "Pattern": "(?i)\\bespacio\\s+(?:en|de)\\s+(?:el\\s+)?disco\\b",
+      "Replacement": "espacio"
+    },
+    {
+      "Pattern": "(?i)\\b(?:cambia|cambie|cambiad|cambiar|c[aá]mbiale|c[aá]mbiele|cambiarle)\\s+el\\s+nombre\\s+(?:del?\\s+|a\\s+)?",
+      "Replacement": "renombra "
+    },
+    {
+      "Pattern": "(?i)(?<=\\b(?:archivos?|ficheros?|fotos?|im[aá]gen(?:es)?|documentos?|v[ií]deos?|carpetas?)\\s+)(?:borrad|eliminad|suprimid)[oa]s?\\b",
+      "Replacement": ""
+    },
+    {
+      "Pattern": "(?i)\\b(?:pon|ponga|poned|poner|p[oó]nlos|p[oó]nlas|p[oó]nlo|p[oó]nla)\\b(.*)\\b(?:en|dentro\\s+de)\\b(?!.*\\b(?:en|a|al|hacia)\\b)",
+      "Replacement": "mueve$1a"
+    },
+    {
+      "Pattern": "(?i)\\bhaz(?:me)?\\s+(?:sitio|espacio|hueco)\\b",
+      "Replacement": "libera espacio"
+    }
+  ],
+  "Folders": {
+    "escritorio": "Desktop",
+    "documentos": "MyDocuments",
+    "imagenes": "MyPictures",
+    "musica": "MyMusic",
+    "descargas": "Downloads"
+  },
+  "Category": {
+    "Title": "Archivos",
+    "Summary": "Buscar, copiar, mover, renombrar y limpiar archivos y carpetas, y liberar espacio.",
+    "Examples": [
+      "muestra los archivos de más de 100 MB en C:\\Users",
+      "elimina los archivos .tmp de más de 30 días en C:\\Temp",
+      "mueve los archivos .log de C:\\Temp a D:\\Archive"
+    ]
+  },
+  "Types": {
+    "o": "¿Qué archivos o carpetas?",
+    "d": "¿En qué carpeta?",
+    "p": "¿Adónde?",
+    "c": "¿Comparado con qué?",
+    "z": "¿Qué tamaño?",
+    "t": "¿Qué antigüedad o duración?",
+    "q": "¿Qué nombre debe tener?"
+  },
+  "Sorts": {
+    "o": {
+      "file": [
+        "archivo",
+        "imagen",
+        "foto",
+        "video",
+        "musica",
+        "cancion",
+        "audio",
+        "documento",
+        "comprimido",
+        "texto",
+        "temporal",
+        "respaldo",
+        "multimedia"
+      ],
+      "folder": [
+        "carpeta"
+      ]
+    }
+  },
+  "Entities": [
+    {
+      "Name": "path",
+      "Priority": 41,
+      "Kind": "path",
+      "Pattern": "(?i)(?<=\\b(?:en|a|al|hacia|de|del|desde|dentro\\s+de)\\s+(?:(?:el|la|los|las|mi|mis|tu|tus|su|sus)\\s+)?)(?:(?:carpeta|directorio)\\s+(?:(?:de|del)\\s+)?)?(?<v>{folders})\\b(?![\\\\/.\\w])"
+    }
+  ],
+  "Units": {
+    "duration": {
+      "dia": 86400,
+      "dias": 86400,
+      "semana": 604800,
+      "semanas": 604800,
+      "mes": 2592000,
+      "meses": 2592000,
+      "ano": 31536000,
+      "anos": 31536000,
+      "hora": 3600,
+      "horas": 3600,
+      "minuto": 60,
+      "minutos": 60
+    },
+    "size": {
+      "mega": 1048576,
+      "megas": 1048576,
+      "kilobytes": 1024,
+      "megabytes": 1048576,
+      "gigabytes": 1073741824,
+      "tera": 1099511627776,
+      "teras": 1099511627776,
+      "terabytes": 1099511627776
+    }
+  },
+  "Orders": {
+    "mas reciente": "newest",
+    "mas recientes": "newest",
+    "mas nuevo": "newest",
+    "mas nuevos": "newest",
+    "mas nueva": "newest",
+    "mas nuevas": "newest",
+    "mas antiguo": "oldest",
+    "mas antiguos": "oldest",
+    "mas antigua": "oldest",
+    "mas antiguas": "oldest",
+    "mas viejo": "oldest",
+    "mas viejos": "oldest",
+    "mas vieja": "oldest",
+    "mas viejas": "oldest",
+    "mas grande": "largest",
+    "mas grandes": "largest",
+    "mas pesado": "largest",
+    "mas pesados": "largest",
+    "mas pesada": "largest",
+    "mas pesadas": "largest",
+    "mas pequeno": "smallest",
+    "mas pequenos": "smallest",
+    "mas pequena": "smallest",
+    "mas pequenas": "smallest",
+    "mas ligero": "smallest",
+    "mas ligeros": "smallest",
+    "mas ligera": "smallest",
+    "mas ligeras": "smallest",
+    "mas chico": "smallest",
+    "mas chicos": "smallest",
+    "mas chica": "smallest",
+    "mas chicas": "smallest",
+    "mas espacio": "largest",
+    "menos espacio": "smallest",
+    "por tamano": "largest",
+    "por fecha": "newest",
+    "de mayor a menor": "largest",
+    "de menor a mayor": "smallest",
+    "del mas grande al mas pequeno": "largest",
+    "del mas pequeno al mas grande": "smallest",
+    "del mas reciente al mas antiguo": "newest",
+    "del mas antiguo al mas reciente": "oldest",
+    "del mas nuevo al mas viejo": "newest",
+    "del mas viejo al mas nuevo": "oldest"
+  },
+  "Which": {
+    "Nouns": [
+      "archivo"
+    ],
+    "All": [
+      "todo",
+      "todos",
+      "todas"
+    ],
+    "Question": "¿Qué archivo exactamente? Dé su nombre, o diga el más reciente, el más antiguo, el más grande o el más pequeño."
+  },
+  "Parameters": {
+    "Path": {
+      "After": [
+        "en",
+        "dentro"
+      ],
+      "Question": "¿En qué carpeta?"
+    },
+    "Source": {
+      "After": [
+        "en",
+        "dentro"
+      ]
+    },
+    "Parent": {
+      "After": [
+        "en",
+        "dentro"
+      ]
+    },
+    "Destination": {
+      "After": [
+        "a",
+        "al",
+        "hacia"
+      ],
+      "Question": "¿Adónde?"
+    },
+    "OlderThan": {
+      "After": [
+        "mas"
+      ]
+    },
+    "NewerThan": {
+      "After": [
+        "menos"
+      ]
+    },
+    "MinSize": {
+      "After": [
+        "mas",
+        "mayor"
+      ]
+    },
+    "MaxSize": {
+      "After": [
+        "menos",
+        "menor"
+      ]
+    },
+    "ExceptExtension": {
+      "After": [
+        "excepto",
+        "exceptuando"
+      ]
+    },
+    "ExceptKind": {
+      "After": [
+        "excepto",
+        "exceptuando"
+      ],
+      "Words": {
+        "imagen": "image",
+        "foto": "image",
+        "video": "video",
+        "musica": "audio",
+        "cancion": "audio",
+        "audio": "audio",
+        "documento": "document",
+        "comprimido": "compressed",
+        "texto": "text",
+        "temporal": "temporary",
+        "respaldo": "backup",
+        "multimedia": "media"
+      }
+    },
+    "ExceptName": {
+      "After": [
+        "excepto",
+        "exceptuando"
+      ]
+    },
+    "Kind": {
+      "Words": {
+        "imagen": "image",
+        "foto": "image",
+        "video": "video",
+        "musica": "audio",
+        "cancion": "audio",
+        "audio": "audio",
+        "documento": "document",
+        "comprimido": "compressed",
+        "texto": "text",
+        "temporal": "temporary",
+        "respaldo": "backup",
+        "multimedia": "media"
+      }
+    },
+    "Permanent": {
+      "Words": {
+        "definitivamente": "yes",
+        "permanentemente": "yes"
+      }
+    },
+    "Order": {
+      "Question": "¿Cuáles: los más recientes, los más antiguos, los más grandes o los más pequeños?"
+    },
+    "Count": {
+      "Question": "¿Cuántos?"
+    }
+  },
+  "Actions": {
+    "files.delete": {
+      "Title": "Eliminar archivos o carpetas",
+      "Verbs": [
+        "eliminar"
+      ],
+      "Examples": [
+        "eliminar archivos",
+        "eliminar los archivos antiguos en una carpeta",
+        "borrar los archivos .log de mas de 30 dias en una carpeta",
+        "eliminar las imagenes de mas de 1 GB en una carpeta",
+        "borrar una carpeta"
+      ],
+      "Say": [
+        "eliminar",
+        "?Permanent definitivamente",
+        "?Count=1 el archivo",
+        "!Count=1 !Kind los",
+        "!Count=1 ?Kind ?Order los",
+        "!Count=1 ?Count {Count}",
+        "!Count=1 ?Order archivos",
+        "!Count=1 !Order !Kind archivos",
+        "!Count=1 !Order ?Kind {Kind}",
+        "?Extension {Extension}",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Order=newest más reciente",
+        "?Count=1 ?Order=oldest más antiguo",
+        "?Count=1 ?Order=largest más grande",
+        "?Count=1 ?Order=smallest más pequeño",
+        "?Order ?Kind de entre {Kind}",
+        "?Name llamados {Name}",
+        "?OlderThan de más de {OlderThan}",
+        "?NewerThan de menos de {NewerThan}",
+        "?MinSize de más de {MinSize}",
+        "?MaxSize de menos de {MaxSize}",
+        "en {Path}",
+        "?ExceptExtension excepto los archivos {ExceptExtension}",
+        "?ExceptKind excepto {ExceptKind}",
+        "?ExceptName excepto {ExceptName}"
+      ],
+      "Note": [
+        "!Permanent Se quedan 30 días en la papelera de Lambek: diga «restáuralos» para recuperarlos."
+      ]
+    },
+    "files.list": {
+      "Title": "Mostrar o buscar archivos",
+      "Verbs": [
+        "listar",
+        "mostrar",
+        "buscar",
+        "cual",
+        "ordenar"
+      ],
+      "Examples": [
+        "mostrar los archivos",
+        "mostrar los archivos en una carpeta",
+        "buscar los archivos grandes",
+        "mostrar las imagenes de mas de 1 GB en una carpeta",
+        "ordenar los archivos por tamaño en una carpeta"
+      ],
+      "Say": [
+        "mostrar",
+        "?Count=1 el archivo",
+        "!Count=1 !Kind los",
+        "!Count=1 ?Kind ?Order los",
+        "!Count=1 ?Count {Count}",
+        "!Count=1 ?Order archivos",
+        "!Count=1 !Order !Kind archivos",
+        "!Count=1 !Order ?Kind {Kind}",
+        "?Extension {Extension}",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Order=newest más reciente",
+        "?Count=1 ?Order=oldest más antiguo",
+        "?Count=1 ?Order=largest más grande",
+        "?Count=1 ?Order=smallest más pequeño",
+        "?Order ?Kind de entre {Kind}",
+        "?Name llamados {Name}",
+        "?OlderThan de más de {OlderThan}",
+        "?NewerThan de menos de {NewerThan}",
+        "?MinSize de más de {MinSize}",
+        "?MaxSize de menos de {MaxSize}",
+        "?Path en {Path}",
+        "?ExceptExtension excepto los archivos {ExceptExtension}",
+        "?ExceptKind excepto {ExceptKind}",
+        "?ExceptName excepto {ExceptName}"
+      ]
+    },
+    "files.copy": {
+      "Title": "Copiar archivos",
+      "Verbs": [
+        "copiar"
+      ],
+      "Examples": [
+        "copiar los archivos a una carpeta",
+        "copiar un archivo",
+        "copiar las imagenes de una carpeta a otra carpeta"
+      ],
+      "Say": [
+        "copiar",
+        "?Count=1 el archivo",
+        "!Count=1 !Kind los",
+        "!Count=1 ?Kind ?Order los",
+        "!Count=1 ?Count {Count}",
+        "!Count=1 ?Order archivos",
+        "!Count=1 !Order !Kind archivos",
+        "!Count=1 !Order ?Kind {Kind}",
+        "?Extension {Extension}",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Order=newest más reciente",
+        "?Count=1 ?Order=oldest más antiguo",
+        "?Count=1 ?Order=largest más grande",
+        "?Count=1 ?Order=smallest más pequeño",
+        "?Order ?Kind de entre {Kind}",
+        "?Name llamados {Name}",
+        "?OlderThan de más de {OlderThan}",
+        "?NewerThan de menos de {NewerThan}",
+        "?MinSize de más de {MinSize}",
+        "?MaxSize de menos de {MaxSize}",
+        "?Source de {Source}",
+        "a {Destination}",
+        "?ExceptExtension excepto los archivos {ExceptExtension}",
+        "?ExceptKind excepto {ExceptKind}",
+        "?ExceptName excepto {ExceptName}"
+      ],
+      "RequireOneOf": "¿Desde qué carpeta?"
+    },
+    "files.move": {
+      "Title": "Mover archivos",
+      "Verbs": [
+        "mover"
+      ],
+      "Examples": [
+        "mover los archivos a una carpeta",
+        "mover un archivo",
+        "mover las imagenes de una carpeta a otra carpeta"
+      ],
+      "Say": [
+        "mover",
+        "?Count=1 el archivo",
+        "!Count=1 !Kind los",
+        "!Count=1 ?Kind ?Order los",
+        "!Count=1 ?Count {Count}",
+        "!Count=1 ?Order archivos",
+        "!Count=1 !Order !Kind archivos",
+        "!Count=1 !Order ?Kind {Kind}",
+        "?Extension {Extension}",
+        "!Count=1 ?Order {Order}",
+        "?Count=1 ?Order=newest más reciente",
+        "?Count=1 ?Order=oldest más antiguo",
+        "?Count=1 ?Order=largest más grande",
+        "?Count=1 ?Order=smallest más pequeño",
+        "?Order ?Kind de entre {Kind}",
+        "?Name llamados {Name}",
+        "?OlderThan de más de {OlderThan}",
+        "?NewerThan de menos de {NewerThan}",
+        "?MinSize de más de {MinSize}",
+        "?MaxSize de menos de {MaxSize}",
+        "?Source de {Source}",
+        "a {Destination}",
+        "?ExceptExtension excepto los archivos {ExceptExtension}",
+        "?ExceptKind excepto {ExceptKind}",
+        "?ExceptName excepto {ExceptName}"
+      ],
+      "RequireOneOf": "¿Desde qué carpeta?"
+    },
+    "files.rename": {
+      "Title": "Renombrar un archivo",
+      "Verbs": [
+        "renombrar"
+      ],
+      "Examples": [
+        "renombrar un archivo",
+        "cambiar el nombre de un archivo"
+      ],
+      "Say": [
+        "renombrar {Name} a {NewName}"
+      ],
+      "Parameters": {
+        "Name": {
+          "Question": "¿Qué archivo?"
+        },
+        "NewName": {
+          "After": [
+            "a",
+            "al"
+          ],
+          "Question": "¿Cuál es el nuevo nombre?"
+        }
+      }
+    },
+    "files.create": {
+      "Title": "Crear un archivo o una carpeta",
+      "Verbs": [
+        "crear"
+      ],
+      "Examples": [
+        "crear una carpeta",
+        "crear un archivo nuevo en una carpeta",
+        "crear una carpeta llamada"
+      ],
+      "Say": [
+        "crear",
+        "?Path ?Kind=carpeta la carpeta {Path}",
+        "?Path ?Kind=archivo el archivo {Path}",
+        "!Path ?Name ?Kind=carpeta una carpeta llamada {Name} en {Parent}",
+        "!Path ?Name ?Kind=archivo un archivo llamado {Name} en {Parent}"
+      ],
+      "RequireOneOf": "¿Qué nombre debe tener?",
+      "Parameters": {
+        "Kind": {
+          "Words": {
+            "archivo": "File",
+            "carpeta": "Directory"
+          },
+          "Question": "¿Un archivo o una carpeta?"
+        },
+        "Name": {
+          "After": [
+            "llamado",
+            "nombrado"
+          ]
+        }
+      }
+    },
+    "files.free": {
+      "Title": "Liberar espacio en disco",
+      "Verbs": [
+        "liberar"
+      ],
+      "Examples": [
+        "liberar espacio",
+        "liberar 10 GB en una carpeta",
+        "liberar espacio en una carpeta"
+      ],
+      "Say": [
+        "liberar {FreeSize} en {Path}",
+        "?Extension de archivos {Extension}",
+        "?Kind de {Kind}",
+        "?OlderThan de más de {OlderThan}",
+        "?ExceptExtension , excepto los archivos {ExceptExtension}",
+        "?ExceptKind , excepto {ExceptKind}",
+        "?ExceptName , excepto {ExceptName}"
+      ],
+      "Note": "Los archivos más grandes se van primero, para borrar los menos posibles.",
+      "Uses": [
+        "espacio"
+      ],
+      "Parameters": {
+        "FreeSize": {
+          "Question": "¿Cuánto espacio?"
+        }
+      }
+    },
+    "files.restore": {
+      "Title": "Restaurar archivos eliminados",
+      "Verbs": [
+        "restaurar",
+        "recuperar",
+        "deshacer"
+      ],
+      "Examples": [
+        "restaurar los archivos",
+        "deshacer la ultima eliminacion",
+        "recuperar los archivos de la papelera"
+      ],
+      "Say": [
+        "restaurar los últimos archivos eliminados",
+        "?Extension ({Extension})",
+        "?Kind ({Kind})",
+        "?Name ({Name})"
+      ],
+      "Note": "Cada archivo vuelve a la carpeta de la que se eliminó.",
+      "Uses": [
+        "eliminacion",
+        "ultimo",
+        "papelera"
+      ]
+    }
+  },
+  "Methods": {
+    "clean": {
+      "Words": [
+        "limpia",
+        "limpiar",
+        "limpie"
+      ],
+      "Steps": [
+        "elimina los archivos temporales en {Path}",
+        "elimina los respaldos de más de 30 días en {Path}"
+      ]
+    }
+  }
+}
