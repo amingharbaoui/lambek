@@ -72,13 +72,49 @@ Describe 'Dialogue act' {
     }
 
     It 'says how it read the sentence, and proposes no request in its place' {
-        $plan = New-LambekPlan 'yesterday I deleted the files in C:\Temp'
+        $plan = New-LambekPlan 'my boss moved to Paris last year'
         $plan.Steps[0].Act | Should -Be 'Report'
         $plan.PSObject.Properties['Suggestion'] | Should -BeNullOrEmpty
         $plan | ConvertTo-LambekAnswer | Should -BeLike 'I read that as something you are telling me*'
         New-LambekPlan 'how do I delete the .log files in C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'That is a question*'
         New-LambekPlan 'find me a good restaurant in Brussels' | ConvertTo-LambekAnswer | Should -BeLike '*something other than what I take care of*'
-        New-LambekPlan 'hier j''ai supprimé les fichiers dans C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je lis cela comme une information*'
+        New-LambekPlan 'ils ont déplacé la réunion à jeudi' | ConvertTo-LambekAnswer | Should -BeLike 'Je lis cela comme une information*'
+    }
+
+    It 'reads the meaning of what is told: <Text>' -ForEach @(
+        @{ Text = 'yesterday I deleted the files in C:\Temp'; Form = 'told(delete(all(object and path(C:\Temp))), agent(speaker), time("yesterday"))' }
+        @{ Text = 'last week we moved the .pdf files from C:\A to D:\B'; Form = 'told(move(all(object and extension(.pdf) and source(C:\A)), destination(D:\B)), agent(speaker), time("last week"))' }
+        @{ Text = 'she copied report.txt to D:\Backup this morning'; Form = 'told(copy(all(object and name(report.txt)), destination(D:\Backup)), agent(other), time("this morning"))' }
+        @{ Text = 'I renamed report.txt to summary.txt'; Form = 'told(rename(all(object and name(report.txt)), newName(summary.txt)), agent(speaker))' }
+        @{ Text = 'hier j''ai supprimé les fichiers dans C:\Temp'; Form = 'told(delete(all(object and path(C:\Temp))), agent(speaker), time("hier"))' }
+        @{ Text = 'mon collègue veut supprimer les fichiers .log de C:\Temp'; Form = 'told(wish(delete(all(object and extension(.log) and path(C:\Temp))), agent(other)))' }
+    ) {
+        $card = Resolve-Text $Text
+        $card.Statement.Form | Should -Be $Form
+        # Understood, never carried out
+        $card.Status | Should -Be 'Unknown'
+        $card.Action | Should -BeNullOrEmpty
+    }
+
+    It 'gives the same objects to a sentence told and to the same sentence asked' {
+        $told = (Resolve-Text 'yesterday I deleted the files older than 30 days in C:\Logs except the .txt').Statement
+        $asked = Resolve-Text 'delete the files older than 30 days in C:\Logs except the .txt'
+        $told.Action | Should -Be $asked.Action
+        ($told.Parameters | ConvertTo-Json -Compress) | Should -Be ($asked.Parameters | ConvertTo-Json -Compress)
+    }
+
+    It 'gives no meaning to a sentence only half read: <Text>' -ForEach @(
+        @{ Text = 'my boss moved to Paris last year' }
+        @{ Text = 'I deleted the files' }
+        @{ Text = 'ils ont déplacé la réunion à jeudi' }
+        @{ Text = 'delete the files in C:\Temp' }
+    ) {
+        (Resolve-Text $Text).Statement | Should -BeNullOrEmpty
+    }
+
+    It 'says back who, what and when' {
+        New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -Be 'I understand. Who: you. What: delete the files in C:\Temp. When: yesterday. You are telling me, so I am not doing it, and I cannot keep it yet.'
+        New-LambekPlan 'mon collègue veut supprimer les fichiers .log de C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je comprends. Qui : mon collègue. Souhaite : supprimer les fichiers .log dans C:\Temp.*'
     }
 
     It 'still answers small talk, and still asks what to do when nothing is recognised' {

@@ -80,6 +80,7 @@ function New-LambekPlan {
                     Language   = $card.Language
                     Status     = $card.Status
                     Act        = $card.Act
+                    Statement  = $card.Statement
                     Confidence = $card.Confidence
                     Types      = $card.Types
                     Implied    = @($card.Implied)
@@ -183,7 +184,7 @@ function ConvertTo-LambekReplyPlan {
 
     # A plan with one step that asks for no action: the answer is the reply
     $step = [pscustomobject]@{
-        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; Confidence = 0.0; Types = ''
+        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; Statement = $null; Confidence = 0.0; Types = ''
         Implied = @(); Guess = $null; Senses = @(); Pending = @(); FromHabit = @(); Votes = $null; Reading = $null
         Action = $null; Risk = $null; Parameters = [ordered]@{}; Questions = @(); Reads = @(); Writes = @()
         Output = $null; Script = $null; Check = $null; CardHash = $null

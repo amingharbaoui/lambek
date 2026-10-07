@@ -548,10 +548,27 @@
     "Articles": [
       "the"
     ],
+    "Times": [
+      "yesterday",
+      "today",
+      "this morning",
+      "last night",
+      "last week",
+      "last month",
+      "last year",
+      "earlier",
+      "just now",
+      "tomorrow",
+      "next week"
+    ],
     "Say": {
       "Report": "I read that as something you are telling me, not as something to do. I cannot keep what I am told yet.",
       "Question": "That is a question, not something to do. I cannot answer that kind of question yet.",
-      "Other": "I read that as being about something other than what I take care of, so I am not doing anything."
+      "Other": "I read that as being about something other than what I take care of, so I am not doing anything.",
+      "Told": "I understand. Who: {0}. What: {1}.{2} You are telling me, so I am not doing it, and I cannot keep it yet.",
+      "Wished": "I understand. Who: {0}. Wants: {1}.{2} You are telling me, so I am not doing it, and I cannot keep it yet.",
+      "Speaker": "you",
+      "When": " When: {0}."
     }
   },
   "Answer": {

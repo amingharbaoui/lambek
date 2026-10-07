@@ -566,7 +566,12 @@
       "doit",
       "devons",
       "devrais",
-      "devrait"
+      "devrait",
+      "veut",
+      "veulent",
+      "souhaitent",
+      "aimeraient",
+      "voudraient"
     ],
     "Determiners": [
       "un",
@@ -586,10 +591,26 @@
       "l",
       "les"
     ],
+    "Times": [
+      "hier",
+      "aujourd hui",
+      "ce matin",
+      "hier soir",
+      "la semaine derniere",
+      "le mois dernier",
+      "l annee derniere",
+      "tout a l heure",
+      "demain",
+      "la semaine prochaine"
+    ],
     "Say": {
       "Report": "Je lis cela comme une information, pas comme une demande. Je ne sais pas encore retenir ce qu'on me dit.",
       "Question": "C'est une question, pas une demande d'action. Je ne sais pas encore répondre à ce genre de question.",
-      "Other": "Je lis cela comme un sujet autre que ceux dont je m'occupe : je ne fais donc rien."
+      "Other": "Je lis cela comme un sujet autre que ceux dont je m'occupe : je ne fais donc rien.",
+      "Told": "Je comprends. Qui : {0}. Quoi : {1}.{2} C'est une information, donc je ne fais rien, et je ne sais pas encore la retenir.",
+      "Wished": "Je comprends. Qui : {0}. Souhaite : {1}.{2} C'est une information, donc je ne fais rien, et je ne sais pas encore la retenir.",
+      "Speaker": "vous",
+      "When": " Quand : {0}."
     }
   },
   "Answer": {

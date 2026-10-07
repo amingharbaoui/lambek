@@ -12,7 +12,7 @@ function Get-LambekDialogueAct {
     # tells (Report), a question about how things are (Question), or a sentence about something else (Other).
     # Only an order may become an action. The words that tell them apart are in the language file; without them, all is an order
     $lexicon = Get-LambekLexicon -Language $Request.Language
-    $order = [pscustomobject]@{ Kind = 'Order'; Rule = $null; Say = $null }
+    $order = [pscustomobject]@{ Kind = 'Order'; Rule = $null; Say = $null; Subject = $null }
     $dialogue = $lexicon.Dialogue
     if (-not $dialogue) { return $order }
 
@@ -25,7 +25,7 @@ function Get-LambekDialogueAct {
     # The verbs of the actions, where they stand: a question word read as a verb is not one of them
     $verbs = @($typed.Keys | Where-Object { $typed[$_] -match '(^|\s)s(\s|$)' -and $words[$_] -notin $lexicon.Interrogatives } | Sort-Object)
     $entities = @($Request.Entities | Where-Object { $_.Type -ne 'number' })
-    $act = { param($kind, $rule) [pscustomobject]@{ Kind = $kind; Rule = $rule; Say = $dialogue.Say[$kind] } }
+    $act = { param($kind, $rule, $subject) [pscustomobject]@{ Kind = $kind; Rule = $rule; Say = $dialogue.Say[$kind]; Subject = $subject } }
 
     # "how do I delete...", "what is a .log file": the sentence opens as a question about how things are
     $opening = $tokens -join ' '
@@ -43,13 +43,13 @@ function Get-LambekDialogueAct {
             if ($token -in @($dialogue['Addressee'])) { break }
             if ($token -in @($dialogue['Wishes'])) { $wish = $true; continue }
             if ($token -in @($dialogue['Speakers'])) {
-                if (-not $wish) { return & $act 'Report' 'subject' }
+                if (-not $wish) { return & $act 'Report' 'subject' ([pscustomobject]@{ Position = $i; Verb = $verb; Person = 'speaker'; Wish = $false }) }
                 break
             }
             if ($token -in @($dialogue['Others'])) {
                 # "from my desktop delete...": after a word of place, it is not the subject
                 if ($i -gt 0 -and $typed.ContainsKey($i - 1) -and $typed[$i - 1] -match 'd\^l') { break }
-                return & $act 'Report' 'subject'
+                return & $act 'Report' 'subject' ([pscustomobject]@{ Position = $i; Verb = $verb; Person = 'other'; Wish = $wish })
             }
         }
 
