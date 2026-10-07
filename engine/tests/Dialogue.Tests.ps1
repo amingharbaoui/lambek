@@ -520,6 +520,86 @@ Describe 'Dialogue act' {
         }
     }
 
+    Context 'Questions, in French too' {
+        BeforeEach {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = [datetime] '2026-10-06 10:00' }
+        }
+        AfterAll {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Now = $null }
+        }
+
+        It 'reads the question as a rule: <Text>' -ForEach @(
+            @{ Text = 'où habite ma sœur'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), says(E, "place").' }
+            @{ Text = 'où est-ce que ma sœur habite'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), says(E, "place").' }
+            @{ Text = 'qui habite à Lyon'; Rule = 'answer(E) :- event(E, "verb:habiter"), holds(E, "a", "lyon").' }
+            @{ Text = 'qu''est-ce que j''ai acheté hier'; Rule = 'answer(E) :- event(E, "verb:acheter"), by(E, "speaker"), says(E, "object"), on(E, "2026-10-05").' }
+            @{ Text = 'que fait ma sœur'; Rule = 'answer(E) :- event(E, "verb:faire"), agent(E, "ma sœur"), says(E, "object").' }
+            @{ Text = 'comment je m''appelle'; Rule = 'answer(E) :- event(E, "verb:appeler"), by(E, "speaker"), says(E, "object").' }
+            @{ Text = 'comment s''appelle mon chat'; Rule = 'answer(E) :- event(E, "verb:appeler"), agent(E, "mon chat"), says(E, "object").' }
+            @{ Text = 'est-ce que ma sœur habite à Lyon'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), holds(E, "a", "lyon").' }
+            @{ Text = 'does my sister live in Lyon'; Rule = 'answer(E) :- event(E, "verb:live"), agent(E, "my sister"), holds(E, "in", "lyon").' }
+            @{ Text = 'is Lyon in France'; Rule = 'answer(E) :- event(E, "verb:be"), agent(E, "lyon"), holds(E, "in", "france").' }
+        ) {
+            $card = Resolve-Text $Text
+            $card.Act | Should -Be 'Question'
+            InModuleScope Lambek -Parameters @{ Asked = $card.Asked } { Get-LambekAskedRule -Asked $Asked } | Should -Be $Rule
+        }
+
+        It 'never takes a question that asks whether for something told: <Text>' -ForEach @(
+            @{ Text = 'does my sister live in Lyon' }
+            @{ Text = 'did I buy a car yesterday' }
+            @{ Text = 'is Lyon in France' }
+            @{ Text = 'est-ce que ma sœur habite à Lyon' }
+        ) {
+            New-LambekPlan $Text | Out-Null
+            (Resolve-Text $Text).Statement | Should -BeNullOrEmpty
+            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything yet.'
+        }
+
+        It 'answers "<Ask>" in French from what was told in French' -ForEach @(
+            @{ Ask = 'où habite ma sœur'; Line = '- Votre sœur habite à Lyon.' }
+            @{ Ask = 'où est-ce que ma sœur habite'; Line = '- Votre sœur habite à Lyon.' }
+            @{ Ask = 'qui habite à Lyon'; Line = '- Votre sœur habite à Lyon.' }
+            @{ Ask = 'est-ce que ma sœur habite à Lyon'; Line = '- Votre sœur habite à Lyon.' }
+            @{ Ask = 'qu''est-ce que j''ai acheté hier'; Line = '- Hier vous avez acheté une voiture rouge.' }
+            @{ Ask = 'comment je m''appelle'; Line = '- Vous vous appelez Amin.' }
+            @{ Ask = 'comment s''appelle mon chat'; Line = '- Votre chat s''appelle Felix.' }
+        ) {
+            'ma sœur habite à Lyon', 'hier j''ai acheté une voiture rouge', 'je m''appelle Amin', 'mon chat s''appelle Felix' | ForEach-Object { New-LambekPlan $_ | Out-Null }
+            New-LambekPlan $Ask | ConvertTo-LambekAnswer | Should -Be ("D'après ce qui m'a été dit dans cette conversation :", $Line -join "`n")
+        }
+
+        It 'deduces in French, whichever word of place the question uses' {
+            New-LambekPlan 'ma sœur habite à Lyon' | Out-Null
+            New-LambekPlan 'Lyon est en France' | Out-Null
+            New-LambekPlan 'qui habite en France' | ConvertTo-LambekAnswer | Should -Be (@(
+                    "D'après ce qui m'a été dit dans cette conversation :"
+                    '- Votre sœur habite à Lyon.'
+                    '  déduit avec : Lyon est en France.'
+                ) -join "`n")
+        }
+
+        It 'says it does not know, never no: <Ask>' -ForEach @(
+            @{ Ask = 'est-ce que ma sœur habite à Paris'; Said = "Je ne sais pas : on ne me l'a pas dit, et je ne sais pas encore le trouver seul." }
+            @{ Ask = 'où habite mon père'; Said = "Je ne sais pas : on ne me l'a pas dit, et je ne sais pas encore le trouver seul." }
+            @{ Ask = 'does my sister live in Spain'; Said = 'I do not know: nobody told me, and I cannot find it out by myself yet.' }
+        ) {
+            New-LambekPlan 'ma sœur habite à Lyon' | Out-Null
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            New-LambekPlan $Ask | ConvertTo-LambekAnswer | Should -Be $Said
+        }
+
+        It 'answers a question that asks whether with what it was told, and with what follows from it' {
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            New-LambekPlan 'Lyon is in France' | Out-Null
+            New-LambekPlan 'does my sister live in France' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'From what you told me in this conversation:'
+                    '- Your sister lives in Lyon.'
+                    '  deduced with: Lyon is in France.'
+                ) -join "`n")
+        }
+    }
+
     It 'still answers small talk, and still asks what to do when nothing is recognised' {
         New-LambekPlan 'hello' | ConvertTo-LambekAnswer | Should -BeLike 'Hello*'
         (Resolve-Text 'what time is it').Act | Should -Be 'Order'

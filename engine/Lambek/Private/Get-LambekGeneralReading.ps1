@@ -5,7 +5,13 @@ function Get-LambekGeneralReading {
         [pscustomobject] $Request,
 
         # Read as the one spoken to: "you bought a car" is then about the user, as when Lambek says it back
-        [switch] $Listener
+        [switch] $Listener,
+
+        # Read as a question that asks whether: "est-ce que ma soeur habite a Lyon", its first word left out
+        [switch] $Whether,
+
+        # Read once, as it stands (the function calls itself with this, to try another reading after the first)
+        [switch] $Once
     )
 
     # A sentence about anything, read with the same pregroup grammar as an order but with the words of the dictionary:
@@ -25,6 +31,19 @@ function Get-LambekGeneralReading {
     $typedAs = Read-LambekRequest -Text (Repair-LambekPhrase -Text "$($Request.Original)") -Original "$($Request.Original)" -Language $language
     $tokens = @($typedAs.Tokens)
     if ($tokens.Count -lt 2 -or $tokens.Count -gt 16) { return $null }
+
+    # "que fait ma soeur" asks what; "(est-ce) que ma soeur habite a Lyon" asks whether. The first reading is tried,
+    # then the second: the grammar decides, the word alone cannot
+    $marks = @($general['PolarMark'])
+    if (-not $Once -and -not $Whether -and $tokens[0] -in $marks) {
+        $what = Get-LambekGeneralReading -Request $Request -Listener:$Listener -Once
+        if ($what) { return $what }
+        return Get-LambekGeneralReading -Request $Request -Listener:$Listener -Whether -Once
+    }
+    # "does my sister live in Lyon", "is Lyon in France": the verb that helps comes first, and the sentence asks whether
+    $whether = [bool] $Whether -or (-not $Listener -and $tokens[0] -in @($general['Polar']))
+    $questions = @($general['What']) + @($general['WhatObject']) + @($general['WhatSubject']) | Where-Object { $_ }
+    $asks = $tokens[0] -in $questions -or $tokens[0] -in @($general['Where'])
     if (@($tokens | Where-Object { $_ -in $lexicon.Negations -or $_ -in @($general['Negations']) }).Count -gt 0) { return $null }
     # "I want the newest", "je voudrais...": a wish is a way to ask, not something told
     if (@($tokens | Where-Object { $_ -in @($lexicon.Dialogue['Wishes']) }).Count -gt 0) { return $null }
@@ -36,9 +55,10 @@ function Get-LambekGeneralReading {
     if ($Listener) { $first = @($general['Addressee']); $second = @($general['Speakers']) }
     if (@($tokens | Where-Object { $_ -in $second }).Count -gt 0) { return $null }
     # "what time is it", "which file...": a question word before a noun is not read yet
-    if ($tokens[0] -in @($general['What']) -and $tokens[1] -notin @($general['Auxiliaries']) -and $tokens[1] -notin @($general['Speakers'])) {
-        $next = @($dictionary.Lemmas($tokens[1], $language) | ForEach-Object { $_.Pos })
-        if ('v' -notin $next) { return $null }
+    $next = @($tokens | Select-Object -Skip 1 | Where-Object { $_ -notin @($general['Skipped']) -and $_ -notin $marks } | Select-Object -First 1)
+    if (-not $Whether -and $next.Count -gt 0 -and $tokens[0] -in $questions -and $next[0] -notin @($general['Auxiliaries']) -and $next[0] -notin @($general['Speakers'])) {
+        $follows = @($dictionary.Lemmas($next[0], $language) | ForEach-Object { $_.Pos })
+        if ('v' -notin $follows) { return $null }
     }
     # "why", "because", "and": a reason or two sentences in one are not read yet
     if (@($tokens | Where-Object { $_ -in @($general['Unread']) }).Count -gt 0) { return $null }
@@ -63,6 +83,8 @@ function Get-LambekGeneralReading {
     for ($i = 0; $i -lt $tokens.Count; $i++) {
         $token = $tokens[$i]
         if ($timeAt[$i] -eq 'rest' -or $token -in @($general['Skipped'])) { continue }
+        # "(est-ce) que ...", "ou (est-ce) que ...": the "que" that only announces the sentence
+        if ($token -in $marks -and (($i -eq 0 -and $Whether) -or ($i -eq 1 -and $asks))) { continue }
         # "vous vous appelez": the second one goes with the verb, as "m'" does in "je m'appelle"
         if ($Listener -and $i -gt 0 -and $token -in $first -and $tokens[$i - 1] -eq $token) { continue }
         $types = [System.Collections.Generic.List[string]]::new()
@@ -71,6 +93,9 @@ function Get-LambekGeneralReading {
         elseif ($token -match '^_[a-z]+_$') { $types.Add('n') }
         elseif ($token -in @($general['Where'])) { $kind = 'where'; $types.Add('s s^l') }
         elseif ($token -in @($general['What'])) { $kind = 'what'; $types.AddRange([string[]] @('s n^ll s^l', 's s^l n')) }
+        # "que", "comment" ask for what the verb takes; "qui", "quel" for the one who does it
+        elseif ($token -in @($general['WhatObject'])) { $kind = 'what'; $types.Add('s n^ll s^l') }
+        elseif ($token -in @($general['WhatSubject'])) { $kind = 'what'; $types.Add('s s^l n') }
         elseif ($token -in $first -or $token -in $second -or $token -in @($general['Pronouns'])) { $kind = 'pronoun'; $types.Add('n') }
         elseif ($token -in @($general['Determiners'])) { $types.Add('n n^l') }
         elseif ($token -in @($general['Prepositions'])) { $kind = 'preposition'; $types.AddRange([string[]] @('s^r s n^l', 's s^l n^l')) }
@@ -80,6 +105,9 @@ function Get-LambekGeneralReading {
             if ($token -in @($general['Auxiliaries'])) { $kind = 'auxiliary'; $types.AddRange([string[]] @('n^r n', 'n n^l')) }
             if ('v' -in $pos -or $token -in @($general['Verbs'])) {
                 $types.AddRange([string[]] @('n^r s', 'n^r s n^l'))
+                # In a question the subject may come after the verb ("ou habite ma soeur", "is Lyon in France"):
+                # the verb then takes it on its right (s n^l), after what it asks for when it asks for something (s n^l n^l)
+                if ($asks -or $whether) { $types.AddRange([string[]] @('s n^l', 's n^l n^l')) }
                 # ("suis" is "etre" before it is "suivre": a verb that also helps the others is read as itself)
                 $helps = @($found | Where-Object { $_.Pos -like 'aux*' } | ForEach-Object { $_.Lemma })
                 $verb = @(@($found | Where-Object { $_.Pos -eq 'v' -and $_.Lemma -in $helps }) + @($found | Where-Object { $_.Pos -eq 'v' }) | Select-Object -First 1)
@@ -104,7 +132,7 @@ function Get-LambekGeneralReading {
 
     # Several readings may reduce to s ("I am tired": "am" helps "tired", or "am" is the verb). Each is read;
     # the first that says something wins, one whose verb is a real verb before one whose verb is "be" or "have"
-    $readings = @(foreach ($choice in $root['s|0']) { Get-LambekGeneralChoice -Request $typedAs -Typed $typed -Choice $choice -Kinds $kinds -Lemmas $lemmas -General $general -First $first })
+    $readings = @(foreach ($choice in $root['s|0']) { Get-LambekGeneralChoice -Request $typedAs -Typed $typed -Choice $choice -Kinds $kinds -Lemmas $lemmas -General $general -First $first -Whether:$whether })
     $readings = @($readings | Where-Object { $_ })
     if ($readings.Count -eq 0) { return $null }
     $plain = @($readings | Where-Object { -not $_.Helper })
@@ -122,7 +150,10 @@ function Get-LambekGeneralChoice {
         [System.Collections.IDictionary] $General,
 
         # The words for the one who speaks
-        [string[]] $First = @()
+        [string[]] $First = @(),
+
+        # The sentence asks whether
+        [switch] $Whether
     )
 
     # One reading of the sentence: who, the verb, what, where
@@ -144,7 +175,7 @@ function Get-LambekGeneralChoice {
     foreach ($pair in $reduction.Pairs) { $partner[[int] $pair.Left] = [int] $pair.Right; $partner[[int] $pair.Right] = [int] $pair.Left }
 
     # One verb only: the word that makes the sentence
-    $verbs = @(for ($w = 0; $w -lt $typed.Count; $w++) { if ($chosen[$w] -in 'n^r s', 'n^r s n^l') { $w } })
+    $verbs = @(for ($w = 0; $w -lt $typed.Count; $w++) { if ($chosen[$w] -in 'n^r s', 'n^r s n^l', 's n^l', 's n^l n^l') { $w } })
     if ($verbs.Count -ne 1) { return $null }
     $verb = $verbs[0]
 
@@ -174,8 +205,12 @@ function Get-LambekGeneralChoice {
     $said = { param($positions) Get-LambekWritten -Request $typedAs -Words @($positions | ForEach-Object { $tokens[$_] }) }
 
     # Who: the n the verb takes on its left
+    # (after the verb in a question: the n it takes last is its subject, the one before is what it asks for)
     $asked = $null
     $subject = & $slot $verb 1
+    $after = @(for ($x = 0; $x -lt $simple.Count; $x++) { if ($owner[$x] -eq $verb -and $simple[$x].Base -eq 'n' -and $simple[$x].Order -eq -1) { $x } })
+    $turned = $chosen[$verb] -in 's n^l', 's n^l n^l'
+    if ($turned) { $subject = $after[-1] }
     if ($subject -lt 0 -or -not $partner.ContainsKey($subject)) { return $null }
     $who = @(& $phrase $partner[$subject])
     if ($who.Count -eq 0) { return $null }
@@ -203,6 +238,7 @@ function Get-LambekGeneralChoice {
     $roles = [ordered]@{}
     $shown = @{}
     $object = & $slot $verb -1
+    if ($turned) { $object = -1; if ($after.Count -eq 2) { $object = $after[0] } }
     if ($object -ge 0 -and $partner.ContainsKey($object)) {
         $target = $partner[$object]
         if ($kinds[$typed[$owner[$target]].Position] -eq 'what') { $asked = 'object' }
@@ -218,6 +254,7 @@ function Get-LambekGeneralChoice {
         $shown[$key] = Get-LambekWritten -Request $typedAs -Words @($key)
     }
     if (@($typed | Where-Object { $kinds[$_.Position] -eq 'where' }).Count -gt 0) { $asked = 'place' }
+    if (-not $asked -and $Whether) { $asked = 'whether' }
     if (-not $asked -and $roles.Count -eq 0) { return $null }
 
     # Said back in its plainest form: the verb as the dictionary gives it, then what and where ("live in Lyon")

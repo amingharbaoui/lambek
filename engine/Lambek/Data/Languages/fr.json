@@ -631,18 +631,107 @@
       "que savez vous"
     ],
     "General": {
-      "OtherSide": {"Second": ["tu", "te", "t", "toi", "ton", "ta", "tes", "vous", "votre", "vos"], "Plural": ["vous"], "Conjugate": true, "Words": {"je": "vous", "j": "vous", "me": "vous", "m": "vous", "moi": "vous", "mon": "votre", "ma": "votre", "mes": "vos", "nous": "vous", "notre": "votre", "nos": "vos", "on": "vous"}, "Words-tu": {"je": "tu", "j": "tu", "me": "t'", "m": "t'", "moi": "toi", "mon": "ton", "ma": "ta", "mes": "tes", "nous": "vous", "notre": "votre", "nos": "vos", "on": "tu"}, "Subjects": {"je": "1", "j": "1", "nous": "1", "on": "3"}, "Between": ["me", "m", "ne", "n", "le", "la", "l", "les", "y", "en"]},
-      "Owners": ["mon", "ma", "mes", "ton", "ta", "tes", "votre", "vos", "notre", "nos"],
+      "OtherSide": {
+        "Second": [
+          "tu",
+          "te",
+          "t",
+          "toi",
+          "ton",
+          "ta",
+          "tes",
+          "vous",
+          "votre",
+          "vos"
+        ],
+        "Plural": [
+          "vous"
+        ],
+        "Conjugate": true,
+        "Words": {
+          "je": "vous",
+          "j": "vous",
+          "me": "vous",
+          "m": "vous",
+          "moi": "vous",
+          "mon": "votre",
+          "ma": "votre",
+          "mes": "vos",
+          "nous": "vous",
+          "notre": "votre",
+          "nos": "vos",
+          "on": "vous"
+        },
+        "Words-tu": {
+          "je": "tu",
+          "j": "tu",
+          "me": "t'",
+          "m": "t'",
+          "moi": "toi",
+          "mon": "ton",
+          "ma": "ta",
+          "mes": "tes",
+          "nous": "vous",
+          "notre": "votre",
+          "nos": "vos",
+          "on": "tu"
+        },
+        "Subjects": {
+          "je": "1",
+          "j": "1",
+          "nous": "1",
+          "on": "3"
+        },
+        "Between": [
+          "me",
+          "m",
+          "ne",
+          "n",
+          "le",
+          "la",
+          "l",
+          "les",
+          "y",
+          "en"
+        ]
+      },
+      "Owners": [
+        "mon",
+        "ma",
+        "mes",
+        "ton",
+        "ta",
+        "tes",
+        "votre",
+        "vos",
+        "notre",
+        "nos"
+      ],
       "Logic": {
-        "copula": ["verb:etre"],
-        "within": ["en", "dans", "a", "au", "aux"],
-        "place": ["a", "au", "aux", "en", "dans", "pres", "chez"]
+        "copula": [
+          "verb:etre"
+        ],
+        "within": [
+          "en",
+          "dans",
+          "a",
+          "au",
+          "aux"
+        ],
+        "place": [
+          "a",
+          "au",
+          "aux",
+          "en",
+          "dans",
+          "pres",
+          "chez"
+        ]
       },
       "Unread": [
         "voici",
         "voila",
         "pourquoi",
-        "comment",
         "quand",
         "si",
         "parce",
@@ -754,14 +843,7 @@
       "Where": [
         "ou"
       ],
-      "What": [
-        "que",
-        "qu",
-        "qui",
-        "quoi",
-        "quel",
-        "quelle"
-      ],
+      "What": [],
       "Skipped": [
         "m",
         "t",
@@ -780,6 +862,23 @@
         "jamais",
         "plus",
         "rien"
+      ],
+      "Polar": [],
+      "PolarMark": [
+        "que"
+      ],
+      "WhatObject": [
+        "que",
+        "qu",
+        "quoi",
+        "comment"
+      ],
+      "WhatSubject": [
+        "qui",
+        "quel",
+        "quelle",
+        "quels",
+        "quelles"
       ]
     },
     "Say": {

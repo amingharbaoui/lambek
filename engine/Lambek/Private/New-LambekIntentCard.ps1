@@ -89,7 +89,11 @@ function New-LambekIntentCard {
         if ($general -and $general.Kind -eq 'statement' -and $act.Kind -eq 'Question') { $general = $null }
         # A question read with a verb of a pack stays so, unless that verb is only a correction of the word typed
         # ("live" corrected to "move"): then the word typed is the one meant
-        if ($recall -and @($request.Corrections).Count -eq 0) { $general = $null }
+        # The same when the verb typed is no verb of the action the packs read ("travaille" is not "create")
+        if ($recall -and $general -and @($request.Corrections).Count -eq 0) {
+            $theirs = @($recall.Actions | ForEach-Object { (Get-LambekAction -Id $_).Action.Verbs } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" })
+            if ((ConvertTo-LambekNormalizedText -Text "$($general.Verb)") -in $theirs) { $general = $null }
+        }
         if (-not $statement -and $general) {
             $recall = $null
             if ($general.Kind -eq 'statement') { $statement = ConvertTo-LambekGeneralFact -Reading $general -Request $request }

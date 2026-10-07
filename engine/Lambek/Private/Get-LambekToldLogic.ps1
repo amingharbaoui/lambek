@@ -21,10 +21,15 @@ function Get-LambekAskedRule {
     $rules = foreach ($action in @($Asked.Actions)) {
         $body = [System.Collections.Generic.List[string]]::new()
         $body.Add("event(E, $(ConvertTo-LambekTerm -Value $action))")
-        $either = $Asked.PSObject.Properties['Either'] -and $Asked.Either -and $Asked.Wanted -eq 'agent' -and $Asked.Parameters.Contains('object')
-        if ($either) {
-            # "what is my name": the other side of "my name is Amin", whichever side it was told on
-            $body.Add("about(E, $(ConvertTo-LambekTerm -Value $Asked.Parameters['object']))")
+        # "what is my name": the other side of "my name is Amin", whichever side it was told on, and whichever
+        # side the grammar took "my name" for
+        $side = $null
+        if ($Asked.PSObject.Properties['Either'] -and $Asked.Either) {
+            if ($Asked.Wanted -eq 'agent' -and $Asked.Parameters.Contains('object')) { $side = $Asked.Parameters['object'] }
+            elseif ($Asked.Wanted -eq 'object' -and $Asked.Name -and $Asked.Parameters.Count -eq 0) { $side = $Asked.Name }
+        }
+        if ($side) {
+            $body.Add("about(E, $(ConvertTo-LambekTerm -Value $side))")
         }
         else {
             if ($Asked.PSObject.Properties['Name'] -and $Asked.Name) { $body.Add("agent(E, $(ConvertTo-LambekTerm -Value $Asked.Name))") }

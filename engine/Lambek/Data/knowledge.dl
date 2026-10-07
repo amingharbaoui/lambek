@@ -11,7 +11,8 @@ inside(X, Z) :- inside(X, Y), inside(Y, Z).
 
 % What an event says, and what follows from it: what is in a place is in every place that place is inside
 holds(E, R, Y) :- role(E, R, Y).
-holds(E, P, Z) :- role(E, P, Y), place(P), inside(Y, Z).
+% (with whichever word of place the question uses: told "a Lyon", asked "en France")
+holds(E, Q, Z) :- role(E, P, Y), place(P), place(Q), inside(Y, Z).
 
 % "my name is Amin" is about "my name" and about "Amin", whichever side is asked
 about(E, X) :- event(E, V), copula(V), agent(E, X).

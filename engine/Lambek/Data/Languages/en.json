@@ -585,12 +585,57 @@
       "what do you know"
     ],
     "General": {
-      "OtherSide": {"Second": ["you", "your", "yours", "yourself"], "Plural": [], "Conjugate": false, "Words": {"i": "you", "me": "you", "my": "your", "mine": "yours", "myself": "yourself", "we": "you", "us": "you", "our": "your", "ours": "yours"}, "Subjects": {"i": "1", "we": "1"}, "Between": [], "Agree": {"am": "are", "was": "were", "m": "are"}},
-      "Owners": ["my", "your", "our", "mine", "yours", "ours"],
+      "OtherSide": {
+        "Second": [
+          "you",
+          "your",
+          "yours",
+          "yourself"
+        ],
+        "Plural": [],
+        "Conjugate": false,
+        "Words": {
+          "i": "you",
+          "me": "you",
+          "my": "your",
+          "mine": "yours",
+          "myself": "yourself",
+          "we": "you",
+          "us": "you",
+          "our": "your",
+          "ours": "yours"
+        },
+        "Subjects": {
+          "i": "1",
+          "we": "1"
+        },
+        "Between": [],
+        "Agree": {
+          "am": "are",
+          "was": "were",
+          "m": "are"
+        }
+      },
+      "Owners": [
+        "my",
+        "your",
+        "our",
+        "mine",
+        "yours",
+        "ours"
+      ],
       "Logic": {
-        "copula": ["verb:be"],
-        "within": ["in"],
-        "place": ["in", "at", "near"]
+        "copula": [
+          "verb:be"
+        ],
+        "within": [
+          "in"
+        ],
+        "place": [
+          "in",
+          "at",
+          "near"
+        ]
       },
       "Unread": [
         "there",
@@ -703,7 +748,24 @@
         "dont",
         "doesnt",
         "didnt"
-      ]
+      ],
+      "Polar": [
+        "do",
+        "does",
+        "did",
+        "is",
+        "are",
+        "was",
+        "were",
+        "have",
+        "has",
+        "had",
+        "will",
+        "would"
+      ],
+      "PolarMark": [],
+      "WhatObject": [],
+      "WhatSubject": []
     },
     "Say": {
       "Report": "I read that as something you are telling me, not as something to do. I did not understand it well enough to keep it.",
