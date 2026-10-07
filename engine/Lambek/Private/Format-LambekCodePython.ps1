@@ -233,7 +233,7 @@ def create_item(path, folder, apply):
     $lines.Add('        if argument != "--apply":')
     $lines.Add('            raise StepError("unknown argument " + argument + " (the only one is --apply)")')
     if ($need.Changes) { $lines.Add('    apply = "--apply" in arguments') }
-    $lines.Add('    sys.stdout.reconfigure(errors="backslashreplace")')
+    $lines.Add('    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")')
     foreach ($step in $Model.Steps) {
         $lines.Add('')
         $lines.Add("    # Step $($step.Step): " + (ConvertTo-LambekCodeComment -Text $step.Sentence))

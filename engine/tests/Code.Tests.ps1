@@ -813,7 +813,7 @@ Describe 'The generated programs' {
 
     It 'does what the sentence asks, from the request to the files (Python)<Why>' -ForEach @($backends | Where-Object { $_.Language -eq 'Python' }) {
         if ($Missing) { Set-ItResult -Skipped -Because $Why.Trim(); return }
-        $root = (Join-Path $TestDrive ([guid]::NewGuid().ToString('N'))).Replace('\', '/')
+        $root = Join-Path $TestDrive ([guid]::NewGuid().ToString('N'))
         New-TestFixture -Root $root
         $plan = New-LambekPlan -Text "delete the .log files older than 30 days in $root"
         $plan.Status | Should -Be 'Ready'
