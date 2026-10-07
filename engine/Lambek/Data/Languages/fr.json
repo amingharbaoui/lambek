@@ -508,6 +508,90 @@
       "other": "dans le dossier d'un autre utilisateur"
     }
   },
+  "Dialogue": {
+    "Questions": [
+      "comment",
+      "pourquoi",
+      "que se passe",
+      "que se passerait",
+      "c est quoi",
+      "qu est ce qu un",
+      "qu est ce qu une",
+      "est ce qu il faut",
+      "faut il",
+      "dois je",
+      "puis je",
+      "que je peux",
+      "que je dois"
+    ],
+    "Speakers": [
+      "je",
+      "j",
+      "nous",
+      "on"
+    ],
+    "Others": [
+      "il",
+      "elle",
+      "ils",
+      "elles",
+      "quelqu",
+      "mon",
+      "ma",
+      "mes",
+      "notre",
+      "nos",
+      "son",
+      "sa",
+      "ses",
+      "leur",
+      "leurs"
+    ],
+    "Addressee": [
+      "tu",
+      "vous",
+      "faut",
+      "faudrait"
+    ],
+    "Wishes": [
+      "veux",
+      "voudrais",
+      "voudrait",
+      "aimerais",
+      "aimerait",
+      "souhaite",
+      "souhaiterais",
+      "besoin",
+      "dois",
+      "doit",
+      "devons",
+      "devrais",
+      "devrait"
+    ],
+    "Determiners": [
+      "un",
+      "une",
+      "ce",
+      "cette",
+      "mon",
+      "ma",
+      "ton",
+      "ta",
+      "votre",
+      "notre"
+    ],
+    "Articles": [
+      "le",
+      "la",
+      "l",
+      "les"
+    ],
+    "Say": {
+      "Report": "Je lis cela comme une information, pas comme une demande. Je ne sais pas encore retenir ce qu'on me dit.",
+      "Question": "C'est une question, pas une demande d'action. Je ne sais pas encore répondre à ce genre de question.",
+      "Other": "Je lis cela comme un sujet autre que ceux dont je m'occupe : je ne fais donc rien."
+    }
+  },
   "Answer": {
     "Single": "Je vais {0}.",
     "Steps": "Je vais le faire en {0} étapes :",

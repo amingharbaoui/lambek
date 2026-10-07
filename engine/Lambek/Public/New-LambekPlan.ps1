@@ -79,6 +79,7 @@ function New-LambekPlan {
                     Clause     = $clauses[$i]
                     Language   = $card.Language
                     Status     = $card.Status
+                    Act        = $card.Act
                     Confidence = $card.Confidence
                     Types      = $card.Types
                     Implied    = @($card.Implied)
@@ -151,7 +152,9 @@ function New-LambekPlan {
         # Nothing understood and not small talk: the closest request remembered, or the closest example
         if (-not $NoRecall -and $plan.Steps.Count -gt 0 -and @($plan.Steps | Where-Object { $_.Action -or $_.Guess }).Count -eq 0) {
             $language = $plan.Steps[0].Language
-            if (-not (Get-LambekTalk -Text $Text -Language $language)) {
+            # What is told or asked is not a request badly said: nothing is proposed in its place
+            $told = @($plan.Steps | Where-Object { $_.Act -ne 'Order' }).Count -gt 0
+            if (-not $told -and -not (Get-LambekTalk -Text $Text -Language $language)) {
                 $suggestion = Find-LambekSuggestion -Text $Text -Language $language
                 if ($suggestion) {
                     # A typo can hide the language: the request it looks like tells it better
@@ -180,7 +183,7 @@ function ConvertTo-LambekReplyPlan {
 
     # A plan with one step that asks for no action: the answer is the reply
     $step = [pscustomobject]@{
-        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Confidence = 0.0; Types = ''
+        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; Confidence = 0.0; Types = ''
         Implied = @(); Guess = $null; Senses = @(); Pending = @(); FromHabit = @(); Votes = $null; Reading = $null
         Action = $null; Risk = $null; Parameters = [ordered]@{}; Questions = @(); Reads = @(); Writes = @()
         Output = $null; Script = $null; Check = $null; CardHash = $null

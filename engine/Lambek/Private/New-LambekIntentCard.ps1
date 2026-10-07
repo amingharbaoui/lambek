@@ -57,6 +57,17 @@ function New-LambekIntentCard {
         }
     }
 
+    # Only an order may become an action: what the user tells, asks about the world, or says about something else
+    # is recognised as such, and nothing is chosen for it
+    $act = Get-LambekDialogueAct -Request $request -Grammar $grammar
+    # A tool of a server takes words no pack knows as its arguments (the title of a note): that is still an order
+    if ($act.Rule -eq 'nothing known' -and $best -and $best.Action['Output'] -eq 'mcp') { $act = [pscustomobject]@{ Kind = 'Order'; Rule = $null; Say = $null } }
+    if ($act.Kind -ne 'Order') {
+        $selection = [pscustomobject]@{ Status = 'Unknown'; Best = $null; Ranked = @(); Integrity = $null }
+        $best = $null
+        $Evidence = [pscustomobject]@{ Request = $request; Grammar = $grammar; Candidates = $Evidence.Candidates; Guess = $null }
+    }
+
     $status = 'Unknown'
     $guess = $null
     $pending = [System.Collections.Generic.List[string]]::new()
@@ -68,7 +79,9 @@ function New-LambekIntentCard {
 
     # Decision
     if ($selection.Status -eq 'Unknown') {
-        $questions.Add($lexicon.SentenceQuestion)
+        # What was recognised is said, when it is not an order; an order not understood is asked again
+        if ($act.Kind -ne 'Order' -and $act.Say) { $questions.Add($act.Say) }
+        else { $questions.Add($lexicon.SentenceQuestion) }
     }
     elseif ($selection.Status -eq 'Ambiguous') {
         $status = 'Ambiguous'
@@ -289,6 +302,7 @@ function New-LambekIntentCard {
     [pscustomobject]@{
         PSTypeName  = 'Lambek.IntentCard'
         Status      = $status
+        Act         = $act.Kind
         Action      = $actionId
         Title       = $title
         Pack        = $pack

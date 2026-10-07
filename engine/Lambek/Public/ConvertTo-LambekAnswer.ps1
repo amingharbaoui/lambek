@@ -53,6 +53,12 @@ function ConvertTo-LambekAnswer {
             $reply = $null
             if ($Plan.PSObject.Properties['Reply'] -and $Plan.Reply) { $reply = $Plan.Reply; [void] $raw.Add($lines.Count) }
             if (-not $reply) { $reply = Get-LambekTalk -Text "$($Plan.Original)" -Language $language -Topics $topics -Example $example -Vary }
+            # What the user told or asked, without asking for anything: Lambek says how it read it
+            if (-not $reply) {
+                $told = @($Plan.Steps | Where-Object { $_.PSObject.Properties['Act'] -and $_.Act -and $_.Act -ne 'Order' }) | Select-Object -First 1
+                $said = (Get-LambekLexicon -Language $language).Dialogue
+                if ($told -and $said -and $said.Say[$told.Act]) { $reply = $said.Say[$told.Act] }
+            }
             if (-not $reply -and $Plan.PSObject.Properties['Suggestion'] -and $Plan.Suggestion) { $reply = $answer.DidYouMean -f $Plan.Suggestion }
             if (-not $reply) { $reply = $answer.Unknown -f $topics }
             $lines.Add($reply)

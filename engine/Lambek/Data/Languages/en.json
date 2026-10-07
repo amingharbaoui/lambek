@@ -483,6 +483,77 @@
       "other": "in another user's folder"
     }
   },
+  "Dialogue": {
+    "Questions": [
+      "how do",
+      "how can",
+      "how could",
+      "how should",
+      "how does",
+      "how to",
+      "why",
+      "is it",
+      "is that",
+      "is this",
+      "is there a way",
+      "should i",
+      "should we",
+      "what would",
+      "what happens",
+      "what is a",
+      "what is an",
+      "what s a",
+      "what s an"
+    ],
+    "Speakers": [
+      "i",
+      "we"
+    ],
+    "Others": [
+      "he",
+      "she",
+      "they",
+      "someone",
+      "somebody",
+      "my",
+      "our",
+      "his",
+      "her",
+      "their"
+    ],
+    "Addressee": [
+      "you"
+    ],
+    "Wishes": [
+      "want",
+      "wants",
+      "wanted",
+      "would",
+      "like",
+      "need",
+      "wish",
+      "d",
+      "must",
+      "should"
+    ],
+    "Determiners": [
+      "a",
+      "an",
+      "this",
+      "that",
+      "my",
+      "your",
+      "our"
+    ],
+    "Articles": [
+      "the"
+    ],
+    "Say": {
+      "Report": "I read that as something you are telling me, not as something to do. I cannot keep what I am told yet.",
+      "Question": "That is a question, not something to do. I cannot answer that kind of question yet.",
+      "Other": "I read that as being about something other than what I take care of, so I am not doing anything."
+    }
+  },
   "Answer": {
     "Single": "I'll {0}.",
     "Steps": "I'll do this in {0} steps:",

@@ -121,6 +121,7 @@ function Get-LambekLexicon {
         Again             = @($data['Again'])
         Define            = $data['Define']
         Calculate         = $data['Calculate']
+        Dialogue          = $data['Dialogue']
         NegationQuestion  = $data.NegationQuestion
         ExclusionQuestion = $data.ExclusionQuestion
         UnusedQuestion    = $data.UnusedQuestion
