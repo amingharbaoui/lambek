@@ -57,7 +57,7 @@ Describe 'ConvertTo-LambekAnswer' {
     }
 
     It 'says what it can do when nothing matches' {
-        New-LambekPlan 'what is the weather' | ConvertTo-LambekAnswer | Should -Be "On this computer, I take care of files and code. Tell me what you'd like to do."
+        New-LambekPlan 'what is the weather' | ConvertTo-LambekAnswer | Should -Be 'I do not know: nobody told me, and I cannot find it out by myself yet.'
     }
 
     It 'answers small talk in the language of the message' -ForEach @(

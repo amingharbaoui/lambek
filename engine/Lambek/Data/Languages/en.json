@@ -584,6 +584,120 @@
       "what do you remember",
       "what do you know"
     ],
+    "General": {
+      "Unread": [
+        "there",
+        "here",
+        "why",
+        "how",
+        "when",
+        "if",
+        "because",
+        "that",
+        "and",
+        "or",
+        "but",
+        "than",
+        "while",
+        "which"
+      ],
+      "Speakers": [
+        "i",
+        "we"
+      ],
+      "Addressee": [
+        "you"
+      ],
+      "Pronouns": [
+        "he",
+        "she",
+        "they",
+        "it"
+      ],
+      "Determiners": [
+        "the",
+        "a",
+        "an",
+        "my",
+        "our",
+        "your",
+        "his",
+        "her",
+        "their",
+        "this",
+        "that",
+        "these",
+        "those",
+        "some"
+      ],
+      "Prepositions": [
+        "in",
+        "at",
+        "on",
+        "to",
+        "from",
+        "with",
+        "for",
+        "near",
+        "by",
+        "of",
+        "about",
+        "into",
+        "under",
+        "over"
+      ],
+      "Auxiliaries": [
+        "do",
+        "does",
+        "did",
+        "have",
+        "has",
+        "had",
+        "will",
+        "would",
+        "am",
+        "is",
+        "are",
+        "was",
+        "were",
+        "been",
+        "be"
+      ],
+      "Verbs": [
+        "am",
+        "is",
+        "are",
+        "was",
+        "were"
+      ],
+      "Where": [
+        "where"
+      ],
+      "What": [
+        "what",
+        "who",
+        "whom",
+        "which"
+      ],
+      "Skipped": [
+        "m",
+        "s",
+        "ve",
+        "d",
+        "ll",
+        "re",
+        "please"
+      ],
+      "Negations": [
+        "not",
+        "never",
+        "no",
+        "t",
+        "dont",
+        "doesnt",
+        "didnt"
+      ]
+    },
     "Say": {
       "Report": "I read that as something you are telling me, not as something to do. I did not understand it well enough to keep it.",
       "Question": "That is a question, not something to do. I cannot answer that kind of question yet.",
@@ -600,7 +714,8 @@
       "OnDay": "Told on {0}. {1}",
       "Forgotten": "Done: I have forgotten everything you told me.",
       "ToldHere": "I understand. {0} You are telling me, so I am not doing it. I am keeping it for this conversation only.",
-      "Doubt": "{0} {0:line|lines} of my journal {0:was|were} changed outside Lambek: I left {0:it|them} out."
+      "Doubt": "{0} {0:line|lines} of my journal {0:was|were} changed outside Lambek: I left {0:it|them} out.",
+      "NotKnown": "I do not know: nobody told me, and I cannot find it out by myself yet."
     }
   },
   "Answer": {

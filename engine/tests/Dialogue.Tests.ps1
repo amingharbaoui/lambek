@@ -62,7 +62,6 @@ Describe 'Dialogue act' {
         @{ Text = 'the delete key on my keyboard is broken' }
         @{ Text = 'list three reasons to learn French' }
         @{ Text = 'find me a good restaurant in Brussels' }
-        @{ Text = 'la liste des courses est sur la table' }
         @{ Text = 'trouve une idée de cadeau pour ma mère' }
     ) {
         $card = Resolve-Text $Text
@@ -72,7 +71,7 @@ Describe 'Dialogue act' {
     }
 
     It 'says how it read the sentence, and proposes no request in its place' {
-        $plan = New-LambekPlan 'my boss moved to Paris last year'
+        $plan = New-LambekPlan 'she deleted her account last week'
         $plan.Steps[0].Act | Should -Be 'Report'
         $plan.PSObject.Properties['Suggestion'] | Should -BeNullOrEmpty
         $plan | ConvertTo-LambekAnswer | Should -BeLike 'I read that as something you are telling me*'
@@ -104,8 +103,8 @@ Describe 'Dialogue act' {
     }
 
     It 'gives no meaning to a sentence only half read: <Text>' -ForEach @(
-        @{ Text = 'my boss moved to Paris last year' }
-        @{ Text = 'I deleted the files' }
+        @{ Text = 'she deleted her account last week' }
+        @{ Text = 'I do not like coffee' }
         @{ Text = 'ils ont déplacé la réunion à jeudi' }
         @{ Text = 'delete the files in C:\Temp' }
     ) {
@@ -286,6 +285,95 @@ Describe 'Dialogue act' {
             New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -BeLike '*delete the files in C:\Temp*'
             Start-Conversation
             New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything yet.'
+        }
+    }
+
+    Context 'Sentences about anything' {
+        BeforeEach {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = [datetime] '2026-10-06 10:00' }
+        }
+        AfterAll {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Now = $null }
+        }
+
+        It 'reads who, the verb, what and where, with the words of the dictionary: <Text>' -ForEach @(
+            @{ Text = 'my sister lives in Lyon'; Form = 'told(live(agent("my sister"), in("Lyon")))' }
+            @{ Text = 'I bought a red car yesterday'; Form = 'told(buy(agent(speaker), object("a red car")), time("yesterday"))' }
+            @{ Text = 'my brother works at a bank in Brussels'; Form = 'told(work(agent("my brother"), at("a bank"), in("Brussels")))' }
+            @{ Text = 'my boss moved to Paris last year'; Form = 'told(move(agent("my boss"), to("Paris")), time("last year"))' }
+            @{ Text = 'my name is Amin'; Form = 'told(be(agent("my name"), object("Amin")))' }
+            @{ Text = 'hier j''ai acheté une voiture'; Form = 'told(acheter(agent(speaker), object("une voiture")), time("hier"))' }
+            @{ Text = 'la liste des courses est sur la table'; Form = 'told(être(agent("la liste des courses"), sur("la table")))' }
+        ) {
+            $card = Resolve-Text $Text
+            $card.Act | Should -Be 'Report'
+            $card.Statement.Form | Should -Be $Form
+            $card.Status | Should -Be 'Unknown'
+            $card.Action | Should -BeNullOrEmpty
+        }
+
+        It 'reads nothing it cannot read whole: <Text>' -ForEach @(
+            @{ Text = 'I do not like coffee' }
+            @{ Text = 'she lives in Lyon' }
+            @{ Text = 'my sister lives in Lyon because she works there' }
+            @{ Text = 'answers small talk in the language of the plan' }
+            @{ Text = 'blorp the zork' }
+            @{ Text = 'I want the pdf ones' }
+            @{ Text = 'who are you' }
+        ) {
+            $card = Resolve-Text $Text
+            $card.Statement | Should -BeNullOrEmpty
+            $card.Asked | Should -BeNullOrEmpty
+        }
+
+        It 'leaves to the packs a sentence that names a place or a file: <Text>' -ForEach @(
+            @{ Text = 'what is inside C:\Data'; Act = 'Order' }
+            @{ Text = 'delete the files in C:\Temp'; Act = 'Order' }
+            @{ Text = 'yesterday I deleted the files in C:\Temp'; Act = 'Report' }
+        ) {
+            $card = Resolve-Text $Text
+            $card.Act | Should -Be $Act
+            if ($card.Statement) { $card.Statement.Action | Should -Be 'files.delete' }
+        }
+
+        It 'answers "<Ask>" from what was told' -ForEach @(
+            @{ Ask = 'where does my sister live'; Line = '- Who: my sister. What: live in Lyon.' }
+            @{ Ask = 'who lives in Lyon'; Line = '- Who: my sister. What: live in Lyon.' }
+            @{ Ask = 'what did I buy yesterday'; Line = '- Who: you. What: buy a red car. When: yesterday.' }
+            @{ Ask = 'what did I buy'; Line = '- Who: you. What: buy a red car. When: yesterday.' }
+            @{ Ask = 'what is my name'; Line = '- Who: my name. What: be Amin.' }
+        ) {
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            New-LambekPlan 'I bought a red car yesterday' | Out-Null
+            New-LambekPlan 'my name is Amin' | Out-Null
+            New-LambekPlan $Ask | ConvertTo-LambekAnswer | Should -Be ('From what you told me in this conversation:', $Line -join "`n")
+        }
+
+        It 'says it does not know what nobody told: <Ask>' -ForEach @(
+            @{ Ask = 'where does my boss live' }
+            @{ Ask = 'what did I buy last week' }
+            @{ Ask = 'what is the weather' }
+        ) {
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            New-LambekPlan 'I bought a red car yesterday' | Out-Null
+            New-LambekPlan $Ask | ConvertTo-LambekAnswer | Should -Be 'I do not know: nobody told me, and I cannot find it out by myself yet.'
+        }
+
+        It 'reads the word typed, not a word of a pack that looks like it' {
+            # "live" is one letter from "move"
+            (Resolve-Text 'where does my sister live').Asked.Actions | Should -Be 'verb:live'
+        }
+
+        It 'keeps it across conversations like anything else told' {
+            New-LambekPlan 'my sister lives in Lyon' | Out-Null
+            & (Get-Module Lambek) { $script:Told = $null; $script:ToldJournal = $null }
+            New-LambekPlan 'where does my sister live' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Who: my sister. What: live in Lyon.' -join "`n")
+        }
+
+        It 'still takes a reply to its own question as a reply' {
+            $plan = New-LambekPlan 'delete the files'
+            $plan.Status | Should -Be 'NeedsInput'
+            (Resolve-LambekFollowUp -Plan $plan -Text 'the folder is C:\Temp').Kind | Should -Not -Be 'explain'
         }
     }
 

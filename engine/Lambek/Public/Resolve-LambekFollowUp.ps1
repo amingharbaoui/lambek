@@ -54,7 +54,10 @@ function Resolve-LambekTurn {
     }
 
     # Something told, or a question about what was told: it is answered, and the plan in progress stays as it is
-    if (@($fresh.Steps | Where-Object { ($_.PSObject.Properties['Statement'] -and $_.Statement) -or ($_.PSObject.Properties['Asked'] -and $_.Asked) }).Count -gt 0) {
+    # (while the plan waits for a detail, a sentence read with the dictionary alone may be that detail: it is tried as one first)
+    $waits = $Plan.Status -ne 'Ready' -and @($Plan.Steps | Where-Object { $_.Action }).Count -gt 0
+    $loose = @($fresh.Steps | Where-Object { $_.PSObject.Properties['Statement'] -and $_.Statement -and "$($_.Statement.Action)".StartsWith('verb:') }).Count -gt 0
+    if (-not ($waits -and $loose) -and @($fresh.Steps | Where-Object { ($_.PSObject.Properties['Statement'] -and $_.Statement) -or ($_.PSObject.Properties['Asked'] -and $_.Asked) }).Count -gt 0) {
         return [pscustomobject]@{ Kind = 'explain'; Plan = $Plan; Answer = (ConvertTo-LambekAnswer -Plan $fresh) }
     }
 

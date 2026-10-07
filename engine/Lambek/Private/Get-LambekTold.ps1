@@ -86,7 +86,7 @@ function Write-LambekToldJournal {
         Form         = $Fact.Form
         Action       = $Fact.Action
         Values       = $values
-        What         = Get-LambekStepSentence -Step ([pscustomobject]@{ Action = $Fact.Action; Parameters = $Fact.Parameters; Output = $null }) -Language $Fact.Language -Units $lexicon.Answer.Units -Unchecked
+        What         = $(if ($Fact.PSObject.Properties['What'] -and $Fact.What) { $Fact.What } else { Get-LambekStepSentence -Step ([pscustomobject]@{ Action = $Fact.Action; Parameters = $Fact.Parameters; Output = $null }) -Language $Fact.Language -Units $lexicon.Answer.Units -Unchecked })
         Agent        = $Fact.Agent
         Name         = $Fact.Name
         Wish         = $Fact.Wish
@@ -157,7 +157,7 @@ function Format-LambekFact {
     $when = ''
     if ($Fact.Time) { $when = $say['When'] -f $Fact.Time }
     # "yesterday" told another day is said as the day it was
-    if ($Fact.PSObject.Properties['What'] -and $Fact.Day) { $when = $say['When'] -f $Fact.Day }
+    if ($Fact.PSObject.Properties['PreviousHash'] -and $Fact.Day) { $when = $say['When'] -f $Fact.Day }
     $shape = 'Fact'
     if ($Fact.Wish) { $shape = 'FactWished' }
     return $say[$shape] -f $who, $what, $when
@@ -185,25 +185,42 @@ function Get-LambekToldAnswer {
     # Lines of the journal changed outside Lambek are never used, and it is said
     $doubt = ''
     if ($script:ToldDoubt -gt 0) { $doubt = "`n$(Format-LambekPlural -Template $say['Doubt'] -Language $Language -Values @([int] $script:ToldDoubt))" }
-    if ($told.Count + $before.Count -eq 0) { return "$($say['NothingTold'])$doubt" }
+    # A question about anything: what nobody told is not known, and it is said so
+    $anything = -not $Asked.All -and @($Asked.Actions | Where-Object { "$_".StartsWith('verb:') }).Count -gt 0
+    if ($told.Count + $before.Count -eq 0) { return "$($say[$(if ($anything) { 'NotKnown' } else { 'NothingTold' })])$doubt" }
     $agrees = {
         param($fact)
         if ($Asked.All) { return $true }
         if ($fact.Action -notin @($Asked.Actions)) { return $false }
+        # "what is my name" asks for the other side of "my name is Amin", whichever side it was told on
+        if ($Asked.PSObject.Properties['Either'] -and $Asked.Either -and $Asked.Wanted -eq 'agent' -and $Asked.Parameters.Contains('object')) {
+            $side = ConvertTo-LambekNormalizedText -Text "$($Asked.Parameters['object'])"
+            $other = $null
+            if ($fact.PSObject.Properties['Values']) { $other = $fact.Values['object'] } elseif ($fact.Parameters.Contains('object')) { $other = $fact.Parameters['object'] }
+            return ((ConvertTo-LambekNormalizedText -Text "$($fact.Name)") -eq $side -or (ConvertTo-LambekNormalizedText -Text "$other") -eq $side)
+        }
         if ($Asked.Person -and $fact.Agent -ne $Asked.Person) { return $false }
+        # "my sister" asked is "my sister" told: the same words, whatever their capitals and accents
+        if ($Asked.PSObject.Properties['Name'] -and $Asked.Name -and (ConvertTo-LambekNormalizedText -Text "$($fact.Name)") -ne (ConvertTo-LambekNormalizedText -Text $Asked.Name)) { return $false }
+        # "where...", "what...": the thing told must say it
+        if ($Asked.PSObject.Properties['Wanted'] -and $Asked.Wanted) {
+            $names = @(if ($fact.PSObject.Properties['Values']) { $fact.Values.Keys } else { $fact.Parameters.Keys })
+            if ($Asked.Wanted -eq 'object' -and 'object' -notin $names) { return $false }
+            if ($Asked.Wanted -eq 'place' -and @($names | Where-Object { $_ -ne 'object' }).Count -eq 0) { return $false }
+        }
         # The same words of time mean the same day only when they were said the same day
         if ($Asked.Time -and (-not $fact.Day -or "$($fact.Day)" -ne "$($Asked.Day)")) { return $false }
         foreach ($name in $Asked.Parameters.Keys) {
             $value = $null
             if ($fact.PSObject.Properties['Values']) { $value = $fact.Values[$name] }
             elseif ($fact.Parameters.Contains($name)) { $value = Format-LambekValue -Value $fact.Parameters[$name] }
-            if ("$value" -ne (Format-LambekValue -Value $Asked.Parameters[$name])) { return $false }
+            if ((ConvertTo-LambekNormalizedText -Text "$value") -ne (ConvertTo-LambekNormalizedText -Text (Format-LambekValue -Value $Asked.Parameters[$name]))) { return $false }
         }
         return $true
     }
     $found = @($told | Where-Object { & $agrees $_ })
     $older = @($before | Where-Object { & $agrees $_ })
-    if ($found.Count + $older.Count -eq 0) { return "$($say['NotTold'])$doubt" }
+    if ($found.Count + $older.Count -eq 0) { return "$($say[$(if ($anything) { 'NotKnown' } else { 'NotTold' })])$doubt" }
     $lines = [System.Collections.Generic.List[string]]::new()
     if ($found.Count -gt 0) {
         $lines.Add($say['Recalled'])
@@ -274,6 +291,60 @@ function Get-LambekAsked {
         Actions    = @($actions | ForEach-Object { $_.Id })
         Parameters = $values
         Person     = $Act.Subject.Person
+        Time       = Get-LambekSaidTime -Request $Request
+        Day        = Get-LambekSaidDay -Request $Request
+    }
+}
+
+function ConvertTo-LambekGeneralFact {
+    [CmdletBinding()]
+    param(
+        # The sentence read with the words of the dictionary: who, the verb, what, where
+        [Parameter(Mandatory)]
+        [pscustomobject] $Reading,
+
+        [Parameter(Mandatory)]
+        [pscustomobject] $Request
+    )
+
+    # A thing told about anything, in the same shape as a thing told about an action of a pack:
+    # the verb stands where the action stood, and what goes with it where the values stood
+    $when = Get-LambekSaidTime -Request $Request
+    $who = 'agent(speaker)'
+    if ($Reading.Agent -ne 'speaker') { $who = "agent(""$($Reading.Name)"")" }
+    $roles = @($who) + @(foreach ($key in $Reading.Roles.Keys) { "$key(""$($Reading.Roles[$key])"")" })
+    $form = "told($($Reading.Verb)($($roles -join ', '))"
+    if ($when) { $form += ", time(""$when"")" }
+    [pscustomobject]@{
+        Action     = "verb:$($Reading.Verb)"
+        Parameters = $Reading.Roles
+        What       = $Reading.What
+        Agent      = $Reading.Agent
+        Name       = $Reading.Name
+        Wish       = $false
+        Time       = $when
+        Day        = Get-LambekSaidDay -Request $Request
+        Told       = $null
+        Text       = "$($Request.Original)"
+        Language   = $Request.Language
+        Hash       = $null
+        Form       = "$form)"
+    }
+}
+
+function ConvertTo-LambekGeneralAsked {
+    param([pscustomobject] $Reading, [pscustomobject] $Request)
+
+    # A question about anything: what was told with that verb, about that one, and that says what is asked
+    [pscustomobject]@{
+        All        = $false
+        Actions    = @("verb:$($Reading.Verb)")
+        Parameters = $Reading.Roles
+        Person     = $Reading.Agent
+        Name       = $Reading.Name
+        Wanted     = $Reading.Asked
+        # "what is my name": with "be", the two sides can be told either way round
+        Either     = [bool] $Reading.Helper
         Time       = Get-LambekSaidTime -Request $Request
         Day        = Get-LambekSaidDay -Request $Request
     }

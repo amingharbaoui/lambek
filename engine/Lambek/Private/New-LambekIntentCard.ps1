@@ -64,12 +64,37 @@ function New-LambekIntentCard {
     if ($act.Rule -eq 'nothing known' -and $best -and $best.Action['Output'] -eq 'mcp') { $act = [pscustomobject]@{ Kind = 'Order'; Rule = $null; Say = $null; Subject = $null } }
     $statement = $null
     $recall = $null
+
+    # A sentence that is no order the packs know, and names nothing of theirs (no place, no file), may be about
+    # anything at all: it is read with the words of the dictionary, as something told or something asked
+    $general = $null
+    $theirs = @($request.Entities | Where-Object { $_.Type -ne 'number' }).Count
+    if ($theirs -eq 0 -and $act.Rule -notin 'told', 'forget' -and ($act.Kind -ne 'Order' -or $selection.Status -eq 'Unknown')) {
+        $general = Get-LambekGeneralReading -Request $request
+        if ($general -and $act.Kind -eq 'Order') {
+            $kind = 'Report'
+            if ($general.Kind -eq 'question') { $kind = 'Question' }
+            $act = [pscustomobject]@{ Kind = $kind; Rule = 'general'; Say = $lexicon.Dialogue.Say[$kind]; Subject = $null }
+        }
+    }
     if ($act.Kind -ne 'Order') {
         # A question about what was told is answered from the conversation
         if ($act.Kind -eq 'Question') { $recall = Get-LambekAsked -Request $request -Grammar $grammar -Act $act -Candidates @($Evidence.Candidates) }
         # What is told keeps its meaning, read with the action its verb names: it is understood, never carried out
         if ($act.Kind -eq 'Report' -and $selection.Status -eq 'Found' -and $best) {
             $statement = Get-LambekStatement -Request $request -Grammar $grammar -Act $act -Action $best.Action
+        }
+        # Nothing read with the packs: the reading with the dictionary says what is told, or what is asked
+        # (a question read by the router stays a question: "why is the sky blue" tells nothing)
+        if ($general -and $general.Kind -eq 'statement' -and $act.Kind -eq 'Question') { $general = $null }
+        # A question read with a verb of a pack stays so, unless that verb is only a correction of the word typed
+        # ("live" corrected to "move"): then the word typed is the one meant
+        if ($recall -and @($request.Corrections).Count -eq 0) { $general = $null }
+        if (-not $statement -and $general) {
+            $recall = $null
+            if ($general.Kind -eq 'statement') { $statement = ConvertTo-LambekGeneralFact -Reading $general -Request $request }
+            else { $recall = ConvertTo-LambekGeneralAsked -Reading $general -Request $request }
+            $act = [pscustomobject]@{ Kind = $(if ($statement) { 'Report' } else { 'Question' }); Rule = 'general'; Say = $act.Say; Subject = $null }
         }
         $selection = [pscustomobject]@{ Status = 'Unknown'; Best = $null; Ranked = @(); Integrity = $null }
         $best = $null
@@ -88,7 +113,8 @@ function New-LambekIntentCard {
     # Decision
     if ($selection.Status -eq 'Unknown') {
         # What was recognised is said, when it is not an order; an order not understood is asked again
-        if ($act.Kind -ne 'Order' -and $act.Say) { $questions.Add($act.Say) }
+        # (a sentence about anything is answered from what was told: its own answer says it, not this line)
+        if ($act.Kind -ne 'Order' -and $act.Say -and $act.Rule -ne 'general') { $questions.Add($act.Say) }
         else { $questions.Add($lexicon.SentenceQuestion) }
     }
     elseif ($selection.Status -eq 'Ambiguous') {

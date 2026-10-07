@@ -630,6 +630,151 @@
       "que sais tu",
       "que savez vous"
     ],
+    "General": {
+      "Unread": [
+        "voici",
+        "voila",
+        "pourquoi",
+        "comment",
+        "quand",
+        "si",
+        "parce",
+        "car",
+        "et",
+        "mais",
+        "donc",
+        "lorsque",
+        "puisque",
+        "dont"
+      ],
+      "Speakers": [
+        "je",
+        "j",
+        "nous",
+        "on"
+      ],
+      "Addressee": [
+        "tu",
+        "vous"
+      ],
+      "Pronouns": [
+        "il",
+        "elle",
+        "ils",
+        "elles"
+      ],
+      "Determiners": [
+        "le",
+        "la",
+        "les",
+        "l",
+        "un",
+        "une",
+        "des",
+        "du",
+        "mon",
+        "ma",
+        "mes",
+        "ton",
+        "ta",
+        "tes",
+        "son",
+        "sa",
+        "ses",
+        "notre",
+        "nos",
+        "votre",
+        "vos",
+        "leur",
+        "leurs",
+        "ce",
+        "cet",
+        "cette",
+        "ces"
+      ],
+      "Prepositions": [
+        "a",
+        "au",
+        "aux",
+        "dans",
+        "en",
+        "chez",
+        "sur",
+        "sous",
+        "de",
+        "avec",
+        "pour",
+        "pres",
+        "vers",
+        "depuis",
+        "par"
+      ],
+      "Auxiliaries": [
+        "ai",
+        "as",
+        "a",
+        "avons",
+        "avez",
+        "ont",
+        "suis",
+        "es",
+        "est",
+        "sommes",
+        "etes",
+        "sont",
+        "avais",
+        "avait",
+        "etais",
+        "etait",
+        "ete"
+      ],
+      "Verbs": [
+        "suis",
+        "es",
+        "est",
+        "sommes",
+        "etes",
+        "sont",
+        "etais",
+        "etait",
+        "ai",
+        "as",
+        "a",
+        "avons",
+        "avez",
+        "ont"
+      ],
+      "Where": [
+        "ou"
+      ],
+      "What": [
+        "que",
+        "qu",
+        "qui",
+        "quoi",
+        "quel",
+        "quelle"
+      ],
+      "Skipped": [
+        "m",
+        "t",
+        "s",
+        "me",
+        "te",
+        "se",
+        "est-ce",
+        "ce",
+        "y"
+      ],
+      "Negations": [
+        "ne",
+        "n",
+        "pas",
+        "jamais",
+        "plus",
+        "rien"
+      ]
+    },
     "Say": {
       "Report": "Je lis cela comme une information, pas comme une demande. Je ne l'ai pas assez bien comprise pour la retenir.",
       "Question": "C'est une question, pas une demande d'action. Je ne sais pas encore répondre à ce genre de question.",
@@ -646,7 +791,8 @@
       "OnDay": "Dit le {0}. {1}",
       "Forgotten": "C'est fait : j'ai oublié tout ce qui m'a été dit.",
       "ToldHere": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens pour cette conversation seulement.",
-      "Doubt": "{0} {0:ligne|lignes} de mon journal {0:a été modifiée|ont été modifiées} en dehors de Lambek : je {0:l'ai laissée|les ai laissées} de côté."
+      "Doubt": "{0} {0:ligne|lignes} de mon journal {0:a été modifiée|ont été modifiées} en dehors de Lambek : je {0:l'ai laissée|les ai laissées} de côté.",
+      "NotKnown": "Je ne sais pas : on ne me l'a pas dit, et je ne sais pas encore le trouver seul."
     }
   },
   "Answer": {
