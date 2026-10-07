@@ -134,6 +134,13 @@ Describe 'GPS integrity of a choice' {
         InModuleScope Lambek { Get-LambekGpsIntegrity -Evidence (Get-LambekIntentEvidence -Request (ConvertTo-LambekRequest 'delete the .log files in C:\Temp')) -Winner 'notes.delete' -Risk high } | Should -BeNullOrEmpty
     }
 
+    It 'lets the meaning of the sentence vote for its action, and against the others' {
+        $rows = InModuleScope Lambek { Get-LambekSignalRow -Evidence (Get-LambekIntentEvidence -Request (ConvertTo-LambekRequest 'delete the .log files in C:\Temp')) }
+        $structure = [array]::IndexOf((InModuleScope Lambek { Get-LambekSignalName }), 'Structure')
+        ($rows | Where-Object Action -EQ 'files.delete').Values[$structure] | Should -Be 1
+        ($rows | Where-Object Action -EQ 'files.list').Values[$structure] | Should -Be 0
+    }
+
     It 'explains its verdict when asked why' {
         $plan = New-LambekPlan 'delete the .log files in C:\Temp'
         (Resolve-LambekFollowUp -Plan $plan -Text 'why').Answer | Should -BeLike '*Integrity: margin * for a protection level of *: available.*'

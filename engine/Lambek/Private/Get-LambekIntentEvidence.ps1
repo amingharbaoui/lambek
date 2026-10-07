@@ -71,7 +71,8 @@ function Get-LambekIntentEvidence {
 
     # The second structural satellite: DisCoCat says which actions the reduction itself allows.
     # Without a whole sentence it says nothing (one half for each)
-    $meaning = @(Get-LambekMeaning -Grammar $grammar -Language $language)
+    # The function gives its list as one object: it is opened here, so each action can be looked up in it
+    $meaning = [string[]] @(Get-LambekMeaning -Grammar $grammar -Language $language | ForEach-Object { $_ })
     foreach ($candidate in $byAction.Values) {
         $structure = 0.5
         if ($grammar.IsSentence) { $structure = [double] ($candidate.Action.Id -in $meaning) }
