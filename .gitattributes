@@ -1,0 +1,9 @@
+# Text files keep LF on every machine, so the same sources give the same bytes on Windows and Linux
+* text=auto eol=lf
+
+# Never converted
+*.gz binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.icns binary
