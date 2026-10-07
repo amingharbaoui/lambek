@@ -24,6 +24,8 @@ function Resolve-LambekFollowUp {
     $turn = Resolve-LambekTurn -Plan $Plan -Text $Text -Step $Step
     if ($turn.Plan -and -not [object]::ReferenceEquals($turn.Plan, $Plan)) {
         $turn.Plan = Add-LambekConversation -Plan $turn.Plan -Previous $Plan
+        # A request understood right after one that was not may be the same request said another way
+        if ($turn.Kind -eq 'new') { Add-LambekRephrased -Plan $turn.Plan -Previous $Plan }
         # The words not understood before stay with the conversation: the plan that runs may say what they meant
         $unresolved = @(Get-LambekUnresolved -Plan $Plan)
         if ($unresolved.Count -gt 0 -and -not $turn.Plan.PSObject.Properties['Unresolved']) {

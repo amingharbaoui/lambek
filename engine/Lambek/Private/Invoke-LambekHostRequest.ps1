@@ -112,7 +112,9 @@ function Invoke-LambekHostRequest {
                 # What the user told in this chat: each chat has its own, kept in memory only
                 if (-not $state.Contains('Told')) { $state.Told = @{} }
                 if ($chat -and -not $state.Told.ContainsKey($chat)) { $state.Told[$chat] = [System.Collections.Generic.List[object]]::new() }
-                $script:Told = $(if ($chat) { $state.Told[$chat] } else { [System.Collections.Generic.List[object]]::new() })
+                # (assigned as it is: a list with nothing in it must stay the list of the chat)
+                $script:Told = [System.Collections.Generic.List[object]]::new()
+                if ($chat) { $script:Told = $state.Told[$chat] }
 
                 if ($context -and $state.Plans.Contains($context)) {
                     $followUp = Resolve-LambekFollowUp -Plan $state.Plans[$context] -Text $params.text -Step $selected
@@ -133,6 +135,13 @@ function Invoke-LambekHostRequest {
                 }
 
                 $script:Belief = $null
+
+                # The last request of the chat that was not understood: the next one understood may be it, said another way
+                if (-not $state.Contains('Failed')) { $state.Failed = @{} }
+                if ($chat -and $kind -notin 'explain', 'run') {
+                    if ($state.Failed.ContainsKey($chat)) { Add-LambekRephrased -Plan $plan -Previous $state.Failed[$chat] }
+                    if ($plan.Status -ne 'Ready') { $state.Failed[$chat] = $plan } else { $state.Failed.Remove($chat) }
+                }
 
                 # The belief follows the chat: predicted from the turns before, weighed by this one (a Bayes filter)
                 $rows = @($plan.Steps | Where-Object { $_.PSObject.Properties['Reading'] -and $_.Reading } | Select-Object -First 1 | ForEach-Object { $_.Reading.Rows })

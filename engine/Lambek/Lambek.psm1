@@ -93,6 +93,9 @@ $script:Mcp = @{
 # Words taught by the user
 $script:LearnedPath = Join-Path $dataFolder 'words.json'
 $script:LearnedWords = $null
+# Turns of phrase learned from the user's rephrasings
+$script:FormsPath = Join-Path $dataFolder 'forms.json'
+$script:Forms = $null
 
 # What happened to past plans: the adaptation learns from it
 $script:HistoryPath = Join-Path $dataFolder 'history.jsonl'

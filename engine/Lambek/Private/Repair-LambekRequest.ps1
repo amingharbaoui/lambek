@@ -14,6 +14,17 @@ function Repair-LambekRequest {
     $current = Test-LambekReading -Text $Text -Original $Original -Language $Language
     $corrections = [System.Collections.Generic.List[object]]::new()
 
+    # A turn of phrase the user taught by saying it another way is read as that other way, with the values of now.
+    # The grammar is the judge here too: it is kept only when the sentence explains more, and no value is lost
+    $taught = Get-LambekFormReading -Request $current.Request
+    if ($taught -and $taught -cne $current.Text) {
+        $reading = Test-LambekReading -Text $taught -Original $Original -Language $Language
+        if ($reading.Grammar.IsSentence -and $reading.Defects -lt $current.Defects -and (Test-LambekSameEntity -Before $current.Request -After $reading.Request)) {
+            $corrections.Add([pscustomobject]@{ From = $Original; To = $taught; Distance = 0.0; Sense = 'form' })
+            $current = $reading
+        }
+    }
+
     # Each word the grammar cannot place is tried against its closest known words, left to right.
     # The grammar is the judge: a correction is kept only when the sentence explains more with it,
     # the cheapest typing slip first. Paths, names and numbers never change.

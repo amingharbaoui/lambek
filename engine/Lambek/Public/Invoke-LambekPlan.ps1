@@ -164,6 +164,8 @@ function Invoke-LambekPlan {
             try {
                 Add-LambekMemory -Plan $Plan | Out-Null
                 $learned = @(Invoke-LambekPursuit -Plan $Plan)
+                # No word to learn: the whole sentence said before may be a turn of phrase for this plan
+                if ($learned.Count -eq 0) { $learned = @(Invoke-LambekFormLearning -Plan $Plan) }
             }
             catch { Write-Verbose "The memory could not learn from this plan: $($_.Exception.Message)" }
         }

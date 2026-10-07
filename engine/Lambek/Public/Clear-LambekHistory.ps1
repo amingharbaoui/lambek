@@ -11,12 +11,13 @@ function Clear-LambekHistory {
     if ($PSCmdlet.ShouldProcess($script:HistoryPath, 'Forget the plans run')) {
         # The adapter of the proposer goes too: without it the proposer is its base again, exactly
         $adapter = Join-Path (Split-Path -Path $script:MemoryPath -Parent) 'proposer-adapter.json'
-        foreach ($path in $script:HistoryPath, $script:MemoryPath, $script:PursuitPath, $script:DriftPath, $adapter) {
+        foreach ($path in $script:HistoryPath, $script:MemoryPath, $script:PursuitPath, $script:DriftPath, $script:FormsPath, $adapter) {
             if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path }
         }
         $script:History = $null
         $script:Memory = $null
         $script:Pursuit = $null
+        $script:Forms = $null
         $script:Fusion = $null
     }
 }

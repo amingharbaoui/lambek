@@ -86,7 +86,7 @@ function New-LambekPlan {
                     Types      = $card.Types
                     Implied    = @($card.Implied)
                     Guess      = $card.Guess
-                    Senses     = @($request.Corrections | Where-Object { $_.PSObject.Properties['Sense'] -and $_.Sense -in 'abbreviation', 'dictionary' })
+                    Senses     = @($request.Corrections | Where-Object { $_.PSObject.Properties['Sense'] -and $_.Sense -in 'abbreviation', 'dictionary', 'form' })
                     Pending    = @($card.Pending)
                     FromHabit  = @($card.FromHabit)
                     Votes      = $(if ($card.Integrity) { $card.Integrity.Votes })

@@ -259,6 +259,18 @@ Describe 'Dialogue act' {
             $answer[2] | Should -BeLike '*delete the files in C:\Logs*'
         }
 
+        It 'keeps the conversation of each chat of the app apart' {
+            $audit = Join-Path $TestDrive 'audit.jsonl'
+            function Send-Ask {
+                param([string] $Text, [string] $Chat)
+                $line = @{ id = 1; method = 'ask'; params = @{ text = $Text; chat = $Chat } } | ConvertTo-Json -Compress -Depth 5
+                InModuleScope Lambek -Parameters @{ Line = $line; Audit = $audit } { (Invoke-LambekHostRequest -Line $Line -AuditPath $Audit | ConvertFrom-Json).result.answer }
+            }
+            Send-Ask 'yesterday I deleted the files in C:\Temp' 'one' | Should -BeLike 'I understand.*'
+            Send-Ask 'what did I delete' 'one' | Should -BeLike 'From what you told me in this conversation:*'
+            Send-Ask 'what did I delete' 'two' | Should -BeLike 'From what you told me before:*'
+        }
+
         It 'forgets everything when asked, in the conversation and on the disk' {
             New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
             Test-Path -LiteralPath (Get-JournalPath) | Should -BeTrue
