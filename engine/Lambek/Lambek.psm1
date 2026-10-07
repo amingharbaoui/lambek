@@ -69,6 +69,11 @@ $script:GuardWords = $null
 $script:LanguageBelief = $null
 $script:Incognito = $false
 $script:Told = $null
+# What was told in every conversation: one line each, never changed afterwards
+$script:ToldPath = Join-Path $dataFolder 'told.jsonl'
+$script:ToldJournal = $null
+$script:ToldDoubt = 0
+$script:Now = $null
 $script:KeyNeighbors = $null
 # Read from the machine once, and the folder names they give
 $script:SystemVocabulary = $null

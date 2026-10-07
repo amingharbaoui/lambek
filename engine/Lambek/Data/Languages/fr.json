@@ -591,17 +591,23 @@
       "l",
       "les"
     ],
-    "Times": [
-      "hier",
-      "aujourd hui",
-      "ce matin",
-      "hier soir",
-      "la semaine derniere",
-      "le mois dernier",
-      "l annee derniere",
-      "tout a l heure",
-      "demain",
-      "la semaine prochaine"
+    "Times": {
+      "hier": "day:-1",
+      "aujourd hui": "day:0",
+      "ce matin": "day:0",
+      "hier soir": "day:-1",
+      "la semaine derniere": "week:-1",
+      "le mois dernier": "month:-1",
+      "l annee derniere": "year:-1",
+      "tout a l heure": "day:0",
+      "demain": "day:1",
+      "la semaine prochaine": "week:1"
+    },
+    "Forget": [
+      "oublie ce que je t ai dit",
+      "oubliez ce que je vous ai dit",
+      "oublie tout ce que je t ai dit",
+      "oubliez tout ce que je vous ai dit"
     ],
     "Asked": [
       "qu",
@@ -630,12 +636,17 @@
       "Other": "Je lis cela comme un sujet autre que ceux dont je m'occupe : je ne fais donc rien.",
       "Speaker": "vous",
       "When": " Quand : {0}.",
-      "Told": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens pour cette conversation.",
+      "Told": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens.",
       "Fact": "Qui : {0}. Quoi : {1}.{2}",
       "FactWished": "Qui : {0}. Souhaite : {1}.{2}",
       "Recalled": "D'après ce qui m'a été dit dans cette conversation :",
-      "NotTold": "Cela ne m'a pas été dit dans cette conversation.",
-      "NothingTold": "Rien ne m'a encore été dit dans cette conversation."
+      "NotTold": "Cela ne m'a pas été dit.",
+      "NothingTold": "Rien ne m'a encore été dit.",
+      "RecalledBefore": "D'après ce qui m'a été dit avant :",
+      "OnDay": "Dit le {0}. {1}",
+      "Forgotten": "C'est fait : j'ai oublié tout ce qui m'a été dit.",
+      "ToldHere": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens pour cette conversation seulement.",
+      "Doubt": "{0} {0:ligne|lignes} de mon journal {0:a été modifiée|ont été modifiées} en dehors de Lambek : je {0:l'ai laissée|les ai laissées} de côté."
     }
   },
   "Answer": {

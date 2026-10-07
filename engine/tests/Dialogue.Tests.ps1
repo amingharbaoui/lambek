@@ -113,18 +113,18 @@ Describe 'Dialogue act' {
     }
 
     It 'says back who, what and when' {
-        New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -Be 'I understand. Who: you. What: delete the files in C:\Temp. When: yesterday. You are telling me, so I am not doing it. I am keeping it for this conversation.'
+        New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -Be 'I understand. Who: you. What: delete the files in C:\Temp. When: yesterday. You are telling me, so I am not doing it. I am keeping it.'
         New-LambekPlan 'mon collègue veut supprimer les fichiers .log de C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je comprends. Qui : mon collègue. Souhaite : supprimer les fichiers .log dans C:\Temp.*'
     }
 
     Context 'What was told in the conversation' {
         BeforeEach {
-            # Every test starts a conversation of its own
-            & (Get-Module Lambek) { $script:Told = $null }
+            # Every test starts a conversation of its own, with an empty journal, on the same day
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = [datetime] '2026-10-06 10:00' }
         }
 
         It 'says that nothing was told yet' {
-            New-LambekPlan 'what did I delete yesterday' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything in this conversation yet.'
+            New-LambekPlan 'what did I delete yesterday' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything yet.'
         }
 
         It 'answers "<Ask>" from what was told' -ForEach @(
@@ -148,7 +148,7 @@ Describe 'Dialogue act' {
             New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
             New-LambekPlan 'last week we moved the .pdf files from C:\A to D:\B' | Out-Null
             New-LambekPlan 'my colleague copied report.txt to D:\Backup this morning' | Out-Null
-            New-LambekPlan $Ask | ConvertTo-LambekAnswer | Should -Be 'You have not told me that in this conversation.'
+            New-LambekPlan $Ask | ConvertTo-LambekAnswer | Should -Be 'You have not told me that.'
         }
 
         It 'says everything that was told, once each, in the order it was told' {
@@ -164,12 +164,12 @@ Describe 'Dialogue act' {
         It 'answers in French from what was told in French' {
             New-LambekPlan 'hier j''ai supprimé les fichiers .log dans C:\Temp' | Out-Null
             New-LambekPlan 'qu''est-ce que j''ai supprimé hier' | ConvertTo-LambekAnswer | Should -Be ("D'après ce qui m'a été dit dans cette conversation :", '- Qui : vous. Quoi : supprimer les fichiers .log dans C:\Temp. Quand : hier.' -join "`n")
-            New-LambekPlan 'quels fichiers j''ai déplacés' | ConvertTo-LambekAnswer | Should -Be "Cela ne m'a pas été dit dans cette conversation."
+            New-LambekPlan 'quels fichiers j''ai déplacés' | ConvertTo-LambekAnswer | Should -Be "Cela ne m'a pas été dit."
         }
 
         It 'keeps nothing of a sentence read without the memory' {
             New-LambekPlan 'yesterday I deleted the files in C:\Temp' -NoRecall | Out-Null
-            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything in this conversation yet.'
+            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything yet.'
         }
 
         It 'keeps the plan in progress when something is told or asked about what was told' {
@@ -185,6 +185,95 @@ Describe 'Dialogue act' {
             (Resolve-Text 'which files in C:\Data are older than 30 days').Action | Should -Be 'files.list'
             (Resolve-Text 'delete the files in C:\Temp').Status | Should -Be 'Ready'
             (Resolve-Text 'did I delete the files in C:\Temp').Statement | Should -BeNullOrEmpty
+        }
+    }
+
+    Context 'The journal of what was told' {
+        BeforeAll {
+            function Start-Day { param([string] $Day) & (Get-Module Lambek) { param($Day) $script:Now = [datetime] $Day } $Day }
+            # Another conversation: nothing is kept in memory, the journal is read again from the disk
+            function Start-Conversation { & (Get-Module Lambek) { $script:Told = $null; $script:ToldJournal = $null } }
+            function Get-JournalPath { & (Get-Module Lambek) { $script:ToldPath } }
+        }
+        BeforeEach {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false }
+            Start-Day '2026-10-06 10:00'
+        }
+        AfterAll {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = $null }
+        }
+
+        It 'answers in another conversation, with the day it was told and the day it was about' {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            Start-Conversation
+            Start-Day '2026-10-09 09:00'
+            New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Who: you. What: delete the files in C:\Temp. When: 2026-10-05.' -join "`n")
+        }
+
+        It 'does not take the yesterday of another day for the yesterday of today' {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            Start-Conversation
+            Start-Day '2026-10-09 09:00'
+            New-LambekPlan 'what did I delete yesterday' | ConvertTo-LambekAnswer | Should -Be 'You have not told me that.'
+            Start-Day '2026-10-06 18:00'
+            New-LambekPlan 'what did I delete yesterday' | ConvertTo-LambekAnswer | Should -BeLike '*delete the files in C:\Temp*'
+        }
+
+        It 'says what was told in this conversation first, then what was told before, once each' {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            Start-Conversation
+            Start-Day '2026-10-09 09:00'
+            New-LambekPlan 'yesterday I deleted the .log files in C:\Logs' | Out-Null
+            New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'From what you told me in this conversation:'
+                    '- Who: you. What: delete the .log files in C:\Logs. When: yesterday.'
+                    'From what you told me before:'
+                    '- Told on 2026-10-06. Who: you. What: delete the files in C:\Temp. When: 2026-10-05.'
+                ) -join "`n")
+        }
+
+        It 'keeps the words of the day: accents, and the language it was told in' {
+            New-LambekPlan 'mon collègue a copié l''été.txt vers D:\Backup ce matin' | Out-Null
+            Start-Conversation
+            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be ('From what you told me before:', '- Told on 2026-10-06. Who: mon collègue. What: copier les fichiers nommés été.txt vers D:\Backup. When: 2026-10-06.' -join "`n")
+        }
+
+        It 'leaves out a line changed by hand and those after it, says so, and still keeps what is told next' {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            New-LambekPlan 'yesterday I moved the .pdf files from C:\A to D:\B' | Out-Null
+            New-LambekPlan 'yesterday I copied report.txt to D:\Backup' | Out-Null
+            $path = Get-JournalPath
+            $lines = @(Get-Content -LiteralPath $path -Encoding utf8)
+            $lines.Count | Should -Be 3
+            $lines[1] = $lines[1].Replace('D:\\B', 'D:\\X')
+            Set-Content -LiteralPath $path -Value $lines -Encoding utf8
+            Start-Conversation
+            $answer = @((New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer) -split "`n")
+            $answer.Count | Should -Be 3
+            $answer[1] | Should -BeLike '*delete the files in C:\Temp*'
+            $answer[2] | Should -Be '2 lines of my journal were changed outside Lambek: I left them out.'
+            New-LambekPlan 'yesterday I deleted the files in C:\Logs' | Out-Null
+            Start-Conversation
+            $answer = @((New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer) -split "`n")
+            $answer.Count | Should -Be 4
+            $answer[2] | Should -BeLike '*delete the files in C:\Logs*'
+        }
+
+        It 'forgets everything when asked, in the conversation and on the disk' {
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | Out-Null
+            Test-Path -LiteralPath (Get-JournalPath) | Should -BeTrue
+            New-LambekPlan 'forget what I told you' | ConvertTo-LambekAnswer | Should -Be 'Done: I have forgotten everything you told me.'
+            Test-Path -LiteralPath (Get-JournalPath) | Should -BeFalse
+            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything yet.'
+        }
+
+        It 'writes nothing in an incognito chat, and says it keeps it for the conversation only' {
+            & (Get-Module Lambek) { $script:Incognito = $true }
+            New-LambekPlan 'yesterday I deleted the files in C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike '*I am keeping it for this conversation only.'
+            Test-Path -LiteralPath (Get-JournalPath) | Should -BeFalse
+            New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -BeLike '*delete the files in C:\Temp*'
+            Start-Conversation
+            New-LambekPlan 'what did I delete' | ConvertTo-LambekAnswer | Should -Be 'You have not told me anything yet.'
         }
     }
 

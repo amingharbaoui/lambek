@@ -58,6 +58,12 @@ function Get-LambekStatement {
         Name       = $name
         Wish       = [bool] $Act.Subject.Wish
         Time       = $when
+        # The day the words of time point at, the day it was told, and the words it was told in
+        Day        = Get-LambekSaidDay -Request $Request
+        Told       = $null
+        Text       = "$($Request.Original)"
+        Language   = $Request.Language
+        Hash       = $null
         Form       = $form
     }
 }

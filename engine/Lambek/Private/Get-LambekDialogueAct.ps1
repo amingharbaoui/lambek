@@ -30,6 +30,8 @@ function Get-LambekDialogueAct {
     # "what have I told you": everything told in the conversation is asked for
     $plain = ((ConvertTo-LambekNormalizedText -Text "$($Request.Original)") -replace '[^\p{L}\p{N}]+', ' ').Trim()
     if ($plain -in @($dialogue['Everything'])) { return & $act 'Question' 'told' }
+    # "forget what I told you": the only words that erase it
+    if ($plain -in @($dialogue['Forget'])) { return & $act 'Question' 'forget' }
     # "what did I delete yesterday", "did I delete...": a question word first, then a subject and a verb, asks what was told
     $asked = $tokens[0] -in @($dialogue['Asked'])
 

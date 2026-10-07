@@ -548,18 +548,24 @@
     "Articles": [
       "the"
     ],
-    "Times": [
-      "yesterday",
-      "today",
-      "this morning",
-      "last night",
-      "last week",
-      "last month",
-      "last year",
-      "earlier",
-      "just now",
-      "tomorrow",
-      "next week"
+    "Times": {
+      "yesterday": "day:-1",
+      "today": "day:0",
+      "this morning": "day:0",
+      "last night": "day:-1",
+      "last week": "week:-1",
+      "last month": "month:-1",
+      "last year": "year:-1",
+      "earlier": "day:0",
+      "just now": "day:0",
+      "tomorrow": "day:1",
+      "next week": "week:1"
+    },
+    "Forget": [
+      "forget what i told you",
+      "forget what i said",
+      "forget everything i told you",
+      "forget everything i said"
     ],
     "Asked": [
       "what",
@@ -584,12 +590,17 @@
       "Other": "I read that as being about something other than what I take care of, so I am not doing anything.",
       "Speaker": "you",
       "When": " When: {0}.",
-      "Told": "I understand. {0} You are telling me, so I am not doing it. I am keeping it for this conversation.",
+      "Told": "I understand. {0} You are telling me, so I am not doing it. I am keeping it.",
       "Fact": "Who: {0}. What: {1}.{2}",
       "FactWished": "Who: {0}. Wants: {1}.{2}",
       "Recalled": "From what you told me in this conversation:",
-      "NotTold": "You have not told me that in this conversation.",
-      "NothingTold": "You have not told me anything in this conversation yet."
+      "NotTold": "You have not told me that.",
+      "NothingTold": "You have not told me anything yet.",
+      "RecalledBefore": "From what you told me before:",
+      "OnDay": "Told on {0}. {1}",
+      "Forgotten": "Done: I have forgotten everything you told me.",
+      "ToldHere": "I understand. {0} You are telling me, so I am not doing it. I am keeping it for this conversation only.",
+      "Doubt": "{0} {0:line|lines} of my journal {0:was|were} changed outside Lambek: I left {0:it|them} out."
     }
   },
   "Answer": {

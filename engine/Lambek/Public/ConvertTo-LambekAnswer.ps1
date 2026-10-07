@@ -60,7 +60,10 @@ function ConvertTo-LambekAnswer {
                 if ($told -and $said -and $said.Say[$told.Act]) { $reply = $said.Say[$told.Act] }
                 # A sentence whose meaning was read is said back: who, what, when
                 if ($told -and $told.PSObject.Properties['Statement'] -and $told.Statement -and $said -and $said.Say['Told']) {
-                    $reply = $said.Say['Told'] -f (Format-LambekFact -Fact $told.Statement -Language $language)
+                    # In an incognito chat it is kept for the conversation only
+                    $shape = 'Told'
+                    if ($script:Incognito) { $shape = 'ToldHere' }
+                    $reply = $said.Say[$shape] -f (Format-LambekFact -Fact $told.Statement -Language $language)
                 }
                 # A question about what was told is answered from the conversation, and only from it
                 if ($told -and $told.PSObject.Properties['Asked'] -and $told.Asked -and $said -and $said.Say['Recalled']) {
