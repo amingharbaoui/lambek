@@ -63,11 +63,11 @@ function ConvertTo-LambekAnswer {
                     # In an incognito chat it is kept for the conversation only
                     $shape = 'Told'
                     if ($script:Incognito) { $shape = 'ToldHere' }
-                    $reply = $said.Say[$shape] -f (Format-LambekFact -Fact $told.Statement -Language $language)
+                    $reply = $said.Say[$shape] -f (Format-LambekFact -Fact $told.Statement -Language $language -Register $Register)
                 }
                 # A question about what was told is answered from the conversation, and only from it
                 if ($told -and $told.PSObject.Properties['Asked'] -and $told.Asked -and $said -and $said.Say['Recalled']) {
-                    $reply = Get-LambekToldAnswer -Asked $told.Asked -Language $language
+                    $reply = Get-LambekToldAnswer -Asked $told.Asked -Language $language -Register $Register
                 }
             }
             if (-not $reply -and $Plan.PSObject.Properties['Suggestion'] -and $Plan.Suggestion) { $reply = $answer.DidYouMean -f $Plan.Suggestion }
