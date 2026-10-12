@@ -5,14 +5,22 @@ Set-StrictMode -Version Latest
 $dataFolder = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'Lambek'
 if ($env:LAMBEK_DATA) { $dataFolder = $env:LAMBEK_DATA }
 
-# The hot loops (chart, logic, distances, memory) in C#: compiled once, then loaded from the data folder.
-# The file name holds a hash of the sources and the PowerShell version, so a change compiles them again
+# The hot loops (chart, logic, distances, memory) in C#.
+# Built by build.ps1 -Task Build into bin, with the hash of the sources it was built from: loaded as it is when that hash is
+# still the hash of the sources. Else compiled once here, then loaded from the data folder; that file name holds the hash of the
+# sources and the PowerShell version, so a change compiles them again
 if (-not ('LambekDictionary' -as [type])) {
     $sources = @(Get-ChildItem -Path "$PSScriptRoot/Native" -Filter '*.cs' | Sort-Object Name | ForEach-Object FullName)
     $text = ($sources | ForEach-Object { [IO.File]::ReadAllText($_) }) -join "`n"
     $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($text))).Substring(0, 16)
+    $built = Join-Path $PSScriptRoot 'bin/Lambek.Native.dll'
+    $builtFrom = Join-Path $PSScriptRoot 'bin/Lambek.Native.sources'
     $assembly = Join-Path $dataFolder "native/Lambek-$hash-$($PSVersionTable.PSVersion).dll"
-    if (-not (Test-Path -LiteralPath $assembly -PathType Leaf)) {
+    if ((Test-Path -LiteralPath $built -PathType Leaf) -and (Test-Path -LiteralPath $builtFrom -PathType Leaf) -and
+        [IO.File]::ReadAllText($builtFrom).Trim() -eq $hash) {
+        $assembly = $built
+    }
+    elseif (-not (Test-Path -LiteralPath $assembly -PathType Leaf)) {
         try {
             New-Item -ItemType Directory -Path (Split-Path -Path $assembly -Parent) -Force | Out-Null
             # Written under another name first, so two sessions starting together never load half a file
@@ -53,6 +61,9 @@ $script:Packs = [ordered]@{}
 $script:LexiconCache = @{}
 $script:ActionIndexCache = @{}
 $script:DomainSenseCache = @{}
+# The scoring file, read again only when it changes, and the languages Lambek has a file for
+$script:ScoringCache = $null
+$script:AvailableLanguages = $null
 $script:RoundTripCache = @{}
 $script:GreetingPattern = $null
 # The phrasings said lately, so the same question does not get the same words twice in a row

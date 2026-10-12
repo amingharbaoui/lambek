@@ -15,6 +15,11 @@ fingerprint.txt
 out/
 dist/
 
+# The C# built by build.ps1 -Task Build
+engine/Lambek/bin/
+engine/Lambek.Native/obj/
+engine/Lambek.Native/bin/
+
 # App (Tauri / Node), added later
 node_modules/
 app/src-tauri/target/

@@ -36,6 +36,34 @@ Describe 'Benchmark guarantees on the test split' {
         $outside = $report.ByTag | Where-Object Tag -EQ 'out-of-domain'
         $outside.Wrong | Should -Be 0
     }
+
+    It 'says the highest wrong-action rate it cannot rule out' {
+        $expected = InModuleScope Lambek -Parameters @{ Wrong = $report.Wrong; Total = $report.Total } { Get-LambekRateBound -Failures $Wrong -Cases $Total }
+        $report.WrongActionBound | Should -Be ([math]::Round($expected, 4))
+        $report.WrongActionBound | Should -BeGreaterThan 0
+    }
+}
+
+Describe 'What a number of cases proves' {
+
+    It 'proves a rate under 1.19 % with no failure out of 251 cases' {
+        InModuleScope Lambek { [math]::Round((Get-LambekRateBound -Failures 0 -Cases 251), 4) } | Should -Be 0.0119
+    }
+
+    It 'proves only a rate under 2.37 % with half as many cases' {
+        InModuleScope Lambek { [math]::Round((Get-LambekRateBound -Failures 0 -Cases 125), 4) } | Should -Be 0.0237
+    }
+
+    It 'needs 299 clean cases to claim under 1 %' {
+        InModuleScope Lambek { Get-LambekRateBound -Failures 0 -Cases 299 } | Should -BeLessThan 0.01
+        InModuleScope Lambek { Get-LambekRateBound -Failures 0 -Cases 298 } | Should -BeGreaterThan 0.01
+    }
+
+    It 'gives the exact bound when there are failures' {
+        # One-sided 95 %: 1 failure in 100 cases, 5 in 251
+        InModuleScope Lambek { [math]::Round((Get-LambekRateBound -Failures 1 -Cases 100), 4) } | Should -Be 0.0466
+        InModuleScope Lambek { [math]::Round((Get-LambekRateBound -Failures 5 -Cases 251), 4) } | Should -Be 0.0414
+    }
 }
 
 Describe 'Benchmark scoring' {

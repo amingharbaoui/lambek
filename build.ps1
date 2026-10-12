@@ -1,6 +1,6 @@
 #Requires -Version 7.4
 param(
-    [ValidateSet('All', 'Analyze', 'Test', 'Benchmark', 'Fingerprint')]
+    [ValidateSet('All', 'Build', 'Analyze', 'Test', 'Benchmark', 'Fingerprint')]
     [string] $Task = 'All',
 
     # Where the fingerprint writes its lines (one answer each)
@@ -14,6 +14,35 @@ $engine = Join-Path $PSScriptRoot 'engine'
 $pesterVersion = '6.2.0'
 $analyzerVersion = '1.25.0'
 Write-Host "PowerShell $($PSVersionTable.PSVersion)"
+
+# The C# of the engine, built into engine/Lambek/bin with the hash of its sources (Lambek.psm1 computes the same hash).
+# Without the .NET SDK the module still works: it compiles the same sources itself the first time it is imported
+if ($Task -eq 'All' -or $Task -eq 'Build') {
+    $native = Join-Path $engine 'Lambek/Native'
+    $bin = Join-Path $engine 'Lambek/bin'
+    # dotnet can be there with only the runtime: the SDK is what builds
+    $sdks = @()
+    if (Get-Command dotnet -ErrorAction SilentlyContinue) {
+        $sdks = @(dotnet --list-sdks 2>$null | Where-Object { $_ -match '^\d+\.' })
+    }
+    if ($sdks.Count -eq 0) {
+        Write-Warning 'No .NET SDK is installed (winget install Microsoft.DotNet.SDK.8): the engine will compile its C# when it is first imported.'
+    }
+    else {
+        Write-Host "Building the C# with .NET SDK $(($sdks[-1] -split ' ')[0])..."
+        $sources = @(Get-ChildItem -Path $native -Filter '*.cs' | Sort-Object Name | ForEach-Object FullName)
+        $text = ($sources | ForEach-Object { [IO.File]::ReadAllText($_) }) -join "`n"
+        $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($text))).Substring(0, 16)
+
+        # The hash file goes first, so a failed build never leaves a library that claims the new sources
+        $from = Join-Path $bin 'Lambek.Native.sources'
+        if (Test-Path -LiteralPath $from) { Remove-Item -LiteralPath $from -Force }
+        dotnet build (Join-Path $engine 'Lambek.Native/Lambek.Native.csproj') -c Release -nologo -v quiet | Out-Host
+        if ($LASTEXITCODE -ne 0) { throw 'The C# build failed.' }
+        [IO.File]::WriteAllText($from, $hash, [Text.UTF8Encoding]::new($false))
+        Write-Host "Built engine/Lambek/bin/Lambek.Native.dll from sources $hash."
+    }
+}
 
 # Static analysis
 if ($Task -eq 'All' -or $Task -eq 'Analyze') {
@@ -68,7 +97,7 @@ if ($Task -eq 'Benchmark') {
         $report = Invoke-LambekBenchmark -Path $path -Split $split
         Write-Host ''
         Write-Host "Benchmark ($split)"
-        foreach ($name in 'Total', 'Correct', 'Clarified', 'Wrong', 'RecognitionRate', 'WrongActionRate', 'Determinism', 'MedianMs', 'P95Ms') {
+        foreach ($name in 'Total', 'Correct', 'Clarified', 'Wrong', 'RecognitionRate', 'WrongActionRate', 'WrongActionBound', 'Determinism', 'MedianMs', 'P95Ms') {
             Write-Host ("  {0,-16} {1}" -f $name, $report.$name)
         }
     }

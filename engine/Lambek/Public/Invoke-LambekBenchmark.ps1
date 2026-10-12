@@ -78,6 +78,8 @@ function Invoke-LambekBenchmark {
         RecognitionRate   = $metrics.RecognitionRate
         ClarificationRate = $metrics.ClarificationRate
         WrongActionRate   = $metrics.WrongActionRate
+        # The highest wrong-action rate these cases cannot rule out, at 95 %: what the benchmark really proves
+        WrongActionBound  = [math]::Round((Get-LambekRateBound -Failures $metrics.Wrong -Cases $metrics.Total), 4)
         Determinism       = [math]::Round($deterministic / $cases.Count, 4)
         MedianMs          = [math]::Round($median, 1)
         P95Ms             = [math]::Round($p95, 1)

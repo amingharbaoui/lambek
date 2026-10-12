@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The C# of Lambek (chart, logic, distances, memory, speech...), compiled once by build.ps1 -Task Build.
+    The sources stay in ../Lambek/Native, where the module also finds them when no build is there.
+    The library goes to ../Lambek/bin with the hash of the sources it was built from.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Lambek.Native</AssemblyName>
+    <RootNamespace />
+    <OutputType>Library</OutputType>
+    <Optimize>true</Optimize>
+    <Deterministic>true</Deterministic>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DebugType>embedded</DebugType>
+    <OutputPath>../Lambek/bin/</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../Lambek/Native/*.cs" />
+  </ItemGroup>
+
+</Project>
