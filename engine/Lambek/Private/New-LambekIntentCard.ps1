@@ -71,6 +71,11 @@ function New-LambekIntentCard {
     $theirs = @($request.Entities | Where-Object { $_.Type -ne 'number' }).Count
     if ($theirs -eq 0 -and $act.Rule -notin 'told', 'forget' -and ($act.Kind -ne 'Order' -or $selection.Status -eq 'Unknown')) {
         $general = Get-LambekGeneralReading -Request $request
+        # "she works at a bank" with nobody named before: a sentence told, about someone Lambek cannot tell
+        if ($general -and $general.Kind -eq 'unresolved') {
+            $act = [pscustomobject]@{ Kind = 'Report'; Rule = 'unresolved'; Say = ($lexicon.Dialogue.Say['WhoIs'] -f $general.Pronoun); Subject = $null }
+            $general = $null
+        }
         if ($general -and $act.Kind -eq 'Order') {
             $kind = 'Report'
             if ($general.Kind -eq 'question') { $kind = 'Question' }
@@ -341,6 +346,7 @@ function New-LambekIntentCard {
         PSTypeName  = 'Lambek.IntentCard'
         Status      = $status
         Act         = $act.Kind
+        ActSay      = $(if ($act.Rule -eq 'unresolved') { $act.Say } else { $null })
         Statement   = $statement
         Asked       = $recall
         Action      = $actionId

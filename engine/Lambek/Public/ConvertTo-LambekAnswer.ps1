@@ -58,12 +58,26 @@ function ConvertTo-LambekAnswer {
                 $told = @($Plan.Steps | Where-Object { $_.PSObject.Properties['Act'] -and $_.Act -and $_.Act -ne 'Order' }) | Select-Object -First 1
                 $said = (Get-LambekLexicon -Language $language).Dialogue
                 if ($told -and $said -and $said.Say[$told.Act]) { $reply = $said.Say[$told.Act] }
+                # What Lambek has to say about this very sentence ("who is she?") comes first
+                if ($told -and $told.PSObject.Properties['ActSay'] -and $told.ActSay) { $reply = $told.ActSay }
                 # A sentence whose meaning was read is said back: who, what, when
                 if ($told -and $told.PSObject.Properties['Statement'] -and $told.Statement -and $said -and $said.Say['Told']) {
-                    # In an incognito chat it is kept for the conversation only
+                    # Every thing told in the message, one sentence each
+                    $facts = @($Plan.Steps | Where-Object { $_.PSObject.Properties['Statement'] -and $_.Statement } | ForEach-Object { $_.Statement })
+                    # About files or code, it is said that nothing is done ("yesterday I deleted..." is no order);
+                    # about anything else ("my sister lives in Lyon") there was nothing to do: it is simply noted
                     $shape = 'Told'
-                    if ($script:Incognito) { $shape = 'ToldHere' }
-                    $reply = $said.Say[$shape] -f (Format-LambekFact -Fact $told.Statement -Language $language -Register $Register)
+                    if (@($facts | Where-Object { -not "$($_.Action)".StartsWith('verb:') }).Count -eq 0 -and $said.Say['Noted']) { $shape = 'Noted' }
+                    # In an incognito chat it is kept for the conversation only
+                    if ($script:Incognito) { $shape += 'Here' }
+                    $reply = $said.Say[$shape] -f ((@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $language -Register $Register })) -join ' ')
+                    # Told the opposite before: both are kept, and it is said
+                    $everything = @((Get-LambekTold).ToArray()) + @((Get-LambekToldJournal).ToArray())
+                    foreach ($fact in $facts) {
+                        foreach ($other in @(Get-LambekContrary -Fact $fact -Facts $everything)) {
+                            $reply += "`n" + ($said.Say['Opposite'] -f (Format-LambekFact -Fact $other -Language $language -Register $Register))
+                        }
+                    }
                 }
                 # A question about what was told is answered from the conversation, and only from it
                 if ($told -and $told.PSObject.Properties['Asked'] -and $told.Asked -and $said -and $said.Say['Recalled']) {

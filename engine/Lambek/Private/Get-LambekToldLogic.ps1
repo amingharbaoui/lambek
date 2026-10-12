@@ -39,6 +39,8 @@ function Get-LambekAskedRule {
         }
         # The same words of time mean the same day only when they were said the same day
         if ($Asked.Time) { $body.Add("on(E, ""$($Asked.Day)"")") }
+        # "what do I like" asks for what is so; "do I like coffee" may be answered by a "no" told as well
+        if (-not ($Asked.PSObject.Properties['Wanted'] -and $Asked.Wanted -in 'whether', 'reason')) { $body.Add('not negated(E)') }
         "answer(E) :- $($body -join ', ')."
     }
     return (@($rules) -join "`n")
@@ -79,6 +81,14 @@ function Get-LambekToldLogic {
         if ($fact.PSObject.Properties['Values']) { $roles = $fact.Values } else { $roles = $fact.Parameters }
         foreach ($name in @($roles.Keys)) { [void] $logic.Add('role', [string[]] @($id, (& $plain $name), (& $plain $roles[$name]))) }
         if ($fact.Day) { [void] $logic.Add('on', [string[]] @($id, "$($fact.Day)")) }
+        if ($fact.PSObject.Properties['Negated'] -and $fact.Negated) { [void] $logic.Add('negated', [string[]] @($id)) }
+    }
+    # "A because B": because(A, B), between the events that carry them
+    for ($i = 0; $i -lt $Facts.Count; $i++) {
+        if (-not $Facts[$i].PSObject.Properties['ReasonFor'] -or -not $Facts[$i].ReasonFor) { continue }
+        for ($j = 0; $j -lt $Facts.Count; $j++) {
+            if ($Facts[$j].PSObject.Properties['Core'] -and $Facts[$j].Core -ceq $Facts[$i].ReasonFor) { [void] $logic.Add('because', [string[]] @("e$j", "e$i")) }
+        }
     }
     return $logic
 }

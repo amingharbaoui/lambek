@@ -24,7 +24,8 @@ function Split-LambekClause {
     $verbs = [System.Collections.Generic.HashSet[string]]::new()
     foreach ($pack in $script:Packs.Values) {
         foreach ($language in $pack.Words.Keys) {
-            $actionWords = @($pack.Words[$language].Keys | Where-Object { @($pack.Words[$language][$_]) -match '(^|\s)s(\s|$)' })
+            # (a word of place that opens or ends a sentence, "in C:\A, ...", is no action: "...and in Paris")
+            $actionWords = @($pack.Words[$language].Keys | Where-Object { @(@($pack.Words[$language][$_]) | Where-Object { $_ -match '(^|\s)s(\s|$)' -and $_ -notmatch 's\^r s|^s s\^l d\^l$' }).Count -gt 0 })
             foreach ($word in $actionWords) { [void] $verbs.Add($word) }
             if ($pack.BaseForms.ContainsKey($language)) {
                 foreach ($form in $pack.BaseForms[$language].Keys) {
@@ -53,7 +54,9 @@ function Split-LambekClause {
 
         $clean = $restored.Trim(' ', ',', '.')
         if ($clean.Length -gt 0) {
-            $result.Add($clean)
+            # Two things told in one sentence ("...and my brother lives in Paris") are two clauses as well
+            $parts = Split-LambekCoordination -Text $clean
+            foreach ($part in $parts) { $result.Add($part) }
         }
     }
 

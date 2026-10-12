@@ -323,15 +323,25 @@ public static class LambekSpeech
     // French words through Lefff
     static string NounGender(LambekDictionary dictionary, string word)
     {
-        // Only a word Lefff reads as a noun and in one gender
+        // Only a word Lefff reads as a noun and in one gender (Lefff writes "soeur" where the user writes "s\u0153ur")
         HashSet<string> genders = new HashSet<string>(StringComparer.Ordinal);
-        foreach (LambekLemma lemma in dictionary.Lemmas(word, "fr", true))
+        foreach (string form in Ligatures(word))
         {
-            if (lemma.Pos != "n") continue;
-            if (lemma.Tag.Contains('m')) genders.Add("m");
-            if (lemma.Tag.Contains('f')) genders.Add("f");
+            foreach (LambekLemma lemma in dictionary.Lemmas(form, "fr", true))
+            {
+                if (lemma.Pos != "n") continue;
+                if (lemma.Tag.Contains('m')) genders.Add("m");
+                if (lemma.Tag.Contains('f')) genders.Add("f");
+            }
         }
         return genders.Count == 1 ? genders.First() : null;
+    }
+
+    static IEnumerable<string> Ligatures(string word)
+    {
+        yield return word;
+        string open = word.Replace("\u0153", "oe").Replace("\u0152", "Oe").Replace("\u00E6", "ae").Replace("\u00C6", "Ae");
+        if (open != word) yield return open;
     }
 
     static string NounNumber(LambekDictionary dictionary, string word)
@@ -433,11 +443,15 @@ public static class LambekSpeech
                     if (verb >= 0) tokens[verb].Text = Case(tokens[verb].Text, Singular(dictionary, tokens[verb].Text, imperative) ?? tokens[verb].Text);
                     continue;
                 }
-                // Before a verb of the second person plural: the subject "tu"
-                if (next > 0 && tokens[next].Word && IsSecondPlural(dictionary, tokens[next].Text))
+                // Before a verb of the second person plural: the subject "tu"; the small pronouns between them stay
+                // ("vous m'avez dit": "tu m'as dit", "vous vous appelez": "tu t'appelles")
+                int verbAt = next;
+                while (verbAt > 0 && verbAt != i && (Clitics.Contains(tokens[verbAt].Text.ToLowerInvariant()) || tokens[verbAt].Text == "'" || tokens[verbAt].Text == "\u2019"))
+                    verbAt = Next(tokens, verbAt);
+                if (verbAt > 0 && tokens[verbAt].Word && IsSecondPlural(dictionary, tokens[verbAt].Text))
                 {
                     tokens[i].Text = Case(word, "tu");
-                    tokens[next].Text = Case(tokens[next].Text, Singular(dictionary, tokens[next].Text, false) ?? tokens[next].Text);
+                    tokens[verbAt].Text = Case(tokens[verbAt].Text, Singular(dictionary, tokens[verbAt].Text, false) ?? tokens[verbAt].Text);
                     continue;
                 }
                 // Before another verb: the object "te" ("je vous montre": "je te montre"), "t'" before a vowel
@@ -462,6 +476,9 @@ public static class LambekSpeech
         }
         return Join(tokens);
     }
+
+    // The small pronouns that stand between a subject and its verb
+    static readonly HashSet<string> Clitics = new HashSet<string>(StringComparer.Ordinal) { "me", "m", "te", "t", "se", "s", "nous", "vous", "le", "la", "les", "l", "lui", "leur", "y", "en" };
 
     static bool IsVerb(LambekDictionary dictionary, string word)
     {

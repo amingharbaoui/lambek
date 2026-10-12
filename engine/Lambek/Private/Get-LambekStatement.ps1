@@ -22,6 +22,9 @@ function Get-LambekStatement {
     $dialogue = (Get-LambekLexicon -Language $Request.Language).Dialogue
     if ($Act.Kind -ne 'Report' -or -not $Act.Subject -or -not $dialogue) { return $null }
     if (@($Request.Entities | Where-Object { $_.Type -ne 'number' }).Count -eq 0) { return $null }
+    # "I did not delete the files": a negation is not kept as the thing it denies
+    $lexicon = Get-LambekLexicon -Language $Request.Language
+    if (@($Request.Tokens | Where-Object { $_ -in $lexicon.Negations }).Count -gt 0) { return $null }
     $filled = Get-LambekParameter -Action $Action -Request $Request -Grammar $Grammar
     if (@($filled.Missing).Count -gt 0 -or $filled.Values.Count -eq 0) { return $null }
 

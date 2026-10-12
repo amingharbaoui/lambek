@@ -14,6 +14,8 @@ function Resolve-LambekDefinition {
         if (-not $define) { continue }
         $asked = @($define.Phrases | Where-Object { $normalized.StartsWith(" $_ ") } | Sort-Object Length -Descending | Select-Object -First 1)
         if ($asked.Count -eq 0) { continue }
+        # "what does X mean", not "what do I like": a phrase that only opens the question needs its last word
+        if ($define['Needs'] -and $define['Needs'].Contains($asked[0]) -and $normalized -notmatch " $([regex]::Escape($define['Needs'][$asked[0]])) ") { continue }
         if (Get-LambekTalk -Text $Text -Language $language) { return $null }
         if (@((Get-LambekEntity -Text $Text).Entities).Count -gt 0) { return $null }
 

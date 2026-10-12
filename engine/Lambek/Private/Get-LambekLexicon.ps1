@@ -102,6 +102,22 @@ function Get-LambekLexicon {
         if (-not $pack.Words.ContainsKey($Language)) { continue }
         foreach ($word in $pack.Words[$Language].Keys) { [void] $signals.Add($word) }
     }
+    # The small words of the general reading (pronouns, negations, "because", "why"...) frame a sentence about
+    # anything as much as the small words of an order do: "je n'aime pas le cafe" is French by "ne" and "pas"
+    $grammar = [System.Collections.Generic.HashSet[string]]::new()
+    if ($data.ContainsKey('Dialogue') -and $data.Dialogue -and $data.Dialogue.ContainsKey('General')) {
+        $general = $data.Dialogue.General
+        foreach ($key in 'Owners', 'Unread', 'Speakers', 'Addressee', 'Pronouns', 'Determiners', 'Prepositions', 'Auxiliaries', 'Verbs', 'Where', 'What', 'Negations', 'Polar', 'PolarMark', 'WhatObject', 'WhatSubject', 'Conjunctions', 'Causes', 'Why') {
+            if (-not $general.ContainsKey($key)) { continue }
+            foreach ($phrase in @($general[$key])) {
+                foreach ($word in @((ConvertTo-LambekNormalizedText -Text "$phrase") -split '[^\p{L}\p{N}]+')) {
+                    if ($word.Length -gt 1) { [void] $grammar.Add($word) }
+                }
+            }
+        }
+        if ($general.ContainsKey('PronounFeatures')) { foreach ($word in $general.PronounFeatures.Keys) { [void] $grammar.Add($word) } }
+    }
+    $signals.UnionWith($grammar)
 
     $lexicon = [pscustomobject]@{
         Language          = $Language
@@ -133,6 +149,7 @@ function Get-LambekLexicon {
         Talk              = $talk
         TalkWords         = $talkWords
         Signals           = $signals
+        GrammarWords      = $grammar
         Spelling          = @{}
     }
 

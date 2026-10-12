@@ -731,17 +731,17 @@
       "Unread": [
         "voici",
         "voila",
-        "pourquoi",
         "quand",
         "si",
-        "parce",
-        "car",
-        "et",
-        "mais",
         "donc",
         "lorsque",
         "puisque",
-        "dont"
+        "dont",
+        "rien",
+        "personne",
+        "aucun",
+        "aucune",
+        "ni"
       ],
       "Speakers": [
         "je",
@@ -860,12 +860,12 @@
         "n",
         "pas",
         "jamais",
-        "plus",
-        "rien"
+        "plus"
       ],
       "Polar": [],
       "PolarMark": [
-        "que"
+        "que",
+        "qu"
       ],
       "WhatObject": [
         "que",
@@ -879,6 +879,58 @@
         "quelle",
         "quels",
         "quelles"
+      ],
+      "PronounFeatures": {
+        "il": "m s",
+        "elle": "f s",
+        "ils": "m p",
+        "elles": "f p"
+      },
+      "PluralDeterminers": [
+        "les",
+        "des",
+        "mes",
+        "tes",
+        "ses",
+        "nos",
+        "vos",
+        "leurs",
+        "ces",
+        "aux"
+      ],
+      "Feminine": [
+        "la",
+        "une",
+        "ma",
+        "ta",
+        "sa",
+        "cette"
+      ],
+      "Masculine": [
+        "le",
+        "un",
+        "mon",
+        "ton",
+        "son",
+        "ce",
+        "cet"
+      ],
+      "NegationNeeds": [
+        "ne",
+        "n"
+      ],
+      "Conjunctions": [
+        "et",
+        "mais"
+      ],
+      "Causes": [
+        "parce que",
+        "parce qu'",
+        "car"
+      ],
+      "Impersonal": ["pleut", "pleuvait", "pleuvra", "neige", "neigeait", "neigera", "fait beau", "fait froid", "fait chaud", "fait doux", "fait gris", "fait nuit", "fait jour", "faisait beau", "faisait froid", "faisait chaud", "fera beau", "fera froid", "fera chaud"],
+      "Why": [
+        "pourquoi"
       ]
     },
     "Say": {
@@ -886,10 +938,10 @@
       "Question": "C'est une question, pas une demande d'action. Je ne sais pas encore répondre à ce genre de question.",
       "Other": "Je lis cela comme un sujet autre que ceux dont je m'occupe : je ne fais donc rien.",
       "Speaker": "vous",
-      "When": " Quand : {0}.",
+      "When": " ({0})",
       "Told": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens.",
-      "Fact": "Qui : {0}. Quoi : {1}.{2}",
-      "FactWished": "Qui : {0}. Souhaite : {1}.{2}",
+      "Fact": "À propos de {0} : {1}{2}.",
+      "FactWished": "À propos de {0}, souhaité : {1}{2}.",
       "Recalled": "D'après ce qui m'a été dit dans cette conversation :",
       "NotTold": "Cela ne m'a pas été dit.",
       "NothingTold": "Rien ne m'a encore été dit.",
@@ -897,9 +949,18 @@
       "OnDay": "Dit le {0}. {1}",
       "Forgotten": "C'est fait : j'ai oublié tout ce qui m'a été dit.",
       "ToldHere": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens pour cette conversation seulement.",
+      "Noted": "C'est noté. {0} Je m'en souviendrai.",
+      "NotedHere": "C'est noté. {0} Je m'en souviendrai pour cette conversation seulement.",
+      "Quoted": "Vous m'avez dit : « {0} ».",
       "Doubt": "{0} {0:ligne|lignes} de mon journal {0:a été modifiée|ont été modifiées} en dehors de Lambek : je {0:l'ai laissée|les ai laissées} de côté.",
       "NotKnown": "Je ne sais pas : on ne me l'a pas dit, et je ne sais pas encore le trouver seul.",
-      "Because": "déduit avec : {0}"
+      "Because": "déduit avec : {0}",
+      "WhoIs": "Je lis cela comme une information, mais je ne sais pas qui est « {0} » : dites-le-moi d'abord, par exemple « ma sœur habite à Lyon ».",
+      "Contradicted": "Vous m'avez dit deux choses contraires :",
+      "ButAlso": "mais vous m'avez aussi dit : {0}",
+      "Opposite": "Vous m'avez dit le contraire avant : {0} Je garde les deux.",
+      "BecauseOf": "parce que : {0}",
+      "NoReason": "vous ne m'avez pas dit pourquoi."
     }
   },
   "Answer": {

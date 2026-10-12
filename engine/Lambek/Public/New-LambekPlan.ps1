@@ -54,6 +54,10 @@ function New-LambekPlan {
         for ($i = 0; $i -lt $clauses.Count; $i++) {
             $units = 3 * $clauses.Count + 2
             Send-LambekProgress -Stage 'Read' -Step ($i + 1) -Percent (100 * (1 + 3 * $i) / $units)
+            # "...because...": this clause is the reason of the one before it
+            # (compared as a character: a culture-aware comparison ignores control characters and would say yes to anything)
+            $reason = $clauses[$i].Length -gt 0 -and $clauses[$i][0] -eq [char] 1
+            if ($reason) { $clauses[$i] = $clauses[$i].Substring(1) }
             # A vague word read with its threshold makes the clause read again, once, with the threshold said
             $read = $clauses[$i]
             $vague = $null
@@ -80,6 +84,7 @@ function New-LambekPlan {
                     Language   = $card.Language
                     Status     = $card.Status
                     Act        = $card.Act
+                    ActSay     = $card.ActSay
                     Statement  = $card.Statement
                     Asked      = $card.Asked
                     Confidence = $card.Confidence
@@ -129,7 +134,13 @@ function New-LambekPlan {
                 $step.Questions = @((Get-LambekLexicon -Language $step.Language).Answer.DictionaryPropose -f $request.Proposal.From, $request.Proposal.To)
                 if ($clauses.Count -eq 1) { $proposal = $request.Proposal }
             }
+            # The reason is kept with the thing it is the reason of: because(E, R) in the logic
+            if ($reason -and $steps.Count -gt 0 -and $step.Statement -and $steps[$steps.Count - 1].Statement) {
+                $step.Statement | Add-Member -NotePropertyName ReasonFor -NotePropertyValue $steps[$steps.Count - 1].Statement.Core -Force
+            }
             $steps.Add($step)
+            # What this clause told is known to the next one ("...mais elle travaille a Paris")
+            if (-not $NoRecall) { Add-LambekTold -Plan ([pscustomobject]@{ Steps = @($step) }) }
             # The files this step is about are the referent of a pronoun in the next one
             if ($step.Action -and ($step.Parameters.Contains('Path') -or $step.Parameters.Contains('Source'))) { $Referent = $step.Parameters }
             if ($step.Script) {
@@ -188,7 +199,7 @@ function ConvertTo-LambekReplyPlan {
 
     # A plan with one step that asks for no action: the answer is the reply
     $step = [pscustomobject]@{
-        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; Statement = $null; Asked = $null; Confidence = 0.0; Types = ''
+        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; ActSay = $null; Statement = $null; Asked = $null; Confidence = 0.0; Types = ''
         Implied = @(); Guess = $null; Senses = @(); Pending = @(); FromHabit = @(); Votes = $null; Reading = $null
         Action = $null; Risk = $null; Parameters = [ordered]@{}; Questions = @(); Reads = @(); Writes = @()
         Output = $null; Script = $null; Check = $null; CardHash = $null

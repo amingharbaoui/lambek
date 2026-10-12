@@ -104,7 +104,7 @@ Describe 'Dialogue act' {
 
     It 'gives no meaning to a sentence only half read: <Text>' -ForEach @(
         @{ Text = 'she deleted her account last week' }
-        @{ Text = 'I do not like coffee' }
+        @{ Text = 'I do not like it' }
         @{ Text = 'ils ont déplacé la réunion à jeudi' }
         @{ Text = 'delete the files in C:\Temp' }
     ) {
@@ -313,7 +313,7 @@ Describe 'Dialogue act' {
         }
 
         It 'reads nothing it cannot read whole: <Text>' -ForEach @(
-            @{ Text = 'I do not like coffee' }
+            @{ Text = 'she likes it' }
             @{ Text = 'she lives in Lyon' }
             @{ Text = 'my sister lives in Lyon because she works there' }
             @{ Text = 'answers small talk in the language of the plan' }
@@ -386,11 +386,11 @@ Describe 'Dialogue act' {
         }
 
         It 'reads a question as the body of a rule: <Text>' -ForEach @(
-            @{ Text = 'where does my sister live'; Rule = 'answer(E) :- event(E, "verb:live"), agent(E, "my sister"), says(E, "place").' }
-            @{ Text = 'who lives in France'; Rule = 'answer(E) :- event(E, "verb:live"), holds(E, "in", "france").' }
-            @{ Text = 'what did I buy yesterday'; Rule = 'answer(E) :- event(E, "verb:buy"), by(E, "speaker"), says(E, "object"), on(E, "2026-10-05").' }
-            @{ Text = 'what is my name'; Rule = 'answer(E) :- event(E, "verb:be"), about(E, "my name").' }
-            @{ Text = 'what did I delete yesterday'; Rule = 'answer(E) :- event(E, "files.delete"), by(E, "speaker"), on(E, "2026-10-05").' }
+            @{ Text = 'where does my sister live'; Rule = 'answer(E) :- event(E, "verb:live"), agent(E, "my sister"), says(E, "place"), not negated(E).' }
+            @{ Text = 'who lives in France'; Rule = 'answer(E) :- event(E, "verb:live"), holds(E, "in", "france"), not negated(E).' }
+            @{ Text = 'what did I buy yesterday'; Rule = 'answer(E) :- event(E, "verb:buy"), by(E, "speaker"), says(E, "object"), on(E, "2026-10-05"), not negated(E).' }
+            @{ Text = 'what is my name'; Rule = 'answer(E) :- event(E, "verb:be"), about(E, "my name"), not negated(E).' }
+            @{ Text = 'what did I delete yesterday'; Rule = 'answer(E) :- event(E, "files.delete"), by(E, "speaker"), on(E, "2026-10-05"), not negated(E).' }
             @{ Text = 'what have I told you'; Rule = 'answer(E) :- event(E, V).' }
         ) {
             $asked = (Resolve-Text $Text).Asked
@@ -495,8 +495,8 @@ Describe 'Dialogue act' {
 
         It 'does not turn round a sentence that already speaks to Lambek' {
             InModuleScope Lambek { ConvertTo-LambekOtherSide -Text 'tu sais, hier j''ai supprimé les fichiers dans C:\Temp' -Language fr } | Should -BeNullOrEmpty
-            # It is then said plainly: who, what, when
-            New-LambekPlan 'tu sais, hier j''ai supprimé les fichiers dans C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je comprends. Qui : toi. Quoi : supprimer les fichiers dans C:\Temp. Quand : hier.*'
+            # It is then said in the user's own words, quoted: never in a form ("Qui : ... Quoi : ...")
+            New-LambekPlan 'tu sais, hier j''ai supprimé les fichiers dans C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'Je comprends. Tu m''as dit : « tu sais, hier j''ai supprimé les fichiers dans C:\Temp ».*'
         }
 
         It 'reads its own sentence again, and says it only when it gives the same thing told' {
@@ -515,8 +515,8 @@ Describe 'Dialogue act' {
         }
 
         It 'answers with whole sentences' {
-            New-LambekPlan 'my sister lives in Lyon' | ConvertTo-LambekAnswer | Should -Be 'I understand. Your sister lives in Lyon. You are telling me, so I am not doing it. I am keeping it.'
-            New-LambekPlan 'hier j''ai acheté une voiture' | ConvertTo-LambekAnswer | Should -Be 'Je comprends. Hier vous avez acheté une voiture. C''est une information, donc je ne fais rien. Je la retiens.'
+            New-LambekPlan 'my sister lives in Lyon' | ConvertTo-LambekAnswer | Should -Be 'Noted. Your sister lives in Lyon. I will remember it.'
+            New-LambekPlan 'hier j''ai acheté une voiture' | ConvertTo-LambekAnswer | Should -Be 'C''est noté. Hier vous avez acheté une voiture. Je m''en souviendrai.'
         }
     }
 
@@ -529,13 +529,13 @@ Describe 'Dialogue act' {
         }
 
         It 'reads the question as a rule: <Text>' -ForEach @(
-            @{ Text = 'où habite ma sœur'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), says(E, "place").' }
-            @{ Text = 'où est-ce que ma sœur habite'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), says(E, "place").' }
-            @{ Text = 'qui habite à Lyon'; Rule = 'answer(E) :- event(E, "verb:habiter"), holds(E, "a", "lyon").' }
-            @{ Text = 'qu''est-ce que j''ai acheté hier'; Rule = 'answer(E) :- event(E, "verb:acheter"), by(E, "speaker"), says(E, "object"), on(E, "2026-10-05").' }
-            @{ Text = 'que fait ma sœur'; Rule = 'answer(E) :- event(E, "verb:faire"), agent(E, "ma sœur"), says(E, "object").' }
-            @{ Text = 'comment je m''appelle'; Rule = 'answer(E) :- event(E, "verb:appeler"), by(E, "speaker"), says(E, "object").' }
-            @{ Text = 'comment s''appelle mon chat'; Rule = 'answer(E) :- event(E, "verb:appeler"), agent(E, "mon chat"), says(E, "object").' }
+            @{ Text = 'où habite ma sœur'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), says(E, "place"), not negated(E).' }
+            @{ Text = 'où est-ce que ma sœur habite'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), says(E, "place"), not negated(E).' }
+            @{ Text = 'qui habite à Lyon'; Rule = 'answer(E) :- event(E, "verb:habiter"), holds(E, "a", "lyon"), not negated(E).' }
+            @{ Text = 'qu''est-ce que j''ai acheté hier'; Rule = 'answer(E) :- event(E, "verb:acheter"), by(E, "speaker"), says(E, "object"), on(E, "2026-10-05"), not negated(E).' }
+            @{ Text = 'que fait ma sœur'; Rule = 'answer(E) :- event(E, "verb:faire"), agent(E, "ma sœur"), says(E, "object"), not negated(E).' }
+            @{ Text = 'comment je m''appelle'; Rule = 'answer(E) :- event(E, "verb:appeler"), by(E, "speaker"), says(E, "object"), not negated(E).' }
+            @{ Text = 'comment s''appelle mon chat'; Rule = 'answer(E) :- event(E, "verb:appeler"), agent(E, "mon chat"), says(E, "object"), not negated(E).' }
             @{ Text = 'est-ce que ma sœur habite à Lyon'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), holds(E, "a", "lyon").' }
             @{ Text = 'does my sister live in Lyon'; Rule = 'answer(E) :- event(E, "verb:live"), agent(E, "my sister"), holds(E, "in", "lyon").' }
             @{ Text = 'is Lyon in France'; Rule = 'answer(E) :- event(E, "verb:be"), agent(E, "lyon"), holds(E, "in", "france").' }
@@ -597,6 +597,214 @@ Describe 'Dialogue act' {
                     '- Your sister lives in Lyon.'
                     '  deduced with: Lyon is in France.'
                 ) -join "`n")
+        }
+    }
+
+    Context 'Pronouns, negations, and several things in one sentence' {
+        BeforeEach {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = [datetime] '2026-10-06 10:00' }
+        }
+        AfterAll {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Now = $null }
+        }
+
+        It 'reads "<Text>" as the one the pronoun stands for' -ForEach @(
+            @{ Before = @('my sister lives in Lyon'); Text = 'she works at a bank'; Said = 'Your sister works at a bank.' }
+            @{ Before = @('my mother lives in Paris', 'my father lives in Lyon'); Text = 'he works at a bank'; Said = 'Your father works at a bank.' }
+            @{ Before = @('my father lives in Lyon', 'my mother lives in Paris'); Text = 'she works at a bank'; Said = 'Your mother works at a bank.' }
+            @{ Before = @('Paris is in France'); Text = 'it is in Europe'; Said = 'Paris is in Europe.' }
+            @{ Before = @('ma sœur habite à Lyon'); Text = 'elle travaille à Paris'; Said = 'Votre sœur travaille à Paris.' }
+            @{ Before = @('ma sœur habite à Lyon', 'Paris est en France'); Text = 'il est en France'; Said = 'Paris est en France.' }
+        ) {
+            $Before | ForEach-Object { New-LambekPlan $_ | Out-Null }
+            New-LambekPlan $Text | ConvertTo-LambekAnswer | Should -BeLike "*$Said*"
+        }
+
+        It 'says it does not know who "<Pronoun>" is, and keeps nothing: <Text>' -ForEach @(
+            @{ Before = @(); Text = 'he plays the guitar'; Pronoun = 'he' }
+            @{ Before = @('my sister lives in Lyon'); Text = 'he lives in Paris'; Pronoun = 'he' }
+            @{ Before = @('ma sœur habite à Lyon'); Text = 'il habite à Paris'; Pronoun = 'il' }
+        ) {
+            $Before | ForEach-Object { New-LambekPlan $_ | Out-Null }
+            $answer = New-LambekPlan $Text | ConvertTo-LambekAnswer
+            $answer | Should -Match ('["\u00AB] ?' + [regex]::Escape($Pronoun) + ' ?["\u00BB]')
+            $answer | Should -Not -BeLike '*Lyon*Paris*'
+            @(& (Get-Module Lambek) { (Get-LambekTold).ToArray() }).Count | Should -Be $Before.Count
+        }
+
+        It 'keeps what is denied apart, and both of two contrary things' {
+            New-LambekPlan 'I like coffee' | Out-Null
+            $answer = New-LambekPlan 'I do not like coffee' | ConvertTo-LambekAnswer
+            $answer | Should -BeLike 'Noted. You do not like coffee.*'
+            $answer | Should -BeLike '*You told me the opposite before: You like coffee. I am keeping both.'
+            New-LambekPlan 'do I like coffee' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'You told me two things that say the opposite:'
+                    '- You like coffee.'
+                    '- You do not like coffee.'
+                ) -join "`n")
+        }
+
+        It 'keeps what is denied apart in French too' {
+            New-LambekPlan 'j''aime le café' | Out-Null
+            New-LambekPlan 'je n''aime pas le café' | ConvertTo-LambekAnswer | Should -BeLike '*Vous n''aimez pas le café.*Vous m''avez dit le contraire avant : Vous aimez le café. Je garde les deux.'
+            New-LambekPlan 'est-ce que j''aime le café' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'Vous m''avez dit deux choses contraires :'
+                    '- Vous aimez le café.'
+                    '- Vous n''aimez pas le café.'
+                ) -join "`n")
+        }
+
+        It 'never answers with what was denied as if it had been said' {
+            New-LambekPlan 'my sister does not live in Paris' | Out-Null
+            New-LambekPlan 'who lives in Paris' | ConvertTo-LambekAnswer | Should -Be 'I do not know: nobody told me, and I cannot find it out by myself yet.'
+            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'From what you told me in this conversation:'
+                    '- Your sister does not live in Paris.'
+                ) -join "`n")
+        }
+
+        It 'never takes an order in the negative for an order' {
+            (Resolve-Text 'I do not delete the files in C:\A').Act | Should -Not -Be 'Order'
+            @((New-LambekPlan 'I do not delete the files in C:\A').Steps | Where-Object { $_.Action }).Count | Should -Be 0
+        }
+
+        It 'reads two things told in one sentence: <Text>' -ForEach @(
+            @{ Text = 'my sister lives in Lyon and my brother lives in Paris'; Said = 'Your sister lives in Lyon. Your brother lives in Paris.' }
+            @{ Text = 'I live in Brussels and work in Antwerp'; Said = 'You live in Brussels. You work in Antwerp.' }
+            @{ Text = 'my sister and my mother live in Lyon'; Said = 'Your sister lives in Lyon. Your mother lives in Lyon.' }
+            @{ Text = 'I like tea, coffee and milk'; Said = 'You like tea. You like coffee. You like milk.' }
+            @{ Text = 'my sister lived in Lyon and in Paris'; Said = 'Your sister lived in Lyon. Your sister lived in Paris.' }
+            @{ Text = 'ma sœur habite à Lyon mais elle travaille à Paris'; Said = 'Votre sœur habite à Lyon. Votre sœur travaille à Paris.' }
+            @{ Text = 'ma sœur et ma mère habitent à Lyon'; Said = 'Votre sœur habite à Lyon. Votre mère habite à Lyon.' }
+            @{ Text = 'ma sœur a habité à Lyon et à Paris'; Said = 'Votre sœur a habité à Lyon. Votre sœur a habité à Paris.' }
+        ) {
+            New-LambekPlan $Text | ConvertTo-LambekAnswer | Should -BeLike "*$Said*"
+        }
+
+        It 'still makes two steps of two orders' {
+            $plan = New-LambekPlan 'list the files in C:\A and delete the .tmp files in C:\B'
+            @($plan.Steps).Count | Should -Be 2
+        }
+
+        It 'answers why with the reason told, or says none was' {
+            New-LambekPlan 'I live in Brussels because I work in Antwerp' | Out-Null
+            New-LambekPlan 'why do I live in Brussels' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'From what you told me in this conversation:'
+                    '- You live in Brussels.'
+                    '  because: You work in Antwerp.'
+                ) -join "`n")
+            New-LambekPlan 'why do I work in Antwerp' | ConvertTo-LambekAnswer | Should -Be (@(
+                    'From what you told me in this conversation:'
+                    '- You work in Antwerp.'
+                    '  you did not tell me why.'
+                ) -join "`n")
+            New-LambekPlan 'why is the sky blue' | ConvertTo-LambekAnswer | Should -Be 'I do not know: nobody told me, and I cannot find it out by myself yet.'
+        }
+
+        It 'answers pourquoi with the reason told' {
+            New-LambekPlan 'ma sœur habite à Lyon parce qu''elle travaille à Lyon' | Out-Null
+            New-LambekPlan 'pourquoi ma sœur habite à Lyon' | ConvertTo-LambekAnswer | Should -Be (@(
+                    "D'après ce qui m'a été dit dans cette conversation :"
+                    '- Votre sœur habite à Lyon.'
+                    '  parce que : Votre sœur travaille à Lyon.'
+                ) -join "`n")
+        }
+
+        It 'reads a French question by its order: <Text>' -ForEach @(
+            @{ Text = 'est-ce que je travaille à Paris'; Asked = 'whether' }
+            @{ Text = 'est-ce que j''aime le café'; Asked = 'whether' }
+            @{ Text = 'que fait ma sœur'; Asked = 'object' }
+            @{ Text = 'qu''est-ce que ma sœur a acheté'; Asked = 'object' }
+        ) {
+            $card = Resolve-Text $Text
+            $card.Act | Should -Be 'Question'
+            $card.Statement | Should -BeNullOrEmpty
+            InModuleScope Lambek -Parameters @{ Text = $Text } { (Get-LambekGeneralReading -Request (ConvertTo-LambekRequest $Text)).Asked } | Should -Be $Asked
+        }
+
+        It 'tells the language by the small words of any sentence: <Text>' -ForEach @(
+            @{ Text = 'je n''aime pas le café'; Language = 'fr' }
+            @{ Text = 'ma sœur ne travaille pas à Paris'; Language = 'fr' }
+            @{ Text = 'he plays the guitar'; Language = 'en' }
+        ) {
+            (ConvertTo-LambekRequest $Text).Language | Should -Be $Language
+        }
+    }
+
+    Context 'Answers said as a person says them' {
+        BeforeEach {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = [datetime] '2026-10-06 10:00' }
+        }
+        AfterAll {
+            & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null; $script:Incognito = $false; $script:Now = $null }
+        }
+
+        It 'never answers in a form, who, what, when: <Text>' -ForEach @(
+            @{ Text = 'my sister lives in Lyon' }
+            @{ Text = 'I bought a red car yesterday' }
+            @{ Text = 'yesterday I deleted the files in C:\Temp' }
+            @{ Text = 'tu sais, hier j''ai supprimé les fichiers dans C:\Temp' }
+            @{ Text = 'je suis né à Bruxelles' }
+            @{ Text = 'I have two brothers' }
+            @{ Text = 'il fait beau' }
+        ) {
+            $answer = New-LambekPlan $Text | ConvertTo-LambekAnswer
+            $answer | Should -Not -Match '(Who|What|When|Wants): |(Qui|Quoi|Quand|Souhaite) : '
+            New-LambekPlan 'what have I told you' | ConvertTo-LambekAnswer | Should -Not -Match '(Who|What|When|Wants): |(Qui|Quoi|Quand|Souhaite) : '
+        }
+
+        It 'simply notes what is not about files or code: <Text>' -ForEach @(
+            @{ Text = 'my sister lives in Lyon'; Said = 'Noted. Your sister lives in Lyon. I will remember it.' }
+            @{ Text = 'I have two brothers'; Said = 'Noted. You have two brothers. I will remember it.' }
+            @{ Text = 'it is raining'; Said = 'Noted. It is raining. I will remember it.' }
+            @{ Text = 'ma sœur habite à Lyon'; Said = 'C''est noté. Votre sœur habite à Lyon. Je m''en souviendrai.' }
+            @{ Text = 'j''ai deux frères et 3 chats'; Said = 'C''est noté. Vous avez deux frères. Vous avez 3 chats. Je m''en souviendrai.' }
+            @{ Text = 'il fait beau'; Said = 'C''est noté. Il fait beau. Je m''en souviendrai.' }
+            @{ Text = 'il pleut'; Said = 'C''est noté. Il pleut. Je m''en souviendrai.' }
+        ) {
+            New-LambekPlan $Text | ConvertTo-LambekAnswer | Should -Be $Said
+        }
+
+        It 'says that it keeps it for the conversation only in an incognito chat' {
+            & (Get-Module Lambek) { $script:Incognito = $true }
+            New-LambekPlan 'my brother lives in Ghent' | ConvertTo-LambekAnswer | Should -Be 'Noted. Your brother lives in Ghent. I will remember it for this conversation only.'
+        }
+
+        It 'speaks to the user as the user speaks: <Text>' -ForEach @(
+            @{ Text = 'je m''appelle Amin'; Said = 'C''est noté. Tu t''appelles Amin. Je m''en souviendrai.' }
+            @{ Text = 'ma sœur habite à Lyon'; Said = 'C''est noté. Ta sœur habite à Lyon. Je m''en souviendrai.' }
+            @{ Text = 'je n''aime pas le café'; Said = 'C''est noté. Tu n''aimes pas le café. Je m''en souviendrai.' }
+        ) {
+            New-LambekPlan $Text | ConvertTo-LambekAnswer -Register tu | Should -Be $Said
+        }
+
+        It 'says a contrary thing to the user as the user speaks' {
+            New-LambekPlan 'j''aime le café' | Out-Null
+            New-LambekPlan 'je n''aime pas le café' | ConvertTo-LambekAnswer -Register tu | Should -BeLike '*Tu m''as dit le contraire avant : Tu aimes le café. Je garde les deux.'
+        }
+
+        It 'quotes the user when its own sentence would not read back the same' {
+            InModuleScope Lambek {
+                $fact = [pscustomobject]@{ Action = 'verb:live'; Parameters = [ordered]@{ in = 'Lyon' }; What = 'live in Lyon'; Agent = 'other'; Name = 'my sister'; Wish = $false; Time = 'yesterday'; Day = $null; Text = 'I work in Paris'; Language = 'en'; Negated = $false }
+                Format-LambekFact -Fact $fact -Language en | Should -Be 'You told me: "I work in Paris".'
+                Format-LambekFact -Fact $fact -Language fr | Should -Be 'Vous m''avez dit : « I work in Paris ».'
+                # Without the words it was told in: what it is about, then what
+                $fact.Text = ''
+                Format-LambekFact -Fact $fact -Language en | Should -Be 'About my sister: live in Lyon (yesterday).'
+            }
+        }
+
+        It 'reads the weather as about nobody: <Text>' -ForEach @(
+            @{ Told = 'il pleut'; Text = 'est-ce qu''il pleut'; Line = '- Il pleut.' }
+            @{ Told = 'it is raining'; Text = 'is it raining'; Line = '- It is raining.' }
+        ) {
+            New-LambekPlan $Told | Out-Null
+            New-LambekPlan $Text | ConvertTo-LambekAnswer | Should -BeLike "*`n$Line"
+        }
+
+        It 'never takes the "il" of the weather for someone' {
+            New-LambekPlan 'il pleut' | Out-Null
+            New-LambekPlan 'il habite à Paris' | ConvertTo-LambekAnswer | Should -BeLike '*« il »*'
         }
     }
 

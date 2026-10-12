@@ -66,7 +66,7 @@ function Get-LambekLanguageScore {
         if ($in.Count -eq 0 -or $in.Count -eq $languages.Count) { continue }
         foreach ($language in $in) {
             $weight = 1
-            if ($lexicons[$language].StopWords.Contains($token)) { $weight = 2 }
+            if ($lexicons[$language].StopWords.Contains($token) -or $lexicons[$language].GrammarWords.Contains($token)) { $weight = 2 }
             $scores[$language] += $weight
         }
     }

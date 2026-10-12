@@ -128,6 +128,7 @@ function Test-LambekSaidBack {
         if (-not $reading -or $reading.Kind -ne 'statement') { return $false }
         if ("verb:$(& $plain $reading.Verb)" -ne (& $plain $Fact.Action)) { return $false }
         if ($reading.Agent -ne $Fact.Agent) { return $false }
+        if ([bool] ($reading.PSObject.Properties['Negated'] -and $reading.Negated) -ne [bool] ($Fact.PSObject.Properties['Negated'] -and $Fact.Negated)) { return $false }
         if ($Fact.Agent -ne 'speaker' -and (& $owner $reading.Name) -ne (& $owner $Fact.Name)) { return $false }
         if ($Fact.PSObject.Properties['Values']) { $roles = $Fact.Values } else { $roles = $Fact.Parameters }
         if (@($reading.Roles.Keys).Count -ne @($roles.Keys).Count) { return $false }
@@ -138,7 +139,7 @@ function Test-LambekSaidBack {
     }
 
     # A thing told about an action of a pack: the sentence must still carry every value, and the verb of the action
-    $told = ConvertTo-LambekRequest -Text "$($Fact.Text)" -Language $language
+    $told = ConvertTo-LambekRequest -Text $(if ($Fact.PSObject.Properties['Said'] -and $Fact.Said) { "$($Fact.Said)" } else { "$($Fact.Text)" }) -Language $language
     if (-not (Test-LambekSameEntity -Before $told -After $request) -or -not (Test-LambekSameEntity -Before $request -After $told)) { return $false }
     $verbs = @((Get-LambekAction -Id $Fact.Action).Action.Verbs)
     return @($request.Words | Where-Object { $_ -in $verbs }).Count -gt 0
