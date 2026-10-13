@@ -17,10 +17,14 @@ function Get-LambekAskedRule {
     # The meaning of a question is the body of a rule: "where does my sister live" is
     #   answer(E) :- event(E, "verb:live"), agent(E, "my sister"), says(E, "place").
     # Every event that satisfies it is an answer, with the proof of why
-    if ($Asked.All) { return 'answer(E) :- event(E, V).' }
+    # (everything told: the rules told too, but nothing deduced)
+    if ($Asked.All) { return 'answer(E) :- event(E, V), not deduced(E).' }
     $rules = foreach ($action in @($Asked.Actions)) {
         $body = [System.Collections.Generic.List[string]]::new()
-        $body.Add("event(E, $(ConvertTo-LambekTerm -Value $action))")
+        # "qu'est-ce que je fais", "what do I do": "do" stands for any verb that is done (not "be", not "have")
+        $doing = $Asked.PSObject.Properties['Doing'] -and $Asked.Doing
+        if ($doing) { $body.Add('event(E, V)'); $body.Add('not rule(E)'); $body.Add('not static(V)') }
+        else { $body.Add("event(E, $(ConvertTo-LambekTerm -Value $action))") }
         # "what is my name": the other side of "my name is Amin", whichever side it was told on, and whichever
         # side the grammar took "my name" for
         $side = $null
@@ -34,7 +38,7 @@ function Get-LambekAskedRule {
         else {
             if ($Asked.PSObject.Properties['Name'] -and $Asked.Name) { $body.Add("agent(E, $(ConvertTo-LambekTerm -Value $Asked.Name))") }
             elseif ($Asked.Person) { $body.Add("by(E, ""$($Asked.Person)"")") }
-            if ($Asked.PSObject.Properties['Wanted'] -and $Asked.Wanted -in 'object', 'place') { $body.Add("says(E, ""$($Asked.Wanted)"")") }
+            if (-not $doing -and $Asked.PSObject.Properties['Wanted'] -and $Asked.Wanted -in 'object', 'place') { $body.Add("says(E, ""$($Asked.Wanted)"")") }
             foreach ($name in $Asked.Parameters.Keys) { $body.Add("holds(E, $(ConvertTo-LambekTerm -Value $name), $(ConvertTo-LambekTerm -Value $Asked.Parameters[$name]))") }
         }
         # The same words of time mean the same day only when they were said the same day
@@ -73,6 +77,13 @@ function Get-LambekToldLogic {
     for ($i = 0; $i -lt $Facts.Count; $i++) {
         $fact = $Facts[$i]
         $id = "e$i"
+        # A rule told is an event of its own: what it says holds only through the things deduced from it
+        if ($fact.PSObject.Properties['Condition'] -and $fact.Condition) {
+            [void] $logic.Add('event', [string[]] @($id, 'if'))
+            [void] $logic.Add('rule', [string[]] @($id))
+            continue
+        }
+        if ($fact.PSObject.Properties['Deduced'] -and $fact.Deduced) { [void] $logic.Add('deduced', [string[]] @($id)) }
         [void] $logic.Add('event', [string[]] @($id, (& $plain $fact.Action)))
         $who = 'speaker'
         if ($fact.Agent -ne 'speaker') { $who = & $plain $fact.Name; if (-not $who) { $who = 'other' } }
@@ -87,7 +98,8 @@ function Get-LambekToldLogic {
     for ($i = 0; $i -lt $Facts.Count; $i++) {
         if (-not $Facts[$i].PSObject.Properties['ReasonFor'] -or -not $Facts[$i].ReasonFor) { continue }
         for ($j = 0; $j -lt $Facts.Count; $j++) {
-            if ($Facts[$j].PSObject.Properties['Core'] -and $Facts[$j].Core -ceq $Facts[$i].ReasonFor) { [void] $logic.Add('because', [string[]] @("e$j", "e$i")) }
+            if ($Facts[$j].PSObject.Properties['Core'] -and $Facts[$j].Core -and
+                [LambekBoard]::Canonical("$($Facts[$j].Core)") -ceq [LambekBoard]::Canonical("$($Facts[$i].ReasonFor)")) { [void] $logic.Add('because', [string[]] @("e$j", "e$i")) }
         }
     }
     return $logic
@@ -119,6 +131,13 @@ function Find-LambekTold {
                 if ($other -ne $index) { [void] $because.Add($other) }
             }
         }
-        [pscustomobject]@{ Fact = $Facts[$index]; Because = @($because | ForEach-Object { $Facts[$_] }) }
+        $with = @($because | ForEach-Object { $Facts[$_] })
+        # A thing deduced by a rule told rests on that rule and on what made it hold
+        if ($Facts[$index].PSObject.Properties['Deduced'] -and $Facts[$index].Deduced) {
+            $kept = [System.Collections.Generic.List[object]]::new()
+            foreach ($item in @(Get-LambekProofLeaf -Fact $Facts[$index]) + @($with | Where-Object { -not ($_.PSObject.Properties['Deduced'] -and $_.Deduced) })) { if (-not $kept.Contains($item)) { $kept.Add($item) } }
+            $with = $kept.ToArray()
+        }
+        [pscustomobject]@{ Fact = $Facts[$index]; Because = $with }
     }
 }

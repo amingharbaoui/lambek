@@ -11,6 +11,15 @@ function Get-LambekLanguage {
     $best = ($scores.Values | Measure-Object -Maximum).Maximum
     $winners = @($scores.Keys | Where-Object { $scores[$_] -eq $best })
     if ($best -gt 0 -and $winners.Count -eq 1) { return $winners[0] }
+    # A tie with the language the chat is in: the chat's ("ma tante a 9 poules", in a chat in French, is not Italian
+    # because "tante" is also an Italian word)
+    # (without the app to say it, the chat is in the language of the last thing told in it)
+    $chat = $script:LanguageHint
+    if (-not $chat -and $script:Told -and $script:Told.Count -gt 0) {
+        $last = $script:Told[$script:Told.Count - 1]
+        if ($last.PSObject.Properties['Language']) { $chat = "$($last.Language)" }
+    }
+    if ($best -gt 0 -and $chat -and $chat -in $winners) { return $chat }
     # A tie: the language of the first word only one of them has (the verb that opens a command carries its frame)
     if ($best -gt 0) {
         foreach ($token in $Tokens) {

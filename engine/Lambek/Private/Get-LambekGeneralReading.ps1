@@ -114,6 +114,13 @@ function Get-LambekGeneralReading {
         if ($Whether -and $token -in $marks -and $i -eq 1 -and $tokens[0] -in @($general['Why'])) { continue }
         # "vous vous appelez": the second one goes with the verb, as "m'" does in "je m'appelle"
         if ($Listener -and $i -gt 0 -and $token -in $first -and $tokens[$i - 1] -eq $token) { continue }
+        # "votre patron vous appelle", "ma soeur nous voit": after the subject and before the verb, "vous" is the one the
+        # verb is about, said before it as "me" and "te" are, and goes with the verb
+        # (the word before it ends the subject: a noun or a name, never a word of time, "hier vous avez acheté")
+        if ($i -gt 0 -and $i -lt $tokens.Count - 1 -and $token -in @($general['ObjectClitics']) -and -not $timeAt.ContainsKey($i - 1) -and
+            $tokens[$i - 1] -notin @($general['Prepositions']) -and $tokens[$i - 1] -notin @($general['ObjectClitics']) -and
+            (@($dictionary.Lemmas($tokens[$i - 1], $language) | Where-Object { $_.Pos -eq 'n' }).Count -gt 0 -or (Get-LambekWritten -Request $typedAs -Words @($tokens[$i - 1])) -cmatch '^\p{Lu}') -and
+            @($dictionary.Lemmas($tokens[$i + 1], $language) | Where-Object { $_.Pos -eq 'v' }).Count -gt 0) { continue }
         $types = [System.Collections.Generic.List[string]]::new()
         $kind = 'word'
         if ($timeAt[$i] -eq 'first') { $kind = 'time'; $types.AddRange([string[]] @('s^r s', 's s^l')) }
@@ -145,7 +152,8 @@ function Get-LambekGeneralReading {
             }
             # A word no dictionary knows is a name only when it is written like one ("Amin", "Felix")
             if ($pos.Count -eq 0 -and $kind -eq 'word' -and (Get-LambekWritten -Request $typedAs -Words @($token)) -cnotmatch '^\p{Lu}') { return $null }
-            if ('n' -in $pos -or $pos.Count -eq 0) { $types.Add('n') }
+            # (a verb that helps the others is never a noun: "est" is not "the east" in "mon frère est content")
+            if (('n' -in $pos -or $pos.Count -eq 0) -and $kind -ne 'auxiliary') { $types.Add('n') }
             if ('a' -in $pos) { $types.AddRange([string[]] @('n n^l', 'n^r n')); if ('n' -notin $pos) { $types.Add('n') } }
             if ('r' -in $pos) { $types.AddRange([string[]] @('s^r s', 's s^l')) }
             if ('det' -in $pos) { $types.Add('n n^l') }
@@ -170,6 +178,14 @@ function Get-LambekGeneralReading {
     $whole = @($readings | Where-Object { $_.Kind -ne 'unresolved' })
     if ($whole.Count -eq 0) { return $readings[0] }
     $readings = $whole
+    # A question that asks whether asks about every word it has: with the same verb, the reading that keeps the most
+    # complements wins ("is my brother happy" asks about "happy", not about someone called "my brother happy")
+    if ($whether) {
+        $readings = @($readings | Where-Object {
+                $mine = $_
+                @($readings | Where-Object { $_.Verb -eq $mine.Verb -and @($_.Roles.Keys).Count -gt @($mine.Roles.Keys).Count }).Count -eq 0
+            })
+    }
     $plain = @($readings | Where-Object { -not $_.Helper })
     if ($plain.Count -gt 0) { return $plain[0] }
     return $readings[0]
@@ -216,6 +232,13 @@ function Get-LambekGeneralChoice {
     $verbs = @(for ($w = 0; $w -lt $typed.Count; $w++) { if ($chosen[$w] -in 'n^r s', 'n^r s n^l', 's n^l', 's n^l n^l') { $w } })
     if ($verbs.Count -ne 1) { return $null }
     $verb = $verbs[0]
+    # A verb right after the verb that helps it is its participle ("a acheté", "est parti"): "est content" is never
+    # "est" helping "content" read as a form of "conter"
+    # (in the languages whose dictionary says which forms are participles)
+    if ($General['Participles'] -and $verb -gt 0 -and $chosen[$verb - 1] -eq 'n^r n' -and $Kinds[$typed[$verb - 1].Position] -eq 'auxiliary') {
+        $forms = @($dictionary.Lemmas($typed[$verb].Word, $Request.Language) | Where-Object { $_.Pos -eq 'v' })
+        if ($forms.Count -gt 0 -and @($forms | Where-Object { "$($_.Tag)" -cmatch 'K' }).Count -eq 0) { return $null }
+    }
 
     # The words of a noun phrase: from one n, every word that hangs on it (its article, its adjective), but no auxiliary
     $phrase = {
@@ -277,7 +300,8 @@ function Get-LambekGeneralChoice {
         $pronoun = $tokens[$who[0]]
         # "il pleut", "it is raining": the pronoun stands for nobody, the sentence is about the weather or the time
         # (asked, the verb comes first: "is it raining", "pleut-il")
-        $rest = " $(@($tokens | Select-Object -Skip ($who[0] + 1)) -join ' ') "
+        # ("il ne pleut pas": the words of negation are not part of it)
+        $rest = " $(@($tokens | Select-Object -Skip ($who[0] + 1) | Where-Object { $_ -notin @($General['Negations']) }) -join ' ') "
         $turnedRest = $rest
         if ($who[0] -gt 0) { $turnedRest = " $($tokens[$who[0] - 1])$rest" }
         $impersonal = @(@($general['Impersonal']) | Where-Object {
@@ -321,8 +345,11 @@ function Get-LambekGeneralChoice {
     }
     if (@($typed | Where-Object { $kinds[$_.Position] -eq 'where' }).Count -gt 0) { $asked = 'place' }
     if (-not $asked -and $Whether) { $asked = 'whether' }
-    # (a verb alone is a sentence only about the weather: "il pleut"; "answers small talk" is none)
-    if (-not $asked -and $roles.Count -eq 0 -and -not ($agent -eq 'other' -and $name -and $name -in @($general['Pronouns']))) { return $null }
+    # (a verb alone is a sentence about the weather, "il pleut", or about someone said plainly: "je travaille",
+    # "ma soeur dort", "Paul sleeps"; "answers small talk" is none)
+    # (said plainly: its subject first, and no word that asks: "what is the weather" tells nothing)
+    $plainly = ($agent -eq 'speaker' -or $article -or $named) -and -not $turned -and @($typed | Where-Object { $kinds[$_.Position] -in 'what', 'where' }).Count -eq 0
+    if (-not $asked -and $roles.Count -eq 0 -and -not $plainly -and -not ($agent -eq 'other' -and $name -and $name -in @($general['Pronouns']))) { return $null }
 
     # Said back in its plainest form: the verb as the dictionary gives it, then what and where ("live in Lyon")
     $lemma = "$($lemmas[$typed[$verb].Position])"

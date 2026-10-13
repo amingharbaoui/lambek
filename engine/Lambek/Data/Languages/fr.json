@@ -708,6 +708,10 @@
         "nos"
       ],
       "Logic": {
+        "static": [
+          "verb:etre",
+          "verb:avoir"
+        ],
         "copula": [
           "verb:etre"
         ],
@@ -931,7 +935,26 @@
       "Impersonal": ["pleut", "pleuvait", "pleuvra", "neige", "neigeait", "neigera", "fait beau", "fait froid", "fait chaud", "fait doux", "fait gris", "fait nuit", "fait jour", "faisait beau", "faisait froid", "faisait chaud", "fera beau", "fera froid", "fera chaud"],
       "Why": [
         "pourquoi"
-      ]
+      ],
+      "WhyAlone": ["pourquoi", "pourquoi ca", "pourquoi cela", "pourquoi donc", "comment ca", "comment le sais tu", "comment tu le sais", "comment le savez vous", "comment vous le savez"],
+      "Conditions": ["si", "s'", "quand", "lorsque", "lorsqu'"],
+      "Then": ["alors", "donc"],
+      "Elide": {"si il": "s'il", "si ils": "s'ils", "Si il": "S'il", "Si ils": "S'ils", "que il": "qu'il", "que ils": "qu'ils", "que elle": "qu'elle", "que elles": "qu'elles", "que on": "qu'on"},
+      "Doing": ["faire"],
+      "One": ["un", "une"],
+      "Participles": true,
+      "ObjectClitics": ["vous", "nous"],
+      "Partitive": ["en"],
+      "InSitu": { "quoi": "qu'est-ce que", "où": "où est-ce que" },
+      "HowMany": ["combien"],
+      "CountOf": ["de", "d"],
+      "Total": ["en tout", "au total", "ensemble"],
+      "Together": ["nous", "on"],
+      "More": ["de plus que", "de plus qu"],
+      "Fewer": ["de moins que", "de moins qu"],
+      "Than": [],
+      "Me": ["moi"],
+      "Singular": [0, 1]
     },
     "Say": {
       "Report": "Je lis cela comme une information, pas comme une demande. Je ne l'ai pas assez bien comprise pour la retenir.",
@@ -960,7 +983,21 @@
       "ButAlso": "mais vous m'avez aussi dit : {0}",
       "Opposite": "Vous m'avez dit le contraire avant : {0} Je garde les deux.",
       "BecauseOf": "parce que : {0}",
-      "NoReason": "vous ne m'avez pas dit pourquoi."
+      "NoReason": "vous ne m'avez pas dit pourquoi.",
+      "Deduced": "J'en déduis :",
+      "OnlyIf": "Je ne sais pas. Vous m'avez dit : {0} Mais je ne sais pas si {1}.",
+      "OnlyIfQuoted": "Je ne sais pas. Vous m'avez dit : « {0} ». Mais je ne sais pas si {1}.",
+      "Quote": "« {0} »",
+      "IfThen": "si {0}, {1}",
+      "ConditionalOrder": "Je ne lance pas une action sous condition : demandez-la-moi quand la condition est remplie.",
+      "Count": "{0} {1}.",
+      "CountTotal": "{0} {1} en tout.",
+      "CountMore": "{0} {1} de plus.",
+      "CountFewer": "{0} {1} de moins.",
+      "CountSame": "Autant : {0} {1} de chaque côté.",
+      "Why": "Parce que vous m'avez dit :",
+      "WhyCalculated": "Et le calcul : {0}.",
+      "WhyNothing": "Pourquoi quoi ? Je n'ai rien répondu à partir de ce que vous m'avez dit juste avant."
     }
   },
   "Answer": {

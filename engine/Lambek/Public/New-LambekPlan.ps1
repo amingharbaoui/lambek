@@ -24,6 +24,9 @@ function New-LambekPlan {
     )
 
     process {
+        # "ma soeur en a 2", "je fais quoi ?": read as "ma soeur a 2 chats", "qu'est-ce que je fais ?"
+        if (-not $NoRecall) { $Text = ConvertTo-LambekPlainSentence -Text $Text }
+
         # "comme la derniere fois": the plan comes from the memory
         if (-not $NoRecall) {
             $recalled = Resolve-LambekRecall -Text $Text
@@ -32,10 +35,15 @@ function New-LambekPlan {
 
         # "que veut dire purge ?", "combien font 3/7 + 2/5": the dictionaries or the calculation answer, nothing is planned
         if (-not $NoRecall) {
+            # "combien de chats avons-nous ?", "pourquoi ?" (after an answer from what was told): answered from what was told.
+            # Anything else said, a "pourquoi ?" after it is no longer about that answer
+            $told = Resolve-LambekToldQuestion -Text $Text
+            if (-not $told) { Set-LambekLastProof }
             $definition = Resolve-LambekDefinition -Text $Text
             if ($definition) { return ConvertTo-LambekReplyPlan -Text $Text -Language $definition.Language -Reply (Format-LambekDefinition -Definition $definition) }
             $calculation = Resolve-LambekCalculation -Text $Text
             if ($calculation) { return ConvertTo-LambekReplyPlan -Text $Text -Language $calculation.Language -Reply $calculation.Answer }
+            if ($told) { return ConvertTo-LambekReplyPlan -Text $Text -Language $told.Language -Asked $told.Asked }
         }
 
         $steps = [System.Collections.Generic.List[object]]::new()
@@ -51,6 +59,8 @@ function New-LambekPlan {
         else { $clauses = @(Split-LambekClause -Text $Text) }
         Add-LambekTrace -Trace $trace -Clock $clock -Stage 'Split' -Detail "$($clauses.Count) step(s)"
 
+        # "s'il pleut, ...": the condition read, kept for the clause after it, never told on its own
+        $condition = $null
         for ($i = 0; $i -lt $clauses.Count; $i++) {
             $units = 3 * $clauses.Count + 2
             Send-LambekProgress -Stage 'Read' -Step ($i + 1) -Percent (100 * (1 + 3 * $i) / $units)
@@ -58,6 +68,8 @@ function New-LambekPlan {
             # (compared as a character: a culture-aware comparison ignores control characters and would say yes to anything)
             $reason = $clauses[$i].Length -gt 0 -and $clauses[$i][0] -eq [char] 1
             if ($reason) { $clauses[$i] = $clauses[$i].Substring(1) }
+            $conditional = $clauses[$i].Length -gt 0 -and $clauses[$i][0] -eq [char] 2
+            if ($conditional) { $clauses[$i] = $clauses[$i].Substring(1) }
             # A vague word read with its threshold makes the clause read again, once, with the threshold said
             $read = $clauses[$i]
             $vague = $null
@@ -138,6 +150,21 @@ function New-LambekPlan {
             if ($reason -and $steps.Count -gt 0 -and $step.Statement -and $steps[$steps.Count - 1].Statement) {
                 $step.Statement | Add-Member -NotePropertyName ReasonFor -NotePropertyValue $steps[$steps.Count - 1].Statement.Core -Force
             }
+            # The condition is not a step: it waits for the clause it is the condition of
+            # (a condition that could not be read leaves what follows it unread too: it is never told as if it always held)
+            if ($conditional) { $condition = $(if ($step.Statement) { $step.Statement } else { $false }); continue }
+            if ($condition -eq $false) { $step.Statement = $null; $condition = $null }
+            if ($condition) {
+                if ($step.Statement) { Set-LambekCondition -Statement $step.Statement -Condition $condition }
+                else {
+                    # An order on a condition is never planned to run: it is asked when the condition holds
+                    $step.Status = 'NeedsInput'
+                    $step.Questions = @((Get-LambekLexicon -Language $step.Language).Dialogue.Say['ConditionalOrder'])
+                }
+                $condition = $null
+            }
+            # (numbered as the steps kept: a condition is none)
+            $step.Step = $steps.Count + 1
             $steps.Add($step)
             # What this clause told is known to the next one ("...mais elle travaille a Paris")
             if (-not $NoRecall) { Add-LambekTold -Plan ([pscustomobject]@{ Steps = @($step) }) }
@@ -195,18 +222,18 @@ function New-LambekPlan {
 }
 
 function ConvertTo-LambekReplyPlan {
-    param([string] $Text, [string] $Language, [string] $Reply)
+    param([string] $Text, [string] $Language, [string] $Reply, [pscustomobject] $Asked)
 
-    # A plan with one step that asks for no action: the answer is the reply
+    # A plan with one step that asks for no action: the answer is the reply, or the answer to what is asked about what was told
     $step = [pscustomobject]@{
-        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; ActSay = $null; Statement = $null; Asked = $null; Confidence = 0.0; Types = ''
+        Step = 1; Clause = $Text; Language = $Language; Status = 'Unknown'; Act = 'Question'; ActSay = $null; Statement = $null; Asked = $Asked; Confidence = 0.0; Types = ''
         Implied = @(); Guess = $null; Senses = @(); Pending = @(); FromHabit = @(); Votes = $null; Reading = $null
         Action = $null; Risk = $null; Parameters = [ordered]@{}; Questions = @(); Reads = @(); Writes = @()
         Output = $null; Script = $null; Check = $null; CardHash = $null
     }
     $plan = ConvertTo-LambekPlan -Text $Text -Steps @($step)
     $plan | Add-Member -NotePropertyName Trace -NotePropertyValue @()
-    $plan | Add-Member -NotePropertyName Reply -NotePropertyValue $Reply
+    if ($Reply) { $plan | Add-Member -NotePropertyName Reply -NotePropertyValue $Reply }
     return $plan
 }
 

@@ -69,8 +69,13 @@ function New-LambekIntentCard {
     # anything at all: it is read with the words of the dictionary, as something told or something asked
     $general = $null
     $theirs = @($request.Entities | Where-Object { $_.Type -ne 'number' }).Count
-    if ($theirs -eq 0 -and $act.Rule -notin 'told', 'forget' -and ($act.Kind -ne 'Order' -or $selection.Status -eq 'Unknown')) {
+    # ("does the school close?" is no order, even when "close" is the verb of one: a sentence that opens with the verb
+    # that asks whether is read with the dictionary too, and stays an order unless it reads as that question)
+    $polar = @(); if ($lexicon.Dialogue -and $lexicon.Dialogue['General']) { $polar = @($lexicon.Dialogue['General']['Polar']) }
+    $opensAsking = @($request.Tokens).Count -gt 0 -and @($request.Tokens)[0] -in $polar
+    if ($theirs -eq 0 -and $act.Rule -notin 'told', 'forget' -and ($act.Kind -ne 'Order' -or $selection.Status -eq 'Unknown' -or $opensAsking)) {
         $general = Get-LambekGeneralReading -Request $request
+        if ($general -and $opensAsking -and $act.Kind -eq 'Order' -and $selection.Status -ne 'Unknown' -and -not ($general.Kind -eq 'question' -and $general.Asked -eq 'whether')) { $general = $null }
         # "she works at a bank" with nobody named before: a sentence told, about someone Lambek cannot tell
         if ($general -and $general.Kind -eq 'unresolved') {
             $act = [pscustomobject]@{ Kind = 'Report'; Rule = 'unresolved'; Say = ($lexicon.Dialogue.Say['WhoIs'] -f $general.Pronoun); Subject = $null }

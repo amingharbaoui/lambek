@@ -5,6 +5,35 @@ function Get-LambekTold {
     return , $script:Told
 }
 
+function Get-LambekBoard {
+    # The blackboard where everything Lambek holds is put, with what it is and where it comes from
+    if ($null -eq $script:Board) { $script:Board = [LambekBoard]::new() }
+    return $script:Board
+}
+
+function Add-LambekBoardFact {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [pscustomobject] $Fact,
+
+        [string] $Status = 'told',
+
+        [string] $Source = 'user'
+    )
+
+    # A thing told, put on the board: what it says (its key, the same whatever the order of its parts), its sign,
+    # what it is the reason of, the way it was written, the day it was told
+    $core = $null
+    if ($Fact.PSObject.Properties['Core'] -and $Fact.Core) { $core = "$($Fact.Core)" }
+    $reasonFor = $null
+    if ($Fact.PSObject.Properties['ReasonFor'] -and $Fact.ReasonFor) { $reasonFor = "$($Fact.ReasonFor)" }
+    $negated = [bool] ($Fact.PSObject.Properties['Negated'] -and $Fact.Negated)
+    $day = $null
+    if ($Fact.PSObject.Properties['Told'] -and $Fact.Told) { $day = "$($Fact.Told)" }
+    return (Get-LambekBoard).Put($Fact, $Status, $Source, $day, $core, $negated, $reasonFor, "$($Fact.Form)", [int[]] @())
+}
+
 function Add-LambekTold {
     [CmdletBinding()]
     param(
@@ -23,6 +52,7 @@ function Add-LambekTold {
         if ($again.Count -gt 0) { [void] $told.Remove($again[0]); $told.Add($again[0]); continue }
         $told.Add($step.Statement)
         Write-LambekToldJournal -Fact $step.Statement
+        [void] (Add-LambekBoardFact -Fact $step.Statement -Status 'told' -Source 'user')
     }
     while ($told.Count -gt 50) { $told.RemoveAt(0) }
 }
@@ -98,12 +128,40 @@ function Write-LambekToldJournal {
         Wish         = $Fact.Wish
         Time         = $Fact.Time
         Day          = $Fact.Day
+        Status       = 'told'
+        Source       = 'user'
         PreviousHash = $previousHash
+    }
+    # A rule: its condition is kept with it, in the same shape as a thing told
+    if ($Fact.PSObject.Properties['Condition'] -and $Fact.Condition) {
+        $if = $Fact.Condition
+        $ifValues = [ordered]@{}
+        if ($if.PSObject.Properties['Values']) { foreach ($name in @($if.Values.Keys)) { $ifValues[$name] = "$($if.Values[$name])" } }
+        else { foreach ($name in @($if.Parameters.Keys)) { $ifValues[$name] = Format-LambekValue -Value $if.Parameters[$name] } }
+        $entry.Condition = [ordered]@{
+            Text     = $if.Text
+            Said     = $(if ($if.PSObject.Properties['Said']) { $if.Said } else { $null })
+            Negated  = [bool] ($if.PSObject.Properties['Negated'] -and $if.Negated)
+            Core     = $(if ($if.PSObject.Properties['Core']) { $if.Core } else { $null })
+            Language = $if.Language
+            Form     = $if.Form
+            Action   = $if.Action
+            Values   = $ifValues
+            Agent    = $if.Agent
+            Name     = $if.Name
+            Time     = $if.Time
+            Day      = $if.Day
+        }
+        $entry.Then = $Fact.Then
+        $entry.ThenForm = $Fact.ThenForm
     }
     $entry.Hash = Get-LambekHash -Text ($entry | ConvertTo-Json -Compress -Depth 4)
     $Fact.Hash = $entry.Hash
     Add-Content -LiteralPath $script:ToldPath -Value ($entry | ConvertTo-Json -Compress -Depth 4) -Encoding utf8
-    $journal.Add([pscustomobject] $entry)
+    $line = [pscustomobject] $entry
+    if ($entry.Contains('Condition')) { $line.Condition = [pscustomobject] $entry.Condition }
+    $journal.Add($line)
+    [void] (Add-LambekBoardFact -Fact $line -Status 'told' -Source 'journal')
 }
 
 function Get-LambekToldJournal {
@@ -112,6 +170,8 @@ function Get-LambekToldJournal {
     if ($null -ne $script:ToldJournal) { return , $script:ToldJournal }
     $script:ToldJournal = [System.Collections.Generic.List[object]]::new()
     $script:ToldDoubt = 0
+    # What the board held from the journal is read again with it
+    (Get-LambekBoard).Drop('journal')
     if (-not (Test-Path -LiteralPath $script:ToldPath -PathType Leaf)) { return , $script:ToldJournal }
     $previousHash = ''
     foreach ($line in Get-Content -LiteralPath $script:ToldPath -Encoding utf8) {
@@ -125,7 +185,14 @@ function Get-LambekToldJournal {
         }
         $entry.Hash = $hash
         $previousHash = $hash
-        $script:ToldJournal.Add([pscustomobject] $entry)
+        $fact = [pscustomobject] $entry
+        # (a rule keeps its condition as a thing of its own)
+        if ($entry.Contains('Condition') -and $entry['Condition']) { $fact.Condition = [pscustomobject] $entry['Condition'] }
+        $script:ToldJournal.Add($fact)
+        # (a line written before the board has no status: it was told)
+        $status = 'told'
+        if ($entry.Contains('Status') -and $entry['Status']) { $status = "$($entry['Status'])" }
+        [void] (Add-LambekBoardFact -Fact $fact -Status $status -Source 'journal')
     }
     return , $script:ToldJournal
 }
@@ -137,6 +204,8 @@ function Clear-LambekTold {
 
     # "forget what I told you": the conversation and the journal are emptied. It cannot be undone
     (Get-LambekTold).Clear()
+    (Get-LambekBoard).Clear()
+    $script:LastProofs = $null
     $script:ToldJournal = [System.Collections.Generic.List[object]]::new()
     $script:ToldDoubt = 0
     if (Test-Path -LiteralPath $script:ToldPath -PathType Leaf) { Remove-Item -LiteralPath $script:ToldPath -Force }
@@ -151,7 +220,11 @@ function Format-LambekFact {
         [Parameter(Mandatory)]
         [string] $Language,
 
-        [string] $Register = 'vous'
+        [string] $Register = 'vous',
+
+        # In a list that already says it was told ("parce que vous m'avez dit :", "déduit avec :"): what cannot be said
+        # back is only quoted, « ... », not "vous m'avez dit : « ... »" again
+        [switch] $Bare
     )
 
     # One thing told, said back. First as a sentence, the user's own turned to the other side ("you bought a car"),
@@ -159,16 +232,33 @@ function Format-LambekFact {
     # what Lambek cannot say right is never said in a form ("Who: ... What: ..."), nor guessed
     $lexicon = Get-LambekLexicon -Language $Language
     $say = $lexicon.Dialogue.Say
+    # A rule told ("s'il pleut, je prends le bus"): the condition and what holds then, each said back and read again,
+    # in the language it was told in, as everything told is ("if it rains" is never "si it rains")
+    if ($Fact.PSObject.Properties['Condition'] -and $Fact.Condition -and $say['IfThen']) {
+        $told = $Language
+        if ($Fact.PSObject.Properties['Language'] -and $Fact.Language -and $Fact.Language -ne $Language) {
+            $own = Get-LambekLexicon -Language "$($Fact.Language)"
+            if ($own.Dialogue -and $own.Dialogue.Say['IfThen']) { $told = "$($Fact.Language)"; $lexicon = $own }
+        }
+        $if = Get-LambekFactSentence -Fact $Fact.Condition -Register $Register
+        $then = Get-LambekFactSentence -Fact $Fact -Register $Register
+        if ($if -and $then) {
+            $sentence = $lexicon.Dialogue.Say['IfThen'] -f (Format-LambekInline -Text $if -Language $told), (Format-LambekInline -Text $then -Language $told)
+            $general = $lexicon.Dialogue['General']
+            if ($general -and $general['Elide']) { foreach ($pair in $general['Elide'].GetEnumerator()) { $sentence = [regex]::Replace($sentence, "(?<!\p{L})$([regex]::Escape($pair.Key))(?!\p{L})", $pair.Value) } }
+            $sentence = $sentence.Substring(0, 1).ToUpperInvariant() + $sentence.Substring(1)
+            return "$sentence."
+        }
+        return $say[$(if ($Bare -and $say['Quote']) { 'Quote' } else { 'Quoted' })] -f ($say['IfThen'] -f "$($Fact.Condition.Text)".Trim(), "$($Fact.Text)".Trim())
+    }
     if ($Fact.PSObject.Properties['Text'] -and $Fact.Text -and $Fact.Language) {
-        $words = "$($Fact.Text)"
-        if ($Fact.PSObject.Properties['Said'] -and $Fact.Said) { $words = "$($Fact.Said)" }
-        $sentence = ConvertTo-LambekOtherSide -Text $words -Language $Fact.Language -Register $Register
-        if ($sentence -and (Test-LambekSaidBack -Fact $Fact -Sentence $sentence)) {
+        $sentence = Get-LambekFactSentence -Fact $Fact -Register $Register
+        if ($sentence) {
             # "yesterday" told another day is said with the day it was
             if ($Fact.PSObject.Properties['PreviousHash'] -and $Fact.Time -and $Fact.Day) { $sentence += " ($($Fact.Day))" }
             return $sentence
         }
-        return $say['Quoted'] -f "$($Fact.Text)".Trim()
+        return $say[$(if ($Bare -and $say['Quote']) { 'Quote' } else { 'Quoted' })] -f "$($Fact.Text)".Trim()
     }
     # Without the words it was told in (a line of an older journal): what it was about, then what
     if ($Fact.PSObject.Properties['What'] -and $Fact.What) { $what = $Fact.What }
@@ -187,6 +277,18 @@ function Format-LambekFact {
     return $say[$shape] -f $who, $what, $when
 }
 
+function Get-LambekFactSentence {
+    param([pscustomobject] $Fact, [string] $Register = 'vous')
+
+    # The words told, turned to the other side, when reading them again gives the same thing; nothing otherwise
+    if (-not ($Fact.PSObject.Properties['Text'] -and $Fact.Text -and $Fact.Language)) { return $null }
+    $words = "$($Fact.Text)"
+    if ($Fact.PSObject.Properties['Said'] -and $Fact.Said) { $words = "$($Fact.Said)" }
+    $sentence = ConvertTo-LambekOtherSide -Text $words -Language $Fact.Language -Register $Register
+    if ($sentence -and (Test-LambekSaidBack -Fact $Fact -Sentence $sentence)) { return $sentence }
+    return $null
+}
+
 function Get-LambekToldAnswer {
     [CmdletBinding()]
     param(
@@ -200,10 +302,12 @@ function Get-LambekToldAnswer {
         [string] $Register = 'vous'
     )
 
-    # The answer to a question about what was told: the things told that agree with every word of the question.
-    # It never says more than the user said, and says so when nothing was told
+    # The answer to a question about what was told: the things told that agree with every word of the question,
+    # and what follows from them by the rules told. It never says more than that, and says so when nothing was told
     $say = (Get-LambekLexicon -Language $Language).Dialogue.Say
     if ($Asked.PSObject.Properties['Forget'] -and $Asked.Forget) { return $say['Forgotten'] }
+    # "pourquoi ?": what the last answer rested on
+    if ($Asked.PSObject.Properties['Kind'] -and $Asked.Kind -eq 'why') { return Get-LambekWhyAnswer -Language $Language -Register $Register }
     $told = @((Get-LambekTold).ToArray())
     # What was told before this conversation comes from the journal; what is in both is said once
     $here = @($told | Where-Object { $_.PSObject.Properties['Hash'] -and $_.Hash } | ForEach-Object { $_.Hash })
@@ -213,46 +317,76 @@ function Get-LambekToldAnswer {
     if ($script:ToldDoubt -gt 0) { $doubt = "`n$(Format-LambekPlural -Template $say['Doubt'] -Language $Language -Values @([int] $script:ToldDoubt))" }
     # A question about anything: what nobody told is not known, and it is said so
     $anything = -not $Asked.All -and @($Asked.Actions | Where-Object { "$_".StartsWith('verb:') }).Count -gt 0
+    if ($Asked.PSObject.Properties['Kind'] -and $Asked.Kind -eq 'count') { $anything = $true }
+    Set-LambekLastProof
     if ($told.Count + $before.Count -eq 0) { return "$($say[$(if ($anything) { 'NotKnown' } else { 'NothingTold' })])$doubt" }
-    # The question is a rule of the logic, and everything told its facts: the answers are what the logic proves
-    $all = @($told) + @($before)
+    # Everything held, and what follows from it by the rules told
+    $all = @(Get-LambekDeduced -Facts (@($told) + @($before)))
+    # "combien de chats avons-nous ?": counted and added up from what was told
+    if ($Asked.PSObject.Properties['Kind'] -and $Asked.Kind -eq 'count') {
+        $counted = Get-LambekCountAnswer -Asked $Asked -Facts (@($before) + @($all | Where-Object { $before -notcontains $_ })) -Language $Language -Register $Register
+        if ($counted) { return "$counted$doubt" }
+        return "$($say['NotKnown'])$doubt"
+    }
+    # The question is a rule of the logic, and everything held its facts: the answers are what the logic proves.
+    # What was told here, what was told before, and what Lambek deduced from them are said apart
     $proved = @(Find-LambekTold -Asked $Asked -Facts $all)
-    $found = @($proved | Where-Object { $told -contains $_.Fact })
-    $older = @($proved | Where-Object { $told -notcontains $_.Fact })
-    if ($found.Count + $older.Count -eq 0) { return "$($say[$(if ($anything) { 'NotKnown' } else { 'NotTold' })])$doubt" }
+    $isDeduced = { param($fact) [bool] ($fact.PSObject.Properties['Deduced'] -and $fact.Deduced) }
+    $found = @($proved | Where-Object { -not (& $isDeduced $_.Fact) -and $told -contains $_.Fact })
+    $older = @($proved | Where-Object { -not (& $isDeduced $_.Fact) -and $told -notcontains $_.Fact })
+    $deduced = @($proved | Where-Object { & $isDeduced $_.Fact })
+    if ($proved.Count -eq 0) {
+        # Nothing held says it, but a rule told would: it is said on what condition
+        $only = Get-LambekOnlyIf -Asked $Asked -Facts $all -Language $Language -Register $Register
+        if ($only) { return "$only$doubt" }
+        return "$($say[$(if ($anything) { 'NotKnown' } else { 'NotTold' })])$doubt"
+    }
     $lines = [System.Collections.Generic.List[string]]::new()
     # Answers that say the opposite of each other: both are kept and it is said first
     $answered = @($proved | ForEach-Object { $_.Fact })
     $disagree = @($proved | Where-Object { @(Get-LambekContrary -Fact $_.Fact -Facts $answered).Count -gt 0 }).Count -gt 0
     if ($disagree) { $lines.Add($say['Contradicted']) }
+    $reasonAsked = $Asked.PSObject.Properties['Wanted'] -and $Asked.Wanted -eq 'reason'
+    $explain = {
+        param($answer)
+        $deduced = $answer.Fact.PSObject.Properties['Deduced'] -and $answer.Fact.Deduced
+        # "why...": the reasons told with it, or that none was (a thing deduced has its own: what it was deduced with)
+        if ($reasonAsked) {
+            $reasons = @(Get-LambekReason -Fact $answer.Fact -Facts $all)
+            foreach ($reason in $reasons) { $lines.Add("  $($say['BecauseOf'] -f (Format-LambekFact -Fact $reason -Language $Language -Register $Register))") }
+            if ($reasons.Count -eq 0 -and -not $deduced) { $lines.Add("  $($say['NoReason'])") }
+        }
+        foreach ($other in @(Get-LambekContrary -Fact $answer.Fact -Facts $all | Where-Object { $answered -notcontains $_ })) { $lines.Add("  $($say['ButAlso'] -f (Format-LambekFact -Fact $other -Language $Language -Register $Register))") }
+        # What it was deduced with is said: the answer can be checked
+        foreach ($reason in $answer.Because) { $lines.Add("  $($say['Because'] -f (Format-LambekFact -Fact $reason -Language $Language -Register $Register -Bare))") }
+    }
     if ($found.Count -gt 0) {
         if (-not $disagree) { $lines.Add($say['Recalled']) }
         foreach ($answer in $found) {
             $lines.Add("- $(Format-LambekFact -Fact $answer.Fact -Language $Language -Register $Register)")
-            # "why...": the reasons told with it, or that none was
-            if ($Asked.PSObject.Properties['Wanted'] -and $Asked.Wanted -eq 'reason') {
-                $reasons = @(Get-LambekReason -Fact $answer.Fact -Facts $all)
-                foreach ($reason in $reasons) { $lines.Add("  $($say['BecauseOf'] -f (Format-LambekFact -Fact $reason -Language $Language -Register $Register))") }
-                if ($reasons.Count -eq 0) { $lines.Add("  $($say['NoReason'])") }
-            }
-            foreach ($other in @(Get-LambekContrary -Fact $answer.Fact -Facts $all | Where-Object { $answered -notcontains $_ })) { $lines.Add("  $($say['ButAlso'] -f (Format-LambekFact -Fact $other -Language $Language -Register $Register))") }
-            # What it was deduced with is said: the answer can be checked
-            foreach ($reason in $answer.Because) { $lines.Add("  $($say['Because'] -f (Format-LambekFact -Fact $reason -Language $Language -Register $Register))") }
+            & $explain $answer
         }
     }
     if ($older.Count -gt 0) {
         $lines.Add($say['RecalledBefore'])
         foreach ($answer in $older) {
             $lines.Add("- $($say['OnDay'] -f $answer.Fact.Told, (Format-LambekFact -Fact $answer.Fact -Language $Language -Register $Register))")
-            if ($Asked.PSObject.Properties['Wanted'] -and $Asked.Wanted -eq 'reason') {
-                $reasons = @(Get-LambekReason -Fact $answer.Fact -Facts $all)
-                foreach ($reason in $reasons) { $lines.Add("  $($say['BecauseOf'] -f (Format-LambekFact -Fact $reason -Language $Language -Register $Register))") }
-                if ($reasons.Count -eq 0) { $lines.Add("  $($say['NoReason'])") }
-            }
-            foreach ($other in @(Get-LambekContrary -Fact $answer.Fact -Facts $all | Where-Object { $answered -notcontains $_ })) { $lines.Add("  $($say['ButAlso'] -f (Format-LambekFact -Fact $other -Language $Language -Register $Register))") }
-            foreach ($reason in $answer.Because) { $lines.Add("  $($say['Because'] -f (Format-LambekFact -Fact $reason -Language $Language -Register $Register))") }
+            & $explain $answer
         }
     }
+    if ($deduced.Count -gt 0) {
+        $lines.Add($say['Deduced'])
+        foreach ($answer in $deduced) {
+            $lines.Add("- $(Format-LambekFact -Fact $answer.Fact -Language $Language -Register $Register)")
+            & $explain $answer
+        }
+    }
+    # What this answer rests on, for a "pourquoi ?" after it: what was told, and what the deductions used
+    $used = [System.Collections.Generic.List[object]]::new()
+    foreach ($answer in @($found) + @($older) + @($deduced)) {
+        foreach ($item in @(Get-LambekProofLeaf -Fact $answer.Fact) + @($answer.Because)) { if (-not $used.Contains($item)) { $used.Add($item) } }
+    }
+    Set-LambekLastProof -Facts $used.ToArray()
     return "$($lines -join "`n")$doubt"
 }
 
@@ -385,7 +519,12 @@ function ConvertTo-LambekGeneralAsked {
     param([pscustomobject] $Reading, [pscustomobject] $Request)
 
     # A question about anything: what was told with that verb, about that one, and that says what is asked
+    # ("qu'est-ce que je fais": "faire" asking for what is done stands for any verb that is done)
+    $general = (Get-LambekLexicon -Language $Request.Language).Dialogue['General']
+    $doing = $Reading.Asked -eq 'object' -and $Reading.Roles.Count -eq 0 -and $general -and
+        (ConvertTo-LambekNormalizedText -Text "$($Reading.Verb)") -in @($general['Doing'])
     [pscustomobject]@{
+        Doing      = $doing
         All        = $false
         Actions    = @("verb:$($Reading.Verb)")
         Parameters = $Reading.Roles
@@ -410,16 +549,12 @@ function Get-LambekSaidFor {
 function Get-LambekContrary {
     param([pscustomobject] $Fact, [object[]] $Facts)
 
-    # The things told that say the opposite: the same verb, the same one, the same complements, the same day,
-    # but one says "not". Both are kept, and both are said (four-valued logic of Belnap: a contradiction stays local)
+    # The things told that say the opposite: the same verb, the same one, the same complements in any order, the same day,
+    # but one says "not". Both are kept, and both are said (four-valued logic of Belnap: a contradiction stays local).
+    # A thing of this conversation is also in the journal: it is said once
     if (-not $Fact.PSObject.Properties['Core'] -or -not $Fact.Core) { return @() }
     $mine = [bool] ($Fact.PSObject.Properties['Negated'] -and $Fact.Negated)
-    # (a thing of this conversation is also in the journal: it is said once)
-    $seen = @{}
-    return @($Facts | Where-Object { $key = "$($_.Form)|$($_.Told)"; -not $seen.ContainsKey($key) -and ($seen[$key] = $true) } | Where-Object {
-            -not [object]::ReferenceEquals($_, $Fact) -and $_.PSObject.Properties['Core'] -and $_.Core -ceq $Fact.Core -and
-            ([bool] ($_.PSObject.Properties['Negated'] -and $_.Negated)) -ne $mine
-        })
+    return @((Get-LambekBoard).Contraries($Fact, "$($Fact.Core)", $mine, [object[]] @($Facts)))
 }
 
 function Get-LambekReason {
@@ -427,6 +562,5 @@ function Get-LambekReason {
 
     # The things told as the reason of this one ("...because she works in Lyon"), once each
     if (-not $Fact.PSObject.Properties['Core'] -or -not $Fact.Core) { return @() }
-    $seen = @{}
-    return @($Facts | Where-Object { $_.PSObject.Properties['ReasonFor'] -and $_.ReasonFor -ceq $Fact.Core } | Where-Object { $key = "$($_.Form)"; -not $seen.ContainsKey($key) -and ($seen[$key] = $true) })
+    return @((Get-LambekBoard).Reasons("$($Fact.Core)", [object[]] @($Facts)))
 }

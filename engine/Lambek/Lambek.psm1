@@ -80,10 +80,17 @@ $script:GuardWords = $null
 $script:LanguageBelief = $null
 $script:Incognito = $false
 $script:Told = $null
+# The blackboard: every thing told, here or in the journal, once, with its status, source, day and key
+$script:Board = $null
 # What was told in every conversation: one line each, never changed afterwards
 $script:ToldPath = Join-Path $dataFolder 'told.jsonl'
 $script:ToldJournal = $null
 $script:ToldDoubt = 0
+# What the last answer of each conversation rested on, for "pourquoi ?"
+$script:LastProofs = $null
+# The words of condition ("si", "if") and of the questions read before the grammar ("combien", "pourquoi ?")
+$script:ConditionWords = $null
+$script:ToldQuestionWords = $null
 $script:KnowledgeRules = $null
 # A woman, a man, a person or a thing, by noun (WordNet)
 $script:NounKinds = $null

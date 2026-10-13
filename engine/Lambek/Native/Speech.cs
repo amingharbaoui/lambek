@@ -111,6 +111,9 @@ public static class LambekSpeech
         return value;
     }
 
+    // Between a number and its noun: "2 more cats", "3 fewer files"
+    static readonly HashSet<string> Comparatives = new HashSet<string>(StringComparer.Ordinal) { "more", "fewer", "less" };
+
     // A number after these names a thing ("step 1 changes"), it does not count one
     static readonly HashSet<string> naming = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
@@ -307,6 +310,8 @@ public static class LambekSpeech
             int next = Next(tokens, i);
             if (next < 0 || !tokens[next].Word || !OnlySpace(tokens, i, next)) continue;
             string word = tokens[next].Text;
+            // "2 more cats": the word after the number only says how they compare, the noun comes after it
+            if (Comparatives.Contains(word.ToLowerInvariant())) continue;
             if (n == 1 && word.EndsWith("s", StringComparison.Ordinal) && !word.EndsWith("ss", StringComparison.Ordinal) && dictionary != null)
             {
                 LambekLemma noun = dictionary.Lemmas(word, "en", true).FirstOrDefault(l => l.Pos == "n" && l.Lemma != LambekDictionary.Normalize(word));
@@ -379,11 +384,15 @@ public static class LambekSpeech
         foreach (LambekLemma lemma in dictionary.Lemmas(word, "fr", true))
         {
             if (lemma.Pos != pos) continue;
+            // A word written in small letters is never the name it may also be ("euros" is not "Euros")
+            bool small = word == word.ToLowerInvariant();
+            if (small && lemma.Shown.Length > 0 && char.IsUpper(lemma.Shown[0])) continue;
             string wanted = (gender ?? "") + number;
             string itsGender = lemma.Tag.Contains('f') ? "f" : "m";
             if (gender == null) wanted = itsGender + number;
             string[] forms = dictionary.Forms(lemma.Shown, "fr", pos, wanted);
             if (forms.Length == 0 && gender == null) forms = dictionary.Forms(lemma.Shown, "fr", pos, number);
+            if (small) { foreach (string form in forms) { if (form == form.ToLowerInvariant()) return form; } }
             if (forms.Length > 0) return forms[0];
         }
         return null;

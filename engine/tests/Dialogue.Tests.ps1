@@ -391,7 +391,7 @@ Describe 'Dialogue act' {
             @{ Text = 'what did I buy yesterday'; Rule = 'answer(E) :- event(E, "verb:buy"), by(E, "speaker"), says(E, "object"), on(E, "2026-10-05"), not negated(E).' }
             @{ Text = 'what is my name'; Rule = 'answer(E) :- event(E, "verb:be"), about(E, "my name"), not negated(E).' }
             @{ Text = 'what did I delete yesterday'; Rule = 'answer(E) :- event(E, "files.delete"), by(E, "speaker"), on(E, "2026-10-05"), not negated(E).' }
-            @{ Text = 'what have I told you'; Rule = 'answer(E) :- event(E, V).' }
+            @{ Text = 'what have I told you'; Rule = 'answer(E) :- event(E, V), not deduced(E).' }
         ) {
             $asked = (Resolve-Text $Text).Asked
             InModuleScope Lambek -Parameters @{ Asked = $asked } { Get-LambekAskedRule -Asked $Asked } | Should -Be $Rule
@@ -533,7 +533,7 @@ Describe 'Dialogue act' {
             @{ Text = 'où est-ce que ma sœur habite'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), says(E, "place"), not negated(E).' }
             @{ Text = 'qui habite à Lyon'; Rule = 'answer(E) :- event(E, "verb:habiter"), holds(E, "a", "lyon"), not negated(E).' }
             @{ Text = 'qu''est-ce que j''ai acheté hier'; Rule = 'answer(E) :- event(E, "verb:acheter"), by(E, "speaker"), says(E, "object"), on(E, "2026-10-05"), not negated(E).' }
-            @{ Text = 'que fait ma sœur'; Rule = 'answer(E) :- event(E, "verb:faire"), agent(E, "ma sœur"), says(E, "object"), not negated(E).' }
+            @{ Text = 'que fait ma sœur'; Rule = 'answer(E) :- event(E, V), not rule(E), not static(V), agent(E, "ma sœur"), not negated(E).' }
             @{ Text = 'comment je m''appelle'; Rule = 'answer(E) :- event(E, "verb:appeler"), by(E, "speaker"), says(E, "object"), not negated(E).' }
             @{ Text = 'comment s''appelle mon chat'; Rule = 'answer(E) :- event(E, "verb:appeler"), agent(E, "mon chat"), says(E, "object"), not negated(E).' }
             @{ Text = 'est-ce que ma sœur habite à Lyon'; Rule = 'answer(E) :- event(E, "verb:habiter"), agent(E, "ma sœur"), holds(E, "a", "lyon").' }

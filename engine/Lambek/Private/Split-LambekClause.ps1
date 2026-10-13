@@ -5,6 +5,10 @@ function Split-LambekClause {
         [string] $Text
     )
 
+    # "s'il pleut, je prends le bus": a condition and what holds when it does, read before "then" splits anything
+    $conditional = Split-LambekCondition -Text $Text
+    if ($conditional) { return $conditional }
+
     # Hide quoted text so a separator inside quotes never splits it
     $quotes = [System.Collections.Generic.List[string]]::new()
     $quotePattern = '"[^"]*"|\u00AB[^\u00BB]*\u00BB|\u201C[^\u201D]*\u201D'

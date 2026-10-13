@@ -628,6 +628,10 @@
         "ours"
       ],
       "Logic": {
+        "static": [
+          "verb:be",
+          "verb:have"
+        ],
         "copula": [
           "verb:be"
         ],
@@ -802,7 +806,22 @@
       "Impersonal": ["rains", "rained", "snows", "snowed", "is raining", "is snowing", "was raining", "was snowing", "is cold", "is hot", "is warm", "is sunny", "is windy", "is cloudy", "is late", "is early", "is dark", "was cold", "was hot", "was sunny"],
       "Why": [
         "why"
-      ]
+      ],
+      "WhyAlone": ["why", "why so", "why is that", "how come", "how do you know", "how do you know that"],
+      "Conditions": ["if", "when", "whenever"],
+      "Then": ["then", "so"],
+      "Elide": {},
+      "Doing": ["do"],
+      "One": ["a", "an", "one"],
+      "HowMany": ["how many", "how much"],
+      "CountOf": [],
+      "Total": ["in total", "in all", "altogether", "together"],
+      "Together": ["we", "us"],
+      "More": ["more"],
+      "Fewer": ["fewer", "less"],
+      "Than": ["than"],
+      "Me": ["me", "i"],
+      "Singular": [1]
     },
     "Say": {
       "Report": "I read that as something you are telling me, not as something to do. I did not understand it well enough to keep it.",
@@ -831,7 +850,21 @@
       "ButAlso": "but you also told me: {0}",
       "Opposite": "You told me the opposite before: {0} I am keeping both.",
       "BecauseOf": "because: {0}",
-      "NoReason": "you did not tell me why."
+      "NoReason": "you did not tell me why.",
+      "Deduced": "From that, I deduce:",
+      "OnlyIf": "I do not know. You told me: {0} But I do not know whether {1}.",
+      "OnlyIfQuoted": "I do not know. You told me: \"{0}\". But I do not know whether {1}.",
+      "Quote": "\"{0}\"",
+      "IfThen": "if {0}, {1}",
+      "ConditionalOrder": "I do not start an action on a condition: ask me for it when the condition is met.",
+      "Count": "{0} {1}.",
+      "CountTotal": "{0} {1} in total.",
+      "CountMore": "{0} more {1}.",
+      "CountFewer": "{0} fewer {1}.",
+      "CountSame": "The same: {0} {1} each.",
+      "Why": "Because you told me:",
+      "WhyCalculated": "And the calculation: {0}.",
+      "WhyNothing": "Why what? I did not answer anything from what you told me just before."
     }
   },
   "Answer": {

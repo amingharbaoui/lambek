@@ -94,7 +94,8 @@ function ConvertTo-LambekOtherSide {
     }
     if ($failed) { return $null }
     [void] $result.Append($Text.Substring($from))
-    $said = $result.ToString().Trim()
+    # ("me voit" turned is "te voit", once: the space the word had and the one it got are one)
+    $said = ($result.ToString() -replace ' {2,}', ' ').Trim()
     if (-not $said) { return $null }
     $said = $said.Substring(0, 1).ToUpper([cultureinfo]::InvariantCulture) + $said.Substring(1)
     if ($said -notmatch '[.!?]$') { $said += '.' }
@@ -132,8 +133,11 @@ function Test-LambekSaidBack {
         if ($Fact.Agent -ne 'speaker' -and (& $owner $reading.Name) -ne (& $owner $Fact.Name)) { return $false }
         if ($Fact.PSObject.Properties['Values']) { $roles = $Fact.Values } else { $roles = $Fact.Parameters }
         if (@($reading.Roles.Keys).Count -ne @($roles.Keys).Count) { return $false }
+        # ("my boss calls me" said back is "your boss calls you": the one who speaks, on the other side)
+        $me = { param($text, $words) $value = & $owner $text; if ($value -in @($words)) { '@me' } else { $value } }
         foreach ($name in $roles.Keys) {
-            if (-not $reading.Roles.Contains($name) -or (& $owner $reading.Roles[$name]) -ne (& $owner $roles[$name])) { return $false }
+            if (-not $reading.Roles.Contains($name)) { return $false }
+            if ((& $me $reading.Roles[$name] (@($general['Addressee']))) -ne (& $me $roles[$name] (@($general['Me']) + @($general['Speakers'])))) { return $false }
         }
         return $true
     }
