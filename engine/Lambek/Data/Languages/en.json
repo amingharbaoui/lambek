@@ -192,6 +192,7 @@
       "evaluate",
       "solve"
     ],
+    "SuchThat": ["such that", "so that"],
     "Operators": {
       "multiplied by": "*",
       "divided by": "/",
@@ -488,6 +489,227 @@
     }
   },
   "Dialogue": {
+    "Problems": {
+      "Rewrite": [
+        [
+          "(?i)\\bhow old am I\\b",
+          "how many years do I have"
+        ],
+        [
+          "(?i)\\bhow old (?:is|are) (.+?)(\\s*\\?)?$",
+          "how many years does $1 have$2"
+        ],
+        [
+          "(?i)\\b(\\S+) more (\\p{L}+) than\\b",
+          "$1 $2 more than"
+        ],
+        [
+          "(?i)\\b(\\S+) (?:fewer|less) (\\p{L}+) than\\b",
+          "$1 $2 fewer than"
+        ],
+        [
+          "(?i)\\bam (\\S+) years? older than\\b",
+          "have $1 years more than"
+        ],
+        [
+          "(?i)\\b(?:is|are) (\\S+) years? older than\\b",
+          "has $1 years more than"
+        ],
+        [
+          "(?i)\\bam (\\S+) years? younger than\\b",
+          "have $1 years fewer than"
+        ],
+        [
+          "(?i)\\b(?:is|are) (\\S+) years? younger than\\b",
+          "has $1 years fewer than"
+        ],
+        [
+          "(?i)\\bam twice as old as\\b",
+          "have 2 times more years than"
+        ],
+        [
+          "(?i)\\b(?:is|are) twice as old as\\b",
+          "has 2 times more years than"
+        ],
+        [
+          "(?i)\\b(?:is|am|are) (\\S+) times as old as\\b",
+          "has $1 times more years than"
+        ],
+        [
+          "(?i)\\btwice as many (\\p{L}+) as\\b",
+          "2 times more $1 than"
+        ],
+        [
+          "(?i)\\b(\\S+) times as many (\\p{L}+) as\\b",
+          "$1 times more $2 than"
+        ],
+        [
+          "(?i)\\bhalf as many (\\p{L}+) as\\b",
+          "2 times fewer $1 than"
+        ],
+        [
+          "(?i)^the sum of (?:their|our) ages is (\\S+)(?: years)?$",
+          "they have $1 years in total"
+        ],
+        [
+          "(?i)\\bI am (\\S+) years? old\\b",
+          "I have $1 years"
+        ],
+        [
+          "(?i)\\b(?:is|are) (\\S+) years? old\\b",
+          "has $1 years"
+        ]
+      ],
+      "More": [
+        "more than"
+      ],
+      "Fewer": [
+        "fewer than"
+      ],
+      "Times": [
+        "times more"
+      ],
+      "TimesFewer": [
+        "times fewer"
+      ],
+      "Than": [
+        "than"
+      ],
+      "Together": [
+        "together",
+        "in total",
+        "altogether",
+        "between them",
+        "combined"
+      ],
+      "All": [
+        "they",
+        "we"
+      ],
+      "And": [
+        "and"
+      ],
+      "Have": "have",
+      "Says": {
+        "speaker": "I have {1} {2}",
+        "other": "{0} has {1} {2}"
+      },
+      "AgeSays": {
+        "speaker": "I am {1} years old",
+        "other": "{0} is {1} years old"
+      },
+      "Age": "years",
+      "Equations": "The equations:",
+      "Check": "Check: {0}.",
+      "Also": "And {0}",
+      "Missing": "I cannot find it: something is missing. With what you told me, nothing fixes {0}.",
+      "Contradiction": "What you told me contradicts itself: these equations cannot all be true:",
+      "NotWhole": "Careful: {0} is not a whole number, the problem may be wrong.",
+      "Negative": "Careful: {0} is negative, the problem may be wrong.",
+      "Places": {
+        "Left": [
+          "to the left of",
+          "left of",
+          "on the left of"
+        ],
+        "Right": [
+          "to the right of",
+          "right of",
+          "on the right of"
+        ],
+        "Next": [
+          "next to",
+          "beside"
+        ],
+        "Between": [
+          "between"
+        ],
+        "Middle": [
+          "in the middle",
+          "in the centre",
+          "in the center"
+        ],
+        "End": [
+          "at an end",
+          "at one end",
+          "at the end"
+        ],
+        "First": [
+          "on the far left",
+          "the leftmost",
+          "leftmost",
+          "first"
+        ],
+        "Last": [
+          "on the far right",
+          "the rightmost",
+          "rightmost",
+          "last"
+        ],
+        "LeftAlone": [
+          "on the left"
+        ],
+        "RightAlone": [
+          "on the right"
+        ],
+        "Just": [
+          "immediately",
+          "directly",
+          "just"
+        ],
+        "Is": [
+          "sits",
+          "stands",
+          "is sitting",
+          "is"
+        ],
+        "Not": [
+          "is not sitting",
+          "does not sit",
+          "doesn't sit",
+          "is not",
+          "isn't"
+        ],
+        "And": [
+          "and"
+        ],
+        "Row": [
+          "sit in a row",
+          "are sitting in a row",
+          "stand in a row",
+          "in a row",
+          "in a line",
+          "side by side",
+          "on a bench"
+        ],
+        "Who": [
+          "who sits",
+          "who is sitting",
+          "who is"
+        ],
+        "Order": [
+          "in what order",
+          "in which order",
+          "what is the order",
+          "what order"
+        ],
+        "WhereIs": [
+          "where does",
+          "where is"
+        ],
+        "Order1": "From left to right: {0}.",
+        "Who1": "It is {0}.",
+        "Where1": "{0} is in position {1} of {2}, counting from the left.",
+        "Only": "It is the only possible order: {0} (out of {1} tried).",
+        "OnlyOrder": "It is the only possible order (out of {0} tried).",
+        "Always": "It holds in every possible order ({0} of them).",
+        "Several": "I cannot tell: {0} orders are possible:",
+        "More": "One more condition is needed.",
+        "None": "No order works: these conditions contradict each other:",
+        "Noted": "Noted. With these conditions, {0} {0:order is|orders are} possible (out of {1}).",
+        "Separator": ", "
+      }
+    },
     "Questions": [
       "how do",
       "how can",
@@ -1045,6 +1267,7 @@
       "Value": "{0} = {1}",
       "ValueExact": "{0} = {1} = {2}",
       "ValueAbout": "{0} = {1} ≈ {2}",
+      "Check": "Check: {0}.",
       "Roots": "{0:The solution is|The solutions are} {1} = {2}.",
       "Separator": " or ",
       "About": "(about {0})",

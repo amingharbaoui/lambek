@@ -32,7 +32,10 @@ if (-not ('LambekDictionary' -as [type])) {
             Write-Verbose "The compiled code could not be kept: $($_.Exception.Message)"
         }
     }
-    if (Test-Path -LiteralPath $assembly -PathType Leaf) { Add-Type -Path $assembly }
+    # Read into memory, never opened from its file: a session that loaded Lambek never keeps the file locked, and
+    # building it again ("./build.ps1" in the same window, or with the app running) can replace it. Loaded once a session
+    if ($null -ne ('LambekRational' -as [type])) { Write-Verbose 'The compiled code is already loaded in this session.' }
+    elseif (Test-Path -LiteralPath $assembly -PathType Leaf) { [void] [System.Reflection.Assembly]::Load([IO.File]::ReadAllBytes($assembly)) }
     else { Add-Type -Path $sources }
 }
 
@@ -91,6 +94,9 @@ $script:LastProofs = $null
 # The words of condition ("si", "if") and of the questions read before the grammar ("combien", "pourquoi ?")
 $script:ConditionWords = $null
 $script:ToldQuestionWords = $null
+# What was told of a problem in each conversation, and the words that make a message one
+$script:ProblemStores = $null
+$script:ProblemTrigger = $null
 $script:KnowledgeRules = $null
 # A woman, a man, a person or a thing, by noun (WordNet)
 $script:NounKinds = $null

@@ -61,6 +61,12 @@ function Resolve-LambekExpression {
     foreach ($phrase in @($Calculate.Phrases | Sort-Object Length -Descending)) {
         if ($words.StartsWith(" $phrase ")) { $expression = $words.Substring($phrase.Length + 2); break }
     }
+    # "trouve x tel que 4x - 7 = 9", "find x such that 2x = 6": the equation after the unknown it names
+    $such = @($Calculate['SuchThat'] | Where-Object { $_ } | ForEach-Object { [regex]::Escape((ConvertTo-LambekNormalizedText -Text $_)) }) -join '|'
+    if ($null -eq $expression -and $such) {
+        $named = [regex]::Match($Plain.Trim(), "^(?:\p{L}+\s+)?\p{L}\s+(?:$such)\s+(?<equation>[^=]+=[^=]+)$")
+        if ($named.Success) { $expression = $named.Groups['equation'].Value }
+    }
     $alone = $Text -match '^[\s\d.,+\-*/^()=%!xX\u00D7\u00F7\u00B2\u00B3\u221A]+$' -and $Text -match '[\d]' -and $Text -match '[+\-*/^=%!\u00D7\u00F7\u00B2\u00B3\u221A]'
     if ($null -eq $expression -and -not $alone) { return $null }
     if ($null -eq $expression) { $expression = $Text }
@@ -80,6 +86,20 @@ function Resolve-LambekExpression {
     if ($lexicon.Answer.Units['Decimal'] -eq '.') { $expression = $expression -replace '(?<=\d),(?=\d{3}(?!\d))', '' }
 
     $answer = $lexicon.Answer.Math
+    # One equation with two unknowns or more ("x + y = 10"): a family of solutions, each unknown by the others
+    if ($expression -match '^[^=]+=[^=]+$') {
+        try {
+            $sides = $expression -split '='
+            $letters = @([LambekAlgebra]::Letters([LambekAlgebra]::Parse("($($sides[0])) - ($($sides[1]))")))
+            if ($letters.Count -gt 1) {
+                $system = [LambekLinear]::Solve([string[]] @($expression))
+                if ($system.Kind -eq 'none') { return $answer.SystemNone }
+                $pairs = for ($k = 0; $k -lt $system.Letters.Count; $k++) { if ($system.Values[$k] -ne $system.Letters[$k]) { "$($system.Letters[$k]) = $($system.Values[$k])" } }
+                return $answer.SystemMany -f ($pairs -join ', '), ($system.Free -join ', ')
+            }
+        }
+        catch { Write-Verbose "Not one linear equation: $($_.Exception.Message)" }
+    }
     try { $result = [LambekMath]::Evaluate($expression) }
     catch {
         $message = $_.Exception.Message
@@ -100,6 +120,12 @@ function Resolve-LambekExpression {
         $count = $roots.Count + @($roots | Where-Object { $_ -match '\u00B1' }).Count
         $said = Format-LambekPlural -Template $answer.Roots -Language $Language -Values @($count, $result.Exact, ($roots -join $answer.Separator))
         if ($result.Note) { $said += ' ' + ($answer.About -f (Format-LambekNumber -Number ($result.Note -replace '^\u2248 ', '') -Language $Language)) }
+        # Each exact root put back in the equation: the answer is checked, not believed
+        $checks = @(foreach ($root in @($result.Roots)) {
+                if ($root -notmatch '^-?\d+(?:/\d+)?$') { continue }
+                Get-LambekEquationCheck -Expression $expression -Values @{ $result.Exact = $root } -Language $Language
+            })
+        if ($answer.Check -and $checks.Count -gt 0 -and $checks.Count -eq @($result.Roots).Count -and $checks -notcontains $null) { $said += "`n" + ($answer.Check -f ($checks -join ' ; ')) }
         return $said
     }
     # The calculation said back as it was read, then its value
@@ -110,6 +136,36 @@ function Resolve-LambekExpression {
     if ($result.Exact -eq $result.Decimal) { return $answer.Value -f $said, $exact }
     if ($result.DecimalIsExact) { return $answer.ValueExact -f $said, $exact, $decimal }
     return $answer.ValueAbout -f $said, $exact, $decimal
+}
+
+function Get-LambekEquationCheck {
+    param([string] $Expression, [hashtable] $Values, [string] $Language)
+
+    # "3x + 5 = 20" with x = 5: "3 x 5 + 5 = 20", each side worked out again; nothing when the sides differ
+    $times = [char] 0x00D7
+    $sides = @($Expression -split '=' | ForEach-Object { $_.Trim() })
+    if ($sides.Count -ne 2) { return $null }
+    $shown = foreach ($side in $sides) {
+        foreach ($letter in $Values.Keys) {
+            $put = "$($Values[$letter])"
+            if ($put -match '[-/]') { $put = "($put)" }
+            $pattern = "(?<![\p{L}])$([regex]::Escape($letter))(?![\p{L}])"
+            $side = [regex]::Replace($side, "(?<=[\d)])\s*$pattern", " * $put")
+            $side = [regex]::Replace($side, $pattern, $put)
+        }
+        $side
+    }
+    try {
+        $left = [LambekMath]::Evaluate($shown[0]).Exact
+        $right = [LambekMath]::Evaluate($shown[1]).Exact
+    }
+    catch { return $null }
+    if ($left -ne $right) { return $null }
+    $said = foreach ($side in $shown) {
+        $side = ($side -replace '\s+', '' -replace '\*', " $times " -replace '(?<=[\d)])([+\-/])(?=[\d(])', ' $1 ').Trim()
+        Format-LambekNumber -Number $side -Language $Language
+    }
+    return "$($said[0]) = $($said[1]) $([char] 0x2713)"
 }
 
 function Resolve-LambekConversion {
@@ -369,7 +425,15 @@ function Resolve-LambekMathFunction {
                 $result = [LambekLinear]::Solve([string[]] $equations)
                 if ($result.Kind -eq 'none') { return $answer.SystemNone }
                 $pairs = for ($k = 0; $k -lt $result.Letters.Count; $k++) { if ($result.Values[$k] -ne $result.Letters[$k]) { "$($result.Letters[$k]) = $($result.Values[$k])" } }
-                if ($result.Kind -eq 'unique') { return $answer.SystemOne -f ($pairs -join ', ') }
+                if ($result.Kind -eq 'unique') {
+                    # Every value put back in every equation
+                    $values = @{}
+                    for ($k = 0; $k -lt $result.Letters.Count; $k++) { $values[$result.Letters[$k]] = $result.Values[$k] }
+                    $checks = @(foreach ($equation in $equations) { Get-LambekEquationCheck -Expression $equation -Values $values -Language $Language })
+                    $said = $answer.SystemOne -f ($pairs -join ', ')
+                    if ($answer.Check -and $checks.Count -gt 0 -and $checks -notcontains $null) { $said += "`n" + ($answer.Check -f ($checks -join ' ; ')) }
+                    return $said
+                }
                 return $answer.SystemMany -f ($pairs -join ', '), ($result.Free -join ', ')
             }
             { $_ -in 'determinant', 'inverse', 'rank', 'eigen', 'transpose' } {

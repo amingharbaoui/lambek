@@ -228,6 +228,7 @@
       "resoudre",
       "evalue"
     ],
+    "SuchThat": ["tel que", "telle que"],
     "Operators": {
       "multiplie par": "*",
       "divise par": "/",
@@ -509,6 +510,235 @@
     }
   },
   "Dialogue": {
+    "Problems": {
+      "Rewrite": [
+        [
+          "(?i)\\bai-je\\b",
+          "j'ai"
+        ],
+        [
+          "(?i)\\ba-t-(il|elle|on)\\b",
+          "$1 a"
+        ],
+        [
+          "(?i)\\b(as|avons|avez|ont)-(tu|nous|vous|ils|elles)\\b",
+          "$2 $1"
+        ],
+        [
+          "(?i)^quel (?:[âa]ge|est l['’][âa]ge) (a|ont|avons|ai|as|avez)\\b",
+          "combien d'ans $1"
+        ],
+        [
+          "(?i)^quel est l['’][âa]ge (?:de |d['’])",
+          "combien d'ans a "
+        ],
+        [
+          "(?i)\\b(\\S+) fois l['’][âa]ge (?:de |d['’])",
+          "$1 fois plus d'ans que "
+        ],
+        [
+          "(?i)\\b(?:est|suis) (\\S+) fois plus [âa]g[ée]e?s? que\\b",
+          "a $1 fois plus d'ans que"
+        ],
+        [
+          "(?i)\\b(?:est|suis) plus [âa]g[ée]e? que (.+?) de (\\S+) ans?\\b",
+          "a $2 ans de plus que $1"
+        ],
+        [
+          "(?i)\\b(?:est|suis) plus jeune que (.+?) de (\\S+) ans?\\b",
+          "a $2 ans de moins que $1"
+        ],
+        [
+          "(?i)^la somme de (?:leurs|nos) [âa]ges (?:est|fait|vaut) (?:de )?(\\S+)(?: ans)?$",
+          "ils ont $1 ans en tout"
+        ]
+      ],
+      "More": [
+        "de plus que",
+        "de plus qu'",
+        "de plus qu’"
+      ],
+      "Fewer": [
+        "de moins que",
+        "de moins qu'",
+        "de moins qu’"
+      ],
+      "Times": [
+        "fois plus de",
+        "fois plus d'",
+        "fois plus d’"
+      ],
+      "TimesFewer": [
+        "fois moins de",
+        "fois moins d'",
+        "fois moins d’"
+      ],
+      "Than": [
+        "que",
+        "qu'",
+        "qu’"
+      ],
+      "Together": [
+        "à eux deux",
+        "à elles deux",
+        "a eux deux",
+        "a elles deux",
+        "à eux trois",
+        "à elles trois",
+        "a eux trois",
+        "a elles trois",
+        "à eux quatre",
+        "à elles quatre",
+        "ensemble",
+        "en tout",
+        "au total"
+      ],
+      "All": [
+        "ils",
+        "elles",
+        "nous",
+        "on"
+      ],
+      "And": [
+        "et"
+      ],
+      "Have": "avoir",
+      "Says": {
+        "speaker": "j'ai {1} {2}",
+        "other": "{0} a {1} {2}"
+      },
+      "Equations": "Les équations :",
+      "Check": "Vérification : {0}.",
+      "Also": "Et {0}",
+      "Missing": "Je ne peux pas le trouver : il manque une information. Avec ce que vous m'avez dit, rien ne fixe {0}.",
+      "Contradiction": "Ce que vous m'avez dit se contredit : ces équations ne peuvent pas être vraies ensemble :",
+      "NotWhole": "Attention : {0} n'est pas un nombre entier, l'énoncé est peut-être faux.",
+      "Negative": "Attention : {0} est négatif, l'énoncé est peut-être faux.",
+      "Places": {
+        "Left": [
+          "à gauche de",
+          "à gauche d'",
+          "a gauche de",
+          "à la gauche de"
+        ],
+        "Right": [
+          "à droite de",
+          "à droite d'",
+          "a droite de",
+          "à la droite de"
+        ],
+        "Next": [
+          "à côté de",
+          "à côté d'",
+          "a cote de",
+          "a côté de",
+          "près de"
+        ],
+        "Between": [
+          "entre"
+        ],
+        "Middle": [
+          "au milieu",
+          "au centre"
+        ],
+        "End": [
+          "au bout",
+          "à un bout",
+          "a un bout",
+          "à une extrémité",
+          "en bout de rang"
+        ],
+        "First": [
+          "tout à gauche",
+          "tout a gauche",
+          "en premier",
+          "le premier",
+          "la première",
+          "premier",
+          "première"
+        ],
+        "Last": [
+          "tout à droite",
+          "tout a droite",
+          "en dernier",
+          "le dernier",
+          "la dernière",
+          "dernier",
+          "dernière"
+        ],
+        "LeftAlone": [
+          "à gauche",
+          "a gauche"
+        ],
+        "RightAlone": [
+          "à droite",
+          "a droite"
+        ],
+        "Just": [
+          "juste",
+          "immédiatement",
+          "directement"
+        ],
+        "Is": [
+          "est assis",
+          "est assise",
+          "s'assoit",
+          "s'assied",
+          "est"
+        ],
+        "Not": [
+          "n'est pas assis",
+          "n'est pas assise",
+          "ne s'assoit pas",
+          "ne s'assied pas",
+          "n'est pas"
+        ],
+        "And": [
+          "et"
+        ],
+        "Row": [
+          "sont assis",
+          "sont assises",
+          "s'assoient",
+          "en ligne",
+          "en rang",
+          "côte à côte",
+          "sur un banc",
+          "alignés",
+          "alignées",
+          "en file"
+        ],
+        "Who": [
+          "qui est assis",
+          "qui est assise",
+          "qui s'assoit",
+          "qui est"
+        ],
+        "Order": [
+          "dans quel ordre",
+          "quel est l'ordre",
+          "quel ordre"
+        ],
+        "WhereIs": [
+          "où est assis",
+          "où est assise",
+          "où s'assoit",
+          "où est",
+          "ou est"
+        ],
+        "Order1": "De gauche à droite : {0}.",
+        "Who1": "C'est {0}.",
+        "Where1": "{0} est en position {1} sur {2}, en comptant de gauche à droite.",
+        "Only": "C'est le seul ordre possible : {0} (sur {1} essayés).",
+        "OnlyOrder": "C'est le seul ordre possible (sur {0} essayés).",
+        "Always": "C'est vrai dans chacun des {0} ordres possibles.",
+        "Several": "Je ne peux pas le savoir : {0} ordres sont possibles :",
+        "More": "Il faudrait une condition de plus.",
+        "None": "Aucun ordre ne convient : ces conditions se contredisent :",
+        "Noted": "C'est noté. Avec ces conditions, {0} {0:ordre est possible|ordres sont possibles} (sur {1}).",
+        "Separator": ", "
+      }
+    },
     "Questions": [
       "comment",
       "pourquoi",
@@ -1178,6 +1408,7 @@
       "Value": "{0} = {1}",
       "ValueExact": "{0} = {1} = {2}",
       "ValueAbout": "{0} = {1} ≈ {2}",
+      "Check": "Vérification : {0}.",
       "Roots": "{0:La solution est|Les solutions sont} {1} = {2}.",
       "Separator": " ou ",
       "About": "(environ {0})",

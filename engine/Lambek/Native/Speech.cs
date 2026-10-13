@@ -111,6 +111,9 @@ public static class LambekSpeech
         return value;
     }
 
+    // After a number and its noun, words that never agree: "2 fois plus de livres"
+    static readonly HashSet<string> Invariable = new HashSet<string>(StringComparer.Ordinal) { "plus", "moins", "autant", "de", "que" };
+
     // Between a number and its noun: "2 more cats", "3 fewer files"
     static readonly HashSet<string> Comparatives = new HashSet<string>(StringComparer.Ordinal) { "more", "fewer", "less" };
 
@@ -176,6 +179,8 @@ public static class LambekSpeech
             tokens[next].Text = Case(tokens[next].Text, noun);
             // And the participle or adjective right after it ("1 élément concerné")
             int after = Next(tokens, next);
+            // ("2 fois plus de livres": "plus" says how they compare, it agrees with nothing)
+            if (after > 0 && Invariable.Contains(tokens[after].Text.ToLowerInvariant())) continue;
             if (after > 0 && tokens[after].Word && OnlySpace(tokens, next, after))
             {
                 string agreed = Agree(dictionary, tokens[after].Text, gender, number);

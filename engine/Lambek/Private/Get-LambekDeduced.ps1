@@ -130,12 +130,12 @@ function Get-LambekLastProof {
 
 function Set-LambekLastProof {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Keeps a value in memory only.')]
-    param([object[]] $Facts = @(), [string] $Calculation = '')
+    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @())
 
     if ($null -eq $script:LastProofs) { $script:LastProofs = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }
     $here = Get-LambekTold
-    if (@($Facts).Count -eq 0) { [void] $script:LastProofs.Remove($here); return }
-    $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation }
+    if (@($Facts).Count -eq 0 -and @($Said).Count -eq 0) { [void] $script:LastProofs.Remove($here); return }
+    $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation; Said = @($Said) }
 }
 
 function Format-LambekInline {

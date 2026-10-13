@@ -186,6 +186,10 @@ function Get-LambekGeneralReading {
                 @($readings | Where-Object { $_.Verb -eq $mine.Verb -and @($_.Roles.Keys).Count -gt @($mine.Roles.Keys).Count }).Count -eq 0
             })
     }
+    # A verb alone ("je travaille") is read only when nothing else reads: "mon frere a deux livres" has "livres",
+    # not "mon frere deux" who "livre"
+    $complete = @($readings | Where-Object { $_.Kind -ne 'statement' -or @($_.Roles.Keys).Count -gt 0 -or ($_.Name -and $_.Name -in @($general['Pronouns'])) })
+    if ($complete.Count -gt 0) { $readings = $complete }
     $plain = @($readings | Where-Object { -not $_.Helper })
     if ($plain.Count -gt 0) { return $plain[0] }
     return $readings[0]

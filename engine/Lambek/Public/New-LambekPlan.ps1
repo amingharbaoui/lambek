@@ -39,6 +39,9 @@ function New-LambekPlan {
             # Anything else said, a "pourquoi ?" after it is no longer about that answer
             $told = Resolve-LambekToldQuestion -Text $Text
             if (-not $told) { Set-LambekLastProof }
+            # "Marie a 2 ans de plus que Paul... quel age a Marie ?", "qui est au milieu ?": solved and checked
+            $problem = Resolve-LambekProblem -Text $Text
+            if ($problem) { return ConvertTo-LambekReplyPlan -Text $Text -Language $problem.Language -Reply $problem.Reply -Spoken }
             $definition = Resolve-LambekDefinition -Text $Text
             if ($definition) { return ConvertTo-LambekReplyPlan -Text $Text -Language $definition.Language -Reply (Format-LambekDefinition -Definition $definition) }
             $calculation = Resolve-LambekCalculation -Text $Text
@@ -222,7 +225,7 @@ function New-LambekPlan {
 }
 
 function ConvertTo-LambekReplyPlan {
-    param([string] $Text, [string] $Language, [string] $Reply, [pscustomobject] $Asked)
+    param([string] $Text, [string] $Language, [string] $Reply, [pscustomobject] $Asked, [switch] $Spoken)
 
     # A plan with one step that asks for no action: the answer is the reply, or the answer to what is asked about what was told
     $step = [pscustomobject]@{
@@ -234,6 +237,7 @@ function ConvertTo-LambekReplyPlan {
     $plan = ConvertTo-LambekPlan -Text $Text -Steps @($step)
     $plan | Add-Member -NotePropertyName Trace -NotePropertyValue @()
     if ($Reply) { $plan | Add-Member -NotePropertyName Reply -NotePropertyValue $Reply }
+    if ($Spoken) { $plan | Add-Member -NotePropertyName Spoken -NotePropertyValue $true }
     return $plan
 }
 

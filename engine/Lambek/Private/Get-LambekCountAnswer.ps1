@@ -281,6 +281,8 @@ function Get-LambekWhyAnswer {
     $lines = [System.Collections.Generic.List[string]]::new()
     $lines.Add($say['Why'])
     foreach ($fact in @($proof.Facts)) { $lines.Add("- $(Format-LambekFact -Fact $fact -Language $Language -Register $Register -Bare)") }
+    # (what was told of a problem, as it was said back)
+    if ($proof.PSObject.Properties['Said']) { foreach ($line in @($proof.Said)) { if ($line) { $lines.Add("- $line") } } }
     if ($proof.Calculation) { $lines.Add($say['WhyCalculated'] -f $proof.Calculation) }
     return ($lines -join "`n")
 }

@@ -206,6 +206,7 @@ function Clear-LambekTold {
     (Get-LambekTold).Clear()
     (Get-LambekBoard).Clear()
     $script:LastProofs = $null
+    $script:ProblemStores = $null
     $script:ToldJournal = [System.Collections.Generic.List[object]]::new()
     $script:ToldDoubt = 0
     if (Test-Path -LiteralPath $script:ToldPath -PathType Leaf) { Remove-Item -LiteralPath $script:ToldPath -Force }

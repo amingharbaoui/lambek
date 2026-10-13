@@ -51,7 +51,8 @@ function ConvertTo-LambekAnswer {
             $example = "$(@($categories | ForEach-Object { $_.Examples } | Select-Object -First 1))"
 
             $reply = $null
-            if ($Plan.PSObject.Properties['Reply'] -and $Plan.Reply) { $reply = $Plan.Reply; [void] $raw.Add($lines.Count) }
+            # (a reply in words, as an answer from what was told, is said in the register of the user; a calculation is kept as it is)
+            if ($Plan.PSObject.Properties['Reply'] -and $Plan.Reply) { $reply = $Plan.Reply; if (-not ($Plan.PSObject.Properties['Spoken'] -and $Plan.Spoken)) { [void] $raw.Add($lines.Count) } }
             if (-not $reply) { $reply = Get-LambekTalk -Text "$($Plan.Original)" -Language $language -Topics $topics -Example $example -Vary }
             # What the user told or asked, without asking for anything: Lambek says how it read it
             if (-not $reply) {
