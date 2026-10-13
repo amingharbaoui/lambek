@@ -41,7 +41,7 @@ function Split-LambekCondition {
     $after = { param([string] $clause) $clause = $clause.Trim(' ', ','); if ($then) { $clause = [regex]::Replace($clause, "(?i)^(?:$then)\s+", '') }; $clause.Trim() }
     # A word of condition, as a word ("si", "if") or elided ("s'il")
     $marks = (@($general['Conditions']) | Where-Object { $_ } | Sort-Object { -$_.Length } | ForEach-Object {
-            if ($_ -match "'$") { [regex]::Escape($_.TrimEnd("'")) + "['’]" } else { [regex]::Escape($_) + '\s+' }
+            if ($_ -match "'$") { [regex]::Escape($_.TrimEnd("'")) + "['\u2019]" } else { [regex]::Escape($_) + '\s+' }
         }) -join '|'
     $found = [regex]::Match($Text, "(?i)(?:^|(?<=[\s,]))(?:$marks)")
     if (-not $found.Success) { return $null }

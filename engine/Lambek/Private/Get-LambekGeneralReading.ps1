@@ -116,7 +116,7 @@ function Get-LambekGeneralReading {
         if ($Listener -and $i -gt 0 -and $token -in $first -and $tokens[$i - 1] -eq $token) { continue }
         # "votre patron vous appelle", "ma soeur nous voit": after the subject and before the verb, "vous" is the one the
         # verb is about, said before it as "me" and "te" are, and goes with the verb
-        # (the word before it ends the subject: a noun or a name, never a word of time, "hier vous avez acheté")
+        # (the word before it ends the subject: a noun or a name, never a word of time, "hier vous avez achete")
         if ($i -gt 0 -and $i -lt $tokens.Count - 1 -and $token -in @($general['ObjectClitics']) -and -not $timeAt.ContainsKey($i - 1) -and
             $tokens[$i - 1] -notin @($general['Prepositions']) -and $tokens[$i - 1] -notin @($general['ObjectClitics']) -and
             (@($dictionary.Lemmas($tokens[$i - 1], $language) | Where-Object { $_.Pos -eq 'n' }).Count -gt 0 -or (Get-LambekWritten -Request $typedAs -Words @($tokens[$i - 1])) -cmatch '^\p{Lu}') -and
@@ -152,7 +152,7 @@ function Get-LambekGeneralReading {
             }
             # A word no dictionary knows is a name only when it is written like one ("Amin", "Felix")
             if ($pos.Count -eq 0 -and $kind -eq 'word' -and (Get-LambekWritten -Request $typedAs -Words @($token)) -cnotmatch '^\p{Lu}') { return $null }
-            # (a verb that helps the others is never a noun: "est" is not "the east" in "mon frère est content")
+            # (a verb that helps the others is never a noun: "est" is not "the east" in "mon frere est content")
             if (('n' -in $pos -or $pos.Count -eq 0) -and $kind -ne 'auxiliary') { $types.Add('n') }
             if ('a' -in $pos) { $types.AddRange([string[]] @('n n^l', 'n^r n')); if ('n' -notin $pos) { $types.Add('n') } }
             if ('r' -in $pos) { $types.AddRange([string[]] @('s^r s', 's s^l')) }
@@ -232,7 +232,7 @@ function Get-LambekGeneralChoice {
     $verbs = @(for ($w = 0; $w -lt $typed.Count; $w++) { if ($chosen[$w] -in 'n^r s', 'n^r s n^l', 's n^l', 's n^l n^l') { $w } })
     if ($verbs.Count -ne 1) { return $null }
     $verb = $verbs[0]
-    # A verb right after the verb that helps it is its participle ("a acheté", "est parti"): "est content" is never
+    # A verb right after the verb that helps it is its participle ("a achete", "est parti"): "est content" is never
     # "est" helping "content" read as a form of "conter"
     # (in the languages whose dictionary says which forms are participles)
     if ($General['Participles'] -and $verb -gt 0 -and $chosen[$verb - 1] -eq 'n^r n' -and $Kinds[$typed[$verb - 1].Position] -eq 'auxiliary') {

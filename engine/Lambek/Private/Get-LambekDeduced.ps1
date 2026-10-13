@@ -41,7 +41,7 @@ function Set-LambekCondition {
     $Statement.Form = "if($($Condition.Form), $($Statement.Form))"
 }
 
-function Test-LambekHolds {
+function Test-LambekHold {
     param([pscustomobject] $Fact, [pscustomobject] $Condition)
 
     # A thing held says what the condition says: the same verb, the same one, the same complements in any order,
@@ -81,7 +81,7 @@ function Get-LambekDeduced {
             foreach ($fact in @($known.ToArray())) {
                 $entry = $board.Entry($fact)
                 if ($entry -and $entry.Status -eq 'imagined') { continue }
-                if (-not (Test-LambekHolds -Fact $fact -Condition $rule.Condition)) { continue }
+                if (-not (Test-LambekHold -Fact $fact -Condition $rule.Condition)) { continue }
                 if (-not $made.Add("$(& $hash $rule)|$(& $hash $fact)")) { continue }
                 # The same thing deduced in another way is kept once
                 if (@($known | Where-Object { $_.PSObject.Properties['Core'] -and "$($_.Core)" -ceq "$($rule.Then)" -and [bool] ($_.PSObject.Properties['Negated'] -and $_.Negated) -eq [bool] ($rule.PSObject.Properties['Negated'] -and $rule.Negated) }).Count -gt 0) { continue }

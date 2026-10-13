@@ -8,10 +8,10 @@ function ConvertTo-LambekPlainSentence {
 
     # Two ways of speaking that say a sentence the grammar reads only in its plain order, said back in that order:
     #   "ma soeur en a 2": "en" stands for the thing counted just before ("j'ai 3 chats"), "ma soeur a 2 chats";
-    #   "je fais quoi ?", "ma soeur habite où ?": the word that asks at the end, "qu'est-ce que je fais ?".
+    #   "je fais quoi ?", "ma soeur habite ou ?": the word that asks at the end, "qu'est-ce que je fais ?".
     # The sentence is read as the plain one, and said back so: the user sees how it was understood.
     # Anything else is left as it was
-    $quick = '(?i)(?:(?<![\p{L}])en\s|[''\u2019]en\s|\s(?:quoi|où)\s*[?!.]*\s*$)'
+    $quick = '(?i)(?:(?<![\p{L}])en\s|[''\u2019]en\s|\s(?:quoi|o\u00f9)\s*[?!.]*\s*$)'
     if ($Text -notmatch $quick) { return $Text }
     $language = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)
     $dialogue = (Get-LambekLexicon -Language $language).Dialogue

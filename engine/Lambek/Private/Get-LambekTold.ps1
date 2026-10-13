@@ -222,8 +222,8 @@ function Format-LambekFact {
 
         [string] $Register = 'vous',
 
-        # In a list that already says it was told ("parce que vous m'avez dit :", "déduit avec :"): what cannot be said
-        # back is only quoted, « ... », not "vous m'avez dit : « ... »" again
+        # In a list that already says it was told ("parce que vous m'avez dit :", "deduit avec :"): what cannot be said
+        # back is only quoted, "...", not "vous m'avez dit : ..." again
         [switch] $Bare
     )
 
@@ -521,8 +521,7 @@ function ConvertTo-LambekGeneralAsked {
     # A question about anything: what was told with that verb, about that one, and that says what is asked
     # ("qu'est-ce que je fais": "faire" asking for what is done stands for any verb that is done)
     $general = (Get-LambekLexicon -Language $Request.Language).Dialogue['General']
-    $doing = $Reading.Asked -eq 'object' -and $Reading.Roles.Count -eq 0 -and $general -and
-        (ConvertTo-LambekNormalizedText -Text "$($Reading.Verb)") -in @($general['Doing'])
+    $doing = $Reading.Asked -eq 'object' -and $Reading.Roles.Count -eq 0 -and $general -and (ConvertTo-LambekNormalizedText -Text "$($Reading.Verb)") -in @($general['Doing'])
     [pscustomobject]@{
         Doing      = $doing
         All        = $false
