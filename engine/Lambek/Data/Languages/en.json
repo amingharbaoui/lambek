@@ -844,6 +844,9 @@
         "is": "is {0} {1}?",
         "member": "is {0} one of the {1}?",
         "does": "does {0} {1}{2}?",
+        "is|i": "am I {1}?",
+        "member|i": "am I one of the {1}?",
+        "does|i": "do I {1}{2}?",
         "all|all": "are all {0} {1}?",
         "alldo|all": "do all {0} {1}{2}?"
       },
@@ -902,6 +905,83 @@
         "Unknown": "Even in that world, I could not conclude it: {0} could be true or false."
       },
       "And": "and"
+    },
+    "Speech": {
+      "Verdicts": {
+        "yes": "Yes",
+        "no": "No",
+        "usualyes": "Normally yes",
+        "usualno": "Normally no"
+      },
+      "Frames": [
+        {
+          "Name": "colon",
+          "Text": "{V}, {C}: {P}.",
+          "Reasons": "after",
+          "Join": "and"
+        },
+        {
+          "Name": "because",
+          "Text": "{V}, {C}, because {P}.",
+          "Reasons": "after",
+          "Join": "and"
+        },
+        {
+          "Name": "since",
+          "Text": "{V}, {C}, since {P}.",
+          "Reasons": "after",
+          "Join": "and"
+        },
+        {
+          "Name": "told",
+          "Text": "{V}, {C}: you told me that {P}.",
+          "Reasons": "after",
+          "Join": "and"
+        },
+        {
+          "Name": "so",
+          "Text": "{V}: {P}, so {C}.",
+          "Reasons": "before",
+          "Join": "and"
+        }
+      ],
+      "Joins": {
+        "and": {
+          "Between": ", ",
+          "Last": [
+            " and ",
+            ", and "
+          ]
+        }
+      },
+      "Elide": [],
+      "Again": [],
+      "Pronouns": {},
+      "Gender": [],
+      "Listener": {
+        "Separators": [
+          ", ",
+          ": "
+        ],
+        "Reasons": [
+          ": you told me that ",
+          ", because ",
+          ", since ",
+          ": "
+        ],
+        "Conclusion": [
+          ", so "
+        ],
+        "Joins": [
+          ", and ",
+          " and ",
+          ", "
+        ],
+        "That": [
+          "that "
+        ],
+        "Again": []
+      }
     },
     "Questions": [
       "how do",
@@ -1032,7 +1112,11 @@
           "am": "are",
           "was": "were",
           "m": "are"
-        }
+        },
+        "Elide": [
+          [ "\\b([Aa])m you\\b", "$1re you" ],
+          [ "\\b([Ww])as you\\b", "$1ere you" ]
+        ]
       },
       "Owners": [
         "my",

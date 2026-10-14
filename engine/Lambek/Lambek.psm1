@@ -104,6 +104,13 @@ $script:CategoryReadings = $null
 # The question Lambek asked in each conversation when it could not conclude, waiting for its answer
 $script:CategoryPending = $null
 $script:KnowledgeRules = $null
+# How each language sounds, the fusion of the satellites that choose how an answer is said, and the frame said last
+# in each conversation
+$script:Fluency = $null
+$script:SpeechFusion = $null
+$script:SpeechFrames = $null
+$script:SpeechReadings = $null
+$script:SpeechCapture = $null
 # A woman, a man, a person or a thing, by noun (WordNet)
 $script:NounKinds = $null
 $script:Now = $null

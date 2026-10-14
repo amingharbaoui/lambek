@@ -38,6 +38,7 @@
         'Optimize-LambekFusion'
         'Optimize-LambekProposer'
         'Optimize-LambekScoring'
+        'Optimize-LambekSpeech'
         'Remove-LambekWord'
         'Resolve-LambekFollowUp'
         'Resolve-LambekGrammar'

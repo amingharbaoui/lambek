@@ -30,14 +30,9 @@ Describe 'General rules told in words' {
 
         It 'concludes from a rule about every one, and says what it rests on' {
             Tell 'tous les chats de ma soeur sont noirs', 'Minou est un chat de ma soeur'
-            $expected = @(
-                'Oui : Minou est noir.'
-                "Parce que vous m'avez dit :"
-                '- Tous les chats de votre soeur sont noirs.'
-                '- Minou est un chat de votre soeur.'
-            ) -join "`n"
-            Ask 'est-ce que Minou est noir ?' | Should -Be $expected
-            Ask 'Minou est-il noir ?' | Should -Be $expected
+            # (in a sentence of its own, read back by a second Lambek; not twice in the same words)
+            Ask 'est-ce que Minou est noir ?' | Should -Be "Oui, Minou est noir, car c'est un chat de votre soeur et tous les chats de votre soeur sont noirs."
+            Ask 'Minou est-il noir ?' | Should -Be "Oui, Minou est noir : c'est un chat de votre soeur et tous les chats de votre soeur sont noirs."
         }
 
         It 'answers pourquoi with the same' {
@@ -51,12 +46,7 @@ Describe 'General rules told in words' {
 
         It 'concludes no from aucun' {
             Tell "aucun chien n'est un chat", 'Rex est un chien'
-            Ask 'Rex est-il un chat ?' | Should -Be (@(
-                    "Non : Rex n'est pas un chat."
-                    "Parce que vous m'avez dit :"
-                    "- Aucun chien n'est un chat."
-                    '- Rex est un chien.'
-                ) -join "`n")
+            Ask 'Rex est-il un chat ?' | Should -Be "Non, Rex n'est pas un chat : c'est un chien et aucun chien n'est un chat."
         }
 
         It 'says that certains does not say which ones, and never guesses' {
@@ -68,18 +58,13 @@ Describe 'General rules told in words' {
         }
 
         It 'solves a whole syllogism told in one message' {
-            Ask 'Tous les hommes sont mortels. Socrate est un homme. Donc Socrate est-il mortel ?' | Should -Be (@(
-                    'Oui : Socrate est mortel.'
-                    "Parce que vous m'avez dit :"
-                    '- Tous les hommes sont mortels.'
-                    '- Socrate est un homme.'
-                ) -join "`n")
+            Ask 'Tous les hommes sont mortels. Socrate est un homme. Donc Socrate est-il mortel ?' | Should -Be "Oui, Socrate est mortel : c'est un homme et tous les hommes sont mortels."
         }
 
         It 'follows rules about every one, one after the other' {
             Tell 'tous les chats sont des mammifères', 'tous les mammifères sont des animaux'
-            @((Ask 'est-ce que tous les chats sont des animaux ?') -split "`n")[0] | Should -Be 'Oui : tous les chats sont des animaux.'
-            @((Ask 'est-ce que certains chats ne sont pas des animaux ?') -split "`n")[0] | Should -Be 'Non : tous les chats sont des animaux.'
+            Ask 'est-ce que tous les chats sont des animaux ?' | Should -Be 'Oui, tous les chats sont des animaux, car tous les chats sont des mammifères et tous les mammifères sont des animaux.'
+            Ask 'est-ce que certains chats ne sont pas des animaux ?' | Should -Be 'Non, tous les chats sont des animaux : tous les chats sont des mammifères et tous les mammifères sont des animaux.'
             @((Ask 'tous les animaux sont-ils des chats ?') -split "`n")[0] | Should -BeLike 'Je ne peux pas le conclure*'
         }
 
@@ -93,22 +78,22 @@ Describe 'General rules told in words' {
 
         It 'answers about the user, and who' {
             Tell 'tous les hommes sont mortels', 'Socrate est un homme', 'je suis un homme'
-            @((Ask 'suis-je mortel ?') -split "`n")[0] | Should -Be 'Oui : vous êtes mortel.'
+            Ask 'suis-je mortel ?' | Should -Be 'Oui, vous êtes mortel, car vous êtes un homme et tous les hommes sont mortels.'
             @((Ask 'qui est mortel ?') -split "`n")[0] | Should -Be 'Socrate et vous.'
         }
 
         It 'reasons with verbs, and with what they are done to: <Question>' -ForEach @(
-            @{ Told = 'tous les oiseaux volent', 'Tweety est un oiseau'; Question = 'est-ce que Tweety vole ?'; First = 'Oui : Tweety vole.' }
-            @{ Told = 'tous les oiseaux volent', 'Tweety est un oiseau'; Question = 'Tweety vole-t-il ?'; First = 'Oui : Tweety vole.' }
-            @{ Told = 'aucun poisson ne vole', 'Nemo est un poisson'; Question = 'est-ce que Nemo vole ?'; First = 'Non : Nemo ne vole pas.' }
-            @{ Told = 'tous les chats aiment le lait', 'Minou est un chat'; Question = 'Minou aime-t-il le lait ?'; First = 'Oui : Minou aime le lait.' }
-            @{ Told = "aucun chien n'aime le chocolat", 'Rex est un chien'; Question = 'est-ce que Rex aime le chocolat ?'; First = "Non : Rex n'aime pas le chocolat." }
+            @{ Told = 'tous les oiseaux volent', 'Tweety est un oiseau'; Question = 'est-ce que Tweety vole ?'; First = "Oui, Tweety vole : c'est un oiseau et tous les oiseaux volent." }
+            @{ Told = 'tous les oiseaux volent', 'Tweety est un oiseau'; Question = 'Tweety vole-t-il ?'; First = "Oui, Tweety vole : c'est un oiseau et tous les oiseaux volent." }
+            @{ Told = 'aucun poisson ne vole', 'Nemo est un poisson'; Question = 'est-ce que Nemo vole ?'; First = "Non, Nemo ne vole pas : c'est un poisson, et aucun poisson ne vole." }
+            @{ Told = 'tous les chats aiment le lait', 'Minou est un chat'; Question = 'Minou aime-t-il le lait ?'; First = "Oui, Minou aime le lait : c'est un chat et tous les chats aiment le lait." }
+            @{ Told = "aucun chien n'aime le chocolat", 'Rex est un chien'; Question = 'est-ce que Rex aime le chocolat ?'; First = "Non, Rex n'aime pas le chocolat : c'est un chien et aucun chien n'aime le chocolat." }
             @{ Told = 'tous les chats aiment le lait', 'Minou est un chat'; Question = 'qui aime le lait ?'; First = 'Minou aime le lait.' }
-            @{ Told = 'tous les chats sont noirs', 'je ne suis pas noir'; Question = 'suis-je un chat ?'; First = "Non : vous n'êtes pas un chat." }
-            @{ Told = 'All cats like milk.', 'Tom is a cat.'; Question = 'Does Tom like milk?'; First = 'Yes: Tom does like milk.' }
-            @{ Told = 'No dog likes chocolate.', 'Rex is a dog.'; Question = 'Does Rex like chocolate?'; First = 'No: Rex does not like chocolate.' }
+            @{ Told = 'tous les chats sont noirs', 'je ne suis pas noir'; Question = 'suis-je un chat ?'; First = "Non, vous n'êtes pas un chat : vous n'êtes pas noir et tous les chats sont noirs." }
+            @{ Told = 'All cats like milk.', 'Tom is a cat.'; Question = 'Does Tom like milk?'; First = 'Yes, Tom does like milk: Tom is a cat and all cats like milk.' }
+            @{ Told = 'No dog likes chocolate.', 'Rex is a dog.'; Question = 'Does Rex like chocolate?'; First = 'No, Rex does not like chocolate: Rex is a dog and no dog likes chocolate.' }
             @{ Told = 'All cats like milk.', 'Tom is a cat.'; Question = 'Who likes milk?'; First = 'Tom likes milk.' }
-            @{ Told = 'All cats of my sister are black.', 'Tom is a cat of my sister.'; Question = 'Is Tom black?'; First = 'Yes: Tom is black.' }
+            @{ Told = 'All cats of my sister are black.', 'Tom is a cat of my sister.'; Question = 'Is Tom black?'; First = 'Yes, Tom is black, because Tom is a cat of your sister and all cats of your sister are black.' }
         ) {
             Tell $Told
             @((Ask $Question) -split "`n")[0] | Should -Be $First
@@ -166,7 +151,8 @@ Describe 'General rules told in words' {
         }
 
         It 'keeps the register of the user when a question has the t of liaison' {
-            Tell 'tous les oiseaux volent', 'Tweety est un oiseau'
+            # (said in lines: four reasons are too many for one sentence)
+            Tell 'tous les animaux volent', 'tous les oiseaux sont des animaux', 'tous les pingouins sont des oiseaux', 'Tweety est un pingouin'
             Ask 'Tweety vole-t-il ?' | Should -BeLike "*Parce que vous m'avez dit :*"
         }
     }
@@ -182,10 +168,7 @@ Describe 'General rules told in words' {
                 ) -join "`n")
             Ask 'oui' | Should -Be (@(
                     "C'est noté. Tom est un chat. Je m'en souviendrai."
-                    'Oui : Tom est noir.'
-                    "Parce que vous m'avez dit :"
-                    '- Tous les chats sont noirs.'
-                    '- Tom est un chat.'
+                    "Oui, Tom est noir, car c'est un chat et tous les chats sont noirs."
                 ) -join "`n")
         }
 
@@ -199,7 +182,7 @@ Describe 'General rules told in words' {
 
         It 'takes an answer said in full as the answer' {
             Tell 'tous les chats sont noirs', 'Tom est-il noir ?'
-            @((Ask 'Tom est un chat') -split "`n")[0..1] | Should -Be @("C'est noté. Tom est un chat. Je m'en souviendrai.", 'Oui : Tom est noir.')
+            @((Ask 'Tom est un chat') -split "`n")[0..1] | Should -Be @("C'est noté. Tom est un chat. Je m'en souviendrai.", "Oui, Tom est noir, car c'est un chat et tous les chats sont noirs.")
         }
 
         It 'says what a no would give, by the rule read backwards' {
@@ -214,7 +197,7 @@ Describe 'General rules told in words' {
         It 'asks about every one of a kind when the question is about every one' {
             Tell 'tous les chats sont des mammifères'
             @((Ask 'tous les chats sont-ils des animaux ?') -split "`n")[1] | Should -Be 'Une question trancherait : est-ce que tous les mammifères sont des animaux ?'
-            @((Ask 'oui') -split "`n")[0..1] | Should -Be @("C'est noté. Tous les mammifères sont des animaux. Je m'en souviendrai.", 'Oui : tous les chats sont des animaux.')
+            @((Ask 'oui') -split "`n")[0..1] | Should -Be @("C'est noté. Tous les mammifères sont des animaux. Je m'en souviendrai.", 'Oui, tous les chats sont des animaux, car tous les chats sont des mammifères et tous les mammifères sont des animaux.')
         }
 
         It 'says one of a kind the way the language does: <Question>' -ForEach @(
@@ -280,7 +263,8 @@ Describe 'General rules told in words' {
                                 $got = @($replies[1] -split "`n")[1]
                                 if ($said.Count -eq 1) {
                                     $expected = $said[0] -replace "^- Si $answer : ", ''
-                                    $ok = $got -eq "Oui : $expected" -or $got -eq "Non : $expected" -or ($got -like 'Non*' -and $expected -like '*pas*') -or ($got -like 'Oui*' -and $expected -notlike '*pas*')
+                                    # (the answer said in a sentence of its own starts with what it says: "Non, tous les etudiants sont des artistes, car ...")
+                                    $ok = $got -eq "Oui : $expected" -or $got -eq "Non : $expected" -or $got.StartsWith("Oui, $($expected.TrimEnd('.'))", [System.StringComparison]::Ordinal) -or $got.StartsWith("Non, $($expected.TrimEnd('.'))", [System.StringComparison]::Ordinal) -or ($got -like 'Non*' -and $expected -like '*pas*') -or ($got -like 'Oui*' -and $expected -notlike '*pas*')
                                     if (-not $ok -or $got -like 'Je ne peux pas*') { $wrong.Add("$message / $answer -> $got (said: $expected)") }
                                 }
                                 elseif ($got -notlike 'Je ne peux pas*') { $wrong.Add("$message / $answer -> $got (said nothing would follow)") }
@@ -298,23 +282,16 @@ Describe 'General rules told in words' {
 
         It 'supposes what holds normalement, says it is supposed, and on what' {
             Tell 'normalement, les oiseaux volent', 'Tweety est un oiseau'
+            # (what is supposed is said as supposed, "normalement", with what it rests on)
             Ask 'Tweety vole-t-il ?' | Should -Be (@(
-                    'Normalement oui : Tweety vole.'
-                    "Je le suppose, parce que vous m'avez dit :"
-                    '- Normalement, les oiseaux volent.'
-                    '- Tweety est un oiseau.'
+                    "Normalement oui, Tweety vole : c'est un oiseau et normalement, les oiseaux volent."
                     'Si Tweety est une exception, dites-le-moi.'
                 ) -join "`n")
         }
 
         It 'drops what it supposed when an exception is told' {
             Tell 'normalement, les oiseaux volent', 'Tweety est un oiseau', 'les pingouins ne volent pas', 'tous les pingouins sont des oiseaux', 'Tweety est un pingouin'
-            Ask 'Tweety vole-t-il ?' | Should -Be (@(
-                    'Non : Tweety ne vole pas.'
-                    "Parce que vous m'avez dit :"
-                    '- Les pingouins ne volent pas.'
-                    '- Tweety est un pingouin.'
-                ) -join "`n")
+            Ask 'Tweety vole-t-il ?' | Should -Be "Non, Tweety ne vole pas : c'est un pingouin et les pingouins ne volent pas."
         }
 
         It 'never supposes against what was told, and never calls an exception a contradiction' {
@@ -325,11 +302,8 @@ Describe 'General rules told in words' {
 
         It 'lets the rule about the narrower kind go first' {
             $reply = Ask 'normalement les oiseaux volent. normalement les pingouins ne volent pas. tous les pingouins sont des oiseaux. Pingu est un pingouin. Pingu vole-t-il ?'
-            $lines = @($reply -split "`n")
-            $lines[0] | Should -Be 'Normalement non : Pingu ne vole pas.'
-            $lines | Should -Contain '- Normalement les pingouins ne volent pas.'
-            $lines | Should -Contain '- Pingu est un pingouin.'
-            $lines | Should -Not -Contain '- Normalement les oiseaux volent.'
+            # (it rests on the rule about penguins, never on the one about birds)
+            @($reply -split "`n")[0] | Should -Be "Normalement non, Pingu ne vole pas : c'est un pingouin et normalement les pingouins ne volent pas."
         }
 
         It 'says when rules that hold normalement contradict each other, and supposes nothing' {
@@ -343,9 +317,9 @@ Describe 'General rules told in words' {
         }
 
         It 'reads what most of a kind do, and speaks of the user: <Question>' -ForEach @(
-            @{ Told = 'la plupart des oiseaux volent', 'je suis un oiseau'; Question = 'est-ce que je vole ?'; First = 'Normalement oui : vous volez.'; Last = 'Si vous êtes une exception, dites-le-moi.' }
-            @{ Told = 'Birds normally fly.', 'Tweety is a bird.'; Question = 'Does Tweety fly?'; First = 'Normally yes: Tweety does fly.'; Last = 'If Tweety is an exception, tell me.' }
-            @{ Told = 'Most birds fly.', 'Penguins do not fly.', 'All penguins are birds.', 'Pingu is a penguin.'; Question = 'Does Pingu fly?'; First = 'No: Pingu does not fly.'; Last = '- Pingu is a penguin.' }
+            @{ Told = 'la plupart des oiseaux volent', 'je suis un oiseau'; Question = 'est-ce que je vole ?'; First = 'Normalement oui, vous volez : vous êtes un oiseau et la plupart des oiseaux volent.'; Last = 'Si vous êtes une exception, dites-le-moi.' }
+            @{ Told = 'Birds normally fly.', 'Tweety is a bird.'; Question = 'Does Tweety fly?'; First = 'Normally yes, Tweety does fly: Tweety is a bird and birds normally fly.'; Last = 'If Tweety is an exception, tell me.' }
+            @{ Told = 'Most birds fly.', 'Penguins do not fly.', 'All penguins are birds.', 'Pingu is a penguin.'; Question = 'Does Pingu fly?'; First = 'No, Pingu does not fly: Pingu is a penguin and penguins do not fly.'; Last = 'No, Pingu does not fly: Pingu is a penguin and penguins do not fly.' }
         ) {
             Tell $Told
             $lines = @((Ask $Question) -split "`n")

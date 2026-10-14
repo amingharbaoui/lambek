@@ -14,6 +14,7 @@ function Get-LambekWarmUp {
     foreach ($language in Get-LambekAvailableLanguage) {
         $pieces.Add([pscustomobject]@{ Work = 'Lexicon'; Language = $language; Text = '' })
         $pieces.Add([pscustomobject]@{ Work = 'Index'; Language = $language; Text = '' })
+        $pieces.Add([pscustomobject]@{ Work = 'Speech'; Language = $language; Text = '' })
 
         # The first example of each action read as a request, then answered: the grammar, the checks and the sentences run once
         foreach ($pack in $script:Packs.Values) {
@@ -41,6 +42,7 @@ function Invoke-LambekWarmUpPiece {
             'Lexicon' { $null = Get-LambekLexicon -Language $Piece.Language; $null = Get-LambekGrammarLexicon -Language $Piece.Language }
             'Index' { $null = Get-LambekActionIndex -Language $Piece.Language; $null = Get-LambekExampleMemory -Language $Piece.Language }
             'Dictionary' { Get-LambekDictionary -Language $Piece.Language -Background }
+            'Speech' { $null = Get-LambekFluency -Language $Piece.Language; $null = Get-LambekSpeechFusion -Language $Piece.Language }
             'Domain' { $null = Get-LambekDomainSense -Language $Piece.Language }
             'Plan' { $null = New-LambekPlan -Text $Piece.Text | ConvertTo-LambekAnswer }
         }

@@ -165,9 +165,15 @@ function Resolve-LambekCategoryUsual {
     $result = $kinds[0]
     $support = & $reason $results[0].Way $(if ($result -eq 'yes') { $yesOpposite } else { $noOpposite })
     $sentence = Get-LambekCategorySentence -Item $Ask -Shape $(if ($result -eq 'yes') { 'is' } else { 'isnot' }) -Language $Language
-    $lines.Add(($data[$(if ($result -eq 'yes') { 'NormallyYes' } else { 'NormallyNo' })] -f $sentence))
-    $lines.Add($data['Assume'])
-    foreach ($line in & $listed ([int[]] $support)) { $lines.Add($line) }
+    # Said in a sentence of its own, read back by a second Lambek; else in lines
+    $spoken = $null
+    if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict "usual$result" -Conclusion $sentence -Premises @($support | ForEach-Object { $Premises[$_] }) -Language $Language }
+    if ($spoken) { $lines.Add($spoken.Text) }
+    else {
+        $lines.Add(($data[$(if ($result -eq 'yes') { 'NormallyYes' } else { 'NormallyNo' })] -f $sentence))
+        $lines.Add($data['Assume'])
+        foreach ($line in & $listed ([int[]] $support)) { $lines.Add($line) }
+    }
     # (what is supposed falls as soon as one says it is an exception)
     $template = $data['ExceptionIs']
     if ($one -eq 'speaker' -and $data.Contains("ExceptionIs|$(@($data['Speaker'])[0])")) { $template = $data["ExceptionIs|$(@($data['Speaker'])[0])"] }

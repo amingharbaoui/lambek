@@ -1,0 +1,308 @@
+{
+  "About": "Answers of Lambek and the ways of saying them a careful writer would accept, to fit the satellites that choose among the ways Lambek builds (Optimize-LambekSpeech). Each case is told, then asked; Best lists the acceptable ways: the answer first, then its reasons after a colon or car (because, since), someone already named said again shortly (c'est), no comma before the last et.",
+  "Cases": [
+    {
+      "Language": "fr",
+      "Told": [
+        "tous les hommes sont mortels",
+        "Socrate est un homme"
+      ],
+      "Ask": "Socrate est-il mortel ?",
+      "Best": [
+        "Oui, Socrate est mortel : c'est un homme et tous les hommes sont mortels.",
+        "Oui, Socrate est mortel, car c'est un homme et tous les hommes sont mortels."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "aucun chien n'est un chat",
+        "Rex est un chien"
+      ],
+      "Ask": "Rex est-il un chat ?",
+      "Best": [
+        "Non, Rex n'est pas un chat : c'est un chien et aucun chien n'est un chat.",
+        "Non, Rex n'est pas un chat, car c'est un chien et aucun chien n'est un chat."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "tous les chats sont des félins",
+        "tous les félins sont des animaux",
+        "Minou est un chat"
+      ],
+      "Ask": "Minou est-il un animal ?",
+      "Best": [
+        "Oui, Minou est un animal : c'est un chat, tous les chats sont des félins et tous les félins sont des animaux.",
+        "Oui, Minou est un animal, car c'est un chat, tous les chats sont des félins et tous les félins sont des animaux."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "toutes les étudiantes sont curieuses",
+        "Marie est une étudiante"
+      ],
+      "Ask": "Marie est-elle curieuse ?",
+      "Best": [
+        "Oui, Marie est curieuse : c'est une étudiante et toutes les étudiantes sont curieuses.",
+        "Oui, Marie est curieuse, car c'est une étudiante et toutes les étudiantes sont curieuses."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "tous les hommes sont mortels",
+        "je suis un homme"
+      ],
+      "Ask": "suis-je mortel ?",
+      "Best": [
+        "Oui, vous êtes mortel : vous êtes un homme et tous les hommes sont mortels.",
+        "Oui, vous êtes mortel, car vous êtes un homme et tous les hommes sont mortels."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "tous les chats sont des félins",
+        "tous les félins sont des animaux"
+      ],
+      "Ask": "tous les chats sont-ils des animaux ?",
+      "Best": [
+        "Oui, tous les chats sont des animaux : tous les chats sont des félins et tous les félins sont des animaux.",
+        "Oui, tous les chats sont des animaux, car tous les chats sont des félins et tous les félins sont des animaux."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "normalement, les oiseaux volent",
+        "Tweety est un oiseau"
+      ],
+      "Ask": "Tweety vole-t-il ?",
+      "Best": [
+        "Normalement oui, Tweety vole : c'est un oiseau et normalement, les oiseaux volent.",
+        "Normalement oui, Tweety vole, car c'est un oiseau et normalement, les oiseaux volent."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "les pingouins ne volent pas",
+        "Pingu est un pingouin"
+      ],
+      "Ask": "Pingu vole-t-il ?",
+      "Best": [
+        "Non, Pingu ne vole pas : c'est un pingouin et les pingouins ne volent pas.",
+        "Non, Pingu ne vole pas, car c'est un pingouin et les pingouins ne volent pas."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "tous les chats aiment le lait",
+        "Minou est un chat"
+      ],
+      "Ask": "Minou aime-t-il le lait ?",
+      "Best": [
+        "Oui, Minou aime le lait : c'est un chat et tous les chats aiment le lait.",
+        "Oui, Minou aime le lait, car c'est un chat et tous les chats aiment le lait."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "aucun poisson ne vole",
+        "Nemo est un poisson"
+      ],
+      "Ask": "Nemo vole-t-il ?",
+      "Best": [
+        "Non, Nemo ne vole pas : c'est un poisson et aucun poisson ne vole.",
+        "Non, Nemo ne vole pas, car c'est un poisson et aucun poisson ne vole."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "toutes les étudiantes sont curieuses",
+        "ma soeur est une étudiante"
+      ],
+      "Ask": "ma soeur est-elle curieuse ?",
+      "Best": [
+        "Oui, votre soeur est curieuse : c'est une étudiante et toutes les étudiantes sont curieuses.",
+        "Oui, votre soeur est curieuse, car c'est une étudiante et toutes les étudiantes sont curieuses."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "tous les chiens sont fidèles",
+        "Rex est un chien"
+      ],
+      "Ask": "Rex est-il fidèle ?",
+      "Best": [
+        "Oui, Rex est fidèle : c'est un chien et tous les chiens sont fidèles.",
+        "Oui, Rex est fidèle, car c'est un chien et tous les chiens sont fidèles."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "normalement, les chats ne nagent pas",
+        "Minou est un chat"
+      ],
+      "Ask": "Minou nage-t-il ?",
+      "Best": [
+        "Normalement non, Minou ne nage pas : c'est un chat et normalement, les chats ne nagent pas.",
+        "Normalement non, Minou ne nage pas, car c'est un chat et normalement, les chats ne nagent pas."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "aucun reptile n'est un mammifère",
+        "tous les serpents sont des reptiles",
+        "Kaa est un serpent"
+      ],
+      "Ask": "Kaa est-il un mammifère ?",
+      "Best": [
+        "Non, Kaa n'est pas un mammifère : c'est un serpent, tous les serpents sont des reptiles et aucun reptile n'est un mammifère.",
+        "Non, Kaa n'est pas un mammifère, car c'est un serpent, tous les serpents sont des reptiles et aucun reptile n'est un mammifère."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "tous les étudiants sont jeunes",
+        "je suis un étudiant"
+      ],
+      "Ask": "suis-je jeune ?",
+      "Best": [
+        "Oui, vous êtes jeune : vous êtes un étudiant et tous les étudiants sont jeunes.",
+        "Oui, vous êtes jeune, car vous êtes un étudiant et tous les étudiants sont jeunes."
+      ]
+    },
+    {
+      "Language": "fr",
+      "Told": [
+        "toutes les baleines sont des mammifères",
+        "aucun mammifère n'est un poisson",
+        "Moby est une baleine"
+      ],
+      "Ask": "Moby est-elle un poisson ?",
+      "Best": [
+        "Non, Moby n'est pas un poisson : c'est une baleine, toutes les baleines sont des mammifères et aucun mammifère n'est un poisson.",
+        "Non, Moby n'est pas un poisson, car c'est une baleine, toutes les baleines sont des mammifères et aucun mammifère n'est un poisson."
+      ]
+    },
+    {
+      "Language": "en",
+      "Told": [
+        "all men are mortal",
+        "Socrates is a man"
+      ],
+      "Ask": "is Socrates mortal?",
+      "Best": [
+        "Yes, Socrates is mortal: Socrates is a man and all men are mortal.",
+        "Yes, Socrates is mortal, because Socrates is a man and all men are mortal.",
+        "Yes, Socrates is mortal, since Socrates is a man and all men are mortal."
+      ]
+    },
+    {
+      "Language": "en",
+      "Told": [
+        "no dog is a cat",
+        "Rex is a dog"
+      ],
+      "Ask": "is Rex a cat?",
+      "Best": [
+        "No, Rex is not a cat: Rex is a dog and no dog is a cat.",
+        "No, Rex is not a cat, because Rex is a dog and no dog is a cat.",
+        "No, Rex is not a cat, since Rex is a dog and no dog is a cat."
+      ]
+    },
+    {
+      "Language": "en",
+      "Told": [
+        "all cats are felines",
+        "all felines are animals",
+        "Minou is a cat"
+      ],
+      "Ask": "is Minou an animal?",
+      "Best": [
+        "Yes, Minou is an animal: Minou is a cat, all cats are felines and all felines are animals.",
+        "Yes, Minou is an animal: Minou is a cat, all cats are felines, and all felines are animals.",
+        "Yes, Minou is an animal, because Minou is a cat, all cats are felines and all felines are animals.",
+        "Yes, Minou is an animal, because Minou is a cat, all cats are felines, and all felines are animals.",
+        "Yes, Minou is an animal, since Minou is a cat, all cats are felines and all felines are animals.",
+        "Yes, Minou is an animal, since Minou is a cat, all cats are felines, and all felines are animals."
+      ]
+    },
+    {
+      "Language": "en",
+      "Told": [
+        "normally, birds fly",
+        "Tweety is a bird"
+      ],
+      "Ask": "does Tweety fly?",
+      "Best": [
+        "Normally yes, Tweety does fly: Tweety is a bird and normally, birds fly.",
+        "Normally yes, Tweety does fly, because Tweety is a bird and normally, birds fly.",
+        "Normally yes, Tweety does fly, since Tweety is a bird and normally, birds fly."
+      ]
+    },
+    {
+      "Language": "en",
+      "Told": [
+        "all men are mortal",
+        "I am a man"
+      ],
+      "Ask": "am I mortal?",
+      "Best": [
+        "Yes, you are mortal: you are a man and all men are mortal.",
+        "Yes, you are mortal, because you are a man and all men are mortal.",
+        "Yes, you are mortal, since you are a man and all men are mortal."
+      ]
+    },
+    {
+      "Language": "en",
+      "Told": [
+        "no fish flies",
+        "Nemo is a fish"
+      ],
+      "Ask": "does Nemo fly?",
+      "Best": [
+        "No, Nemo does not fly: Nemo is a fish and no fish flies.",
+        "No, Nemo does not fly, because Nemo is a fish and no fish flies.",
+        "No, Nemo does not fly, since Nemo is a fish and no fish flies."
+      ]
+    },
+    {
+      "Language": "en",
+      "Told": [
+        "all cats are felines",
+        "all felines are animals"
+      ],
+      "Ask": "are all cats animals?",
+      "Best": [
+        "Yes, all cats are animals: all cats are felines and all felines are animals.",
+        "Yes, all cats are animals, because all cats are felines and all felines are animals.",
+        "Yes, all cats are animals, since all cats are felines and all felines are animals."
+      ]
+    },
+    {
+      "Language": "en",
+      "Told": [
+        "all students are curious",
+        "my sister is a student"
+      ],
+      "Ask": "is my sister curious?",
+      "Best": [
+        "Yes, your sister is curious: your sister is a student and all students are curious.",
+        "Yes, your sister is curious, because your sister is a student and all students are curious.",
+        "Yes, your sister is curious, since your sister is a student and all students are curious."
+      ]
+    }
+  ]
+}

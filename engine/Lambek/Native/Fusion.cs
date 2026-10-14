@@ -212,6 +212,57 @@ public class LambekFusion
         return fusion;
     }
 
+    // Weights for choosing one among several (how an answer is said): every point of the simplex with the given
+    // number of steps, the one that puts the right row of most requests first; among those, the widest margin
+    // between the right row and the best wrong one. The same points in the same order every time
+    public static double[] Simplex(double[][] rows, bool[] right, int[] request, int steps)
+    {
+        int n = rows.Length > 0 ? rows[0].Length : 0;
+        int[] requests = request.Distinct().OrderBy(r => r).ToArray();
+        double[] best = new double[n];
+        int bestHits = -1;
+        double bestMargin = double.NegativeInfinity;
+        int[] point = new int[n];
+        Action<int, int> walk = null;
+        walk = (k, left) =>
+        {
+            if (k == n - 1)
+            {
+                point[k] = left;
+                double[] w = point.Select(p => p / (double)steps).ToArray();
+                int hits = 0;
+                double margin = 0;
+                foreach (int r in requests)
+                {
+                    double good = double.NegativeInfinity, bad = double.NegativeInfinity;
+                    for (int i = 0; i < rows.Length; i++)
+                    {
+                        if (request[i] != r) continue;
+                        double s = 0;
+                        for (int j = 0; j < n; j++) s += w[j] * rows[i][j];
+                        if (right[i]) good = Math.Max(good, s); else bad = Math.Max(bad, s);
+                    }
+                    if (good > bad) hits++;
+                    if (!double.IsInfinity(good) && !double.IsInfinity(bad)) margin += Math.Max(-1, Math.Min(1, good - bad));
+                }
+                if (hits > bestHits || (hits == bestHits && margin > bestMargin + 1e-12))
+                {
+                    bestHits = hits;
+                    bestMargin = margin;
+                    best = w;
+                }
+                return;
+            }
+            for (int v = 0; v <= left; v++)
+            {
+                point[k] = v;
+                walk(k + 1, left - v);
+            }
+        };
+        if (n > 0) walk(0, steps);
+        return best;
+    }
+
     // Kalman in one dimension: the bias of each scorer, seen on a plan the user confirmed (z for the action that ran is truth 1,
     // for the others truth 0). Process noise lets it follow a slow drift; the measurement noise is the scorer's variance
     public void Observe(double[][] rows, bool[] right, double process)

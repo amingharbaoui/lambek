@@ -29,7 +29,7 @@ Describe 'Worlds imagined with et si' {
                 '- Tweety ne volerait pas.'
                 "Ce n'est qu'un monde imaginé : ce que vous m'avez dit ne change pas."
             ) -join "`n")
-        @((Ask 'Tweety vole-t-il ?') -split "`n")[0] | Should -Be 'Normalement oui : Tweety vole.'
+        @((Ask 'Tweety vole-t-il ?') -split "`n")[0] | Should -Be "Normalement oui, Tweety vole : c'est un oiseau et normalement, les oiseaux volent."
     }
 
     It 'answers a question asked in the world imagined, with what it rests on' {
@@ -49,7 +49,7 @@ Describe 'Worlds imagined with et si' {
         $lines = @((Ask "et si Minou n'était pas noir ?") -split "`n")
         $lines[1..2] | Should -Be @("Pour l'imaginer, je mets de côté ce qui le contredit :", '- Minou est un chat.')
         $lines | Should -Contain '- Minou ne serait pas un chat.'
-        @((Ask 'Minou est-il noir ?') -split "`n")[0] | Should -Be 'Oui : Minou est noir.'
+        Ask 'Minou est-il noir ?' | Should -Be "Oui, Minou est noir, car c'est un chat et tous les chats sont noirs."
     }
 
     It 'imagines about the user' {

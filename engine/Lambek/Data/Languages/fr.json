@@ -964,6 +964,158 @@
       },
       "And": "et"
     },
+    "Speech": {
+      "Verdicts": {
+        "yes": "Oui",
+        "no": "Non",
+        "usualyes": "Normalement oui",
+        "usualno": "Normalement non"
+      },
+      "Frames": [
+        {
+          "Name": "colon",
+          "Text": "{V}, {C} : {P}.",
+          "Reasons": "after",
+          "Join": "and"
+        },
+        {
+          "Name": "car",
+          "Text": "{V}, {C}, car {P}.",
+          "Reasons": "after",
+          "Join": "and"
+        },
+        {
+          "Name": "puisque",
+          "Text": "{V}, {C}, puisque {P}.",
+          "Reasons": "after",
+          "Join": "that"
+        },
+        {
+          "Name": "parceque",
+          "Text": "{V}, {C}, parce que {P}.",
+          "Reasons": "after",
+          "Join": "that"
+        },
+        {
+          "Name": "told",
+          "Text": "{V}, {C} : vous m'avez dit que {P}.",
+          "Reasons": "after",
+          "Join": "that"
+        },
+        {
+          "Name": "donc",
+          "Text": "{V} : {P}, donc {C}.",
+          "Reasons": "before",
+          "Join": "and"
+        }
+      ],
+      "Joins": {
+        "and": {
+          "Between": ", ",
+          "Last": [
+            " et ",
+            ", et "
+          ]
+        },
+        "that": {
+          "Between": ", que ",
+          "Last": [
+            " et que "
+          ]
+        }
+      },
+      "Elide": [
+        [
+          "(?i)\\b(puisqu|qu)e (?=[aeiouy\u00e0\u00e2\u00e9\u00e8\u00ea\u00ee\u00f4\u00fb])",
+          "$1'"
+        ]
+      ],
+      "Again": [
+        {
+          "From": "^est (?<r>une? .+)$",
+          "To": "c'est ${r}"
+        },
+        {
+          "From": "^n'est pas (?<r>une? .+)$",
+          "To": "ce n'est pas ${r}"
+        },
+        {
+          "From": "^(?<r>.+)$",
+          "To": "{p} ${r}",
+          "Pronoun": true
+        }
+      ],
+      "Pronouns": {
+        "m": "il",
+        "f": "elle"
+      },
+      "Gender": [
+        [
+          "^un ",
+          "m"
+        ],
+        [
+          "^une ",
+          "f"
+        ]
+      ],
+      "Listener": {
+        "Separators": [
+          ", ",
+          " : "
+        ],
+        "Reasons": [
+          " : vous m'avez dit que ",
+          " : vous m'avez dit qu'",
+          ", parce que ",
+          ", parce qu'",
+          ", puisque ",
+          ", puisqu'",
+          ", car ",
+          " : "
+        ],
+        "Conclusion": [
+          ", donc "
+        ],
+        "Joins": [
+          ", et que ",
+          ", et qu'",
+          " et que ",
+          " et qu'",
+          ", que ",
+          ", qu'",
+          ", et ",
+          " et ",
+          ", "
+        ],
+        "That": [
+          "que ",
+          "qu'"
+        ],
+        "Again": [
+          [
+            "^c'est ",
+            "{n} est ",
+            ""
+          ],
+          [
+            "^ce n'est ",
+            "{n} n'est ",
+            ""
+          ],
+          [
+            "^il ",
+            "{n} ",
+            "m"
+          ],
+          [
+            "^elle ",
+            "{n} ",
+            "f"
+          ]
+        ]
+      }
+    },
     "Questions": [
       "comment",
       "pourquoi",

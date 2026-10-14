@@ -42,7 +42,9 @@ function Resolve-LambekCategory {
         # (what is told just after the question asked is the answer to it, said in full: the question is answered again)
         if ($pending -and $language -eq $pending.Language -and @($sentences | Where-Object { $_.Question }).Count -eq 0) {
             $again = @(Split-LambekCategorySentence -Text $pending.Question -Language $language)
-            return Resolve-LambekCategoryMessage -Sentences (@($sentences) + @($again)) -Language $language -Noted
+            $result = Resolve-LambekCategoryMessage -Sentences (@($sentences) + @($again)) -Language $language -Noted
+            # (what does not settle it is only told: the question still waits for its answer)
+            if (-not $result -or ($result.PSObject.Properties['Settled'] -and $result.Settled)) { return $result }
         }
         return Resolve-LambekCategoryMessage -Sentences $sentences -Language $language
     }
@@ -647,7 +649,7 @@ function Resolve-LambekCategoryMessage {
             $lines.Add("$($list.Substring(0, 1).ToUpperInvariant())$($list.Substring(1)).")
         }
         & $because ([int[]] @($used))
-        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
     }
 
     $individual = ''
@@ -670,7 +672,7 @@ function Resolve-LambekCategoryMessage {
         if ($usual) {
             foreach ($line in $usual.Lines) { $lines.Add($line) }
             Set-LambekLastProof -Facts $usual.Facts
-            return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+            return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
         }
     }
     if ($null -ne $yes -or $null -ne $no) {
@@ -678,11 +680,20 @@ function Resolve-LambekCategoryMessage {
         $shape = $(if ($null -ne $yes) { $pair[0] } else { $pair[1] })
         $sentence = $null
         if ($shape) { $sentence = Get-LambekCategorySentence -Item $ask -Shape $shape -Language $Language }
+        $support = [int[]] $(if ($null -ne $yes) { $yes } else { $no })
+        # Said in a sentence of its own, read back by a second Lambek; else in lines, as told
+        $spoken = $null
+        if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict $answer.ToLowerInvariant() -Conclusion $sentence -Premises @($support | ForEach-Object { $premises[$_] }) -Language $Language }
+        if ($spoken) {
+            $lines.Add($spoken.Text)
+            Set-LambekLastProof -Facts @($support | ForEach-Object { $premises[$_].Fact })
+            return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
+        }
         if ($sentence) { $lines.Add(($data[$answer] -f $sentence)) }
         elseif ($answer -eq 'No' -and $ask.Kind -eq 'asksome') { $lines.Add($data['NoneThere']) }
         else { $lines.Add($data["$($answer)Short"]) }
-        & $because ([int[]] $(if ($null -ne $yes) { $yes } else { $no }))
-        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+        & $because $support
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
     }
 
     # Neither follows: it is said, with what was told that may look as if it did
