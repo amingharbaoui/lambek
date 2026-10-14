@@ -96,7 +96,8 @@ function Split-LambekCategorySentence {
         $question = $original -match '\?\s*$'
         $plain = ($original -replace '[.!?;]+\s*$', '').Trim()
         if ($lead.Count -gt 0) { $plain = [regex]::Replace($plain, "(?i)^(?:$($lead -join '|'))\s*,?\s+", '') }
-        $plain = ($plain -replace '\s+', ' ').Trim()
+        # (a comma only marks a pause: "normalement, les oiseaux volent")
+        $plain = (($plain -replace ',', ' ') -replace '\s+', ' ').Trim()
         if (-not $plain -or $plain -notmatch "^[\p{L}'\u2019 -]+$") { return @() }
         $sentences.Add([pscustomobject]@{ Text = $plain; Original = ($original -replace '[.;]+\s*$', '').Trim(); Question = $question })
     }
@@ -112,11 +113,27 @@ function Read-LambekCategorySentence {
         # The sentence is said by Lambek: "vous" is the user
         [switch] $Listener,
         # Only the shape: what kind of sentence it is, without the dictionary
-        [switch] $Shape
+        [switch] $Shape,
+        # The sentence is read as it is, without looking for "normalement" in it
+        [switch] $Strict
     )
 
     $words = Get-LambekCategoryVocabulary -Language $Language
     if (-not $words) { return $null }
+    # "normalement, les oiseaux volent", "la plupart des oiseaux volent": a rule about every one that holds unless
+    # something told says otherwise. It must read as such a rule once the word is taken out
+    if (-not $Question -and -not $Strict) {
+        $usual = @(Get-LambekCategoryUsual -Sentence $Sentence -Language $Language)
+        if ($usual.Count -gt 0) {
+            foreach ($rest in $usual) {
+                $read = Read-LambekCategorySentence -Sentence $rest -Language $Language -Listener:$Listener -Shape:$Shape -Strict
+                if (-not $read -or $read.Kind -notin 'all', 'no') { continue }
+                $read | Add-Member -NotePropertyName Default -NotePropertyValue $true -Force
+                return $read
+            }
+            return $null
+        }
+    }
     $lists = @()
     if (-not $Question) {
         if ($Listener) { $lists += , @($words.Listener) }
@@ -184,6 +201,7 @@ function Read-LambekCategoryPart {
     $item = [pscustomobject]@{
         Kind       = $Kind
         Member     = [bool] $Member
+        Default    = $false
         Quantifier = ''
         Subject    = $null
         Individual = $null
@@ -349,7 +367,8 @@ function Get-LambekCategorySignature {
     $who = ''
     if ($Item.Individual) { $who = $Item.Individual.Key }
     elseif ($Item.Subject) { $who = ($Item.Subject.Atoms -join '+') }
-    return "$($Item.Kind)|$who|$($Item.Predicate.Atoms -join '+')"
+    $usual = $(if ($Item.PSObject.Properties['Default'] -and $Item.Default) { 'usual:' } else { '' })
+    return "$usual$($Item.Kind)|$who|$($Item.Predicate.Atoms -join '+')"
 }
 
 function Get-LambekCategoryKnown {
@@ -366,7 +385,7 @@ function Get-LambekCategoryKnown {
         if ("$($fact.Language)" -ne $Language -or -not $fact.Text) { continue }
         $words = "$($fact.Text)"
         if ($fact.PSObject.Properties['Said'] -and $fact.Said) { $words = "$($fact.Said)" }
-        $sentence = (($words.Trim() -replace '[.!;]+\s*$', '') -replace '\s+', ' ').Trim()
+        $sentence = ((($words.Trim() -replace '[.!;]+\s*$', '') -replace ',', ' ') -replace '\s+', ' ').Trim()
         if ($sentence -notmatch "^[\p{L}'\u2019 -]+$") { continue }
         if ($null -eq $script:CategoryReadings) { $script:CategoryReadings = @{} }
         $key = "$Language|$([bool] $Shape)|$sentence"
@@ -409,7 +428,7 @@ function Get-LambekCategorySaid {
     # reading it again gives the same; nothing otherwise (it is then quoted as it was told)
     $sentence = ConvertTo-LambekOtherSide -Text "$($Fact.Text)" -Language "$($Fact.Language)" -Register $Register
     if (-not $sentence) { return $null }
-    $plain = { param($text) ((("$text".Trim()) -replace '[.!;]+\s*$', '') -replace '\s+', ' ').Trim() }
+    $plain = { param($text) (((("$text".Trim()) -replace '[.!;]+\s*$', '') -replace ',', ' ') -replace '\s+', ' ').Trim() }
     $told = Read-LambekCategorySentence -Sentence (& $plain $Fact.Text) -Language "$($Fact.Language)"
     $again = Read-LambekCategorySentence -Sentence (& $plain $sentence) -Language "$($Fact.Language)" -Listener
     if (-not $told -or -not $again -or (Get-LambekCategorySignature -Item $told) -cne (Get-LambekCategorySignature -Item $again)) { return $null }
@@ -427,6 +446,8 @@ function ConvertTo-LambekCategoryStatement {
     $notS = @($s | ForEach-Object { - $_ })
     $notP = @($p | ForEach-Object { - $_ })
     $statement = [LambekCategoryStatement]::new()
+    # (a rule that holds "normalement" is no clause: it is used only where nothing told says otherwise)
+    if ($Item.PSObject.Properties['Default'] -and $Item.Default) { return $statement }
     switch ($Item.Kind) {
         'all' { foreach ($atom in $p) { $statement.AddEvery([int[]] (@($notS) + @($atom))) } }
         'no' { $statement.AddEvery([int[]] (@($notS) + @($notP))) }
@@ -538,6 +559,8 @@ function Resolve-LambekCategoryMessage {
             [pscustomobject]@{ Sentence = $sentence; Item = $read }
         })
     $known = @(Get-LambekCategoryKnown -Language $Language)
+    # (the shape of a sentence only said what it may be: what it is read as says whether it is general)
+    $general = @($items | Where-Object { $_.Item.Kind -in $quantified }).Count -gt 0
     if (-not $general -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
 
     # What is told in the message is kept as told
@@ -634,6 +657,15 @@ function Resolve-LambekCategoryMessage {
         askno      = @('no', $null)
     }
     $pair = $answers[$ask.Kind]
+    # Nothing follows for sure: what holds "normalement" may say what to suppose
+    if ($null -eq $yes -and $null -eq $no -and $ask.Kind -in 'askis', 'askdoes') {
+        $usual = Resolve-LambekCategoryUsual -Ask $ask -Premises $premises.ToArray() -Statements $statements -Atoms $atoms -Language $Language
+        if ($usual) {
+            foreach ($line in $usual.Lines) { $lines.Add($line) }
+            Set-LambekLastProof -Facts $usual.Facts
+            return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+        }
+    }
     if ($null -ne $yes -or $null -ne $no) {
         $answer = $(if ($null -ne $yes) { 'Yes' } else { 'No' })
         $shape = $(if ($null -ne $yes) { $pair[0] } else { $pair[1] })

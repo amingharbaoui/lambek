@@ -717,6 +717,8 @@
         [ "isnotmember", "^(?<n>.+?) is not one of the (?<p>.+)$" ],
         [ "ismember", "^(?<n>.+?) is one of the (?<p>.+)$" ],
         [ "does", "^(?<n>.+?) does (?<v>[a-z]+)(?: (?<o>.+))?$" ],
+        [ "no", "^(?<s>.+?) (?:are not|aren['\u2019]t) (?<p>.+)$" ],
+        [ "no", "^(?<s>.+?) (?:do not|don['\u2019]t) (?<v>[a-z]+)(?: (?<o>.+))?$" ],
         [ "no", "^(?<q>no) (?<s>.+?) (?:is|are) (?<p>.+)$" ],
         [ "no", "^(?<q>no) (?<s>.+?) (?<v>[a-z]+)(?: (?<o>.+))?$" ],
         [ "somenot", "^(?<q>some) (?<s>.+?) (?:are not|aren['’]t|is not|isn['’]t) (?<p>.+)$" ],
@@ -832,6 +834,18 @@
       "Decide": "One question would settle it: {0}",
       "IfYes": "- If yes: {0}.",
       "IfNo": "- If no: {0}.",
+      "Usually": {
+        "Words": [ "normally", "usually", "generally", "typically", "as a rule", "in general", "by default" ],
+        "Most": [ [ "^most ", "all " ] ],
+        "Prefix": "all "
+      },
+      "NormallyYes": "Normally yes: {0}.",
+      "NormallyNo": "Normally no: {0}.",
+      "Assume": "I assume it, because you told me:",
+      "ExceptionIs": "{0} is an exception",
+      "ExceptionIs|i": "I am an exception",
+      "Exception": "If {0}, tell me.",
+      "Conflict": "I cannot conclude it: for {0}, rules that hold normally contradict each other, and none is more specific than the other:",
       "And": "and"
     },
     "Questions": [

@@ -294,6 +294,66 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'What holds normalement' {
+
+        It 'supposes what holds normalement, says it is supposed, and on what' {
+            Tell 'normalement, les oiseaux volent', 'Tweety est un oiseau'
+            Ask 'Tweety vole-t-il ?' | Should -Be (@(
+                    'Normalement oui : Tweety vole.'
+                    "Je le suppose, parce que vous m'avez dit :"
+                    '- Normalement, les oiseaux volent.'
+                    '- Tweety est un oiseau.'
+                    'Si Tweety est une exception, dites-le-moi.'
+                ) -join "`n")
+        }
+
+        It 'drops what it supposed when an exception is told' {
+            Tell 'normalement, les oiseaux volent', 'Tweety est un oiseau', 'les pingouins ne volent pas', 'tous les pingouins sont des oiseaux', 'Tweety est un pingouin'
+            Ask 'Tweety vole-t-il ?' | Should -Be (@(
+                    'Non : Tweety ne vole pas.'
+                    "Parce que vous m'avez dit :"
+                    '- Les pingouins ne volent pas.'
+                    '- Tweety est un pingouin.'
+                ) -join "`n")
+        }
+
+        It 'never supposes against what was told, and never calls an exception a contradiction' {
+            Tell 'les oiseaux volent normalement', 'Tweety est un oiseau'
+            Ask 'Tweety ne vole pas' | Should -Be "C'est noté. Tweety ne vole pas. Je m'en souviendrai."
+            @((Ask 'Tweety vole-t-il ?') -split "`n")[0] | Should -Be 'Non : Tweety ne vole pas.'
+        }
+
+        It 'lets the rule about the narrower kind go first' {
+            $reply = Ask 'normalement les oiseaux volent. normalement les pingouins ne volent pas. tous les pingouins sont des oiseaux. Pingu est un pingouin. Pingu vole-t-il ?'
+            $lines = @($reply -split "`n")
+            $lines[0] | Should -Be 'Normalement non : Pingu ne vole pas.'
+            $lines | Should -Contain '- Normalement les pingouins ne volent pas.'
+            $lines | Should -Contain '- Pingu est un pingouin.'
+            $lines | Should -Not -Contain '- Normalement les oiseaux volent.'
+        }
+
+        It 'says when rules that hold normalement contradict each other, and supposes nothing' {
+            Ask 'normalement les quakers sont pacifistes. normalement les républicains ne sont pas pacifistes. Nixon est un quaker. Nixon est un républicain. Nixon est-il pacifiste ?' | Should -Be (@(
+                    "Je ne peux pas le conclure : pour Nixon, des règles qui valent « normalement » se contredisent, et aucune n'est plus précise que l'autre :"
+                    '- Normalement les quakers sont pacifistes.'
+                    '- Normalement les républicains ne sont pas pacifistes.'
+                    '- Nixon est un quaker.'
+                    '- Nixon est un républicain.'
+                ) -join "`n")
+        }
+
+        It 'reads what most of a kind do, and speaks of the user: <Question>' -ForEach @(
+            @{ Told = 'la plupart des oiseaux volent', 'je suis un oiseau'; Question = 'est-ce que je vole ?'; First = 'Normalement oui : vous volez.'; Last = 'Si vous êtes une exception, dites-le-moi.' }
+            @{ Told = 'Birds normally fly.', 'Tweety is a bird.'; Question = 'Does Tweety fly?'; First = 'Normally yes: Tweety does fly.'; Last = 'If Tweety is an exception, tell me.' }
+            @{ Told = 'Most birds fly.', 'Penguins do not fly.', 'All penguins are birds.', 'Pingu is a penguin.'; Question = 'Does Pingu fly?'; First = 'No: Pingu does not fly.'; Last = '- Pingu is a penguin.' }
+        ) {
+            Tell $Told
+            $lines = @((Ask $Question) -split "`n")
+            $lines[0] | Should -Be $First
+            $lines[-1] | Should -Be $Last
+        }
+    }
+
     Context 'Every syllogism' {
 
         # The 64 pairs of premises of the four figures, each with the four conclusions asked: what Lambek answers must be

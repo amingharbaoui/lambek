@@ -745,6 +745,9 @@
         [ "ismember", "^(?<n>je) fais partie des (?<p>.+)$" ],
         [ "isnotmember", "^(?<n>.+?) ne fait pas partie des (?<p>.+)$" ],
         [ "ismember", "^(?<n>.+?) fait partie des (?<p>.+)$" ],
+        [ "no", "^(?<q>les) (?<s>.+?) ne sont pas (?<p>.+)$" ],
+        [ "no", "^(?<q>les) (?<s>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
+        [ "no", "^(?<q>les) (?<s>.+?) n['\u2019](?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
         [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) n['’](?:est|sont) (?<p>.+)$" ],
         [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) ne (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
         [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) n['’](?<v>\\p{L}+)(?: (?<o>.+))?$" ],
@@ -892,6 +895,18 @@
       "Decide": "Une question trancherait : {0}",
       "IfYes": "- Si oui : {0}.",
       "IfNo": "- Si non : {0}.",
+      "Usually": {
+        "Words": [ "normalement", "g\u00e9n\u00e9ralement", "generalement", "en g\u00e9n\u00e9ral", "en general", "d'habitude", "habituellement", "d'ordinaire", "en principe", "en r\u00e8gle g\u00e9n\u00e9rale" ],
+        "Most": [ [ "^la plupart des ", "les " ], [ "^la plupart d['\u2019]", "les " ] ],
+        "Prefix": "les "
+      },
+      "NormallyYes": "Normalement oui : {0}.",
+      "NormallyNo": "Normalement non : {0}.",
+      "Assume": "Je le suppose, parce que vous m'avez dit :",
+      "ExceptionIs": "{0} est une exception",
+      "ExceptionIs|je": "je suis une exception",
+      "Exception": "Si {0}, dites-le-moi.",
+      "Conflict": "Je ne peux pas le conclure : pour {0}, des r\u00e8gles qui valent \u00ab normalement \u00bb se contredisent, et aucune n'est plus pr\u00e9cise que l'autre :",
       "And": "et"
     },
     "Questions": [
