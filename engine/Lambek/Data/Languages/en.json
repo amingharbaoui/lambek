@@ -862,6 +862,45 @@
       "ExceptionIs|i": "I am an exception",
       "Exception": "If {0}, tell me.",
       "Conflict": "I cannot conclude it: for {0}, rules that hold normally contradict each other, and none is more specific than the other:",
+      "Imagine": {
+        "Words": [ "what if ", "and if ", "suppose ", "if " ],
+        "Pronouns": [ "he", "she", "it" ],
+        "Bare": [ "if " ],
+        "AskPrefix": "",
+        "Mark": "(imagined)",
+        "Statements": [
+          [ "isnot", "^(?<n>i) (?:were|was) not (?<p>.+)$" ],
+          [ "is", "^(?<n>i) (?:were|was) (?<p>.+)$" ],
+          [ "isnot", "^(?<n>.+?) (?:were|was) not (?<p>.+)$" ],
+          [ "is", "^(?<n>.+?) (?:were|was) (?<p>.+)$" ],
+          [ "all", "^(?<q>all) (?<s>.+?) were (?<p>.+)$" ],
+          [ "doesnot", "^(?<n>.+?) did not (?<v>[a-z]+)(?: (?<o>.+))?$" ]
+        ],
+        "Questions": [
+          [ "askis", "^would (?<n>i) be (?<p>.+)$" ],
+          [ "askis", "^would (?<n>.+?) be (?<p>.+)$" ],
+          [ "askdoes", "^would (?<n>.+?) (?<v>[a-z]+)(?: (?<o>.+))?$" ]
+        ],
+        "Sentences": {
+          "is": "{0} would be {1}",
+          "isnot": "{0} would not be {1}",
+          "is|i": "I would be {1}",
+          "isnot|i": "I would not be {1}",
+          "member": "{0} would be one of the {1}",
+          "notmember": "{0} would not be one of the {1}",
+          "does": "{0} would {1}{2}",
+          "doesnot": "{0} would not {1}{2}"
+        },
+        "VerbForms": { "one": "", "speaker": "" },
+        "Header": "In this imagined world ({0}):",
+        "SetAside": "To imagine it, I set aside what contradicts it:",
+        "Usual": "normally, ",
+        "Lost": "- I could no longer tell whether {0}",
+        "Nothing": "Nothing else would change, from what you told me.",
+        "Follows": "What would follow, from the rules you told me:",
+        "Kept": "It is only an imagined world: what you told me does not change.",
+        "Unknown": "Even in that world, I could not conclude it: {0} could be true or false."
+      },
       "And": "and"
     },
     "Questions": [

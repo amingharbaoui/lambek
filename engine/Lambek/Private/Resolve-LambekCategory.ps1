@@ -75,6 +75,9 @@ function Get-LambekCategoryVocabulary {
             Statements = & $rules $data['Statements']
             Listener   = & $rules $data['Listener']
             Questions  = & $rules $data['Questions']
+            # (what is only imagined: "et si Tweety etait un pingouin", "would he fly")
+            Imagined   = $(if ($data['Imagine']) { & $rules $data['Imagine']['Statements'] } else { @() })
+            Wondered   = $(if ($data['Imagine']) { & $rules $data['Imagine']['Questions'] } else { @() })
             Data       = $data
         }
     }
@@ -115,7 +118,9 @@ function Read-LambekCategorySentence {
         # Only the shape: what kind of sentence it is, without the dictionary
         [switch] $Shape,
         # The sentence is read as it is, without looking for "normalement" in it
-        [switch] $Strict
+        [switch] $Strict,
+        # The sentence is imagined: "Tweety etait un pingouin", "est-ce que Tweety serait gris"
+        [switch] $Imagined
     )
 
     $words = Get-LambekCategoryVocabulary -Language $Language
@@ -137,8 +142,10 @@ function Read-LambekCategorySentence {
     $lists = @()
     if (-not $Question) {
         if ($Listener) { $lists += , @($words.Listener) }
+        if ($Imagined) { $lists += , @($words.Imagined) }
         $lists += , @($words.Statements)
     }
+    if ($Imagined) { $lists += , @($words.Wondered) }
     $lists += , @($words.Questions)
     foreach ($list in $lists) {
         foreach ($rule in $list) {
@@ -508,7 +515,7 @@ function Get-LambekCategorySentence {
     # "Minou est-il noir ?" gives "Minou est noir", "suis-je mortel ?" gives "vous etes mortel". Nothing when the
     # language has no sentence for it
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
-    $sentences = $data[$Shapes]
+    $sentences = $(if ($Shapes -eq 'Imagine') { $data['Imagine']['Sentences'] } else { $data[$Shapes] })
     $who = $(if ($Subject) { $Subject } else { $Item.Written.Subject })
     $key = $Shape
     if ($Item.Verb) { $key = $(switch ($Shape) { 'is' { 'does' } 'isnot' { 'doesnot' } default { "$($Shape)do" } }) }
@@ -528,7 +535,7 @@ function Get-LambekCategorySentence {
     if ($Plain) { return $built }
     $turned = ConvertTo-LambekOtherSide -Text $built -Language $Language -Register 'vous'
     if (-not $turned) { return $built }
-    if ($Shapes -eq 'Sentences') { $turned = $turned.TrimEnd('.') }
+    if ($Shapes -ne 'Asks') { $turned = $turned.TrimEnd('.') }
     # (a sentence made with a small word first says it small; a name keeps its capital)
     if ($built -cmatch '^\p{Ll}') { $turned = $turned.Substring(0, 1).ToLowerInvariant() + $turned.Substring(1) }
     return $turned

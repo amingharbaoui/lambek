@@ -923,6 +923,45 @@
       "ExceptionIs|je": "je suis une exception",
       "Exception": "Si {0}, dites-le-moi.",
       "Conflict": "Je ne peux pas le conclure : pour {0}, des r\u00e8gles qui valent \u00ab normalement \u00bb se contredisent, et aucune n'est plus pr\u00e9cise que l'autre :",
+      "Imagine": {
+        "Words": [ "et si ", "et s'", "et s\u2019", "si ", "s'", "s\u2019" ],
+        "Pronouns": [ "il", "elle" ],
+        "Bare": [ "si ", "s'", "s\u2019" ],
+        "AskPrefix": "est-ce que ",
+        "Mark": "(imagin\u00e9)",
+        "Statements": [
+          [ "isnot", "^(?<n>je) n['\u2019](?:\u00e9tais|etais) pas (?<p>.+)$" ],
+          [ "is", "^(?<n>j)['\u2019](?:\u00e9tais|etais) (?<p>.+)$" ],
+          [ "isnot", "^(?<n>.+?) n['\u2019](?:\u00e9tait|etait) pas (?<p>.+)$" ],
+          [ "is", "^(?<n>.+?) (?:\u00e9tait|etait) (?<p>.+)$" ],
+          [ "all", "^(?<q>tous|toutes) les (?<s>.+?) (?:\u00e9taient|etaient) (?<p>.+)$" ],
+          [ "no", "^(?<q>aucun|aucune) (?<s>.+?) n['\u2019](?:\u00e9tait|etait) (?<p>.+)$" ]
+        ],
+        "Questions": [
+          [ "askis", "^est-ce que (?<n>je) serais (?<p>.+)$" ],
+          [ "askis", "^est-ce que (?<n>.+?) serait (?<p>.+)$" ],
+          [ "askis", "^est-ce qu['\u2019](?<n>.+?) serait (?<p>.+)$" ]
+        ],
+        "Sentences": {
+          "is": "{0} serait {1}",
+          "isnot": "{0} ne serait pas {1}",
+          "is|je": "je serais {1}",
+          "isnot|je": "je ne serais pas {1}",
+          "member": "{0} ferait partie des {1}",
+          "notmember": "{0} ne ferait pas partie des {1}",
+          "does": "{0} {1}{2}",
+          "doesnot": "{0} ne {1} pas{2}"
+        },
+        "VerbForms": { "one": "C3s", "speaker": "C1s" },
+        "Header": "Dans ce monde imagin\u00e9 ({0}) :",
+        "SetAside": "Pour l'imaginer, je mets de c\u00f4t\u00e9 ce qui le contredit :",
+        "Usual": "normalement, ",
+        "Lost": "- je ne pourrais plus dire si {0}",
+        "Nothing": "Rien d'autre ne changerait, d'apr\u00e8s ce que vous m'avez dit.",
+        "Follows": "Ce qui en suivrait, d'apr\u00e8s les r\u00e8gles que vous m'avez dites :",
+        "Kept": "Ce n'est qu'un monde imagin\u00e9 : ce que vous m'avez dit ne change pas.",
+        "Unknown": "M\u00eame dans ce monde-l\u00e0, je ne pourrais pas le conclure : {0} pourrait \u00eatre vrai ou faux."
+      },
       "And": "et"
     },
     "Questions": [

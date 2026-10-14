@@ -41,7 +41,10 @@ function Resolve-LambekCategoryUsual {
         [hashtable] $Atoms,
 
         [Parameter(Mandatory)]
-        [string] $Language
+        [string] $Language,
+
+        # Only what it gives: yes, no, conflict, or nothing
+        [switch] $Outcome
     )
 
     # What the rules that hold "normalement" let Lambek suppose about one (a default logic: Reiter's, with normal
@@ -130,6 +133,11 @@ function Resolve-LambekCategoryUsual {
             [pscustomobject]@{ Way = $way; Result = $result }
         })
     $kinds = @($results | ForEach-Object { $_.Result } | Sort-Object -Unique)
+    if ($Outcome) {
+        if ($kinds -contains 'yes' -and $kinds -contains 'no') { return 'conflict' }
+        if ($kinds.Count -eq 1 -and $kinds[0] -ne 'unknown') { return $kinds[0] }
+        return $null
+    }
     $reason = {
         param([int[]] $way, $opposite)
         $list = [LambekCategoryStatement[]] @(for ($i = 0; $i -lt $Premises.Count; $i++) {
