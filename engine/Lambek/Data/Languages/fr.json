@@ -741,6 +741,10 @@
     },
     "Categories": {
       "Statements": [
+        [ "isnotmember", "^(?<n>je) ne fais pas partie des (?<p>.+)$" ],
+        [ "ismember", "^(?<n>je) fais partie des (?<p>.+)$" ],
+        [ "isnotmember", "^(?<n>.+?) ne fait pas partie des (?<p>.+)$" ],
+        [ "ismember", "^(?<n>.+?) fait partie des (?<p>.+)$" ],
         [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) n['’](?:est|sont) (?<p>.+)$" ],
         [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) ne (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
         [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) n['’](?<v>\\p{L}+)(?: (?<o>.+))?$" ],
@@ -765,12 +769,20 @@
         [ "does", "^(?<n>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ]
       ],
       "Listener": [
+        [ "isnotmember", "^(?<n>vous) ne faites pas partie des (?<p>.+)$" ],
+        [ "ismember", "^(?<n>vous) faites partie des (?<p>.+)$" ],
+        [ "isnotmember", "^(?<n>tu) ne fais pas partie des (?<p>.+)$" ],
+        [ "ismember", "^(?<n>tu) fais partie des (?<p>.+)$" ],
         [ "isnot", "^(?<n>vous) n['’](?:êtes|etes) pas (?<p>.+)$" ],
         [ "isnot", "^(?<n>tu) n['’]es pas (?<p>.+)$" ],
         [ "is", "^(?<n>vous) (?:êtes|etes) (?<p>.+)$" ],
         [ "is", "^(?<n>tu) es (?<p>.+)$" ]
       ],
       "Questions": [
+        [ "askmember", "^est-ce que (?<n>je) fais partie des (?<p>.+)$" ],
+        [ "askmember", "^est-ce que (?<n>.+?) fait partie des (?<p>.+)$" ],
+        [ "askmember", "^est-ce qu['\u2019](?<n>.+?) fait partie des (?<p>.+)$" ],
+        [ "askmember", "^(?<n>.+?) fait-(?:il|elle) partie des (?<p>.+)$" ],
         [ "askall", "^est-ce que (?<q>tous|toutes) les (?<s>.+?) sont (?<p>.+)$" ],
         [ "askall", "^(?<q>tous|toutes) les (?<s>.+?) sont-(?:ils|elles) (?<p>.+)$" ],
         [ "askall", "^est-ce que (?<q>tous|toutes) les (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
@@ -839,7 +851,11 @@
         "no|aucune": "aucune {0} n'est {1}",
         "nodo|aucun": "aucun {0} ne {1}{2}",
         "nodo|aucune": "aucune {0} ne {1}{2}",
-        "whodo": "{0} {1}{2}"
+        "whodo": "{0} {1}{2}",
+        "member": "{0} fait partie des {1}",
+        "notmember": "{0} ne fait pas partie des {1}",
+        "member|je": "je fais partie des {1}",
+        "notmember|je": "je ne fais pas partie des {1}"
       },
       "Yes": "Oui : {0}.",
       "No": "Non : {0}.",
@@ -853,6 +869,29 @@
       "WhoUnknown": "Je ne peux pas le dire avec ce que vous m'avez dit.",
       "Contradiction": "Ce que vous m'avez dit se contredit : ces phrases ne peuvent pas être vraies ensemble :",
       "Clash": "Attention : avec ce que vous m'avez dit, ces phrases ne peuvent pas être vraies ensemble :",
+      "YesWords": [ "oui", "ouais", "oui oui", "bien s\u00fbr", "bien sur", "exactement", "tout \u00e0 fait", "c'est \u00e7a" ],
+      "NoWords": [ "non", "non non", "pas du tout", "absolument pas", "nan" ],
+      "Plural": [ "tous", "toutes", "les", "certains", "certaines", "quelques", "plusieurs" ],
+      "AllOf": { "tous": "tous", "toutes": "toutes", "les": "tous", "certains": "tous", "certaines": "toutes", "quelques": "tous", "plusieurs": "tous" },
+      "PluralArticles": [ "des", "de", "d" ],
+      "Indefinite": { "m": "un", "f": "une" },
+      "VerbForms": { "one": "P3s", "speaker": "P1s", "many": "P3p" },
+      "AllByGender": { "m": "tous", "f": "toutes" },
+      "NoneThereInline": "il n'y en a pas",
+      "Asks": {
+        "is": "est-ce que {0} est {1} ?",
+        "member": "est-ce que {0} fait partie des {1} ?",
+        "does": "est-ce que {0} {1}{2} ?",
+        "is|je": "est-ce que je suis {1} ?",
+        "member|je": "est-ce que je fais partie des {1} ?",
+        "all|tous": "est-ce que tous les {0} sont {1} ?",
+        "all|toutes": "est-ce que toutes les {0} sont {1} ?",
+        "alldo|tous": "est-ce que tous les {0} {1}{2} ?",
+        "alldo|toutes": "est-ce que toutes les {0} {1}{2} ?"
+      },
+      "Decide": "Une question trancherait : {0}",
+      "IfYes": "- Si oui : {0}.",
+      "IfNo": "- Si non : {0}.",
       "And": "et"
     },
     "Questions": [

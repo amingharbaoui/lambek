@@ -712,6 +712,11 @@
     },
     "Categories": {
       "Statements": [
+        [ "isnotmember", "^(?<n>i) am not one of the (?<p>.+)$" ],
+        [ "ismember", "^(?<n>i) am one of the (?<p>.+)$" ],
+        [ "isnotmember", "^(?<n>.+?) is not one of the (?<p>.+)$" ],
+        [ "ismember", "^(?<n>.+?) is one of the (?<p>.+)$" ],
+        [ "does", "^(?<n>.+?) does (?<v>[a-z]+)(?: (?<o>.+))?$" ],
         [ "no", "^(?<q>no) (?<s>.+?) (?:is|are) (?<p>.+)$" ],
         [ "no", "^(?<q>no) (?<s>.+?) (?<v>[a-z]+)(?: (?<o>.+))?$" ],
         [ "somenot", "^(?<q>some) (?<s>.+?) (?:are not|aren['’]t|is not|isn['’]t) (?<p>.+)$" ],
@@ -734,10 +739,13 @@
         [ "does", "^(?<n>.+?) (?<v>[a-z]+)(?: (?<o>.+))?$" ]
       ],
       "Listener": [
+        [ "isnotmember", "^(?<n>you) are not one of the (?<p>.+)$" ],
+        [ "ismember", "^(?<n>you) are one of the (?<p>.+)$" ],
         [ "isnot", "^(?<n>you) (?:are not|aren['’]t) (?<p>.+)$" ],
         [ "is", "^(?<n>you) are (?<p>.+)$" ]
       ],
       "Questions": [
+        [ "askmember", "^is (?<n>.+?) one of the (?<p>.+)$" ],
         [ "askall", "^are (?<q>all) (?<s>.+?) (?<p>[^ ].*)$" ],
         [ "askall", "^is (?<q>every|each) (?<s>.+?) (?<p>[^ ].*)$" ],
         [ "askall", "^do (?<q>all) (?<s>.+?) (?<v>[a-z]+)(?: (?<o>.+))?$" ],
@@ -787,7 +795,11 @@
         "somedo|some": "some {0} {1}{2}",
         "somenot|some": "some {0} are not {1}",
         "notsomenot|some": "all {0} are {1}",
-        "whodo": "{0} {1}{2}"
+        "whodo": "{0} {1}{2}",
+        "member": "{0} is one of the {1}",
+        "notmember": "{0} is not one of the {1}",
+        "member|i": "I am one of the {1}",
+        "notmember|i": "I am not one of the {1}"
       },
       "Yes": "Yes: {0}.",
       "No": "No: {0}.",
@@ -801,6 +813,25 @@
       "WhoUnknown": "I cannot tell from what you told me.",
       "Contradiction": "What you told me contradicts itself: these sentences cannot all be true together:",
       "Clash": "Careful: with what you told me, these sentences cannot all be true together:",
+      "YesWords": [ "yes", "yeah", "yep", "of course", "sure", "exactly", "that's right" ],
+      "NoWords": [ "no", "nope", "not at all", "no way" ],
+      "Plural": [ "all", "some" ],
+      "AllOf": { "all": "all", "some": "all" },
+      "PluralArticles": [],
+      "Indefinite": { "m": "a", "f": "a", "vowel": "an" },
+      "VerbForms": { "one": "", "speaker": "", "many": "" },
+      "AllByGender": { "m": "all", "f": "all" },
+      "NoneThereInline": "there are none",
+      "Asks": {
+        "is": "is {0} {1}?",
+        "member": "is {0} one of the {1}?",
+        "does": "does {0} {1}{2}?",
+        "all|all": "are all {0} {1}?",
+        "alldo|all": "do all {0} {1}{2}?"
+      },
+      "Decide": "One question would settle it: {0}",
+      "IfYes": "- If yes: {0}.",
+      "IfNo": "- If no: {0}.",
       "And": "and"
     },
     "Questions": [

@@ -12,6 +12,19 @@ function Resolve-LambekCategory {
     # Every sentence of the message must read as one of these, or nothing is taken. What is told is kept as told; what
     # is asked is answered yes, no, or that it cannot be known, never guessed (see Category.cs)
     if ($Text -notmatch '\p{L}') { return $null }
+    # The answer to the question Lambek asked when it could not conclude: "oui" tells what the question asked,
+    # and the question that could not be answered is answered again. Anything else said, the question is dropped
+    $pending = Get-LambekCategoryPending
+    if ($pending) {
+        Set-LambekCategoryPending -Pending $null
+        $answer = Test-LambekCategoryAnswer -Text $Text -Language $pending.Language
+        if ($answer) {
+            $told = $(if ($answer -eq 'yes') { $pending.Yes } else { $pending.No })
+            $sentences = @(Split-LambekCategorySentence -Text "$told. $($pending.Question)" -Language $pending.Language)
+            $result = Resolve-LambekCategoryMessage -Sentences $sentences -Language $pending.Language -Noted
+            if ($result) { return $result }
+        }
+    }
     $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)
     $languages = @($detected) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $detected } | Sort-Object)
     foreach ($language in $languages) {
@@ -26,6 +39,11 @@ function Resolve-LambekCategory {
                 $shape
             })
         if ($shapes.Count -ne $sentences.Count) { continue }
+        # (what is told just after the question asked is the answer to it, said in full: the question is answered again)
+        if ($pending -and $language -eq $pending.Language -and @($sentences | Where-Object { $_.Question }).Count -eq 0) {
+            $again = @(Split-LambekCategorySentence -Text $pending.Question -Language $language)
+            return Resolve-LambekCategoryMessage -Sentences (@($sentences) + @($again)) -Language $language -Noted
+        }
         return Resolve-LambekCategoryMessage -Sentences $sentences -Language $language
     }
     return $null
@@ -44,7 +62,14 @@ function Get-LambekCategoryVocabulary {
         $options = [System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::CultureInvariant
         $rules = {
             param($list)
-            @(foreach ($rule in @($list)) { if ($rule) { [pscustomobject]@{ Kind = "$($rule[0])"; Regex = [regex]::new("$($rule[1])", $options) } } })
+            # ("fait partie des chats" says what "est un chat" says, with the name of the kind in the plural)
+            @(foreach ($rule in @($list)) {
+                    if (-not $rule) { continue }
+                    $kind = "$($rule[0])"
+                    $member = $kind.EndsWith('member')
+                    if ($member) { $kind = @{ ismember = 'is'; isnotmember = 'isnot'; askmember = 'askis' }[$kind] }
+                    [pscustomobject]@{ Kind = $kind; Member = $member; Regex = [regex]::new("$($rule[1])", $options) }
+                })
         }
         $words = [pscustomobject]@{
             Statements = & $rules $data['Statements']
@@ -103,7 +128,7 @@ function Read-LambekCategorySentence {
             $match = $rule.Regex.Match($Sentence)
             if (-not $match.Success) { continue }
             if ($Shape) { return [pscustomobject]@{ Kind = $rule.Kind } }
-            $read = ConvertTo-LambekCategoryItem -Kind $rule.Kind -Match $match -Language $Language -Listener:$Listener
+            $read = ConvertTo-LambekCategoryItem -Kind $rule.Kind -Match $match -Language $Language -Listener:$Listener -Member:$rule.Member
             if ($read) { return $read }
         }
     }
@@ -111,7 +136,7 @@ function Read-LambekCategorySentence {
 }
 
 function ConvertTo-LambekCategoryItem {
-    param([string] $Kind, [System.Text.RegularExpressions.Match] $Match, [string] $Language, [switch] $Listener)
+    param([string] $Kind, [System.Text.RegularExpressions.Match] $Match, [string] $Language, [switch] $Listener, [switch] $Member)
 
     # What the parts of a sentence are: the quantifier, the kind of things, the one named, what is said of them.
     # Parts side by side ("is my sister a student", "tous les chats de ma soeur aiment le lait") are cut where they all
@@ -147,17 +172,18 @@ function ConvertTo-LambekCategoryItem {
             })
     }
     foreach ($cut in $cuts) {
-        $item = Read-LambekCategoryPart -Kind $Kind -Values $cut -Language $Language -Listener:$Listener
+        $item = Read-LambekCategoryPart -Kind $Kind -Values $cut -Language $Language -Listener:$Listener -Member:$Member
         if ($item) { return $item }
     }
     return $null
 }
 
 function Read-LambekCategoryPart {
-    param([string] $Kind, [hashtable] $Values, [string] $Language, [switch] $Listener)
+    param([string] $Kind, [hashtable] $Values, [string] $Language, [switch] $Listener, [switch] $Member)
 
     $item = [pscustomobject]@{
         Kind       = $Kind
+        Member     = [bool] $Member
         Quantifier = ''
         Subject    = $null
         Individual = $null
@@ -285,7 +311,7 @@ function ConvertTo-LambekCategoryIndividual {
 function Get-LambekCategoryLemma {
     param([string] $Word, [string] $Language, [switch] $Verb)
 
-    # The base form of a word: of an adjective, else of a noun ("gris" stays "gris", "hommes" is "homme"); or, for a verb,
+    # The base form of a word: of an adjective, else of a noun ("grises" is "gris", "hommes" is "homme"); or, for a verb,
     # the verb it is a form of ("volent" is "voler"), never "etre" or "avoir" (they are the sentence, not what it says)
     if ($null -eq $script:CategoryLemmas) { $script:CategoryLemmas = @{} }
     $key = "$Language|$([bool] $Verb)|$Word"
@@ -304,8 +330,8 @@ function Get-LambekCategoryLemma {
             $adjectives = @($known | Where-Object { $_.Pos -eq 'a' })
             $nouns = @($known | Where-Object { $_.Pos -eq 'n' })
             if ($adjectives.Count -gt 0) {
-                $same = @($adjectives | Where-Object { (& $plain $_) -eq $Word })
-                $lemma = & $plain $(if ($same.Count -gt 0) { $same[0] } else { $adjectives[0] })
+                # (the shortest: "grise" is a form of "gris" before it is a word of its own)
+                $lemma = & $plain (@($adjectives | Sort-Object -Stable { "$($_.Lemma)".Length })[0])
             }
             elseif ($nouns.Count -gt 0) {
                 $lemma = & $plain (@($nouns | Sort-Object -Stable { "$($_.Lemma)".Length })[0])
@@ -446,38 +472,54 @@ function Get-LambekCategoryOpposite {
 }
 
 function Get-LambekCategorySentence {
-    param([pscustomobject] $Item, [string] $Shape, [string] $Language, [string] $Subject = '')
+    param(
+        [pscustomobject] $Item,
+        [string] $Shape,
+        [string] $Language,
+        [string] $Subject = '',
+        # Which shapes: the sentences of answers, or the questions Lambek asks ("Asks")
+        [string] $Shapes = 'Sentences',
+        # Said from the user's side, as it is kept when told: "ma soeur", "je"
+        [switch] $Plain
+    )
 
     # The sentence of an answer, made with the user's own words of the question, then said from the other side:
     # "Minou est-il noir ?" gives "Minou est noir", "suis-je mortel ?" gives "vous etes mortel". Nothing when the
     # language has no sentence for it
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
-    $sentences = $data['Sentences']
+    $sentences = $data[$Shapes]
     $who = $(if ($Subject) { $Subject } else { $Item.Written.Subject })
     $key = $Shape
     if ($Item.Verb) { $key = $(switch ($Shape) { 'is' { 'does' } 'isnot' { 'doesnot' } default { "$($Shape)do" } }) }
+    elseif ($Item.PSObject.Properties['Member'] -and $Item.Member -and $Shape -in 'is', 'isnot') { $key = $(if ($Shape -eq 'is') { 'member' } else { 'notmember' }) }
     $candidates = @()
     # ("qui vole ?" is answered with its own verb: "Tweety vole", "Tweety flies")
     if ($Item.Kind -eq 'askwho' -and $Item.Verb -and $Shape -eq 'is') { $candidates += 'whodo' }
     if ($Item.Quantifier) { $candidates += "$key|$($Item.Quantifier)" }
     $speaker = $Item.Individual -and $Item.Individual.Key -eq 'speaker' -and -not $Subject
     if ($speaker) { $candidates += "$key|$(@($data['Speaker'])[0])" }
-    if ($Shape -in 'is', 'isnot') { $candidates += $key }
+    if ($Shape -in 'is', 'isnot' -or $key -in 'member', 'notmember') { $candidates += $key }
     $template = $null
     foreach ($candidate in $candidates) { if ($sentences.Contains($candidate)) { $template = $sentences[$candidate]; break } }
     if (-not $template) { return $null }
     $built = $template -f $who, $Item.Written.Predicate, $Item.Written.Object
     foreach ($rule in @($data['Elide'])) { $built = [regex]::Replace($built, $rule[0], $rule[1]) }
+    if ($Plain) { return $built }
     $turned = ConvertTo-LambekOtherSide -Text $built -Language $Language -Register 'vous'
     if (-not $turned) { return $built }
-    $turned = $turned.TrimEnd('.')
+    if ($Shapes -eq 'Sentences') { $turned = $turned.TrimEnd('.') }
     # (a sentence made with a small word first says it small; a name keeps its capital)
     if ($built -cmatch '^\p{Ll}') { $turned = $turned.Substring(0, 1).ToLowerInvariant() + $turned.Substring(1) }
     return $turned
 }
 
 function Resolve-LambekCategoryMessage {
-    param([object[]] $Sentences, [string] $Language)
+    param(
+        [object[]] $Sentences,
+        [string] $Language,
+        # What is told with the question is said back first ("C'est note. Tom est un chat."), then the answer
+        [switch] $Noted
+    )
 
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
     $say = (Get-LambekLexicon -Language $Language).Dialogue.Say
@@ -532,6 +574,11 @@ function Resolve-LambekCategoryMessage {
     }
 
     $ask = $question[0].Item
+    if ($Noted -and @($facts).Count -gt 0) {
+        $shape = 'Noted'
+        if ($script:Incognito) { $shape += 'Here' }
+        $lines.Add(($say[$shape] -f (@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
+    }
     $because = {
         param([int[]] $indices)
         $lines.Add($data['Because'])
@@ -618,6 +665,12 @@ function Resolve-LambekCategoryMessage {
     if ($ask.Kind -eq 'asksomenot') { $exists = [pscustomobject]@{ Kind = 'askno'; Subject = $ask.Subject; Predicate = $ask.Predicate } }
     if ($exists -and $null -ne [LambekCategories]::Smallest($statements, (Get-LambekCategoryOpposite -Item $exists -Atoms $atoms -Individual ''))) {
         $lines.Add(($data['Exist'] -f $ask.Written.Subject))
+    }
+    # The question that would settle it, kept until the next message: "oui" or "non" is then its answer
+    $decide = Find-LambekCategoryQuestion -Ask $ask -Premises $premises.ToArray() -Statements $statements -Atoms $atoms -Language $Language
+    if ($decide) {
+        foreach ($line in $decide.Lines) { $lines.Add($line) }
+        Set-LambekCategoryPending -Pending ([pscustomobject]@{ Language = $Language; Question = $question[0].Sentence.Original; Yes = $decide.Yes; No = $decide.No })
     }
     Set-LambekLastProof
     return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }

@@ -171,6 +171,129 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'The question that settles it' {
+
+        It 'asks the question that would settle what cannot be concluded, and answers again on oui' {
+            Tell 'tous les chats sont noirs'
+            Ask 'Tom est-il noir ?' | Should -Be (@(
+                    "Je ne peux pas le conclure avec ce que vous m'avez dit : « Tom est noir » peut être vrai ou faux."
+                    'Une question trancherait : est-ce que Tom est un chat ?'
+                    '- Si oui : Tom est noir.'
+                ) -join "`n")
+            Ask 'oui' | Should -Be (@(
+                    "C'est noté. Tom est un chat. Je m'en souviendrai."
+                    'Oui : Tom est noir.'
+                    "Parce que vous m'avez dit :"
+                    '- Tous les chats sont noirs.'
+                    '- Tom est un chat.'
+                ) -join "`n")
+        }
+
+        It 'keeps a non as told, and says plainly that it still cannot conclude' {
+            Tell 'tous les chats sont noirs', 'Tom est-il noir ?'
+            Ask 'non' | Should -Be (@(
+                    "C'est noté. Tom n'est pas un chat. Je m'en souviendrai."
+                    "Je ne peux pas le conclure avec ce que vous m'avez dit : « Tom est noir » peut être vrai ou faux."
+                ) -join "`n")
+        }
+
+        It 'takes an answer said in full as the answer' {
+            Tell 'tous les chats sont noirs', 'Tom est-il noir ?'
+            @((Ask 'Tom est un chat') -split "`n")[0..1] | Should -Be @("C'est noté. Tom est un chat. Je m'en souviendrai.", 'Oui : Tom est noir.')
+        }
+
+        It 'says what a no would give, by the rule read backwards' {
+            Tell 'tous les chats sont noirs'
+            Ask 'Tom est-il un chat ?' | Should -Be (@(
+                    "Je ne peux pas le conclure avec ce que vous m'avez dit : « Tom est un chat » peut être vrai ou faux."
+                    'Une question trancherait : est-ce que Tom est noir ?'
+                    "- Si non : Tom n'est pas un chat."
+                ) -join "`n")
+        }
+
+        It 'asks about every one of a kind when the question is about every one' {
+            Tell 'tous les chats sont des mammifères'
+            @((Ask 'tous les chats sont-ils des animaux ?') -split "`n")[1] | Should -Be 'Une question trancherait : est-ce que tous les mammifères sont des animaux ?'
+            @((Ask 'oui') -split "`n")[0..1] | Should -Be @("C'est noté. Tous les mammifères sont des animaux. Je m'en souviendrai.", 'Oui : tous les chats sont des animaux.')
+        }
+
+        It 'says one of a kind the way the language does: <Question>' -ForEach @(
+            @{ Told = 'toutes les souris sont grises'; Question = 'est-ce que Jerry est grise ?'; Asked = 'Une question trancherait : est-ce que Jerry est une souris ?' }
+            @{ Told = 'tous les chats de ma soeur sont noirs'; Question = 'Minou est-il noir ?'; Asked = 'Une question trancherait : est-ce que Minou est un chat de votre soeur ?' }
+            @{ Told = 'tous les oiseaux volent'; Question = 'est-ce que Tweety vole ?'; Asked = 'Une question trancherait : est-ce que Tweety est un oiseau ?' }
+            @{ Told = 'tous les hommes sont mortels'; Question = 'suis-je mortel ?'; Asked = 'Une question trancherait : est-ce que vous êtes un homme ?' }
+            @{ Told = 'All cats are black.'; Question = 'Is Tom black?'; Asked = 'One question would settle it: is Tom a cat?' }
+            @{ Told = 'All cats are mammals.'; Question = 'Are all cats animals?'; Asked = 'One question would settle it: are all mammals animals?' }
+        ) {
+            Tell $Told
+            @((Ask $Question) -split "`n")[1] | Should -Be $Asked
+        }
+
+        It 'asks nothing when no question would help' {
+            Tell 'certains chats sont gris', 'Tom est un chat'
+            @((Ask 'Tom est-il gris ?') -split "`n").Count | Should -Be 2
+        }
+
+        It 'drops the question when something else is said' {
+            Tell 'tous les chats sont noirs', 'Tom est-il noir ?', 'bonjour'
+            Ask 'oui' | Should -Not -BeLike "C'est noté*"
+        }
+
+        It 'gives, for every syllogism it cannot conclude, a question whose answers do what it says they do' {
+            $terms = @{
+                S = @{ One = 'étudiant'; Many = 'étudiants' }
+                M = @{ One = 'musicien'; Many = 'musiciens' }
+                P = @{ One = 'artiste'; Many = 'artistes' }
+            }
+            $sentence = {
+                param([string] $form, [string] $a, [string] $b, [switch] $ask)
+                $x = $terms[$a]; $y = $terms[$b]
+                $said = switch ($form) {
+                    'A' { "tous les $($x.Many) sont des $($y.Many)" }
+                    'E' { "aucun $($x.One) n'est un $($y.One)" }
+                    'I' { "certains $($x.Many) sont des $($y.Many)" }
+                    'O' { "certains $($x.Many) ne sont pas des $($y.Many)" }
+                }
+                if ($ask) { $(if ($form -eq 'E') { "est-ce qu'$said ?" } else { "est-ce que $said ?" }) } else { "$said." }
+            }
+            $figures = @(
+                , @(@('M', 'P'), @('S', 'M'))
+                , @(@('P', 'M'), @('S', 'M'))
+                , @(@('M', 'P'), @('M', 'S'))
+                , @(@('P', 'M'), @('M', 'S'))
+            )
+            $forms = 'A', 'E', 'I', 'O'
+            $wrong = [System.Collections.Generic.List[string]]::new()
+            $asked = 0
+            foreach ($figure in $figures) {
+                foreach ($major in $forms) {
+                    foreach ($minor in $forms) {
+                        foreach ($conclusion in $forms) {
+                            $message = "$(& $sentence $major $figure[0][0] $figure[0][1]) $(& $sentence $minor $figure[1][0] $figure[1][1]) $(& $sentence $conclusion 'S' 'P' -ask)"
+                            foreach ($answer in 'oui', 'non') {
+                                & (Get-Module Lambek) { Clear-LambekTold; $script:Told = $null }
+                                $first = Ask $message
+                                if ($first -notlike '*Une question trancherait*') { continue }
+                                $replies = @($first, (Ask $answer))
+                                $asked++
+                                $said = @($replies[0] -split "`n" | Where-Object { $_ -like "- Si $answer : *" })
+                                $got = @($replies[1] -split "`n")[1]
+                                if ($said.Count -eq 1) {
+                                    $expected = $said[0] -replace "^- Si $answer : ", ''
+                                    $ok = $got -eq "Oui : $expected" -or $got -eq "Non : $expected" -or ($got -like 'Non*' -and $expected -like '*pas*') -or ($got -like 'Oui*' -and $expected -notlike '*pas*')
+                                    if (-not $ok -or $got -like 'Je ne peux pas*') { $wrong.Add("$message / $answer -> $got (said: $expected)") }
+                                }
+                                elseif ($got -notlike 'Je ne peux pas*') { $wrong.Add("$message / $answer -> $got (said nothing would follow)") }
+                            }
+                        }
+                    }
+                }
+            }
+            $asked | Should -BeGreaterThan 0
+            $wrong | Should -BeNullOrEmpty
+        }
+    }
+
     Context 'Every syllogism' {
 
         # The 64 pairs of premises of the four figures, each with the four conclusions asked: what Lambek answers must be

@@ -101,6 +101,8 @@ $script:ProblemTrigger = $null
 $script:CategoryWords = $null
 $script:CategoryLemmas = $null
 $script:CategoryReadings = $null
+# The question Lambek asked in each conversation when it could not conclude, waiting for its answer
+$script:CategoryPending = $null
 $script:KnowledgeRules = $null
 # A woman, a man, a person or a thing, by noun (WordNet)
 $script:NounKinds = $null
