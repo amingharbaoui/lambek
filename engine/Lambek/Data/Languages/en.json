@@ -710,6 +710,22 @@
         "Separator": ", "
       }
     },
+    "Abduction": {
+      "Words": [ "why " ],
+      "Inverted": [],
+      "Auxiliaries": [ "is", "are", "am", "was", "were" ],
+      "Do": [ "does", "do", "did" ],
+      "Deduced": "I deduce it from what you told me:",
+      "PossibleOne": "You did not tell me why. I see one possible explanation:",
+      "PossibleMany": "You did not tell me why. {0} explanations could fit, starting with the one that explains the most:",
+      "Maybe": "- maybe because {0} (you told me: {1})",
+      "AlsoExplains": "  it would also explain: {0}",
+      "Not": "- not because {0}: you told me the opposite.",
+      "Ask": "is it true that {0}?",
+      "Decide": "One question would tell them apart: {0}",
+      "Check": "To check it: {0}",
+      "IfNo": "If not, it is not because {0}."
+    },
     "Categories": {
       "Statements": [
         [ "isnotmember", "^(?<n>i) am not one of the (?<p>.+)$" ],

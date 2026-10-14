@@ -739,6 +739,22 @@
         "Separator": ", "
       }
     },
+    "Abduction": {
+      "Words": [ "pourquoi est-ce que ", "pourquoi est-ce qu'", "pourquoi est-ce qu\u2019", "pourquoi " ],
+      "Inverted": [ "il", "elle", "ils", "elles", "on" ],
+      "Auxiliaries": [],
+      "Do": [],
+      "Deduced": "Je le d\u00e9duis de ce que vous m'avez dit :",
+      "PossibleOne": "Vous ne m'avez pas dit pourquoi. Je vois une explication possible :",
+      "PossibleMany": "Vous ne m'avez pas dit pourquoi. Je vois {0} explications possibles, en commen\u00e7ant par celle qui explique le plus de choses :",
+      "Maybe": "- peut-\u00eatre parce que {0} (vous m'avez dit : {1})",
+      "AlsoExplains": "  cela expliquerait aussi : {0}",
+      "Not": "- pas parce que {0} : vous m'avez dit le contraire.",
+      "Ask": "est-ce que {0} ?",
+      "Decide": "Une question les d\u00e9partagerait : {0}",
+      "Check": "Pour le v\u00e9rifier : {0}",
+      "IfNo": "Si non, ce n'est pas parce que {0}."
+    },
     "Categories": {
       "Statements": [
         [ "isnotmember", "^(?<n>je) ne fais pas partie des (?<p>.+)$" ],

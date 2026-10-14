@@ -49,6 +49,9 @@ function New-LambekPlan {
                 if (@($category.Facts).Count -gt 0) { Add-LambekTold -Plan ([pscustomobject]@{ Steps = @($category.Facts | ForEach-Object { [pscustomobject]@{ Statement = $_ } }) }) }
                 return ConvertTo-LambekReplyPlan -Text $Text -Language $category.Language -Reply $category.Reply -Spoken
             }
+            # "pourquoi la route est mouillee ?": what it follows from, else what may explain it, and how to tell
+            $why = Resolve-LambekWhy -Text $Text
+            if ($why) { return ConvertTo-LambekReplyPlan -Text $Text -Language $why.Language -Reply $why.Reply -Spoken }
             $definition = Resolve-LambekDefinition -Text $Text
             if ($definition) { return ConvertTo-LambekReplyPlan -Text $Text -Language $definition.Language -Reply (Format-LambekDefinition -Definition $definition) }
             $calculation = Resolve-LambekCalculation -Text $Text

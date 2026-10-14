@@ -224,6 +224,8 @@ public static class LambekSpeech
                 if (!IsParticiple(dictionary, participle)) continue;
                 int back = Previous(tokens, i);
                 if (back < 0) continue;
+                // ("la route est mouillee": "est" is a verb there, not the east; a participle after "etre" or "avoir" is left as it was written)
+                if (tokens[back].Word && IsBeOrHave(dictionary, tokens[back].Text)) continue;
                 if (!tokens[back].Word || NounGender(dictionary, tokens[back].Text) == null)
                 {
                     // One name between them, like PowerShell
@@ -369,6 +371,16 @@ public static class LambekSpeech
     static string Gender(LambekDictionary dictionary, string noun)
     {
         return NounGender(dictionary, noun) ?? "m";
+    }
+
+    static bool IsBeOrHave(LambekDictionary dictionary, string word)
+    {
+        // A form of "etre" or "avoir", the verbs a participle follows
+        foreach (LambekLemma lemma in dictionary.Lemmas(word.ToLowerInvariant(), "fr"))
+        {
+            if ((lemma.Pos == "v" || lemma.Pos.StartsWith("aux", StringComparison.Ordinal)) && (lemma.Lemma == "etre" || lemma.Lemma == "\u00eatre" || lemma.Lemma == "avoir")) return true;
+        }
+        return false;
     }
 
     static bool IsParticiple(LambekDictionary dictionary, string word)
