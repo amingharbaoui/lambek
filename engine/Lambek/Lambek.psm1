@@ -97,6 +97,10 @@ $script:ToldQuestionWords = $null
 # What was told of a problem in each conversation, and the words that make a message one
 $script:ProblemStores = $null
 $script:ProblemTrigger = $null
+# The shapes of general rules in each language, the base forms of their words, and the sentences told read as them
+$script:CategoryWords = $null
+$script:CategoryLemmas = $null
+$script:CategoryReadings = $null
 $script:KnowledgeRules = $null
 # A woman, a man, a person or a thing, by noun (WordNet)
 $script:NounKinds = $null

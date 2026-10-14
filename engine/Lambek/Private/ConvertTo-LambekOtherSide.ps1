@@ -97,6 +97,8 @@ function ConvertTo-LambekOtherSide {
     # ("me voit" turned is "te voit", once: the space the word had and the one it got are one)
     $said = ($result.ToString() -replace ' {2,}', ' ').Trim()
     if (-not $said) { return $null }
+    # ("je ne suis pas" turned is "vous n'etes pas": a small word before a verb that now starts with a vowel loses its own)
+    foreach ($rule in @($side['Elide'])) { if ($rule) { $said = [regex]::Replace($said, "$($rule[0])", "$($rule[1])") } }
     $said = $said.Substring(0, 1).ToUpper([cultureinfo]::InvariantCulture) + $said.Substring(1)
     if ($said -notmatch '[.!?]$') { $said += '.' }
     return $said

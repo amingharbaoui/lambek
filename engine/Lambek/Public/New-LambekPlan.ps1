@@ -42,6 +42,13 @@ function New-LambekPlan {
             # "Marie a 2 ans de plus que Paul... quel age a Marie ?", "qui est au milieu ?": solved and checked
             $problem = Resolve-LambekProblem -Text $Text
             if ($problem) { return ConvertTo-LambekReplyPlan -Text $Text -Language $problem.Language -Reply $problem.Reply -Spoken }
+            # "tous les chats de ma soeur sont noirs... Minou est-il noir ?": kept as told, and answered yes, no, or that it
+            # cannot be known, with what the answer rests on
+            $category = Resolve-LambekCategory -Text $Text
+            if ($category) {
+                if (@($category.Facts).Count -gt 0) { Add-LambekTold -Plan ([pscustomobject]@{ Steps = @($category.Facts | ForEach-Object { [pscustomobject]@{ Statement = $_ } }) }) }
+                return ConvertTo-LambekReplyPlan -Text $Text -Language $category.Language -Reply $category.Reply -Spoken
+            }
             $definition = Resolve-LambekDefinition -Text $Text
             if ($definition) { return ConvertTo-LambekReplyPlan -Text $Text -Language $definition.Language -Reply (Format-LambekDefinition -Definition $definition) }
             $calculation = Resolve-LambekCalculation -Text $Text

@@ -36,6 +36,8 @@ function Get-LambekRegister {
 
     # The user's own words say tu or vous; nothing said, nothing known
     if ($Language -ne 'fr' -or -not $Text) { return $null }
+    # (the "t" of "vole-t-il", "a-t-elle" is said for the sound only: it is nobody)
+    $Text = [regex]::Replace($Text, '(?i)-t-(?=(?:il|elle|on|ils|elles)(?![\p{L}]))', '-')
     $words = @((ConvertTo-LambekNormalizedText -Text $Text) -split '[^\p{L}]+' | Where-Object { $_ })
     if (@($words | Where-Object { $_ -in 'tu', 't', 'toi', 'ton', 'ta', 'tes', 'stp' }).Count -gt 0) { return 'tu' }
     if (@($words | Where-Object { $_ -in 'vous', 'votre', 'vos', 'svp' }).Count -gt 0) { return 'vous' }

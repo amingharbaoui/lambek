@@ -283,6 +283,8 @@ function Get-LambekFactSentence {
 
     # The words told, turned to the other side, when reading them again gives the same thing; nothing otherwise
     if (-not ($Fact.PSObject.Properties['Text'] -and $Fact.Text -and $Fact.Language)) { return $null }
+    # (a general rule told, "tous les chats sont noirs", is read again as one)
+    if ("$($Fact.Action)" -eq 'verb:category') { return Get-LambekCategorySaid -Fact $Fact -Register $Register }
     $words = "$($Fact.Text)"
     if ($Fact.PSObject.Properties['Said'] -and $Fact.Said) { $words = "$($Fact.Said)" }
     $sentence = ConvertTo-LambekOtherSide -Text $words -Language $Fact.Language -Register $Register
