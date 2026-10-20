@@ -74,6 +74,11 @@ $script:SpeechRecent = @{}
 $script:SpeechTurn = 0
 # How many answers were said by the composer (ConvertTo-LambekSpeech) and read back: counted by the message benchmark
 $script:SpeechSaid = 0
+# The router of acts and the small words it reads, built on first use (Get-LambekRoute)
+$script:Router = $null
+$script:SmallWords = $null
+# The learned forms models of words, by language, loaded on first use (Get-LambekFormModel)
+$script:FormModels = $null
 $script:AuditPath = Join-Path $dataFolder 'audit.jsonl'
 $script:HostState = @{ Plans = [ordered]@{}; Simulations = @{}; Approvals = @{} }
 $script:ProgressHandler = $null

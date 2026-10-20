@@ -76,7 +76,8 @@ Describe 'Dialogue act' {
         $plan.PSObject.Properties['Suggestion'] | Should -BeNullOrEmpty
         $plan | ConvertTo-LambekAnswer | Should -BeLike 'I read that as something you are telling me*'
         New-LambekPlan 'how do I delete the .log files in C:\Temp' | ConvertTo-LambekAnswer | Should -BeLike 'That is a question*'
-        New-LambekPlan 'find me a good restaurant in Brussels' | ConvertTo-LambekAnswer | Should -BeLike '*something other than what I take care of*'
+        # (the router of acts knows it for an order for elsewhere, and says so)
+        New-LambekPlan 'find me a good restaurant in Brussels' | ConvertTo-LambekAnswer | Should -BeLike 'That I cannot do: I have no access*'
         New-LambekPlan 'ils ont déplacé la réunion à jeudi' | ConvertTo-LambekAnswer | Should -BeLike 'Je lis cela comme une information*'
     }
 

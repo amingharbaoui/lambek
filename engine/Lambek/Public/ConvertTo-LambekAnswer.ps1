@@ -54,6 +54,8 @@ function ConvertTo-LambekAnswer {
             # (a reply in words, as an answer from what was told, is said in the register of the user; a calculation is kept as it is)
             if ($Plan.PSObject.Properties['Reply'] -and $Plan.Reply) { $reply = $Plan.Reply; if (-not ($Plan.PSObject.Properties['Spoken'] -and $Plan.Spoken)) { [void] $raw.Add($lines.Count) } }
             if (-not $reply) { $reply = Get-LambekTalk -Text "$($Plan.Original)" -Language $language -Topics $topics -Example $example -Vary }
+            # What the router of acts knows of what nothing was read in: a story asked, an order for elsewhere, how the user feels
+            if (-not $reply -and $Plan.PSObject.Properties['RouteReply'] -and $Plan.RouteReply -and $answer[$Plan.RouteReply]) { $reply = $answer[$Plan.RouteReply] -f $topics }
             # What the user told or asked, without asking for anything: Lambek says how it read it
             if (-not $reply) {
                 $told = @($Plan.Steps | Where-Object { $_.PSObject.Properties['Act'] -and $_.Act -and $_.Act -ne 'Order' }) | Select-Object -First 1

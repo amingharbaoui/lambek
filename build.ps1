@@ -125,6 +125,37 @@ if ($Task -eq 'Benchmark') {
             Write-Warning 'The test split of bench/messages.json is not the frozen one (TestHash): its figures cannot be compared with the baseline.'
         }
     }
+
+    # The forms of words, learned without a dictionary, on treebanks they never learned from; next to them, what the
+    # dictionaries Lambek reads today give on the same words
+    foreach ($treebank in @(@{ Language = 'fr'; File = 'fr_gsd-ud-test.conllu' }, @{ Language = 'en'; File = 'en_ewt-ud-test.conllu' })) {
+        $report = Invoke-LambekFormBenchmark -Path (Join-Path $PSScriptRoot "bench/forms/$($treebank.File)") -Language $treebank.Language -Dictionary
+        Write-Host ''
+        Write-Host "Forms ($($treebank.Language), $($treebank.File))"
+        foreach ($name in 'Words', 'Upos', 'Feats', 'AllTags', 'Lemma', 'Unseen', 'UnseenLemma', 'UnseenUpos', 'DictionaryKnown', 'DictionaryLemma', 'Determinism', 'WordsPerSecond') {
+            Write-Host ("  {0,-16} {1}" -f $name, $report.$name)
+        }
+    }
+
+    # The router of acts, on messages it never saw: what it says a message is, and what it is.
+    # The confusion matrix reads by line: for the messages of each act, what the router said ('-': it abstained)
+    $acts = Join-Path $PSScriptRoot 'bench/acts.json'
+    foreach ($split in 'calibration', 'test') {
+        $report = Invoke-LambekActBenchmark -Path $acts -Split $split
+        Write-Host ''
+        Write-Host "Acts ($split)"
+        foreach ($name in 'Cases', 'Routed', 'Right', 'Wrong', 'Abstained', 'Coverage', 'Precision', 'WrongBound', 'Determinism', 'MedianMs') {
+            Write-Host ("  {0,-16} {1}" -f $name, $report.$name)
+        }
+        $columns = @($report.Confusion[0].PSObject.Properties.Name | Where-Object { $_ -ne 'Act' })
+        Write-Host ("  {0,-10} {1}" -f '', (($columns | ForEach-Object { $_.Substring(0, [math]::Min(4, $_.Length)).PadLeft(5) }) -join ''))
+        foreach ($row in $report.Confusion) {
+            Write-Host ("  {0,-10} {1}" -f $row.Act, (($columns | ForEach-Object { "$($row.$_)".PadLeft(5) }) -join ''))
+        }
+        if ($split -eq 'test' -and -not $report.TestFrozen) {
+            Write-Warning 'The test split of bench/acts.json is not the frozen one (TestHash): its figures cannot be compared.'
+        }
+    }
 }
 
 # Fingerprint: what Lambek answers to every request of the benchmark, one line each, and the hash of them all.
@@ -157,6 +188,22 @@ if ($Task -eq 'Fingerprint') {
     $messages = Invoke-LambekMessageBenchmark -Path (Join-Path $PSScriptRoot 'bench/messages.json')
     $lines = @($lines) + @(foreach ($turn in $messages.Results) {
             "$($turn.Id)#$($turn.Turn)|$($turn.Status)|$(@($turn.Actions) -join ',')|$(($turn.Reply -replace "`r", '') -replace "`n", ' / ')"
+        })
+    # And what the forms models read in every word of their test treebanks
+    foreach ($treebank in @(@{ Language = 'fr'; File = 'fr_gsd-ud-test.conllu' }, @{ Language = 'en'; File = 'en_ewt-ud-test.conllu' })) {
+        $model = & (Get-Module Lambek) { param($language) Get-LambekFormModel -Language $language } $treebank.Language
+        $index = 0
+        $lines = @($lines) + @(foreach ($sentence in [LambekTreebank]::Read((Join-Path $PSScriptRoot "bench/forms/$($treebank.File)"))) {
+                $index++
+                $read = $model.Read([string[]] @($sentence | ForEach-Object Form))
+                "$($treebank.Language)#$($index.ToString($invariant))|$(($read | ForEach-Object { "$($_.Lemma)/$($_.Upos)/$($_.Feats)" }) -join ' ')"
+            })
+    }
+
+    # And what the router of acts says of every message of its bench, with its margin
+    $routes = Invoke-LambekActBenchmark -Path (Join-Path $PSScriptRoot 'bench/acts.json')
+    $lines = @($lines) + @(foreach ($route in $routes.Results) {
+            "$($route.Id)|$($route.Act)|$($route.Proposed)|$(([double] $route.Margin).ToString('R', $invariant))"
         })
 
     $text = ($lines -join "`n") + "`n"

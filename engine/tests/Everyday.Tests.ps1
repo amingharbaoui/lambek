@@ -37,12 +37,12 @@ Describe 'A question is never kept as something told' {
 Describe 'What Lambek does not understand' {
 
     It 'says so, and what it can do, instead of offering files and code only' {
-        Get-TestAnswer 'raconte-moi une blague' | Should -BeLike "Je n'ai pas compris cette phrase.*raisonner*calculer*fichiers et code."
+        Get-TestAnswer 'patati et patata' | Should -BeLike "Je n'ai pas compris cette phrase.*raisonner*calculer*fichiers et code."
     }
 
     It 'says it in English to an English message' {
         InModuleScope Lambek { $script:LanguageHint = 'en' }
-        try { Get-TestAnswer 'tell me a joke' | Should -BeLike 'I did not understand that.*reason about it*files and code.' }
+        try { Get-TestAnswer 'blah blah thingy stuff' | Should -BeLike 'I did not understand that.*reason about it*files and code.' }
         finally { InModuleScope Lambek { $script:LanguageHint = $null } }
     }
 }

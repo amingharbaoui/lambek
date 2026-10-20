@@ -30,7 +30,9 @@ function Get-LambekReplyTemplate {
         NotUnderstood = @('Answer.Unknown', 'Dialogue.Say.Question', 'Dialogue.Say.Other', 'Dialogue.Say.Report', 'Dialogue.Say.WhoIs')
         # Understood, and said honestly that it cannot be answered from what was told
         Abstained     = @('Dialogue.Say.NotKnown', 'Dialogue.Say.NotTold', 'Dialogue.Say.NothingTold', 'Dialogue.Say.OnlyIf', 'Dialogue.Say.OnlyIfQuoted',
-            'Dialogue.Say.WhyNothing', 'Dialogue.Say.ConditionalOrder', 'Answer.Define.Unknown', 'Dialogue.Categories.Unknown', 'Dialogue.Categories.Conflict', 'Dialogue.Categories.Imagine.Unknown')
+            'Dialogue.Say.WhyNothing', 'Dialogue.Say.ConditionalOrder', 'Answer.Define.Unknown', 'Dialogue.Categories.Unknown', 'Dialogue.Categories.Conflict', 'Dialogue.Categories.Imagine.Unknown',
+            # what the router of acts knows Lambek cannot do: a story or advice, an order for elsewhere, a language not read yet
+            'Answer.Open', 'Answer.Elsewhere', 'Answer.Foreign')
         # A question back before going on: safe, but nothing was answered yet
         Asked         = @('Answer.NeedOne', 'Answer.NeedMany', 'GuessQuestion', 'GuessOpenQuestion', 'RephraseQuestion', 'SentenceQuestion',
             'AmbiguityQuestion', 'AmbiguityQuestion3')

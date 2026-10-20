@@ -1,0 +1,6870 @@
+{
+  "Format": "lambek-acts-1",
+  "Description": "What a message is, before any reader reads it: the examples the router of Lambek compares a message with. Written by hand, taken from the small talk of the language files, the examples of the packs, and the calibration splits of the benches; never from a test split.",
+  "Acts": {
+    "Talk": "small talk: greetings, thanks, questions about Lambek",
+    "Feeling": "the user says how they feel",
+    "Order": "an order Lambek can carry out: files, code, and what follows one (\"et dans C:\\Data ?\")",
+    "Elsewhere": "an order for something Lambek has no hold on: messages, calls, shopping, the house",
+    "Tell": "something told to remember: a fact, a rule, a condition, a default",
+    "Ask": "a question about what was told, or that follows from it",
+    "World": "a question about the world, that nothing told answers: general knowledge, the time, the weather",
+    "Why": "why something is, or how Lambek knows it",
+    "Imagine": "a world imagined: \"et si...\"",
+    "Problem": "a word problem: numbers told, then a question",
+    "Define": "what a word means",
+    "Calculate": "a calculation",
+    "Open": "a request with no single answer: a story, a poem, advice, an opinion, the future"
+  },
+  "Router": {
+    "Description": "Set on the calibration split of bench/acts.json: the nearest examples that vote, the passes of the learnt vectors, the margin under which the router abstains, and the weight of each kind of feature",
+    "Neighbours": 7,
+    "Passes": 12,
+    "Margin": 0.02,
+    "Weights": {
+      "c": 1.0,
+      "q": 2.0,
+      "b": 1.0,
+      "e": 0.5,
+      "f": 0.7,
+      "w": 1.0,
+      "g": 0.3
+    }
+  },
+  "Examples": [
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "coucou",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "bonsoir",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "salut Lambek",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "hello toi",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "ça roule ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "tu vas bien ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "merci, c'est gentil",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "super merci",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "à plus tard",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "à demain",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "bonne journée",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "ok d'accord",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "parfait",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "tu t'appelles comment ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "tu parles quelles langues ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "qui t'a créé ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "tu fais quoi dans la vie ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "que peux-tu faire pour moi ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "hi there",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "hey",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "good morning",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "good evening",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "what's up?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "how's it going?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "thanks a lot",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "cheers",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "see you later",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "bye bye",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "have a nice day",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "okay great",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "what is your name?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "which languages do you speak?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "who made you?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "what are you able to do?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "nice to meet you",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "hallo",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "guten Morgen",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "danke schön",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "tschüss",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "wie heißt du?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "was kannst du?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "hola",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "buenos días",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "muchas gracias",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "adiós",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "¿cómo te llamas?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "¿qué sabes hacer?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "ciao",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "buongiorno",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "grazie mille",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "arrivederci",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "come ti chiami?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "cosa sai fare?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "hallo",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "goedemorgen",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "dank je wel",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "tot ziens",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "hoe heet je?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "wat kun je?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "olá",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "bom dia",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "muito obrigado",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "tchau",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "como te chamas?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "o que sabes fazer?",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis fatigué",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis triste aujourd'hui",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je me sens seul",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis stressé par mon travail",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis content",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "j'en ai marre",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je m'ennuie",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "c'était une journée horrible",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis de bonne humeur",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "j'ai peur de rater",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis déprimé",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "ça ne va pas trop",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis vraiment heureux",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "j'ai le cafard",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis nerveux pour demain",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je me sens bien aujourd'hui",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "je suis découragé",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm tired",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I feel sad today",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I feel lonely",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm stressed about work",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm so happy",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm bored",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "today was awful",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm in a good mood",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm worried about tomorrow",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm not feeling great",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm exhausted",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm really happy",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I feel blue",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm nervous about tomorrow",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I feel good today",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I'm discouraged",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "de",
+      "Text": "ich bin müde",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "de",
+      "Text": "ich bin traurig",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "de",
+      "Text": "mir ist langweilig",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "es",
+      "Text": "estoy cansado",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "es",
+      "Text": "estoy triste",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "es",
+      "Text": "me siento solo",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "it",
+      "Text": "sono stanco",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "it",
+      "Text": "sono triste",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "it",
+      "Text": "mi annoio",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "nl",
+      "Text": "ik ben moe",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "nl",
+      "Text": "ik ben verdrietig",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "nl",
+      "Text": "ik verveel me",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "pt",
+      "Text": "estou cansado",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "pt",
+      "Text": "estou triste",
+      "Source": "written"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "pt",
+      "Text": "sinto-me sozinho",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "supprime les fichiers .bak dans D:\\Sauvegardes",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "affiche les fichiers de C:\\Projets",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "copie rapport.docx vers E:\\Archive",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "déplace les photos de C:\\Images vers D:\\Photos",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "renomme notes.txt en notes-2026.txt",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "crée un dossier Factures dans C:\\Compta",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "libère de la place sur le disque C",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "restaure les fichiers supprimés hier",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "écris un script qui liste les fichiers d'un dossier",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "génère une fonction PowerShell qui compte les lignes d'un fichier",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "trouve les gros fichiers dans C:\\Users",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "vide le dossier C:\\Temp",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "et dans D:\\Data ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "non, plutôt les fichiers .zip",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "fais-le aussi pour C:\\Logs",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "montre-moi les fichiers modifiés cette semaine",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "delete the .bak files in D:\\Backups",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "show the files in C:\\Projects",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "copy report.docx to E:\\Archive",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "move the photos from C:\\Images to D:\\Photos",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "rename notes.txt to notes-2026.txt",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "create a folder called Invoices in C:\\Accounts",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "free up some space on drive C",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "restore the files deleted yesterday",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "write a script that lists the files in a folder",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "generate a PowerShell function that counts the lines of a file",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "find the big files in C:\\Users",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "empty the C:\\Temp folder",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "and in D:\\Data?",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "no, the .zip files instead",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "do the same for C:\\Logs",
+      "Source": "written"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "show me the files changed this week",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "envoie un message à Julie",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "appelle le docteur",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "réserve une table pour ce soir",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "achète du pain",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "mets de la musique",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "règle un réveil à 7 heures",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "éteins la télé",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "commande un taxi",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "publie ça sur Facebook",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "paie la facture d'électricité",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "ouvre la porte du garage",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "ajoute un rendez-vous demain à 10 h",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "monte le chauffage",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "envoie un SMS à maman",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "écris un mail à mon professeur",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "rappelle-moi d'appeler Paul demain",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "trouve-moi un restaurant à Bruxelles",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "réserve un vol pour Barcelone",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "ferme les volets",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "lance Netflix",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "baisse le son",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "envoie une invitation à l'équipe",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "fais une recherche sur Google",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "prends un rendez-vous chez le dentiste",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "send a message to Julie",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "call the doctor",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "book a table for tonight",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "buy some bread",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "play some music",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "set an alarm for 7 am",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "turn off the TV",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "order a taxi",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "post this on Facebook",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "pay the electricity bill",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "open the garage door",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "add a meeting tomorrow at 10",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "turn up the heating",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "text my mom",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "send an email to my teacher",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "remind me to call Paul tomorrow",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "find me a restaurant in Brussels",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "book a flight to Barcelona",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "close the shutters",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "start Netflix",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "turn the volume down",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "send an invite to the team",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "search Google for it",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "make a dentist appointment",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "de",
+      "Text": "schick eine Nachricht an Julia",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "de",
+      "Text": "ruf den Arzt an",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "de",
+      "Text": "bestell eine Pizza",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "de",
+      "Text": "stell einen Wecker auf 7 Uhr",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "de",
+      "Text": "mach das Licht aus",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "es",
+      "Text": "envía un mensaje a Julia",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "es",
+      "Text": "llama al médico",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "es",
+      "Text": "pide una pizza",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "es",
+      "Text": "pon una alarma a las 7",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "es",
+      "Text": "apaga la luz",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "it",
+      "Text": "manda un messaggio a Giulia",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "it",
+      "Text": "chiama il dottore",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "it",
+      "Text": "ordina una pizza",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "it",
+      "Text": "metti una sveglia alle 7",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "it",
+      "Text": "spegni la luce",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "nl",
+      "Text": "stuur een bericht naar Julia",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "nl",
+      "Text": "bel de dokter",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "nl",
+      "Text": "bestel een pizza",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "nl",
+      "Text": "zet een wekker om 7 uur",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "nl",
+      "Text": "doe het licht uit",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "pt",
+      "Text": "envia uma mensagem à Júlia",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "pt",
+      "Text": "liga para o médico",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "pt",
+      "Text": "pede uma pizza",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "pt",
+      "Text": "põe um alarme para as 7",
+      "Source": "written"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "pt",
+      "Text": "apaga a luz",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "mon frère habite à Marseille",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "j'ai deux chats",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Léa est infirmière",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "ma voiture est rouge",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "je travaille à Bruxelles",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Paul est le cousin de Marc",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "tous les oiseaux ont des plumes",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "aucun chat n'aboie",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "les chiens sont des mammifères",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Rex est un chien",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "s'il fait beau, je vais courir",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "quand je suis malade, je reste au lit",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "normalement les chats dorment beaucoup",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "mon patron s'appelle Martin",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "hier j'ai rangé le grenier",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Julie n'aime pas le café",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "le cuivre est un métal",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "j'ai 32 ans",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "ma fille va à l'école Jean-Jaurès",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Léa a trois enfants",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "mon fils joue au foot",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "les pommes sont des fruits",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Paris est ma ville préférée",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "ma grand-mère s'appelle Odette",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "je n'ai pas de voiture",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "mon chat est noir et blanc",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Marc travaille avec moi",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "certains chiens sont petits",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "chaque matin je bois un thé",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Tom est plus grand que Léo",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "je suis né en 2001",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "nous avons un jardin",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "ce soir je vais au cinéma",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "my brother lives in Marseille",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "I have two cats",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Lea is a nurse",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "my car is red",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "I work in Brussels",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Paul is Mark's cousin",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "all birds have feathers",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "no cat barks",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "dogs are mammals",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Rex is a dog",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "if it is sunny, I go running",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "when I am sick, I stay in bed",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "cats usually sleep a lot",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "my boss is called Martin",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "yesterday I cleaned the attic",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Julie does not like coffee",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "copper is a metal",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "I am 32 years old",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "it is raining",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Lea has three children",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "my son plays football",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "apples are fruits",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Paris is my favourite city",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "my grandmother is called Odette",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "I don't have a car",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "my cat is black and white",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Mark works with me",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "some dogs are small",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "every morning I drink tea",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Tom is taller than Leo",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "I was born in 2001",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "we have a garden",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "tonight I'm going to the cinema",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "de",
+      "Text": "mein Bruder wohnt in Berlin",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "de",
+      "Text": "ich habe zwei Katzen",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "de",
+      "Text": "Lea ist Krankenschwester",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "de",
+      "Text": "meine Katze ist schwarz",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "de",
+      "Text": "ich arbeite in Hamburg",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "es",
+      "Text": "mi hermano vive en Madrid",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "es",
+      "Text": "tengo dos gatos",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "es",
+      "Text": "Lea es enfermera",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "es",
+      "Text": "mi gato es negro",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "es",
+      "Text": "trabajo en Barcelona",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "it",
+      "Text": "mio fratello abita a Roma",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "it",
+      "Text": "ho due gatti",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "it",
+      "Text": "Lea è infermiera",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "it",
+      "Text": "il mio gatto è nero",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "it",
+      "Text": "lavoro a Torino",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "nl",
+      "Text": "mijn broer woont in Gent",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "nl",
+      "Text": "ik heb twee katten",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "nl",
+      "Text": "Lea is verpleegster",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "nl",
+      "Text": "mijn kat is zwart",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "nl",
+      "Text": "ik werk in Antwerpen",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "pt",
+      "Text": "o meu irmão mora em Lisboa",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "pt",
+      "Text": "tenho dois gatos",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "pt",
+      "Text": "a Lea é enfermeira",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "pt",
+      "Text": "o meu gato é preto",
+      "Source": "written"
+    },
+    {
+      "Act": "Tell",
+      "Language": "pt",
+      "Text": "trabalho em Coimbra",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "où habite mon frère ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "combien de chats ai-je ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "Léa est-elle infirmière ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "de quelle couleur est ma voiture ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "qui est le cousin de Marc ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que Rex est un mammifère ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "Rex aboie-t-il ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que je vais courir ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "comment s'appelle mon patron ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "qu'est-ce que j'ai fait hier ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "Julie aime-t-elle le café ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "qu'est-ce que je t'ai dit ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "oublie ce que je t'ai dit",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que le cuivre conduit l'électricité ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "à quelle école va ma fille ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "combien de frères a Paul ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que Léa est infirmière ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que ma voiture est rouge ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "les chiens sont-ils des mammifères ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que tous les oiseaux ont des plumes ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "Paul est-il le cousin de Marc ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "qui est infirmière ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "que fait Léa comme métier ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "combien de cousins a Marc ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que mon frère habite à Marseille ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "qui habite à Marseille ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que Julie boit du café ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "qu'est-ce que tu sais sur Rex ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "que sais-tu de mon frère ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que les chats aboient ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "mon patron s'appelle-t-il Martin ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "where does my brother live?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "how many cats do I have?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "is Lea a nurse?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what color is my car?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "where do I work?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "who is Mark's cousin?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "is Rex a mammal?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "does Rex bark?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "do I go running?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what is my boss called?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what did I do yesterday?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "does Julie like coffee?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what have I told you?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "forget what I told you",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "does copper conduct electricity?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "which school does my daughter go to?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "is my car red?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "are dogs mammals?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "do all birds have feathers?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "is Paul Mark's cousin?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "who is a nurse?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what does Lea do for a living?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "how many cousins does Mark have?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "does my brother live in Marseille?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "who lives in Marseille?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "does Julie drink coffee?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what do you know about Rex?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what do you know about my brother?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "do cats bark?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "is my boss called Martin?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "is copper a metal?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "de",
+      "Text": "wo wohnt mein Bruder?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "de",
+      "Text": "wie viele Katzen habe ich?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "de",
+      "Text": "ist Lea Krankenschwester?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "de",
+      "Text": "ist mein Auto rot?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "de",
+      "Text": "was weißt du über meinen Bruder?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "es",
+      "Text": "¿dónde vive mi hermano?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "es",
+      "Text": "¿cuántos gatos tengo?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "es",
+      "Text": "¿Lea es enfermera?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "es",
+      "Text": "¿mi coche es rojo?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "es",
+      "Text": "¿qué sabes de mi hermano?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "it",
+      "Text": "dove abita mio fratello?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "it",
+      "Text": "quanti gatti ho?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "it",
+      "Text": "Lea è infermiera?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "it",
+      "Text": "la mia macchina è rossa?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "it",
+      "Text": "cosa sai di mio fratello?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "nl",
+      "Text": "waar woont mijn broer?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "nl",
+      "Text": "hoeveel katten heb ik?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "nl",
+      "Text": "is Lea verpleegster?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "nl",
+      "Text": "is mijn auto rood?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "nl",
+      "Text": "wat weet je over mijn broer?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "pt",
+      "Text": "onde mora o meu irmão?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "pt",
+      "Text": "quantos gatos tenho?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "pt",
+      "Text": "a Lea é enfermeira?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "pt",
+      "Text": "o meu carro é vermelho?",
+      "Source": "written"
+    },
+    {
+      "Act": "Ask",
+      "Language": "pt",
+      "Text": "o que sabes sobre o meu irmão?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle est la capitale de l'Espagne ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui a inventé le téléphone ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "combien d'habitants compte la Belgique ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "en quelle année est mort Napoléon ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui est le président des États-Unis ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle est la hauteur de la tour Eiffel ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quel est le plus grand océan ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui a composé la Neuvième Symphonie ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "où se trouve le mont Everest ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle est la monnaie du Japon ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "combien de continents y a-t-il ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui a gagné la Coupe du monde 2018 ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle heure est-il ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quel temps fait-il à Paris ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quand a été construit le Colisée ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quel est le symbole chimique du fer ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui a écrit Germinal ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui a découvert l'Amérique ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle est la distance entre la Terre et la Lune ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "combien pèse un éléphant ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quel est le pays le plus peuplé ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui a peint Guernica ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle est la date d'aujourd'hui ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "en quelle année a commencé la Première Guerre mondiale ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui est le Premier ministre belge ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle langue parle-t-on au Mexique ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quel est le plus long fleuve du monde ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "à quelle vitesse court un guépard ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quel est le prix de l'essence ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui a gagné le Tour de France ?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what is the capital of Italy?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who invented the telephone?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "how many people live in Belgium?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "when did Napoleon die?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who is the president of France?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "how tall is the Eiffel Tower?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what is the largest ocean?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who composed the Ninth Symphony?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "where is Mount Everest?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what is the currency of Japan?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "how many continents are there?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who won the 2018 World Cup?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what time is it?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what's the weather in London?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "when was the Colosseum built?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what is the chemical symbol for iron?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who wrote Don Quixote?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who discovered America?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "how far is the Moon from the Earth?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "how much does an elephant weigh?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "which country has the most people?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who painted Guernica?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what is today's date?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "when did the First World War start?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who is the prime minister of Belgium?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what language do they speak in Mexico?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what is the longest river in the world?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "how fast can a cheetah run?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what is the price of petrol?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "who won the Tour de France?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "de",
+      "Text": "was ist die Hauptstadt von Italien?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "de",
+      "Text": "wer hat das Telefon erfunden?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "de",
+      "Text": "wie spät ist es?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "de",
+      "Text": "wer hat Faust geschrieben?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "de",
+      "Text": "wie hoch ist der Mount Everest?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "es",
+      "Text": "¿cuál es la capital de Italia?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "es",
+      "Text": "¿quién inventó el teléfono?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "es",
+      "Text": "¿qué hora es?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "es",
+      "Text": "¿quién escribió el Quijote?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "es",
+      "Text": "¿cuál es el río más largo del mundo?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "it",
+      "Text": "qual è la capitale della Spagna?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "it",
+      "Text": "chi ha inventato il telefono?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "it",
+      "Text": "che ore sono?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "it",
+      "Text": "chi ha scritto la Divina Commedia?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "it",
+      "Text": "qual è il fiume più lungo del mondo?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "nl",
+      "Text": "wat is de hoofdstad van Italië?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "nl",
+      "Text": "wie heeft de telefoon uitgevonden?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "nl",
+      "Text": "hoe laat is het?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "nl",
+      "Text": "wie schreef Max Havelaar?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "nl",
+      "Text": "wat is de langste rivier ter wereld?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "pt",
+      "Text": "qual é a capital de Itália?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "pt",
+      "Text": "quem inventou o telefone?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "pt",
+      "Text": "que horas são?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "pt",
+      "Text": "quem escreveu Os Lusíadas?",
+      "Source": "written"
+    },
+    {
+      "Act": "World",
+      "Language": "pt",
+      "Text": "qual é o rio mais longo do mundo?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi Rex est-il un mammifère ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi la route est mouillée ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi je prends le bus ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "comment tu le sais ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi dis-tu ça ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi l'herbe est mouillée ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi Tom est un animal ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi les feuilles tombent en automne ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi la mer est salée ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi Léa est infirmière ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi mon frère habite à Marseille ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "d'où tu sais ça ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "qu'est-ce qui te fait dire ça ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "fr",
+      "Text": "pourquoi la voiture ne démarre pas ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why is Rex a mammal?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why is the road wet?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why do I take the bus?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "how do you know?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why do you say that?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why is the grass wet?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why is Tom an animal?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why do leaves fall in autumn?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why is the sea salty?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why is Lea a nurse?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why does my brother live in Marseille?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "where did you get that from?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "what makes you say that?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "en",
+      "Text": "why won't the car start?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "de",
+      "Text": "warum?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "de",
+      "Text": "warum ist die Straße nass?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "es",
+      "Text": "¿por qué?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "es",
+      "Text": "¿por qué la calle está mojada?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "it",
+      "Text": "perché?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "it",
+      "Text": "perché la strada è bagnata?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "nl",
+      "Text": "waarom?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "nl",
+      "Text": "waarom is de weg nat?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "pt",
+      "Text": "porquê?",
+      "Source": "written"
+    },
+    {
+      "Act": "Why",
+      "Language": "pt",
+      "Text": "porque é que a estrada está molhada?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "fr",
+      "Text": "et si Rex était un chat ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "fr",
+      "Text": "imagine que Léa soit médecin",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "fr",
+      "Text": "et si les chats aboyaient ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "fr",
+      "Text": "suppose que je n'aie pas de voiture",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "fr",
+      "Text": "et si Tom n'était pas un oiseau, volerait-il ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "fr",
+      "Text": "que se passerait-il si Paul habitait à Lyon ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "fr",
+      "Text": "admettons que Julie aime le café",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "en",
+      "Text": "what if Rex were a cat?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "en",
+      "Text": "imagine Lea were a doctor",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "en",
+      "Text": "what if cats barked?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "en",
+      "Text": "suppose I had no car",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "en",
+      "Text": "if Tom were not a bird, would he fly?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "en",
+      "Text": "what would happen if Paul lived in Lyon?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "en",
+      "Text": "let's say Julie likes coffee",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "de",
+      "Text": "was wäre, wenn Rex eine Katze wäre?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "es",
+      "Text": "¿y si Rex fuera un gato?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "it",
+      "Text": "e se Rex fosse un gatto?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "nl",
+      "Text": "wat als Rex een kat was?",
+      "Source": "written"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "pt",
+      "Text": "e se o Rex fosse um gato?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Julie a 4 bonbons de plus que Max. Max a 6 bonbons. Combien Julie a-t-elle de bonbons ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "J'ai 50 euros. Je dépense 18 euros. Combien me reste-t-il ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Un bus part à 9 h et arrive à 11 h 30. Combien de temps dure le trajet ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Sophie a trois fois plus de livres que Paul. Ensemble ils ont 24 livres. Combien Paul a-t-il de livres ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Il y a 5 rangées de 8 chaises. Combien y a-t-il de chaises ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Anne est plus grande que Marc. Marc est plus grand que Zoé. Qui est la plus petite ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Un paquet contient 12 biscuits. J'en mange 5. Combien en reste-t-il ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Trois amis se partagent 27 billes. Combien chacun en reçoit-il ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "Julie has 4 more sweets than Max. Max has 6 sweets. How many sweets does Julie have?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "I have 50 euros. I spend 18 euros. How much do I have left?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "A bus leaves at 9 and arrives at 11:30. How long is the trip?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "Sophie has three times as many books as Paul. Together they have 24 books. How many books does Paul have?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "There are 5 rows of 8 chairs. How many chairs are there?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "Anne is taller than Mark. Mark is taller than Zoe. Who is the shortest?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "A box holds 12 cookies. I eat 5. How many are left?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "Three friends share 27 marbles. How many does each get?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "de",
+      "Text": "Anna hat 4 Äpfel mehr als Ben. Ben hat 6 Äpfel. Wie viele Äpfel hat Anna?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "es",
+      "Text": "Ana tiene 4 manzanas más que Ben. Ben tiene 6 manzanas. ¿Cuántas manzanas tiene Ana?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "it",
+      "Text": "Anna ha 4 mele più di Ben. Ben ha 6 mele. Quante mele ha Anna?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "nl",
+      "Text": "Anna heeft 4 appels meer dan Ben. Ben heeft 6 appels. Hoeveel appels heeft Anna?",
+      "Source": "written"
+    },
+    {
+      "Act": "Problem",
+      "Language": "pt",
+      "Text": "A Ana tem mais 4 maçãs do que o Ben. O Ben tem 6 maçãs. Quantas maçãs tem a Ana?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "que veut dire nostalgie ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "que signifie le mot paradoxe ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "c'est quoi un algorithme ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "qu'est-ce qu'une planète ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "définis le mot courage",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "donne la définition de démocratie",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "le sens du mot lucide",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "c'est quoi la gravité ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "ça veut dire quoi serendipité ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "what does nostalgia mean?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "what is the meaning of paradox?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "what is an algorithm?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "what's a planet?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "define courage",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "give me the definition of democracy",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "meaning of lucid",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "definition of gravity",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "de",
+      "Text": "was bedeutet Nostalgie?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "de",
+      "Text": "was ist ein Algorithmus?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "es",
+      "Text": "¿qué significa nostalgia?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "es",
+      "Text": "¿qué es un algoritmo?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "it",
+      "Text": "cosa significa nostalgia?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "it",
+      "Text": "che cos'è un algoritmo?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "nl",
+      "Text": "wat betekent nostalgie?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "nl",
+      "Text": "wat is een algoritme?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "pt",
+      "Text": "o que significa nostalgia?",
+      "Source": "written"
+    },
+    {
+      "Act": "Define",
+      "Language": "pt",
+      "Text": "o que é um algoritmo?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "combien font 7 fois 8 ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "calcule 45 + 55",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "combien fait 100 divisé par 5 ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "que vaut 2 puissance 8 ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "combien font 20 % de 80 ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "résous 2x + 3 = 11",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "c'est combien 15 moins 7 ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "quelle est la racine carrée de 81 ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "3/4 + 1/2",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "12 * 12",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "what is 7 times 8?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "calculate 45 + 55",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "how much is 100 divided by 5?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "what is 2 to the power of 8?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "what is 20% of 80?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "solve 2x + 3 = 11",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "what's 15 minus 7?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "what is the square root of 81?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "3/4 + 1/2",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "12 * 12",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "de",
+      "Text": "wie viel ist 7 mal 8?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "de",
+      "Text": "berechne 45 + 55",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "es",
+      "Text": "¿cuánto es 7 por 8?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "es",
+      "Text": "calcula 45 + 55",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "it",
+      "Text": "quanto fa 7 per 8?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "it",
+      "Text": "calcola 45 + 55",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "nl",
+      "Text": "hoeveel is 7 keer 8?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "nl",
+      "Text": "bereken 45 + 55",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "pt",
+      "Text": "quanto é 7 vezes 8?",
+      "Source": "written"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "pt",
+      "Text": "calcula 45 + 55",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "raconte-moi une histoire drôle",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "écris un poème sur l'automne",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "invente une chanson",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "donne-moi une idée de cadeau",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "que penses-tu de la politique ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "conseille-moi un bon film",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "fais-moi rire",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "écris une lettre de motivation",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "résume ce livre",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "quel est ton plat préféré ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "tu crois en Dieu ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "aide-moi à écrire un discours",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "propose-moi une recette",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "à quoi sert l'amour ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "est-ce que j'aurai de la chance ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "qui va gagner les élections ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "écris-moi une blague sur les chats",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "imagine une histoire de dragon",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "que me conseilles-tu pour mes vacances ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "quel métier devrais-je faire ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "donne-moi ton avis sur ce film",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "fais un résumé de la Seconde Guerre mondiale",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "traduis ce texte en espagnol",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "écris un slogan pour ma boutique",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "compose un poème d'amour",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "comment devenir riche ?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "tell me a funny story",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "write a poem about autumn",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "make up a song",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "give me a gift idea",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "what do you think about politics?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "recommend a good movie",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "make me laugh",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "write a cover letter",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "summarize this book",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "what is your favourite food?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "do you believe in God?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "help me write a speech",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "suggest a recipe",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "what is love for?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "will I be lucky?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "who will win the election?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "write me a joke about cats",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "make up a dragon story",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "what do you suggest for my holidays?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "which job should I do?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "give me your opinion on this film",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "summarize the Second World War",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "translate this text into Spanish",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "write a slogan for my shop",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "compose a love poem",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "en",
+      "Text": "how do I get rich?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "de",
+      "Text": "erzähl mir eine Geschichte",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "de",
+      "Text": "schreib ein Gedicht",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "de",
+      "Text": "gib mir einen Rat",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "de",
+      "Text": "was denkst du über Politik?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "es",
+      "Text": "cuéntame un chiste",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "es",
+      "Text": "escribe un poema",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "es",
+      "Text": "dame un consejo",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "es",
+      "Text": "¿qué piensas de la política?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "it",
+      "Text": "raccontami una barzelletta",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "it",
+      "Text": "scrivi una poesia",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "it",
+      "Text": "dammi un consiglio",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "it",
+      "Text": "cosa pensi della politica?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "nl",
+      "Text": "vertel me een mop",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "nl",
+      "Text": "schrijf een gedicht",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "nl",
+      "Text": "geef me een advies",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "nl",
+      "Text": "wat vind je van politiek?",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "pt",
+      "Text": "conta-me uma piada",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "pt",
+      "Text": "escreve um poema",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "pt",
+      "Text": "dá-me um conselho",
+      "Source": "written"
+    },
+    {
+      "Act": "Open",
+      "Language": "pt",
+      "Text": "o que pensas da política?",
+      "Source": "written"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "je suis incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "suis je incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "qui es tu",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "tu es qui",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "t es qui",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "que sais tu faire",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "que peux tu faire",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "tu sais faire quoi",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "parles tu",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "tu parles",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "parlez vous",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "ca va",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "comment ca va",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "comment vas tu",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "merci",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "merci beaucoup",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "merci bien",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "au revoir",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "a plus",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "salut",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "bonjour",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "ok",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "d accord",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "dac",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "am i incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "is this incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "what are you",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "what is lambek",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "what can you do",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "what do you do",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "do you speak",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "can you speak",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "do you understand",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "how are you",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "how are you doing",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "how is it going",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "thanks",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "thank you",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "thank you very much",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "bye",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "goodbye",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "hi",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "ok",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "okay",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "alright",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "inkognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "bin ich inkognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "wer bist du",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "wer sind sie",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "was bist du",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "was kannst du tun",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "was kannst du machen",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "sprichst du",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "sprechen sie",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "verstehst du",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "wie geht s dir",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "wie gehts",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "danke",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "vielen dank",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "auf wiedersehen",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "bis bald",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "hi",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "hey",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "ok",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "okay",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "de",
+      "Text": "alles klar",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "modo incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "estoy en incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "quien eres",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "quien es usted",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "que eres",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "que puedes hacer",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "que haces",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "hablas",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "habla usted",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "hablas espanol",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "como estas",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "como esta",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "como esta usted",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "gracias",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "mil gracias",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "hasta luego",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "hasta pronto",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "buenas tardes",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "vale",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "de acuerdo",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "es",
+      "Text": "perfecto",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "sono in incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "modalita incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "chi sei",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "chi sei tu",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "tu chi sei",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "che cosa sai fare",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "cosa puoi fare",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "parli italiano",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "parli inglese",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "parli francese",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "come stai",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "come va",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "come sta",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "grazie",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "molte grazie",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "ciao ciao",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "a presto",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "salve",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "ok",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "va bene",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "it",
+      "Text": "d accordo",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "ben ik incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "is dit incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "wie ben jij",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "wie ben je",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "wie bent u",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "wat kan je",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "wat kun jij",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "spreek je",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "spreekt u",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "praat je",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "hoe gaat het",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "hoe gaat het met je",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "hoe gaat het met jou",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "dank je",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "dankjewel",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "dag",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "doei",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "dooei",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "hoi",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "hey",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "ok",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "oke",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "nl",
+      "Text": "okido",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "anonimo",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "estou incognito",
+      "Source": "language:Incognito"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "quem es tu",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "quem es",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "tu es quem",
+      "Source": "language:Identity"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "o que podes fazer",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "o que consegues fazer",
+      "Source": "language:Abilities"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "falas portugues",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "fala portugues",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "voce fala",
+      "Source": "language:Languages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "como estas",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "como esta",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "como vai",
+      "Source": "language:HowAreYou"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "obrigado",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "obrigada",
+      "Source": "language:Thanks"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "adeus",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "xau",
+      "Source": "language:Bye"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "oi",
+      "Source": "language:Greeting"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "ok",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "okay",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Talk",
+      "Language": "pt",
+      "Text": "esta bem",
+      "Source": "language:Okay"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "zeige die Dateien größer als 100 MB in C:\\Users",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "lösche die .tmp-Dateien älter als 30 Tage in C:\\Temp",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "verschiebe die .log-Dateien aus C:\\Temp nach D:\\Archiv",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "losche die dateien",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "losche die alten dateien in einem ordner",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "entferne die log dateien",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "zeige die dateien",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "zeige die dateien in einem ordner",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "finde die grossen dateien",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "kopiere die dateien in einen ordner",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "kopiere eine datei",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "dateien nach einem ordner kopieren",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "verschiebe die dateien in einen ordner",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "verschiebe eine datei",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "dateien nach einem ordner verschieben",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "benenne eine datei um",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "benenne die datei in einen neuen namen um",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "eine datei umbenennen",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "erstelle einen ordner",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "erstelle eine neue datei in einem ordner",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "lege ein verzeichnis an",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "speicherplatz freigeben",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "gib 10 gb in einem ordner frei",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "platz schaffen",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "stelle die geloschten dateien wieder her",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "die dateien wiederherstellen",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "mach die letzte loschung ruckgangig",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "muestra los archivos de más de 100 MB en C:\\Users",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "elimina los archivos .tmp de más de 30 días en C:\\Temp",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "mueve los archivos .log de C:\\Temp a D:\\Archive",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "eliminar archivos",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "eliminar los archivos antiguos en una carpeta",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "borrar los archivos .log de mas de 30 dias en una carpeta",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "mostrar los archivos",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "mostrar los archivos en una carpeta",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "buscar los archivos grandes",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "copiar los archivos a una carpeta",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "copiar un archivo",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "copiar las imagenes de una carpeta a otra carpeta",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "mover los archivos a una carpeta",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "mover un archivo",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "mover las imagenes de una carpeta a otra carpeta",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "renombrar un archivo",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "cambiar el nombre de un archivo",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "crear una carpeta",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "crear un archivo nuevo en una carpeta",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "crear una carpeta llamada",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "liberar espacio",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "liberar 10 GB en una carpeta",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "liberar espacio en una carpeta",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "restaurar los archivos",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "deshacer la ultima eliminacion",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "recuperar los archivos de la papelera",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "elenca i file più grandi di 100 MB in C:\\Users",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "elimina i file .tmp più vecchi di 30 giorni in C:\\Temp",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "sposta i file .log da C:\\Temp in D:\\Archive",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "eliminare i file",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "eliminare i vecchi file in una cartella",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "cancellare i file log",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "elencare i file",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "mostrare i file in una cartella",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "cercare i file grandi",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "copiare i file in una cartella",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "copiare un file",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "copia le foto nella cartella",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "spostare i file in una cartella",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "spostare un file",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "sposta i documenti in un altra cartella",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "rinominare un file",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "rinominare il file in un nuovo nome",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "creare una cartella",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "creare un nuovo file in una cartella",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "creare una cartella chiamata",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "liberare spazio",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "liberare 10 GB in una cartella",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "liberare spazio su disco",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "ripristinare i file eliminati",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "ripristinare i file",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "annullare l ultima eliminazione",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "toon de bestanden groter dan 100 MB in C:\\Users",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "verwijder de .tmp-bestanden ouder dan 30 dagen in C:\\Temp",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "verplaats de .log-bestanden in C:\\Temp naar D:\\Archive",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "verwijder de bestanden",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "verwijder de oude bestanden in een map",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "verwijder de logbestanden",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "toon de bestanden",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "toon de bestanden in een map",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "zoek de grote bestanden",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "kopieer de bestanden naar een map",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "kopieer een bestand",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "bestanden kopieren naar een map",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "verplaats de bestanden naar een map",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "verplaats een bestand",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "zet de bestanden in een andere map",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "hernoem een bestand",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "hernoem het bestand naar een nieuwe naam",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "maak een map",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "maak een nieuw bestand in een map",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "maak een map aan",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "ruimte vrijmaken",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "maak 10 GB vrij in een map",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "schijfruimte vrijmaken",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "herstel de verwijderde bestanden",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "zet de bestanden terug",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "maak de laatste verwijdering ongedaan",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "mostra os ficheiros com mais de 100 MB em C:\\Users",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "apaga os ficheiros .tmp com mais de 30 dias em C:\\Temp",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "move os ficheiros .log de C:\\Temp para D:\\Archive",
+      "Source": "pack:files"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "apagar ficheiros",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "apagar os ficheiros antigos numa pasta",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "elimina os ficheiros log",
+      "Source": "pack:files:files.delete"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "listar os ficheiros",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "mostrar os ficheiros numa pasta",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "procurar os ficheiros grandes",
+      "Source": "pack:files:files.list"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "copiar os ficheiros para uma pasta",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "copiar um ficheiro",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "copia as imagens para outra pasta",
+      "Source": "pack:files:files.copy"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "mover os ficheiros para uma pasta",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "mover um ficheiro",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "move as fotos para outra pasta",
+      "Source": "pack:files:files.move"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "renomear um ficheiro",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "renomear o ficheiro para um novo nome",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "renomeia o ficheiro para",
+      "Source": "pack:files:files.rename"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "criar uma pasta",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "criar um ficheiro novo numa pasta",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "cria uma pasta chamada",
+      "Source": "pack:files:files.create"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "libertar espaco",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "libertar 10 GB numa pasta",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "liberar espaco em disco",
+      "Source": "pack:files:files.free"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "restaurar os ficheiros apagados",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "restaurar os ficheiros",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "desfazer a ultima eliminacao",
+      "Source": "pack:files:files.restore"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "generiere eine PowerShell-Funktion namens Get-Report",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "schreibe ein Skript",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "erstelle eine Klasse namens \"Rechnung\"",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "generiere eine funktion",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "de",
+      "Text": "erstelle eine klasse",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "genera una función llamada Get-Report",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "escribe un script",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "generar una funcion",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "escribir un script",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "crear una clase",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "genera una funzione chiamata Get-Report",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "scrivi uno script",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "crea una classe chiamata \"Fattura\"",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "generare una funzione",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "scrivere uno script",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "it",
+      "Text": "creare una classe",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "genereer een PowerShell-functie genaamd Get-Report",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "schrijf een script",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "maak een klasse genaamd \"Factuur\"",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "genereer een functie",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "nl",
+      "Text": "maak een klasse",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "gera uma função chamada Get-Report",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "escreve um script",
+      "Source": "pack:code"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "gerar uma funcao",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "escrever um script",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "pt",
+      "Text": "criar uma classe",
+      "Source": "pack:code:code.generate"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "efface les fichiers de plus de 500 Ko dans C:\\Data",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "supprime les fichiers de plus de 7 jours dans C:\\Users\\Amin\\Downloads",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "copy the .pdf files in C:\\Users\\Amin\\Downloads to C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "delete the .pdf files in \"D:\\Mes Documents\"",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "supprime les fichiers .csv dans C:\\Data",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "move the .pdf files in E:\\Backup\\2026 to C:\\Data",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "delete the .log files in \\\\server\\share\\logs",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "delete the .log and .tmp files in C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "please delete the .log files older than 7 days in E:\\Backup\\2026",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "genere une fonction nommee Get-Report",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "supprimez les fichiers .pdf dans D:\\Archive",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "supprime les fichiers .txt dans C:\\Data",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "write a function called New-Invoice",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "remove the .txt files in \\\\server\\share\\logs",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "find the files in E:\\Backup\\2026",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "create a folder named \"logs\" in \\\\server\\share\\logs",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "deelte the .txt flies in \\\\server\\share\\logs",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "enumerate the files in C:\\Data",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "please delete the .csv files older than 1 year in C:\\Data",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "create the folder E:\\Backup\\2026",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "cherche les fichiers dans C:\\Data",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "erase the files larger than 5 GB in E:\\Backup\\2026",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "move the files in C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "don't delete the files in C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "dleete the .tmp flies in \\\\server\\share\\logs",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "efface les fichiers de plus de 3 mois dans E:\\Backup\\2026",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "create a folder named \"logs\" in C:\\Data",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "copy data.csv to D:\\Archive",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "delete the .txt files in \"D:\\Mes Documents\"",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "do not remove the .log files in D:\\Archive",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "delete everything in C:\\Temp without the .bak files",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "copy the files in \\\\server\\share\\logs to C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "create a powershell script",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "move the files from C:\\A into D:\\B",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "mets le rapport.txt dans C:\\B",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "copy the files in C:\\A intoo D:\\B",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "supprime tout dans C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "can you delete the .tmp files in C:\\A",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "list the files in the folder C:\\Logs",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "put the files",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "renomme rapport.txt en ancien.txt",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "move the documents in C:\\Inbox to D:\\Papers",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "the .log files in C:\\Temp must be deleted",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "supprime le fichier le plus ancien dans C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "delete the temporary files in C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "copy the pdf files from C:\\A to D:\\B",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "free 10 GB in C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "delete the obsolete files in C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "supprime les fichiers zippes dans C:\\Temp",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "which files take up the most space in C:\\Data?",
+      "Source": "bench:requests"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "qu'est-ce que tu sais faire ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "tu es un robot ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle est la capitale de la France ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "à quelle température l'eau bout-elle ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "qui a peint la Joconde ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle est la plus grande planète du système solaire ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle langue parle-t-on au Brésil ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quel est le plus long fleuve de France ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "what is the capital of Spain?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "en",
+      "Text": "how many legs does a spider have?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "c'est quoi la photosynthèse ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "que veut dire éphémère ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Define",
+      "Language": "fr",
+      "Text": "c'est quoi un volcan ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "what is a cat?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Define",
+      "Language": "en",
+      "Text": "what does ephemeral mean?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "combien font 12 fois 7 ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "quelle est la racine carrée de 144 ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "combien font 15 % de 200 ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "what is 9 times 8?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "en",
+      "Text": "what is 100 divided by 4?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Paul a 3 pommes de plus que Léa. Léa a 5 pommes. Combien Paul a-t-il de pommes ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Problem",
+      "Language": "fr",
+      "Text": "Marc a deux fois plus de billes que Tom. Ensemble ils ont 30 billes. Combien Tom a-t-il de billes ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "Anna has 4 more apples than Ben. Ben has 6 apples. How many apples does Anna have?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Problem",
+      "Language": "en",
+      "Text": "Tom has 12 marbles and gives 5 to Sam. How many marbles does Tom have left?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Marie est une étudiante.",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "Marie est-elle une étudiante ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "mon chien s'appelle Rex",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "comment s'appelle mon chien ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Paul est le frère de Julie",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "qui est le frère de Julie ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "il fait beau aujourd'hui",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "my brother lives in Paris",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "my cat is called Luna",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what is my cat called?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "tous les chats sont des animaux",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Tom est un chat",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que Tom est un animal ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "tous les hommes sont mortels",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Socrate est un homme",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "Socrate est-il mortel ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "tous les métaux conduisent l'électricité",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "le cuivre conduit-il l'électricité ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "all dogs are animals",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "is Rex an animal?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "quand il fait froid, je mets un manteau",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "il fait froid",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "est-ce que je mets un manteau ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "if it rains, I take the bus",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "it rains",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "do I take the bus?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "Tweety vole-t-il ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "birds usually fly",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Tweety is a bird",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "does Tweety fly?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "all men are mortal",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Socrates is a man",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "is Socrates mortal?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "fr",
+      "Text": "Tom est un chien",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Imagine",
+      "Language": "fr",
+      "Text": "et si Tom était un chat, serait-il un animal ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Mary lives in Paris",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Tell",
+      "Language": "en",
+      "Text": "Mary does not live in Paris",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "fr",
+      "Text": "quel âge a ma sœur ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "est-ce que je vais réussir mon examen ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "qui va gagner le match ce soir ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Ask",
+      "Language": "en",
+      "Text": "what is my mother's name?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "envoie un mail à Paul",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "fr",
+      "Text": "allume la lumière du salon",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "book a flight to London",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Elsewhere",
+      "Language": "en",
+      "Text": "call my mom",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "crée un dossier nommé projets dans C:\\Users\\Amin\\Documents",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "list the .txt files in C:\\Data",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Order",
+      "Language": "fr",
+      "Text": "et dans C:\\Data ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "list the .log files in C:\\Temp",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Order",
+      "Language": "en",
+      "Text": "and in C:\\Data?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "raconte-moi une blague",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Open",
+      "Language": "fr",
+      "Text": "donne-moi un conseil pour mieux dormir",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "fr",
+      "Text": "j'ai passé une mauvaise journée",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Feeling",
+      "Language": "en",
+      "Text": "I had a bad day",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "fr",
+      "Text": "slt",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "World",
+      "Language": "fr",
+      "Text": "quelle est la capitalle de la france ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Calculate",
+      "Language": "fr",
+      "Text": "combien font 12 foi 7 ?",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Talk",
+      "Language": "en",
+      "Text": "helo",
+      "Source": "bench:messages"
+    },
+    {
+      "Act": "Order",
+      "Language": "es",
+      "Text": "borra los archivos .tmp en C:\\Temp",
+      "Source": "bench:messages"
+    }
+  ]
+}

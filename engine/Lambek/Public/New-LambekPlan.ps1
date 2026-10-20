@@ -37,6 +37,11 @@ function New-LambekPlan {
             if ($recalled) { return $recalled }
         }
 
+        # What the message is (an order, a fact, a question about the world, a story asked...), before any reader
+        # reads it: the router of acts only proposes, the readers still decide
+        $route = $null
+        if (-not $NoRecall) { $route = Get-LambekRoute -Text $Text }
+
         # "que veut dire purge ?", "combien font 3/7 + 2/5": the dictionaries or the calculation answer, nothing is planned
         if (-not $NoRecall) {
             # "combien de chats avons-nous ?", "pourquoi ?" (after an answer from what was told): answered from what was told.
@@ -81,6 +86,13 @@ function New-LambekPlan {
         if (@($typing.Changes).Count -gt 0) {
             Add-LambekTrace -Trace $trace -Clock $clock -Stage 'Read' -Detail "typed: $((@($typing.Changes) | ForEach-Object { "$($_.From)->$($_.To)" }) -join ' ')"
         }
+        # (what the router proposed is said with the reading of the first step)
+        $routeDetail = ''
+        if ($route) {
+            $act = 'none'
+            if ($route.Act) { $act = $route.Act }
+            $routeDetail = ", act: $act (proposed $($route.Proposed), margin $($route.Margin))"
+        }
 
         # "s'il pleut, ...": the condition read, kept for the clause after it, never told on its own
         $condition = $null
@@ -102,6 +114,7 @@ function New-LambekPlan {
                 $detail = "$($request.Language), $($request.Terms.Count) term(s)"
                 if ($words) { $detail += ", entities: $words" }
                 if ($request.Corrections.Count -gt 0) { $detail += ", corrected: $(($request.Corrections | ForEach-Object { "$($_.From)->$($_.To)" }) -join ' ')" }
+                if ($i -eq 0 -and $pass -eq 0) { $detail += $routeDetail }
                 Add-LambekTrace -Trace $trace -Clock $clock -Stage 'Read' -Detail $detail -Step ($i + 1)
 
                 Send-LambekProgress -Stage 'Match' -Step ($i + 1) -Percent (100 * (2 + 3 * $i) / $units)
@@ -210,6 +223,19 @@ function New-LambekPlan {
         if ($proposal) {
             $plan | Add-Member -NotePropertyName Suggestion -NotePropertyValue $proposal.Text
             $plan | Add-Member -NotePropertyName Proposal -NotePropertyValue $proposal
+        }
+
+        if ($route) { $plan | Add-Member -NotePropertyName Route -NotePropertyValue $route }
+
+        # Nothing the readers can act on, and the router knows what it is: "raconte-moi une blague", "envoie un mail
+        # a Paul", "estoy cansado", a fact said in German. Said as such, rather than "I did not understand"
+        $routed = Get-LambekRouteReply -Route $route -Plan $plan -Text $Text
+        if ($routed) {
+            $reply = ConvertTo-LambekReplyPlan -Text $Text -Language $plan.Steps[0].Language
+            $reply.Trace = $trace.ToArray()
+            $reply | Add-Member -NotePropertyName Route -NotePropertyValue $route
+            $reply | Add-Member -NotePropertyName RouteReply -NotePropertyValue $routed
+            return $reply
         }
 
         # What the user told stays with the conversation

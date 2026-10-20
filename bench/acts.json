@@ -1,0 +1,1953 @@
+{
+  "Version": 1,
+  "Description": "Messages labelled with their act, none of them among the examples of the router (engine/Lambek/Data/acts.json). The calibration split sets the thresholds; the test split is frozen: TestHash says whether it changed.",
+  "TestHash": "fd8b79dee9c3c30ce9ea0e7968ebe719a8adc4ccf1d5e7bd420c1357488b5863",
+  "Cases": [
+    {
+      "Id": "A001",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "bien le bonjour"
+    },
+    {
+      "Id": "A002",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "re-bonjour"
+    },
+    {
+      "Id": "A003",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "merci pour ton aide"
+    },
+    {
+      "Id": "A004",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "passe une bonne soirée"
+    },
+    {
+      "Id": "A005",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "salut, ça va ?"
+    },
+    {
+      "Id": "A006",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "et toi, t'es qui au juste ?"
+    },
+    {
+      "Id": "A007",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "comment tu t'appelles déjà ?"
+    },
+    {
+      "Id": "A008",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "tu sers à quoi ?"
+    },
+    {
+      "Id": "A009",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "à la prochaine"
+    },
+    {
+      "Id": "A010",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Talk",
+      "Text": "d'accord merci"
+    },
+    {
+      "Id": "A011",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Talk",
+      "Text": "hiya"
+    },
+    {
+      "Id": "A012",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Talk",
+      "Text": "howdy"
+    },
+    {
+      "Id": "A013",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Talk",
+      "Text": "thanks for your help"
+    },
+    {
+      "Id": "A014",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Talk",
+      "Text": "have a good evening"
+    },
+    {
+      "Id": "A015",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Talk",
+      "Text": "hey, how are you doing?"
+    },
+    {
+      "Id": "A016",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Talk",
+      "Text": "who exactly are you?"
+    },
+    {
+      "Id": "A017",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Talk",
+      "Text": "what can you help me with?"
+    },
+    {
+      "Id": "A018",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Talk",
+      "Text": "catch you later"
+    },
+    {
+      "Id": "A019",
+      "Split": "calibration",
+      "Language": "de",
+      "Act": "Talk",
+      "Text": "servus Lambek"
+    },
+    {
+      "Id": "A020",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Talk",
+      "Text": "danke dir"
+    },
+    {
+      "Id": "A021",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Talk",
+      "Text": "hola Lambek, ¿qué tal todo?"
+    },
+    {
+      "Id": "A022",
+      "Split": "test",
+      "Language": "es",
+      "Act": "Talk",
+      "Text": "un millón de gracias"
+    },
+    {
+      "Id": "A023",
+      "Split": "calibration",
+      "Language": "it",
+      "Act": "Talk",
+      "Text": "ciao Lambek, tutto bene?"
+    },
+    {
+      "Id": "A024",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Talk",
+      "Text": "grazie tante"
+    },
+    {
+      "Id": "A025",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Talk",
+      "Text": "hoi Lambek, alles goed?"
+    },
+    {
+      "Id": "A026",
+      "Split": "test",
+      "Language": "nl",
+      "Act": "Talk",
+      "Text": "heel erg bedankt"
+    },
+    {
+      "Id": "A027",
+      "Split": "calibration",
+      "Language": "pt",
+      "Act": "Talk",
+      "Text": "olá Lambek, tudo bem?"
+    },
+    {
+      "Id": "A028",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Talk",
+      "Text": "obrigadíssimo"
+    },
+    {
+      "Id": "A029",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Feeling",
+      "Text": "je suis épuisé"
+    },
+    {
+      "Id": "A030",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Feeling",
+      "Text": "je me sens mal"
+    },
+    {
+      "Id": "A031",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Feeling",
+      "Text": "je suis super heureux aujourd'hui"
+    },
+    {
+      "Id": "A032",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Feeling",
+      "Text": "j'ai eu une semaine difficile"
+    },
+    {
+      "Id": "A033",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Feeling",
+      "Text": "je suis inquiet"
+    },
+    {
+      "Id": "A034",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Feeling",
+      "Text": "je n'ai pas le moral"
+    },
+    {
+      "Id": "A035",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Feeling",
+      "Text": "je suis en colère"
+    },
+    {
+      "Id": "A036",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Feeling",
+      "Text": "I feel terrible"
+    },
+    {
+      "Id": "A037",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Feeling",
+      "Text": "I'm really happy today"
+    },
+    {
+      "Id": "A038",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Feeling",
+      "Text": "I had a rough week"
+    },
+    {
+      "Id": "A039",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Feeling",
+      "Text": "I'm anxious"
+    },
+    {
+      "Id": "A040",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Feeling",
+      "Text": "I'm angry"
+    },
+    {
+      "Id": "A041",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Feeling",
+      "Text": "I feel down"
+    },
+    {
+      "Id": "A042",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Feeling",
+      "Text": "ich bin glücklich"
+    },
+    {
+      "Id": "A043",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Feeling",
+      "Text": "estoy feliz"
+    },
+    {
+      "Id": "A044",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Feeling",
+      "Text": "sono felice"
+    },
+    {
+      "Id": "A045",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Feeling",
+      "Text": "ik ben blij"
+    },
+    {
+      "Id": "A046",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Feeling",
+      "Text": "estou feliz"
+    },
+    {
+      "Id": "A047",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "efface les fichiers .log de C:\\Windows\\Temp"
+    },
+    {
+      "Id": "A048",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "liste le contenu de D:\\Musique"
+    },
+    {
+      "Id": "A049",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "copie les fichiers .pdf de C:\\Docs vers E:\\Cle"
+    },
+    {
+      "Id": "A050",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "déplace budget.xlsx dans D:\\Compta"
+    },
+    {
+      "Id": "A051",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "renomme photo1.jpg en vacances.jpg"
+    },
+    {
+      "Id": "A052",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "crée le dossier C:\\Travail\\2027"
+    },
+    {
+      "Id": "A053",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "récupère les fichiers que j'ai supprimés"
+    },
+    {
+      "Id": "A054",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "écris une fonction qui trie une liste"
+    },
+    {
+      "Id": "A055",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "montre les fichiers de plus de 1 Go"
+    },
+    {
+      "Id": "A056",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Order",
+      "Text": "et dans E:\\Videos ?"
+    },
+    {
+      "Id": "A057",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "remove the .log files from C:\\Windows\\Temp"
+    },
+    {
+      "Id": "A058",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "list what is in D:\\Music"
+    },
+    {
+      "Id": "A059",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "copy the .pdf files from C:\\Docs to E:\\Stick"
+    },
+    {
+      "Id": "A060",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "move budget.xlsx into D:\\Accounts"
+    },
+    {
+      "Id": "A061",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "rename photo1.jpg to holidays.jpg"
+    },
+    {
+      "Id": "A062",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "make the folder C:\\Work\\2027"
+    },
+    {
+      "Id": "A063",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "bring back the files I deleted"
+    },
+    {
+      "Id": "A064",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "write a function that sorts a list"
+    },
+    {
+      "Id": "A065",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "show the files over 1 GB"
+    },
+    {
+      "Id": "A066",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Order",
+      "Text": "what about E:\\Videos?"
+    },
+    {
+      "Id": "A067",
+      "Split": "calibration",
+      "Language": "de",
+      "Act": "Order",
+      "Text": "zeige die Dateien in D:\\Musik"
+    },
+    {
+      "Id": "A068",
+      "Split": "test",
+      "Language": "es",
+      "Act": "Order",
+      "Text": "muestra los archivos de D:\\Musica"
+    },
+    {
+      "Id": "A069",
+      "Split": "calibration",
+      "Language": "it",
+      "Act": "Order",
+      "Text": "mostra i file in D:\\Musica"
+    },
+    {
+      "Id": "A070",
+      "Split": "test",
+      "Language": "nl",
+      "Act": "Order",
+      "Text": "toon de bestanden in D:\\Muziek"
+    },
+    {
+      "Id": "A071",
+      "Split": "calibration",
+      "Language": "pt",
+      "Act": "Order",
+      "Text": "mostra os ficheiros em D:\\Musica"
+    },
+    {
+      "Id": "A072",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Elsewhere",
+      "Text": "envoie un courriel à mon chef"
+    },
+    {
+      "Id": "A073",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Elsewhere",
+      "Text": "téléphone à ma grand-mère"
+    },
+    {
+      "Id": "A074",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Elsewhere",
+      "Text": "réserve un hôtel à Rome"
+    },
+    {
+      "Id": "A075",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Elsewhere",
+      "Text": "achète des billets de concert"
+    },
+    {
+      "Id": "A076",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Elsewhere",
+      "Text": "allume les lumières de la cuisine"
+    },
+    {
+      "Id": "A077",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Elsewhere",
+      "Text": "joue ma playlist préférée"
+    },
+    {
+      "Id": "A078",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Elsewhere",
+      "Text": "programme la machine à laver"
+    },
+    {
+      "Id": "A079",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Elsewhere",
+      "Text": "commande des sushis"
+    },
+    {
+      "Id": "A080",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Elsewhere",
+      "Text": "email my boss"
+    },
+    {
+      "Id": "A081",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Elsewhere",
+      "Text": "phone my grandmother"
+    },
+    {
+      "Id": "A082",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Elsewhere",
+      "Text": "book a hotel in Rome"
+    },
+    {
+      "Id": "A083",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Elsewhere",
+      "Text": "buy concert tickets"
+    },
+    {
+      "Id": "A084",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Elsewhere",
+      "Text": "switch on the kitchen lights"
+    },
+    {
+      "Id": "A085",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Elsewhere",
+      "Text": "play my favourite playlist"
+    },
+    {
+      "Id": "A086",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Elsewhere",
+      "Text": "order some sushi"
+    },
+    {
+      "Id": "A087",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Elsewhere",
+      "Text": "kauf mir Brot"
+    },
+    {
+      "Id": "A088",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Elsewhere",
+      "Text": "compra pan"
+    },
+    {
+      "Id": "A089",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Elsewhere",
+      "Text": "compra il pane"
+    },
+    {
+      "Id": "A090",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Elsewhere",
+      "Text": "koop brood"
+    },
+    {
+      "Id": "A091",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Elsewhere",
+      "Text": "compra pão"
+    },
+    {
+      "Id": "A092",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "ma mère habite à Namur"
+    },
+    {
+      "Id": "A093",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "j'ai un chien qui s'appelle Max"
+    },
+    {
+      "Id": "A094",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "Thomas est boulanger"
+    },
+    {
+      "Id": "A095",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "mon vélo est bleu"
+    },
+    {
+      "Id": "A096",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "je suis étudiant à l'EhB"
+    },
+    {
+      "Id": "A097",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "Sarah est la sœur de Karim"
+    },
+    {
+      "Id": "A098",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "tous les poissons vivent dans l'eau"
+    },
+    {
+      "Id": "A099",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "aucun oiseau n'a de dents"
+    },
+    {
+      "Id": "A100",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "les baleines sont des mammifères"
+    },
+    {
+      "Id": "A101",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "Bubulle est un poisson"
+    },
+    {
+      "Id": "A102",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "si j'ai faim, je mange une pomme"
+    },
+    {
+      "Id": "A103",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Tell",
+      "Text": "le fer est un métal"
+    },
+    {
+      "Id": "A104",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "my mother lives in Namur"
+    },
+    {
+      "Id": "A105",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "I have a dog named Max"
+    },
+    {
+      "Id": "A106",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "Thomas is a baker"
+    },
+    {
+      "Id": "A107",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "my bike is blue"
+    },
+    {
+      "Id": "A108",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "I study at EhB"
+    },
+    {
+      "Id": "A109",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "Sarah is Karim's sister"
+    },
+    {
+      "Id": "A110",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "all fish live in water"
+    },
+    {
+      "Id": "A111",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "no bird has teeth"
+    },
+    {
+      "Id": "A112",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "whales are mammals"
+    },
+    {
+      "Id": "A113",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Tell",
+      "Text": "if I am hungry, I eat an apple"
+    },
+    {
+      "Id": "A114",
+      "Split": "calibration",
+      "Language": "de",
+      "Act": "Tell",
+      "Text": "meine Mutter wohnt in Köln"
+    },
+    {
+      "Id": "A115",
+      "Split": "test",
+      "Language": "es",
+      "Act": "Tell",
+      "Text": "mi madre vive en Sevilla"
+    },
+    {
+      "Id": "A116",
+      "Split": "calibration",
+      "Language": "it",
+      "Act": "Tell",
+      "Text": "mia madre abita a Milano"
+    },
+    {
+      "Id": "A117",
+      "Split": "test",
+      "Language": "nl",
+      "Act": "Tell",
+      "Text": "mijn moeder woont in Brugge"
+    },
+    {
+      "Id": "A118",
+      "Split": "calibration",
+      "Language": "pt",
+      "Act": "Tell",
+      "Text": "a minha mãe mora no Porto"
+    },
+    {
+      "Id": "A119",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "où habite ma mère ?"
+    },
+    {
+      "Id": "A120",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "quel est le nom de mon chien ?"
+    },
+    {
+      "Id": "A121",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "Thomas est-il boulanger ?"
+    },
+    {
+      "Id": "A122",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "de quelle couleur est mon vélo ?"
+    },
+    {
+      "Id": "A123",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "où est-ce que j'étudie ?"
+    },
+    {
+      "Id": "A124",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "qui est la sœur de Karim ?"
+    },
+    {
+      "Id": "A125",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "est-ce que Bubulle vit dans l'eau ?"
+    },
+    {
+      "Id": "A126",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "les baleines sont-elles des mammifères ?"
+    },
+    {
+      "Id": "A127",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "est-ce que je mange une pomme ?"
+    },
+    {
+      "Id": "A128",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "combien de chiens ai-je ?"
+    },
+    {
+      "Id": "A129",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Ask",
+      "Text": "est-ce que le fer est un métal ?"
+    },
+    {
+      "Id": "A130",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "where does my mother live?"
+    },
+    {
+      "Id": "A131",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "what is my dog called?"
+    },
+    {
+      "Id": "A132",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "is Thomas a baker?"
+    },
+    {
+      "Id": "A133",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "what color is my bike?"
+    },
+    {
+      "Id": "A134",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "where do I study?"
+    },
+    {
+      "Id": "A135",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "who is Karim's sister?"
+    },
+    {
+      "Id": "A136",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "does Bubbles live in water?"
+    },
+    {
+      "Id": "A137",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "are whales mammals?"
+    },
+    {
+      "Id": "A138",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "do I eat an apple?"
+    },
+    {
+      "Id": "A139",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Ask",
+      "Text": "how many dogs do I have?"
+    },
+    {
+      "Id": "A140",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Ask",
+      "Text": "wo wohnt meine Mutter?"
+    },
+    {
+      "Id": "A141",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Ask",
+      "Text": "¿dónde vive mi madre?"
+    },
+    {
+      "Id": "A142",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Ask",
+      "Text": "dove abita mia madre?"
+    },
+    {
+      "Id": "A143",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Ask",
+      "Text": "waar woont mijn moeder?"
+    },
+    {
+      "Id": "A144",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Ask",
+      "Text": "onde mora a minha mãe?"
+    },
+    {
+      "Id": "A145",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "quelle est la capitale du Portugal ?"
+    },
+    {
+      "Id": "A146",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "qui a découvert la pénicilline ?"
+    },
+    {
+      "Id": "A147",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "combien mesure la muraille de Chine ?"
+    },
+    {
+      "Id": "A148",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "en quelle année l'homme a-t-il marché sur la Lune ?"
+    },
+    {
+      "Id": "A149",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "qui est le roi des Belges ?"
+    },
+    {
+      "Id": "A150",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "quel est le plus haut sommet d'Europe ?"
+    },
+    {
+      "Id": "A151",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "où se trouve le Sahara ?"
+    },
+    {
+      "Id": "A152",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "quelle est la population de Paris ?"
+    },
+    {
+      "Id": "A153",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "qui a écrit Le Petit Prince ?"
+    },
+    {
+      "Id": "A154",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "quel jour sommes-nous ?"
+    },
+    {
+      "Id": "A155",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "World",
+      "Text": "quelle est la vitesse de la lumière ?"
+    },
+    {
+      "Id": "A156",
+      "Split": "test",
+      "Language": "en",
+      "Act": "World",
+      "Text": "what is the capital of Portugal?"
+    },
+    {
+      "Id": "A157",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "World",
+      "Text": "who discovered penicillin?"
+    },
+    {
+      "Id": "A158",
+      "Split": "test",
+      "Language": "en",
+      "Act": "World",
+      "Text": "how long is the Great Wall of China?"
+    },
+    {
+      "Id": "A159",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "World",
+      "Text": "what year did man walk on the Moon?"
+    },
+    {
+      "Id": "A160",
+      "Split": "test",
+      "Language": "en",
+      "Act": "World",
+      "Text": "who is the king of Belgium?"
+    },
+    {
+      "Id": "A161",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "World",
+      "Text": "what is the highest mountain in Europe?"
+    },
+    {
+      "Id": "A162",
+      "Split": "test",
+      "Language": "en",
+      "Act": "World",
+      "Text": "where is the Sahara?"
+    },
+    {
+      "Id": "A163",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "World",
+      "Text": "who wrote The Little Prince?"
+    },
+    {
+      "Id": "A164",
+      "Split": "test",
+      "Language": "en",
+      "Act": "World",
+      "Text": "what day is it today?"
+    },
+    {
+      "Id": "A165",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "World",
+      "Text": "what is the speed of light?"
+    },
+    {
+      "Id": "A166",
+      "Split": "test",
+      "Language": "de",
+      "Act": "World",
+      "Text": "wer hat das Penicillin entdeckt?"
+    },
+    {
+      "Id": "A167",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "World",
+      "Text": "¿quién descubrió la penicilina?"
+    },
+    {
+      "Id": "A168",
+      "Split": "test",
+      "Language": "it",
+      "Act": "World",
+      "Text": "chi ha scoperto la penicillina?"
+    },
+    {
+      "Id": "A169",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "World",
+      "Text": "wie heeft penicilline ontdekt?"
+    },
+    {
+      "Id": "A170",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "World",
+      "Text": "quem descobriu a penicilina?"
+    },
+    {
+      "Id": "A171",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Why",
+      "Text": "pourquoi donc ?"
+    },
+    {
+      "Id": "A172",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Why",
+      "Text": "pourquoi Bubulle vit dans l'eau ?"
+    },
+    {
+      "Id": "A173",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Why",
+      "Text": "pourquoi le sol est mouillé ?"
+    },
+    {
+      "Id": "A174",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Why",
+      "Text": "pourquoi est-ce que je mange une pomme ?"
+    },
+    {
+      "Id": "A175",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Why",
+      "Text": "comment le sais-tu ?"
+    },
+    {
+      "Id": "A176",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Why",
+      "Text": "pourquoi le ciel est bleu ?"
+    },
+    {
+      "Id": "A177",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Why",
+      "Text": "pourquoi les baleines sont des mammifères ?"
+    },
+    {
+      "Id": "A178",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Why",
+      "Text": "why so?"
+    },
+    {
+      "Id": "A179",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Why",
+      "Text": "why does Bubbles live in water?"
+    },
+    {
+      "Id": "A180",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Why",
+      "Text": "why is the ground wet?"
+    },
+    {
+      "Id": "A181",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Why",
+      "Text": "how can you tell?"
+    },
+    {
+      "Id": "A182",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Why",
+      "Text": "why is the sky blue?"
+    },
+    {
+      "Id": "A183",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Why",
+      "Text": "why are whales mammals?"
+    },
+    {
+      "Id": "A184",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Why",
+      "Text": "warum ist der Himmel blau?"
+    },
+    {
+      "Id": "A185",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Why",
+      "Text": "¿por qué el cielo es azul?"
+    },
+    {
+      "Id": "A186",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Why",
+      "Text": "perché il cielo è blu?"
+    },
+    {
+      "Id": "A187",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Why",
+      "Text": "waarom is de lucht blauw?"
+    },
+    {
+      "Id": "A188",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Why",
+      "Text": "porque é que o céu é azul?"
+    },
+    {
+      "Id": "A189",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Imagine",
+      "Text": "et si Max était un chat ?"
+    },
+    {
+      "Id": "A190",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Imagine",
+      "Text": "imagine que Thomas soit pilote"
+    },
+    {
+      "Id": "A191",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Imagine",
+      "Text": "et si les poissons volaient ?"
+    },
+    {
+      "Id": "A192",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Imagine",
+      "Text": "suppose que Sarah habite à Gand"
+    },
+    {
+      "Id": "A193",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Imagine",
+      "Text": "et si Bubulle n'était pas un poisson ?"
+    },
+    {
+      "Id": "A194",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Imagine",
+      "Text": "what if Max were a cat?"
+    },
+    {
+      "Id": "A195",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Imagine",
+      "Text": "imagine Thomas were a pilot"
+    },
+    {
+      "Id": "A196",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Imagine",
+      "Text": "what if fish could fly?"
+    },
+    {
+      "Id": "A197",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Imagine",
+      "Text": "suppose Sarah lived in Ghent"
+    },
+    {
+      "Id": "A198",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Imagine",
+      "Text": "was wäre, wenn Max ein Hund wäre?"
+    },
+    {
+      "Id": "A199",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Imagine",
+      "Text": "¿y si Max fuera un perro?"
+    },
+    {
+      "Id": "A200",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Imagine",
+      "Text": "e se Max fosse un cane?"
+    },
+    {
+      "Id": "A201",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Imagine",
+      "Text": "wat als Max een hond was?"
+    },
+    {
+      "Id": "A202",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Imagine",
+      "Text": "e se o Max fosse um cão?"
+    },
+    {
+      "Id": "A203",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Problem",
+      "Text": "Léo a 7 cartes de plus que Nina. Nina a 9 cartes. Combien Léo a-t-il de cartes ?"
+    },
+    {
+      "Id": "A204",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Problem",
+      "Text": "J'ai 100 euros. J'achète une veste à 45 euros. Combien me reste-t-il ?"
+    },
+    {
+      "Id": "A205",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Problem",
+      "Text": "Un film commence à 20 h et finit à 22 h 15. Combien de temps dure-t-il ?"
+    },
+    {
+      "Id": "A206",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Problem",
+      "Text": "Eva a deux fois plus de timbres que Tim. Ensemble ils ont 36 timbres. Combien Tim a-t-il de timbres ?"
+    },
+    {
+      "Id": "A207",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Problem",
+      "Text": "Une classe a 4 rangs de 6 tables. Combien y a-t-il de tables ?"
+    },
+    {
+      "Id": "A208",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Problem",
+      "Text": "Lucie court plus vite que Hugo. Hugo court plus vite que Inès. Qui est la plus rapide ?"
+    },
+    {
+      "Id": "A209",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Problem",
+      "Text": "Leo has 7 more cards than Nina. Nina has 9 cards. How many cards does Leo have?"
+    },
+    {
+      "Id": "A210",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Problem",
+      "Text": "I have 100 euros. I buy a jacket for 45 euros. How much is left?"
+    },
+    {
+      "Id": "A211",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Problem",
+      "Text": "A film starts at 8 and ends at 10:15. How long does it last?"
+    },
+    {
+      "Id": "A212",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Problem",
+      "Text": "Eva has twice as many stamps as Tim. Together they have 36 stamps. How many stamps does Tim have?"
+    },
+    {
+      "Id": "A213",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Problem",
+      "Text": "A class has 4 rows of 6 desks. How many desks are there?"
+    },
+    {
+      "Id": "A214",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Problem",
+      "Text": "Leo hat 7 Karten mehr als Nina. Nina hat 9 Karten. Wie viele Karten hat Leo?"
+    },
+    {
+      "Id": "A215",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Problem",
+      "Text": "Leo tiene 7 cartas más que Nina. Nina tiene 9 cartas. ¿Cuántas cartas tiene Leo?"
+    },
+    {
+      "Id": "A216",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Problem",
+      "Text": "Leo ha 7 carte più di Nina. Nina ha 9 carte. Quante carte ha Leo?"
+    },
+    {
+      "Id": "A217",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Problem",
+      "Text": "Leo heeft 7 kaarten meer dan Nina. Nina heeft 9 kaarten. Hoeveel kaarten heeft Leo?"
+    },
+    {
+      "Id": "A218",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Problem",
+      "Text": "O Leo tem mais 7 cartas do que a Nina. A Nina tem 9 cartas. Quantas cartas tem o Leo?"
+    },
+    {
+      "Id": "A219",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Define",
+      "Text": "que veut dire mélancolie ?"
+    },
+    {
+      "Id": "A220",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Define",
+      "Text": "que signifie altruiste ?"
+    },
+    {
+      "Id": "A221",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Define",
+      "Text": "c'est quoi un satellite ?"
+    },
+    {
+      "Id": "A222",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Define",
+      "Text": "qu'est-ce qu'une métaphore ?"
+    },
+    {
+      "Id": "A223",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Define",
+      "Text": "définis le mot honnêteté"
+    },
+    {
+      "Id": "A224",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Define",
+      "Text": "donne-moi la définition de tolérance"
+    },
+    {
+      "Id": "A225",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Define",
+      "Text": "c'est quoi l'entropie ?"
+    },
+    {
+      "Id": "A226",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Define",
+      "Text": "what does melancholy mean?"
+    },
+    {
+      "Id": "A227",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Define",
+      "Text": "what is a satellite?"
+    },
+    {
+      "Id": "A228",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Define",
+      "Text": "what's a metaphor?"
+    },
+    {
+      "Id": "A229",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Define",
+      "Text": "define honesty"
+    },
+    {
+      "Id": "A230",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Define",
+      "Text": "definition of tolerance"
+    },
+    {
+      "Id": "A231",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Define",
+      "Text": "meaning of altruistic"
+    },
+    {
+      "Id": "A232",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Define",
+      "Text": "was bedeutet Melancholie?"
+    },
+    {
+      "Id": "A233",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Define",
+      "Text": "¿qué significa melancolía?"
+    },
+    {
+      "Id": "A234",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Define",
+      "Text": "cosa significa malinconia?"
+    },
+    {
+      "Id": "A235",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Define",
+      "Text": "wat betekent melancholie?"
+    },
+    {
+      "Id": "A236",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Define",
+      "Text": "o que significa melancolia?"
+    },
+    {
+      "Id": "A237",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Calculate",
+      "Text": "combien font 9 fois 6 ?"
+    },
+    {
+      "Id": "A238",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Calculate",
+      "Text": "calcule 250 - 75"
+    },
+    {
+      "Id": "A239",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Calculate",
+      "Text": "combien fait 81 divisé par 9 ?"
+    },
+    {
+      "Id": "A240",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Calculate",
+      "Text": "que vaut 3 au carré ?"
+    },
+    {
+      "Id": "A241",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Calculate",
+      "Text": "combien font 10 % de 450 ?"
+    },
+    {
+      "Id": "A242",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Calculate",
+      "Text": "résous x - 4 = 10"
+    },
+    {
+      "Id": "A243",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Calculate",
+      "Text": "2/3 + 1/6"
+    },
+    {
+      "Id": "A244",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Calculate",
+      "Text": "quelle est la racine carrée de 225 ?"
+    },
+    {
+      "Id": "A245",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Calculate",
+      "Text": "what is 9 times 6?"
+    },
+    {
+      "Id": "A246",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Calculate",
+      "Text": "calculate 250 - 75"
+    },
+    {
+      "Id": "A247",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Calculate",
+      "Text": "how much is 81 divided by 9?"
+    },
+    {
+      "Id": "A248",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Calculate",
+      "Text": "what is 3 squared?"
+    },
+    {
+      "Id": "A249",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Calculate",
+      "Text": "what is 10% of 450?"
+    },
+    {
+      "Id": "A250",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Calculate",
+      "Text": "solve x - 4 = 10"
+    },
+    {
+      "Id": "A251",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Calculate",
+      "Text": "2/3 + 1/6"
+    },
+    {
+      "Id": "A252",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Calculate",
+      "Text": "wie viel ist 9 mal 6?"
+    },
+    {
+      "Id": "A253",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Calculate",
+      "Text": "¿cuánto es 9 por 6?"
+    },
+    {
+      "Id": "A254",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Calculate",
+      "Text": "quanto fa 9 per 6?"
+    },
+    {
+      "Id": "A255",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Calculate",
+      "Text": "hoeveel is 9 keer 6?"
+    },
+    {
+      "Id": "A256",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Calculate",
+      "Text": "quanto é 9 vezes 6?"
+    },
+    {
+      "Id": "A257",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "raconte-moi un conte"
+    },
+    {
+      "Id": "A258",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "écris un haïku sur la pluie"
+    },
+    {
+      "Id": "A259",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "donne-moi une idée de sortie"
+    },
+    {
+      "Id": "A260",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "que penses-tu des réseaux sociaux ?"
+    },
+    {
+      "Id": "A261",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "recommande-moi un livre"
+    },
+    {
+      "Id": "A262",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "invente une devinette"
+    },
+    {
+      "Id": "A263",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "écris un mail d'excuse"
+    },
+    {
+      "Id": "A264",
+      "Split": "test",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "quelle est ta couleur préférée ?"
+    },
+    {
+      "Id": "A265",
+      "Split": "calibration",
+      "Language": "fr",
+      "Act": "Open",
+      "Text": "aide-moi à écrire une chanson"
+    },
+    {
+      "Id": "A266",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Open",
+      "Text": "tell me a fairy tale"
+    },
+    {
+      "Id": "A267",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Open",
+      "Text": "write a haiku about rain"
+    },
+    {
+      "Id": "A268",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Open",
+      "Text": "give me an idea for the weekend"
+    },
+    {
+      "Id": "A269",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Open",
+      "Text": "what do you think of social media?"
+    },
+    {
+      "Id": "A270",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Open",
+      "Text": "recommend me a book"
+    },
+    {
+      "Id": "A271",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Open",
+      "Text": "make up a riddle"
+    },
+    {
+      "Id": "A272",
+      "Split": "test",
+      "Language": "en",
+      "Act": "Open",
+      "Text": "write an apology email"
+    },
+    {
+      "Id": "A273",
+      "Split": "calibration",
+      "Language": "en",
+      "Act": "Open",
+      "Text": "what is your favourite colour?"
+    },
+    {
+      "Id": "A274",
+      "Split": "test",
+      "Language": "de",
+      "Act": "Open",
+      "Text": "erzähl mir einen Witz"
+    },
+    {
+      "Id": "A275",
+      "Split": "calibration",
+      "Language": "es",
+      "Act": "Open",
+      "Text": "escribe una canción"
+    },
+    {
+      "Id": "A276",
+      "Split": "test",
+      "Language": "it",
+      "Act": "Open",
+      "Text": "scrivi una canzone"
+    },
+    {
+      "Id": "A277",
+      "Split": "calibration",
+      "Language": "nl",
+      "Act": "Open",
+      "Text": "schrijf een liedje"
+    },
+    {
+      "Id": "A278",
+      "Split": "test",
+      "Language": "pt",
+      "Act": "Open",
+      "Text": "escreve uma canção"
+    }
+  ]
+}
