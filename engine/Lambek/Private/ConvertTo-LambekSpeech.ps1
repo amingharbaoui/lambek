@@ -82,7 +82,10 @@ function ConvertTo-LambekSpeech {
         $script:SpeechCapture.Add($candidates)
     }
     if ($null -eq $Key) { $Key = Get-LambekTold }
-    return Select-LambekSpeech -Candidates $candidates -Language $Language -Key $Key -Check $check
+    $chosen = Select-LambekSpeech -Candidates $candidates -Language $Language -Key $Key -Check $check
+    # Counted for the benchmark of free messages: how many answers are said in a sentence made from what they mean
+    if ($chosen) { $script:SpeechSaid++ }
+    return $chosen
 }
 
 function Get-LambekSpeechData {

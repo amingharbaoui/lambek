@@ -30,6 +30,7 @@
         'Get-LambekWord'
         'Import-LambekPack'
         'Invoke-LambekBenchmark'
+        'Invoke-LambekMessageBenchmark'
         'Invoke-LambekPlan'
         'Invoke-LambekQuery'
         'Measure-LambekSignal'

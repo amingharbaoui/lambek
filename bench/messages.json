@@ -1,0 +1,2168 @@
+{
+  "Version": "1.0",
+  "Description": "Free messages for evaluating Lambek as a conversational system, sent as the app sends them. Each case is a conversation of its own. Expect.Reply is answer (Contains: every item must appear, alternatives split by |; Avoid: none may appear), abstain (Lambek must say it does not understand or does not know, or say one of Accept), or action (a ready plan with that action). The test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek.",
+  "Now": "2026-10-19T12:00:00",
+  "TestHash": "e4029ddad8748556de63bcceadbca8497b9edef33bf0c77119e515d8f3ec3702",
+  "Cases": [
+    {
+      "Id": "M001",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "salut",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bonjour|salut"
+        ]
+      }
+    },
+    {
+      "Id": "M002",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "bonjour Lambek",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bonjour"
+        ]
+      }
+    },
+    {
+      "Id": "M003",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "merci beaucoup",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "de rien|avec plaisir|je vous en prie|plaisir"
+        ]
+      }
+    },
+    {
+      "Id": "M004",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "comment tu vas ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bien"
+        ]
+      }
+    },
+    {
+      "Id": "M005",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "comment ça va ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bien"
+        ]
+      }
+    },
+    {
+      "Id": "M006",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "qui es-tu ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "lambek"
+        ]
+      }
+    },
+    {
+      "Id": "M007",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "comment tu t'appelles ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "lambek"
+        ]
+      }
+    },
+    {
+      "Id": "M008",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "au revoir",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "au revoir|a bientot|bonne journee|bonne soiree"
+        ]
+      }
+    },
+    {
+      "Id": "M009",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "bonne nuit",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bonne nuit|dormez bien|a demain|a bientot"
+        ]
+      }
+    },
+    {
+      "Id": "M010",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "qu'est-ce que tu sais faire ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "je"
+        ]
+      }
+    },
+    {
+      "Id": "M011",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "tu es un robot ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "lambek|programme|intelligence"
+        ]
+      }
+    },
+    {
+      "Id": "M012",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "hello",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "hello|hi"
+        ]
+      }
+    },
+    {
+      "Id": "M013",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "how are you?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "fine|well|good"
+        ]
+      }
+    },
+    {
+      "Id": "M014",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "who are you?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "lambek"
+        ]
+      }
+    },
+    {
+      "Id": "M015",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "thank you",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "welcome|pleasure"
+        ]
+      }
+    },
+    {
+      "Id": "M016",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "what can you do?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "i"
+        ]
+      }
+    },
+    {
+      "Id": "M017",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "good night",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "good night|sleep well|see you"
+        ]
+      }
+    },
+    {
+      "Id": "M018",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "quelle est la capitale de la France ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "paris"
+        ]
+      }
+    },
+    {
+      "Id": "M019",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "qui a écrit Les Misérables ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "hugo"
+        ]
+      }
+    },
+    {
+      "Id": "M020",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "à quelle température l'eau bout-elle ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "100"
+        ]
+      }
+    },
+    {
+      "Id": "M021",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "quelle est la capitale de l'Italie ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "rome"
+        ]
+      }
+    },
+    {
+      "Id": "M022",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "qui a peint la Joconde ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "vinci"
+        ]
+      }
+    },
+    {
+      "Id": "M023",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "quelle est la plus grande planète du système solaire ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "jupiter"
+        ]
+      }
+    },
+    {
+      "Id": "M024",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "en quelle année a eu lieu la Révolution française ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1789"
+        ]
+      }
+    },
+    {
+      "Id": "M025",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "quelle langue parle-t-on au Brésil ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "portugais"
+        ]
+      }
+    },
+    {
+      "Id": "M026",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "combien de jours y a-t-il dans une semaine ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "7|sept"
+        ]
+      }
+    },
+    {
+      "Id": "M027",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "quel est le plus long fleuve de France ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "loire"
+        ]
+      }
+    },
+    {
+      "Id": "M028",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "what is the capital of Spain?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "madrid"
+        ]
+      }
+    },
+    {
+      "Id": "M029",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "who wrote Hamlet?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "shakespeare"
+        ]
+      }
+    },
+    {
+      "Id": "M030",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "how many legs does a spider have?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "8|eight"
+        ]
+      }
+    },
+    {
+      "Id": "M031",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "culture"
+      ],
+      "Text": "what is the chemical symbol for gold?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "au"
+        ]
+      }
+    },
+    {
+      "Id": "M032",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "c'est quoi la photosynthèse ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "lumiere|plante|chlorophyll"
+        ]
+      }
+    },
+    {
+      "Id": "M033",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "qu'est-ce qu'un chat ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "felin|mammifere|felid"
+        ]
+      }
+    },
+    {
+      "Id": "M034",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "que veut dire éphémère ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "court|peu de temps|passager|bref"
+        ]
+      }
+    },
+    {
+      "Id": "M035",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "définis le mot liberté",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "libre|independance|autonomie|freedom|independence"
+        ]
+      }
+    },
+    {
+      "Id": "M036",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "c'est quoi un volcan ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "montagne|lave|magma|eruption|lava|erupt|mountain"
+        ]
+      }
+    },
+    {
+      "Id": "M037",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "what is a cat?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "feline"
+        ]
+      }
+    },
+    {
+      "Id": "M038",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "define happiness",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "well-being|contentment|happy"
+        ]
+      }
+    },
+    {
+      "Id": "M039",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "what does ephemeral mean?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "short|brief|lasting"
+        ]
+      }
+    },
+    {
+      "Id": "M040",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "combien font 12 fois 7 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "84"
+        ]
+      }
+    },
+    {
+      "Id": "M041",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "calcule 125 + 375",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "500"
+        ]
+      }
+    },
+    {
+      "Id": "M042",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "quelle est la racine carrée de 144 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "12"
+        ]
+      }
+    },
+    {
+      "Id": "M043",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "combien font 3 plus 4 fois 2 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "11"
+        ]
+      }
+    },
+    {
+      "Id": "M044",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "combien font 15 % de 200 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "30"
+        ]
+      }
+    },
+    {
+      "Id": "M045",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "what is 9 times 8?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "72"
+        ]
+      }
+    },
+    {
+      "Id": "M046",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "what is 2 to the power of 10?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1024|1 024|1,024"
+        ]
+      }
+    },
+    {
+      "Id": "M047",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "what is 100 divided by 4?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "25"
+        ]
+      }
+    },
+    {
+      "Id": "M048",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "problem"
+      ],
+      "Text": "Paul a 3 pommes de plus que Léa. Léa a 5 pommes. Combien Paul a-t-il de pommes ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "8"
+        ]
+      }
+    },
+    {
+      "Id": "M049",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "problem"
+      ],
+      "Text": "J'ai 20 euros. J'achète un livre à 7 euros. Combien me reste-t-il ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "13"
+        ]
+      }
+    },
+    {
+      "Id": "M050",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "problem"
+      ],
+      "Text": "Marc a deux fois plus de billes que Tom. Ensemble ils ont 30 billes. Combien Tom a-t-il de billes ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "10"
+        ]
+      }
+    },
+    {
+      "Id": "M051",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "problem"
+      ],
+      "Text": "Un train part à 14 h et arrive à 17 h. Combien d'heures dure le trajet ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "3|trois"
+        ]
+      }
+    },
+    {
+      "Id": "M052",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "problem"
+      ],
+      "Text": "Anna has 4 more apples than Ben. Ben has 6 apples. How many apples does Anna have?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "10"
+        ]
+      }
+    },
+    {
+      "Id": "M053",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "problem"
+      ],
+      "Text": "Tom has 12 marbles and gives 5 to Sam. How many marbles does Tom have left?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "7"
+        ]
+      }
+    },
+    {
+      "Id": "M054",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Marie est une étudiante.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "marie"
+            ]
+          }
+        },
+        {
+          "Text": "Marie est-elle une étudiante ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M055",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "ma sœur habite à Lyon",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "lyon"
+            ]
+          }
+        },
+        {
+          "Text": "où habite ma sœur ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "lyon"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M056",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "mon chien s'appelle Rex"
+        },
+        {
+          "Text": "comment s'appelle mon chien ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M057",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "j'ai 25 ans"
+        },
+        {
+          "Text": "quel âge ai-je ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "25"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M058",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est le frère de Julie"
+        },
+        {
+          "Text": "qui est le frère de Julie ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paul"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M059",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "il fait beau aujourd'hui"
+        },
+        {
+          "Text": "qu'est-ce que je t'ai dit ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "beau"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M060",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "je travaille chez Renault"
+        },
+        {
+          "Text": "où est-ce que je travaille ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "renault"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M061",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "my brother lives in Paris",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paris"
+            ]
+          }
+        },
+        {
+          "Text": "where does my brother live?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paris"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M062",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "I am 30 years old"
+        },
+        {
+          "Text": "how old am I?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "30"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M063",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "my cat is called Luna"
+        },
+        {
+          "Text": "what is my cat called?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "luna"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M064",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats sont des animaux"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "est-ce que Tom est un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M065",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "aucun poisson n'est un mammifère"
+        },
+        {
+          "Text": "Nemo est un poisson"
+        },
+        {
+          "Text": "Nemo est-il un mammifère ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M066",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les hommes sont mortels"
+        },
+        {
+          "Text": "Socrate est un homme"
+        },
+        {
+          "Text": "Socrate est-il mortel ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M067",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "certains oiseaux volent"
+        },
+        {
+          "Text": "Tweety est un oiseau"
+        },
+        {
+          "Text": "est-ce que Tweety vole ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M068",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les métaux conduisent l'électricité"
+        },
+        {
+          "Text": "le cuivre est un métal"
+        },
+        {
+          "Text": "le cuivre conduit-il l'électricité ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M069",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs are animals"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "is Rex an animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M070",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "no reptile is a mammal"
+        },
+        {
+          "Text": "Kaa is a reptile"
+        },
+        {
+          "Text": "is Kaa a mammal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M071",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "s'il pleut, je prends le bus"
+        },
+        {
+          "Text": "il pleut"
+        },
+        {
+          "Text": "est-ce que je prends le bus ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|vous prenez le bus"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M072",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "si il pleut je prends le bus"
+        },
+        {
+          "Text": "il pleut"
+        },
+        {
+          "Text": "est-ce que je prends le bus ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|vous prenez le bus"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M073",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "quand il fait froid, je mets un manteau"
+        },
+        {
+          "Text": "il fait froid"
+        },
+        {
+          "Text": "est-ce que je mets un manteau ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|vous mettez un manteau"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M074",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "s'il neige, l'école est fermée"
+        },
+        {
+          "Text": "l'école est-elle fermée ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M075",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "if it rains, I take the bus"
+        },
+        {
+          "Text": "it rains"
+        },
+        {
+          "Text": "do I take the bus?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes|you take the bus"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M076",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "default"
+      ],
+      "Turns": [
+        {
+          "Text": "normalement, les oiseaux volent"
+        },
+        {
+          "Text": "Tweety est un oiseau"
+        },
+        {
+          "Text": "Tweety vole-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|normalement|suppos"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M077",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "default"
+      ],
+      "Turns": [
+        {
+          "Text": "normalement, les oiseaux volent"
+        },
+        {
+          "Text": "les pingouins ne volent pas"
+        },
+        {
+          "Text": "les pingouins sont des oiseaux"
+        },
+        {
+          "Text": "Pingu est un pingouin"
+        },
+        {
+          "Text": "Pingu vole-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M078",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "default"
+      ],
+      "Turns": [
+        {
+          "Text": "birds usually fly"
+        },
+        {
+          "Text": "Tweety is a bird"
+        },
+        {
+          "Text": "does Tweety fly?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes|usually|suppos"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M079",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "why"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les hommes sont mortels"
+        },
+        {
+          "Text": "Socrate est un homme"
+        },
+        {
+          "Text": "Socrate est-il mortel ?"
+        },
+        {
+          "Text": "pourquoi ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "homme"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M080",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "why"
+      ],
+      "Turns": [
+        {
+          "Text": "s'il pleut, je prends le bus"
+        },
+        {
+          "Text": "il pleut"
+        },
+        {
+          "Text": "est-ce que je prends le bus ?"
+        },
+        {
+          "Text": "pourquoi ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "pleut"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M081",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "why"
+      ],
+      "Turns": [
+        {
+          "Text": "all men are mortal"
+        },
+        {
+          "Text": "Socrates is a man"
+        },
+        {
+          "Text": "is Socrates mortal?"
+        },
+        {
+          "Text": "why?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "man"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M082",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "imagine"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats sont des animaux"
+        },
+        {
+          "Text": "Tom est un chien"
+        },
+        {
+          "Text": "et si Tom était un chat, serait-il un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M083",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "contradiction"
+      ],
+      "Turns": [
+        {
+          "Text": "Marie habite à Paris"
+        },
+        {
+          "Text": "Marie n'habite pas à Paris",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "contrair"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M084",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "contradiction"
+      ],
+      "Turns": [
+        {
+          "Text": "Mary lives in Paris"
+        },
+        {
+          "Text": "Mary does not live in Paris",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "contrar|opposite|both"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M085",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "quel âge a ma sœur ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "M086",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "quel est le sens de la vie ?",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "je ne sais pas"
+        ]
+      }
+    },
+    {
+      "Id": "M087",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "est-ce que je vais réussir mon examen ?",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "je ne sais pas"
+        ]
+      }
+    },
+    {
+      "Id": "M088",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "quel temps fera-t-il demain ?",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "je ne sais pas"
+        ]
+      }
+    },
+    {
+      "Id": "M089",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "qui va gagner le match ce soir ?",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "je ne sais pas"
+        ]
+      }
+    },
+    {
+      "Id": "M090",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "abstain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est grand"
+        },
+        {
+          "Text": "Paul est-il riche ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "M091",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "what will the weather be tomorrow?",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "i do not know|i don't know"
+        ]
+      }
+    },
+    {
+      "Id": "M092",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "what is my mother's name?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "M093",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "will I pass my exam?",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "i do not know|i don't know"
+        ]
+      }
+    },
+    {
+      "Id": "M094",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Text": "envoie un mail à Paul",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "M095",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Text": "réserve un billet de train pour Paris",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "M096",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Text": "allume la lumière du salon",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "M097",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Text": "commande une pizza",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "M098",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Text": "book a flight to London",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "M099",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Text": "call my mom",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "M100",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "order"
+      ],
+      "Text": "supprime les fichiers .tmp dans C:\\Temp",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.delete"
+      }
+    },
+    {
+      "Id": "M101",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "order"
+      ],
+      "Text": "liste les fichiers .log dans C:\\Temp",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.list"
+      }
+    },
+    {
+      "Id": "M102",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "order"
+      ],
+      "Text": "crée un dossier nommé projets dans C:\\Users\\Amin\\Documents",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.create"
+      }
+    },
+    {
+      "Id": "M103",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "order"
+      ],
+      "Text": "delete the .log files in C:\\Temp",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.delete"
+      }
+    },
+    {
+      "Id": "M104",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "order"
+      ],
+      "Text": "list the .txt files in C:\\Data",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.list"
+      }
+    },
+    {
+      "Id": "M105",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "dialogue"
+      ],
+      "Turns": [
+        {
+          "Text": "liste les fichiers .log dans C:\\Temp",
+          "Expect": {
+            "Reply": "action",
+            "Action": "files.list"
+          }
+        },
+        {
+          "Text": "et dans C:\\Data ?",
+          "Expect": {
+            "Reply": "action",
+            "Action": "files.list"
+          },
+          "FollowUp": true
+        }
+      ]
+    },
+    {
+      "Id": "M106",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "dialogue"
+      ],
+      "Turns": [
+        {
+          "Text": "supprime les fichiers .tmp dans C:\\Temp"
+        },
+        {
+          "Text": "non, plutôt les fichiers .bak",
+          "Expect": {
+            "Reply": "action",
+            "Action": "files.delete"
+          },
+          "FollowUp": true
+        }
+      ]
+    },
+    {
+      "Id": "M107",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "dialogue"
+      ],
+      "Turns": [
+        {
+          "Text": "list the .log files in C:\\Temp"
+        },
+        {
+          "Text": "and in C:\\Data?",
+          "Expect": {
+            "Reply": "action",
+            "Action": "files.list"
+          },
+          "FollowUp": true
+        }
+      ]
+    },
+    {
+      "Id": "M108",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "open"
+      ],
+      "Text": "raconte-moi une blague",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      }
+    },
+    {
+      "Id": "M109",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "open"
+      ],
+      "Text": "raconte-moi une histoire courte",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      }
+    },
+    {
+      "Id": "M110",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "open"
+      ],
+      "Text": "donne-moi un conseil pour mieux dormir",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      }
+    },
+    {
+      "Id": "M111",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "open"
+      ],
+      "Text": "pourquoi le ciel est bleu ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "lumiere|diffusion"
+        ]
+      }
+    },
+    {
+      "Id": "M112",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "open"
+      ],
+      "Text": "j'ai passé une mauvaise journée",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      }
+    },
+    {
+      "Id": "M113",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "open"
+      ],
+      "Text": "tell me a joke",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      }
+    },
+    {
+      "Id": "M114",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "open"
+      ],
+      "Text": "why is the sky blue?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "light|scatter"
+        ]
+      }
+    },
+    {
+      "Id": "M115",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "open"
+      ],
+      "Text": "I had a bad day",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      }
+    },
+    {
+      "Id": "M116",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "slt",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bonjour|salut"
+        ]
+      }
+    },
+    {
+      "Id": "M117",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "cmt tu vas",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bien"
+        ]
+      }
+    },
+    {
+      "Id": "M118",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "quelle est la capitalle de la france ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "paris"
+        ]
+      }
+    },
+    {
+      "Id": "M119",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "suprime les fichiers .tmp dans C:\\Temp",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.delete"
+      }
+    },
+    {
+      "Id": "M120",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "combien font 12 foi 7 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "84"
+        ]
+      }
+    },
+    {
+      "Id": "M121",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "helo",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "hello|hi"
+        ]
+      }
+    },
+    {
+      "Id": "M122",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "delet the .log files in C:\\Temp",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.delete"
+      }
+    },
+    {
+      "Id": "M123",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "other-language"
+      ],
+      "Text": "¿cómo estás?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bien"
+        ]
+      }
+    },
+    {
+      "Id": "M124",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "other-language"
+      ],
+      "Text": "wie geht es dir?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "gut"
+        ]
+      }
+    },
+    {
+      "Id": "M125",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "other-language"
+      ],
+      "Text": "borra los archivos .tmp en C:\\Temp",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.delete"
+      }
+    },
+    {
+      "Id": "M126",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "other-language"
+      ],
+      "Text": "lösche die .tmp-Dateien in C:\\Temp",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.delete"
+      }
+    }
+  ]
+}

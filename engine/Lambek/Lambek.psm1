@@ -72,6 +72,8 @@ $script:GreetingPattern = $null
 # The phrasings said lately, so the same question does not get the same words twice in a row
 $script:SpeechRecent = @{}
 $script:SpeechTurn = 0
+# How many answers were said by the composer (ConvertTo-LambekSpeech) and read back: counted by the message benchmark
+$script:SpeechSaid = 0
 $script:AuditPath = Join-Path $dataFolder 'audit.jsonl'
 $script:HostState = @{ Plans = [ordered]@{}; Simulations = @{}; Approvals = @{} }
 $script:ProgressHandler = $null

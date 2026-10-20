@@ -101,6 +101,28 @@ if ($Task -eq 'Benchmark') {
             Write-Host ("  {0,-16} {1}" -f $name, $report.$name)
         }
     }
+
+    # Free messages, sent as the app sends them: what Lambek does not answer, and what it says wrong.
+    # Each figure is shown next to the one written in bench/baseline.json, the figures every step is measured against
+    $messages = Join-Path $PSScriptRoot 'bench/messages.json'
+    $baseline = $null
+    $baselinePath = Join-Path $PSScriptRoot 'bench/baseline.json'
+    if (Test-Path -LiteralPath $baselinePath) { $baseline = Get-Content -LiteralPath $baselinePath -Raw | ConvertFrom-Json }
+    foreach ($split in 'calibration', 'test') {
+        $report = Invoke-LambekMessageBenchmark -Path $messages -Split $split
+        $before = $null
+        if ($baseline -and $baseline.Messages.PSObject.Properties[$split]) { $before = $baseline.Messages.$split }
+        Write-Host ''
+        Write-Host "Free messages ($split)"
+        foreach ($name in 'Cases', 'Turns', 'Correct', 'Unanswered', 'NotUnderstood', 'Abstained', 'Asked', 'Wrong', 'WrongActions', 'UnansweredRate', 'WrongRate', 'WrongBound', 'Said', 'Composed', 'Determinism', 'MedianMs', 'P95Ms') {
+            $was = ''
+            if ($before -and $before.PSObject.Properties[$name]) { $was = "(baseline $($before.$name))" }
+            Write-Host ("  {0,-16} {1,-10} {2}" -f $name, $report.$name, $was)
+        }
+        if ($split -eq 'test' -and -not $report.TestFrozen) {
+            Write-Warning 'The test split of bench/messages.json is not the frozen one (TestHash): its figures cannot be compared with the baseline.'
+        }
+    }
 }
 
 # Fingerprint: what Lambek answers to every request of the benchmark, one line each, and the hash of them all.
@@ -128,6 +150,12 @@ if ($Task -eq 'Fingerprint') {
         }
         "$($case.Id)|$($card.Status)|$($card.Action)|$(([double] $card.Confidence).ToString('R', $invariant))|$($values -join ';')"
     }
+
+    # And every reply to the free messages, so they too must be the same on every machine
+    $messages = Invoke-LambekMessageBenchmark -Path (Join-Path $PSScriptRoot 'bench/messages.json')
+    $lines = @($lines) + @(foreach ($turn in $messages.Results) {
+            "$($turn.Id)#$($turn.Turn)|$($turn.Status)|$(@($turn.Actions) -join ',')|$(($turn.Reply -replace "`r", '') -replace "`n", ' / ')"
+        })
 
     $text = ($lines -join "`n") + "`n"
     $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($text))).ToLowerInvariant()

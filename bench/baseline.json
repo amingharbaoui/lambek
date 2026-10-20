@@ -1,0 +1,46 @@
+{
+  "Description": "The figures every step of the roadmap is measured against, written once before any change to how Lambek reads, knows or speaks. build.ps1 -Task Benchmark shows each figure next to these. Times depend on the machine (these: PowerShell 7.6.6 on Linux).",
+  "Date": "2026-10-19",
+  "Engine": "0.13.0 (commit cc8fc7b)",
+  "TestHash": "e4029ddad8748556de63bcceadbca8497b9edef33bf0c77119e515d8f3ec3702",
+  "Messages": {
+    "calibration": {
+      "Cases": 76,
+      "Turns": 79,
+      "Correct": 55,
+      "Unanswered": 23,
+      "NotUnderstood": 15,
+      "Abstained": 6,
+      "Asked": 2,
+      "Wrong": 1,
+      "WrongActions": 0,
+      "UnansweredRate": 0.3286,
+      "WrongRate": 0.0127,
+      "WrongBound": 0.0586,
+      "Said": 41,
+      "Composed": 6,
+      "Determinism": 1,
+      "MedianMs": 163.4,
+      "P95Ms": 716.4
+    },
+    "test": {
+      "Cases": 50,
+      "Turns": 51,
+      "Correct": 33,
+      "Unanswered": 16,
+      "NotUnderstood": 10,
+      "Abstained": 5,
+      "Asked": 1,
+      "Wrong": 2,
+      "WrongActions": 0,
+      "UnansweredRate": 0.3721,
+      "WrongRate": 0.0392,
+      "WrongBound": 0.1183,
+      "Said": 22,
+      "Composed": 3,
+      "Determinism": 1,
+      "MedianMs": 129,
+      "P95Ms": 413.3
+    }
+  }
+}
