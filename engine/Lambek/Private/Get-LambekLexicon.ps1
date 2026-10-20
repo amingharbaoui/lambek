@@ -147,6 +147,8 @@ function Get-LambekLexicon {
         Answer            = $data.Answer
         FollowUp          = $data.FollowUp
         Talk              = $talk
+        # The shorthand of chats, written in full ("slt": salut): read before anything else reads the message
+        Shorthand         = $data['Shorthand']
         TalkWords         = $talkWords
         Signals           = $signals
         GrammarWords      = $grammar

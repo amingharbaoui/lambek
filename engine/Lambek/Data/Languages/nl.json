@@ -549,7 +549,7 @@
     "Waits": "Stap {0} wacht op stap {1}, omdat {2}.",
     "NeedOne": "Ik heb nog één gegeven nodig. {0}",
     "NeedMany": "Ik heb nog een paar gegevens nodig:",
-    "Unknown": "Op deze computer help ik met {0}. Zeg me wat je wilt doen.",
+    "Unknown": "Dat heb ik niet begrepen. Ik kan rekenen, een woord uitleggen en helpen met {0}.",
     "Stopped": "Ik ben gestopt voordat er iets werd uitgevoerd.",
     "Matches": "{0} {0:item komt|items komen} in aanmerking, {1} in totaal.",
     "MatchesCount": "{0} {0:item komt|items komen} in aanmerking.",

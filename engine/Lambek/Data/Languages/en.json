@@ -1378,7 +1378,7 @@
     "Waits": "Step {0} waits for step {1} because {2}.",
     "NeedOne": "I need one more detail. {0}",
     "NeedMany": "I need a few details:",
-    "Unknown": "On this computer, I take care of {0}. Tell me what you'd like to do.",
+    "Unknown": "I did not understand that. I can remember what you tell me and reason about it, calculate, define a word, and take care of {0}.",
     "Stopped": "I stopped before running anything.",
     "Matches": "{0} {0:item matches|items match}, {1} in total.",
     "MatchesCount": "{0} {0:item matches|items match}.",
@@ -1761,6 +1761,34 @@
       "to"
     ]
   },
+  "Shorthand": {
+    "u": "you",
+    "pls": "please",
+    "plz": "please",
+    "ty": "thank you",
+    "idk": "I don't know",
+    "dunno": "I don't know",
+    "hru": "how are you",
+    "gn": "good night",
+    "gm": "good morning",
+    "tmrw": "tomorrow",
+    "tmr": "tomorrow",
+    "btw": "by the way",
+    "imo": "in my opinion",
+    "rn": "right now",
+    "abt": "about",
+    "bc": "because",
+    "cuz": "because",
+    "wanna": "want to",
+    "gonna": "going to",
+    "gotta": "got to",
+    "ppl": "people",
+    "sry": "sorry",
+    "srry": "sorry",
+    "wat": "what",
+    "wut": "what",
+    "msg": "message"
+  },
   "Talk": {
     "Incognito": {
       "Phrases": [
@@ -1784,7 +1812,13 @@
         "whats lambek",
         "what is your name",
         "what s your name",
-        "whats your name"
+        "whats your name",
+        "are you a robot",
+        "are you human",
+        "are you an ai",
+        "are you a bot",
+        "are you a machine",
+        "are you a person"
       ],
       "Reply": "I'm Lambek. I turn plain sentences into actions on your computer, and I show you each step before anything runs."
     },

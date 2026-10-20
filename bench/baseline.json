@@ -1,5 +1,5 @@
 {
-  "Description": "The figures every step of the roadmap is measured against, written once before any change to how Lambek reads, knows or speaks. build.ps1 -Task Benchmark shows each figure next to these. Times depend on the machine (these: PowerShell 7.6.6 on Linux).",
+  "Description": "The figures every step of the roadmap is measured against, written once before any change to how Lambek reads, knows or speaks. build.ps1 -Task Benchmark shows each figure next to these. The counts are those of engine 0.13.0 (the same on every machine); the times (MedianMs, P95Ms) are those of Amin's PC, measured on 2026-10-20, so that later times are compared on the same machine.",
   "Date": "2026-10-19",
   "Engine": "0.13.0 (commit cc8fc7b)",
   "TestHash": "e4029ddad8748556de63bcceadbca8497b9edef33bf0c77119e515d8f3ec3702",
@@ -20,8 +20,8 @@
       "Said": 41,
       "Composed": 6,
       "Determinism": 1,
-      "MedianMs": 163.4,
-      "P95Ms": 716.4
+      "MedianMs": 288.8,
+      "P95Ms": 1435.4
     },
     "test": {
       "Cases": 50,
@@ -39,8 +39,8 @@
       "Said": 22,
       "Composed": 3,
       "Determinism": 1,
-      "MedianMs": 129,
-      "P95Ms": 413.3
+      "MedianMs": 243.5,
+      "P95Ms": 614.5
     }
   }
 }

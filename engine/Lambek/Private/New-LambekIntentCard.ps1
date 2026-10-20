@@ -110,6 +110,12 @@ function New-LambekIntentCard {
             else { $recall = ConvertTo-LambekGeneralAsked -Reading $general -Request $request }
             $act = [pscustomobject]@{ Kind = $(if ($statement) { 'Report' } else { 'Question' }); Rule = 'general'; Say = $act.Say; Subject = $null }
         }
+        # A sentence that ends with a question mark asks; it never tells. "what is the capital of Spain?" and
+        # "l'ecole est-elle fermee ?" are not kept as things told when no reading found what they ask
+        if ($statement -and "$($request.Original)".TrimEnd() -match '\?$') {
+            $statement = $null
+            $act = [pscustomobject]@{ Kind = 'Question'; Rule = 'mark'; Say = $lexicon.Dialogue.Say['Question']; Subject = $null }
+        }
         $selection = [pscustomobject]@{ Status = 'Unknown'; Best = $null; Ranked = @(); Integrity = $null }
         $best = $null
         $Evidence = [pscustomobject]@{ Request = $request; Grammar = $grammar; Candidates = $Evidence.Candidates; Guess = $null }

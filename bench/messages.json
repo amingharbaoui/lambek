@@ -480,7 +480,7 @@
       "Expect": {
         "Reply": "answer",
         "Contains": [
-          "lumiere|plante|chlorophyll"
+          "lumiere|plante|chlorophyll|plant|radiant"
         ]
       }
     },

@@ -286,9 +286,12 @@ function Get-LambekGeneralChoice {
     $named = @($who | Where-Object {
             $written = Get-LambekWritten -Request $typedAs -Words @($tokens[$_])
             $known = @($dictionary.Lemmas($tokens[$_], $Request.Language))
-            # ("Paris" is also the plural of "pari": a noun that is its own lemma, and nothing but a noun, is enough)
+            # ("Paris" is also the plural of "pari": a noun that is its own lemma, and nothing but a noun, is enough;
+            # so is a single word, when one of its readings is a noun that is its own lemma: "Marie" is also "marie",
+            # but a word alone before the verb, with a capital and no article, can only be a name)
             $token = $tokens[$_]
-            $alone = @($known | Where-Object { $_.Pos -ne 'n' }).Count -eq 0 -and @($known | Where-Object { $_.Lemma -eq $token }).Count -gt 0
+            $itself = @($known | Where-Object { $_.Lemma -eq $token -and ($who.Count -eq 1 -or $_.Pos -eq 'n') }).Count -gt 0
+            $alone = $itself -and ($who.Count -eq 1 -or @($known | Where-Object { $_.Pos -ne 'n' }).Count -eq 0)
             $written -cmatch '^\p{Lu}' -and ($_ -gt 0 -or $known.Count -eq 0 -or $alone)
         }).Count -eq $who.Count
     $article = @($who | Where-Object { $tokens[$_] -in @($general['Determiners']) }).Count -gt 0

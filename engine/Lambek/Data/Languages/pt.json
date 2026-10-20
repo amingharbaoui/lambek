@@ -577,7 +577,7 @@
     "Waits": "O passo {0} espera pelo passo {1} porque {2}.",
     "NeedOne": "Falta-me um pormenor. {0}",
     "NeedMany": "Faltam-me alguns pormenores:",
-    "Unknown": "Neste computador, trato de: {0}. Diga-me o que quer fazer.",
+    "Unknown": "Não entendi essa frase. Sei calcular, definir uma palavra e tratar de: {0}.",
     "Stopped": "Parei antes de executar fosse o que fosse.",
     "Matches": "{0} {0:elemento corresponde|elementos correspondem}, {1} no total.",
     "MatchesCount": "{0} {0:elemento corresponde|elementos correspondem}.",

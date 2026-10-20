@@ -31,10 +31,10 @@ Describe 'What a reply is' {
         }
     }
 
-    It 'reads "I take care of files and code" as not understood, in every register' {
-        Get-TestKind "Sur cet ordinateur, je m'occupe de : fichiers et code. Dites-moi ce que vous voulez faire." | Should -Be 'NotUnderstood'
-        Get-TestKind "Sur cet ordinateur, je m'occupe de : fichiers et code. Dis-moi ce que tu veux faire." | Should -Be 'NotUnderstood'
-        Get-TestKind "On this computer, I take care of files and code. Tell me what you'd like to do." | Should -Be 'NotUnderstood'
+    It 'reads "I did not understand" as not understood, in every register' {
+        Get-TestKind "Je n'ai pas compris cette phrase. Je sais retenir ce que vous me dites et raisonner dessus, calculer, définir un mot, et m'occuper de : fichiers et code." | Should -Be 'NotUnderstood'
+        Get-TestKind "Je n'ai pas compris cette phrase. Je sais retenir ce que tu me dis et raisonner dessus, calculer, définir un mot, et m'occuper de : fichiers et code." | Should -Be 'NotUnderstood'
+        Get-TestKind 'I did not understand that. I can remember what you tell me and reason about it, calculate, define a word, and take care of files and code.' | Should -Be 'NotUnderstood'
     }
 
     It 'reads an honest "I do not know" as abstained' {

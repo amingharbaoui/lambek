@@ -614,7 +614,7 @@
     "Waits": "Il passaggio {0} aspetta il passaggio {1} perché {2}.",
     "NeedOne": "Mi manca un dettaglio. {0}",
     "NeedMany": "Mi mancano alcuni dettagli:",
-    "Unknown": "Su questo computer mi occupo di: {0}. Dimmi che cosa vuoi fare.",
+    "Unknown": "Non ho capito questa frase. So fare calcoli, definire una parola e occuparmi di: {0}.",
     "Stopped": "Mi sono fermato prima di eseguire qualsiasi cosa.",
     "Matches": "{0} {0:elemento corrisponde|elementi corrispondono}, {1} in totale.",
     "MatchesCount": "{0} {0:elemento corrisponde|elementi corrispondono}.",

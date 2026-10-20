@@ -559,7 +559,9 @@ function Resolve-LambekCategoryMessage {
     $asks = @($shapes | Where-Object { "$_".StartsWith('ask') })
     if ($asks.Count -gt 1) { return $null }
     $general = @($shapes | Where-Object { $_ -in $quantified }).Count -gt 0
-    if (-not $general -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
+    # (one question whether someone is something may be answered from what was told of that one alone: "Tom est-il un chat ?")
+    $individual = $asks.Count -eq 1 -and $asks[0] -eq 'askis'
+    if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
 
     # Each sentence read, with the dictionary: every one must read, or nothing is taken
     $items = @(foreach ($sentence in $Sentences) {
@@ -570,7 +572,16 @@ function Resolve-LambekCategoryMessage {
     $known = @(Get-LambekCategoryKnown -Language $Language)
     # (the shape of a sentence only said what it may be: what it is read as says whether it is general)
     $general = @($items | Where-Object { $_.Item.Kind -in $quantified }).Count -gt 0
-    if (-not $general -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
+    # Without any general rule, only a question whether someone is a kind of thing ("Tom est-il un chat ?"), about someone
+    # something was told of. How someone is ("Minou est-il noir ?") is left to the memory, which says what was told
+    $about = $false
+    $asked = @($items | Where-Object { $_.Item.Kind -eq 'askis' -and $_.Item.Individual })
+    $kind = @($asked | Where-Object { @("$($_.Item.Written.Predicate)".Trim() -split '\s+')[0] -in @($data['Articles']) })
+    if ($asked.Count -eq 1 -and $kind.Count -eq 1) {
+        $who = $asked[0].Item.Individual.Key
+        $about = @(@($known) + @($items) | Where-Object { $_.Item.Kind -in 'is', 'isnot' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who }).Count -gt 0
+    }
+    if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
 
     # What is told in the message is kept as told
     $facts = @(foreach ($entry in $items) { if (-not $entry.Item.Kind.StartsWith('ask')) { ConvertTo-LambekCategoryFact -Sentence $entry.Sentence -Item $entry.Item -Language $Language } })

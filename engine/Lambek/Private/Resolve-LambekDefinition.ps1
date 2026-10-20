@@ -34,6 +34,9 @@ function Resolve-LambekDefinition {
             if (-not $best -or ($exact -and -not $best.Exact)) { $best = [pscustomobject]@{ Word = $word; Language = $language; Of = $in; Senses = $senses; Exact = $exact } }
         }
         if ($best) { return $best }
+        # ("c'est quoi la capitale de la France": several words no dictionary knows together are no word to define;
+        # the message is left to the other readings)
+        if ($rest.Count -gt 1) { return $null }
         return [pscustomobject]@{ Word = $word; Language = $language; Of = $language; Senses = @() }
     }
     return $null

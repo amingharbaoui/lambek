@@ -88,6 +88,8 @@ if ($Task -eq 'All' -or $Task -eq 'Test') {
 
 # Benchmark
 if ($Task -eq 'Benchmark') {
+    # Measured on Lambek as it is shipped: nothing learned on this machine (words, forms, habits) may change a figure
+    $env:LAMBEK_DATA = Join-Path ([IO.Path]::GetTempPath()) "lambek-benchmark-$PID"
     Import-Module (Join-Path $engine 'Lambek/Lambek.psd1') -Force
     Import-LambekPack -Path (Join-Path $PSScriptRoot 'dsl/files') | Out-Null
     Import-LambekPack -Path (Join-Path $PSScriptRoot 'dsl/code') | Out-Null

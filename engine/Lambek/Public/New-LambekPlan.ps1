@@ -24,6 +24,10 @@ function New-LambekPlan {
     )
 
     process {
+        # "slt", "cmt tu vas", "la capitalle": what was typed fast is read as it was meant, and the plan says so
+        $typing = Repair-LambekTyping -Text $Text -Language $script:LanguageHint
+        $Text = $typing.Text
+
         # "ma soeur en a 2", "je fais quoi ?": read as "ma soeur a 2 chats", "qu'est-ce que je fais ?"
         if (-not $NoRecall) { $Text = ConvertTo-LambekPlainSentence -Text $Text }
 
@@ -74,6 +78,9 @@ function New-LambekPlan {
         if ($method) { $clauses = @($method.Steps) }
         else { $clauses = @(Split-LambekClause -Text $Text) }
         Add-LambekTrace -Trace $trace -Clock $clock -Stage 'Split' -Detail "$($clauses.Count) step(s)"
+        if (@($typing.Changes).Count -gt 0) {
+            Add-LambekTrace -Trace $trace -Clock $clock -Stage 'Read' -Detail "typed: $((@($typing.Changes) | ForEach-Object { "$($_.From)->$($_.To)" }) -join ' ')"
+        }
 
         # "s'il pleut, ...": the condition read, kept for the clause after it, never told on its own
         $condition = $null

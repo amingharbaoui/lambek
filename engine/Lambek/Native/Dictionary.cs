@@ -355,6 +355,81 @@ public class LambekDictionary
         return Lemmas(word, language, false);
     }
 
+    // Typing slips: the forms of a language one edit away from a word that is none of them (a letter missing, one too
+    // many, one changed, or two side by side swapped), compared without accents. At most max + 1 are returned, so one
+    // more than max says there are too many to choose from
+    public string[] Near(string word, string language, int max)
+    {
+        List<string> found = new List<string>();
+        FormIndex index;
+        string form = Normalize(word);
+        if (!formIndexes.TryGetValue(language, out index) || index.Buffer == null)
+        {
+            // A language without its forms (English): the lemmas of WordNet, one word each
+            Dictionary<string, int[]> lemmas;
+            if (!senses.TryGetValue(language, out lemmas)) return found.ToArray();
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string key in lemmas.Keys)
+            {
+                int tab = key.IndexOf('\t');
+                string lemma = tab < 0 ? key : key.Substring(0, tab);
+                if (lemma == form) return new string[0];
+                if (Math.Abs(lemma.Length - form.Length) > 1 || lemma.IndexOf('_') >= 0 || !seen.Add(lemma)) continue;
+                if (OneEdit(lemma, 0, lemma.Length, form)) found.Add(lemma);
+            }
+            found.Sort(StringComparer.Ordinal);
+            if (found.Count > max + 1) found.RemoveRange(max + 1, found.Count - max - 1);
+            return found.ToArray();
+        }
+        if (FindForm(index, form) >= 0) return found.ToArray();
+        for (int i = 0; i < index.Starts.Count; i++)
+        {
+            int start = index.Starts[i];
+            int length = (i + 1 < index.Starts.Count ? index.Starts[i + 1] : index.Buffer.Length) - start;
+            if (Math.Abs(length - form.Length) > 1) continue;
+            if (!OneEdit(index.Buffer, start, length, form)) continue;
+            found.Add(index.Buffer.Substring(start, length));
+            if (found.Count > max) break;
+        }
+        return found.ToArray();
+    }
+
+    static bool OneEdit(string buffer, int start, int length, string word)
+    {
+        // Exactly one edit between buffer[start, start + length) and word (never zero: the same form is no slip)
+        int n = word.Length;
+        int i = 0;
+        while (i < length && i < n && buffer[start + i] == word[i]) i++;
+        if (length == n)
+        {
+            if (i == n) return false;
+            // One letter changed: the rest is the same
+            bool changed = true;
+            for (int k = i + 1; k < n; k++) { if (buffer[start + k] != word[k]) { changed = false; break; } }
+            if (changed) return true;
+            // Two letters swapped
+            if (i + 1 < n && buffer[start + i] == word[i + 1] && buffer[start + i + 1] == word[i])
+            {
+                for (int k = i + 2; k < n; k++) { if (buffer[start + k] != word[k]) return false; }
+                return true;
+            }
+            return false;
+        }
+        if (length == n + 1)
+        {
+            // One letter more in the form: skip it
+            for (int k = i; k < n; k++) { if (buffer[start + k + 1] != word[k]) return false; }
+            return true;
+        }
+        if (length + 1 == n)
+        {
+            // One letter fewer in the form: skip the word's
+            for (int k = i; k < length; k++) { if (buffer[start + k] != word[k + 1]) return false; }
+            return true;
+        }
+        return false;
+    }
+
     // Exact: only the forms written with the same accents ("classe" is not "classé"), for speaking
     public LambekLemma[] Lemmas(string word, string language, bool exact)
     {

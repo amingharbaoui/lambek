@@ -582,7 +582,7 @@
     "Waits": "Schritt {0} wartet auf Schritt {1}, weil {2}.",
     "NeedOne": "Mir fehlt noch eine Angabe. {0}",
     "NeedMany": "Mir fehlen noch ein paar Angaben:",
-    "Unknown": "Auf diesem Computer kümmere ich mich um: {0}. Sagen Sie mir, was Sie tun möchten.",
+    "Unknown": "Das habe ich nicht verstanden. Ich kann rechnen, ein Wort erklären und mich um Folgendes kümmern: {0}.",
     "Stopped": "Ich habe angehalten, bevor irgendetwas ausgeführt wurde.",
     "Matches": "{0} {0:Element betroffen|Elemente betroffen}, insgesamt {1}.",
     "MatchesCount": "{0} {0:Element betroffen|Elemente betroffen}.",

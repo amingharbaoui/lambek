@@ -194,7 +194,15 @@
       "le sens de",
       "le sens du",
       "sens de",
-      "sens du"
+      "sens du",
+      "c est quoi la",
+      "c est quoi le",
+      "c est quoi l",
+      "c est quoi les",
+      "qu est ce que la",
+      "qu est ce que le",
+      "qu est ce que l",
+      "qu est ce que les"
     ],
     "Fillers": [
       "le",
@@ -226,7 +234,11 @@
       "calculer",
       "resous",
       "resoudre",
-      "evalue"
+      "evalue",
+      "quelle est",
+      "quel est",
+      "c est combien",
+      "ca fait combien"
     ],
     "SuchThat": ["tel que", "telle que"],
     "Operators": {
@@ -1620,7 +1632,7 @@
     "Waits": "L'étape {0} attend l'étape {1} car {2}.",
     "NeedOne": "Il me manque un détail. {0}",
     "NeedMany": "Il me manque quelques détails :",
-    "Unknown": "Sur cet ordinateur, je m'occupe de : {0}. Dites-moi ce que vous voulez faire.",
+    "Unknown": "Je n'ai pas compris cette phrase. Je sais retenir ce que vous me dites et raisonner dessus, calculer, définir un mot, et m'occuper de : {0}.",
     "Stopped": "Je me suis arrêté avant d'exécuter quoi que ce soit.",
     "Matches": "{0} {0:élément concerné|éléments concernés}, {1} au total.",
     "MatchesCount": "{0} {0:élément concerné|éléments concernés}.",
@@ -2029,6 +2041,46 @@
       "pour"
     ]
   },
+  "Shorthand": {
+    "slt": "salut",
+    "bjr": "bonjour",
+    "bsr": "bonsoir",
+    "cc": "coucou",
+    "cmt": "comment",
+    "cmnt": "comment",
+    "pk": "pourquoi",
+    "pq": "pourquoi",
+    "pkoi": "pourquoi",
+    "koi": "quoi",
+    "ki": "qui",
+    "stp": "s'il te plaît",
+    "svp": "s'il vous plaît",
+    "bcp": "beaucoup",
+    "mrc": "merci",
+    "mrci": "merci",
+    "dsl": "désolé",
+    "tkt": "t'inquiète",
+    "jsp": "je ne sais pas",
+    "chui": "je suis",
+    "jsuis": "je suis",
+    "tjr": "toujours",
+    "tjrs": "toujours",
+    "mtn": "maintenant",
+    "qd": "quand",
+    "pr": "pour",
+    "ds": "dans",
+    "ya": "il y a",
+    "auj": "aujourd'hui",
+    "ajd": "aujourd'hui",
+    "rdv": "rendez-vous",
+    "msg": "message",
+    "pb": "problème",
+    "nn": "non",
+    "ui": "oui",
+    "vrmt": "vraiment",
+    "tt": "tout",
+    "tlm": "tout le monde"
+  },
   "Talk": {
     "Incognito": {
       "Phrases": [
@@ -2058,7 +2110,22 @@
         "tu t appelles comment",
         "quel est ton nom",
         "t es quoi",
-        "tu es quoi"
+        "tu es quoi",
+        "tu es un robot",
+        "es tu un robot",
+        "t es un robot",
+        "tu es une ia",
+        "es tu une ia",
+        "t es une ia",
+        "tu es humain",
+        "es tu humain",
+        "t es humain",
+        "tu es une machine",
+        "es tu une machine",
+        "tu es une intelligence artificielle",
+        "es tu une intelligence artificielle",
+        "vous etes un robot",
+        "etes vous un robot"
       ],
       "Reply": "Je suis Lambek. Je transforme des phrases simples en actions sur votre ordinateur, et je vous montre chaque étape avant d'exécuter quoi que ce soit."
     },
@@ -2114,7 +2181,10 @@
         "tu vas bien",
         "vous allez bien",
         "ca roule",
-        "quoi de neuf"
+        "quoi de neuf",
+        "comment tu vas",
+        "comment vous allez",
+        "tu vas comment"
       ],
       "Reply": [
         "Très bien, merci. Que voulez-vous faire ?",

@@ -75,6 +75,16 @@ function Resolve-LambekExpression {
     # then the question marks and the small words around it go (an exclamation mark right after a number is a factorial)
     $expression = [LambekNumberWords]::Digitize($expression, $Language)
     $expression = $expression.Trim() -replace '(?<![\d)])[?.!\s]+$', '' -replace '\s*[?.]+$', ''
+    # Between two numbers only an operation can stand: a word one typing slip from exactly one of them is it ("12 foi 7")
+    $operations = @($Calculate.Operators.Keys | Where-Object { $_ -match '^\p{L}{3,}$' })
+    $expression = [regex]::Replace($expression, '(?<=\d\s+)\p{L}{3,}(?=\s+\d)', {
+            param($word)
+            $typed = $word.Value.ToLowerInvariant()
+            if ($typed -in $operations) { return $word.Value }
+            $near = @($operations | Where-Object { [LambekMeasure]::EditDistance($typed, $_) -eq 1 })
+            if ($near.Count -eq 1) { return $near[0] }
+            return $word.Value
+        })
     foreach ($pair in $Calculate.Operators.GetEnumerator()) { $expression = [regex]::Replace($expression, "(?i)(?<!\p{L})$([regex]::Escape($pair.Key))(?!\p{L})", $pair.Value) }
     $expression = $expression -replace '(?<=\d)\s*%\s*(?:de|of)\s+', '% * '
     $expression = $expression -replace '^\s*(?:[:=]\s*)', ''

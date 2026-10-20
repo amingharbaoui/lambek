@@ -24,6 +24,13 @@ function Get-LambekTalk {
     $normalized = (ConvertTo-LambekNormalizedText -Text $Text) -replace '[^\p{L}\p{N}\s]', ' '
     $words = @($normalized -split '\s+' | Where-Object { $_ })
     if ($words.Count -eq 0) { return $null }
+    # The shorthand of chats is read in full ("slt", "cmt tu vas")
+    if ($lexicon.Shorthand) {
+        $words = @(foreach ($word in $words) {
+                if ($lexicon.Shorthand.Contains($word)) { @(((ConvertTo-LambekNormalizedText -Text "$($lexicon.Shorthand[$word])") -replace '[^\p{L}\p{N}\s]', ' ') -split '\s+' | Where-Object { $_ }) }
+                else { $word }
+            })
+    }
 
     # Phrases found in the message; the first kind in the file wins
     $covered = [bool[]]::new($words.Count)

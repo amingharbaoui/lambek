@@ -11,6 +11,10 @@ function ConvertTo-LambekPlainSentence {
     #   "je fais quoi ?", "ma soeur habite ou ?": the word that asks at the end, "qu'est-ce que je fais ?".
     # The sentence is read as the plain one, and said back so: the user sees how it was understood.
     # Anything else is left as it was
+    # "Combien Paul a-t-il de pommes ?": the pronoun that repeats the one named before the verb is left out,
+    # "Combien Paul a de pommes ?" (only after "combien" and a name: "Combien a-t-il de pommes ?" keeps its subject)
+    $Text = [regex]::Replace($Text, '(?<head>\b[Cc]ombien\s+(?:de\s+\p{L}+\s+)?\p{Lu}\p{L}*(?:\s+et\s+\p{Lu}\p{L}*)?\s+\p{L}+)(?:-t)?-(?:il|elle|ils|elles)\b', '${head}')
+
     $quick = '(?i)(?:(?<![\p{L}])en\s|[''\u2019]en\s|\s(?:quoi|o\u00f9)\s*[?!.]*\s*$)'
     if ($Text -notmatch $quick) { return $Text }
     $language = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)

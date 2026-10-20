@@ -89,7 +89,7 @@ Describe 'ConvertTo-LambekAnswer' {
     }
 
     It 'does not treat a request with more words as small talk' {
-        New-LambekPlan 'hello how many folders are in my account' | ConvertTo-LambekAnswer | Should -BeLike "On this computer, I take care of*"
+        New-LambekPlan 'hello how many folders are in my account' | ConvertTo-LambekAnswer | Should -BeLike "I did not understand that.*"
     }
 
     It 'asks in French' {
