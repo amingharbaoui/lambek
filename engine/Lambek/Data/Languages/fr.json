@@ -1429,6 +1429,7 @@
         "depuis",
         "par"
       ],
+      "NounLinks": ["de", "du", "des", "d"],
       "Auxiliaries": [
         "ai",
         "as",

@@ -100,6 +100,12 @@ Describe 'Get-LambekWordForm' {
         $word.Upos | Should -Be 'VERB'
     }
 
+    It 'finds the lemma of a verb never seen by analogy with the verbs seen' {
+        $word = Get-LambekWordForm -Text 'Vous dormez.' -Language fr | Where-Object Form -EQ 'dormez'
+        $word.Known | Should -BeFalse
+        $word.Lemma | Should -BeExactly 'dormir'
+    }
+
     It 'cuts du into de le, as the treebanks do' {
         @(Get-LambekWordForm -Text 'le chien du voisin' -Language fr | ForEach-Object Form) | Should -Be @('le', 'chien', 'de', 'le', 'voisin')
     }
@@ -133,5 +139,61 @@ Describe 'The forms models on the treebanks they never learned from' {
         $report.Lemma | Should -BeGreaterOrEqual 0.96
         $report.Upos | Should -BeGreaterOrEqual 0.93
         $report.Determinism | Should -Be 1
+    }
+}
+
+Describe 'Reading sentences with the learned forms' {
+
+    BeforeAll {
+        Import-LambekPack -Path "$PSScriptRoot/../../dsl/files" | Out-Null
+        Import-LambekPack -Path "$PSScriptRoot/../../dsl/code" | Out-Null
+    }
+
+    BeforeEach {
+        InModuleScope Lambek {
+            $script:Told = $null; $script:Board = $null; $script:ToldJournal = [System.Collections.Generic.List[object]]::new()
+            $script:Incognito = $true; $script:CategoryPending = $null; $script:LastProofs = $null; $script:ProblemStores = $null
+        }
+    }
+
+    AfterAll {
+        InModuleScope Lambek { $script:Incognito = $false }
+    }
+
+    It 'offers every part of speech a word was seen with, the one read here first' {
+        $words = InModuleScope Lambek { Get-LambekSentenceReading -Text 'my brother lives in Paris' -Language en }
+        $lemmas = @($words.Lemmas('lives', 'en'))
+        $lemmas[0].Pos | Should -Be 'n'
+        @($lemmas | Where-Object { $_.Pos -eq 'v' -and $_.Lemma -eq 'live' }).Count | Should -Be 1
+    }
+
+    It 'doubts a word never seen when its two readers disagree, and keeps both readings' {
+        $reading = @(InModuleScope Lambek { (Get-LambekSentenceReading -Text 'ma sœur zorglube à Lyon' -Language fr).Readings }) | Where-Object Form -EQ 'zorglube'
+        $reading.Upos | Should -Be 'VERB'
+        $reading.Second | Should -Not -BeNullOrEmpty
+    }
+
+    It 'reads what is told with a verb it never saw, the grammar choosing what the word is' {
+        New-LambekPlan -Text 'ma sœur zorglube à Lyon' | ConvertTo-LambekAnswer | Should -BeLike "C'est noté*zorglube à Lyon*"
+    }
+
+    It 'reads what is told and answers it without any dictionary' {
+        InModuleScope Lambek {
+            $saved = $script:DictionaryPath
+            $script:DictionaryPath = Join-Path $TestDrive 'no-dictionaries'
+            try {
+                $null = New-LambekPlan -Text 'ma sœur habite à Lyon' | ConvertTo-LambekAnswer
+                New-LambekPlan -Text 'où habite ma sœur ?' | ConvertTo-LambekAnswer | Should -BeLike '*sœur habite à Lyon*'
+            }
+            finally { $script:DictionaryPath = $saved }
+        }
+    }
+
+    It 'still reads with the dictionaries when asked to, to compare' {
+        InModuleScope Lambek {
+            $script:WordSource = 'dictionary'
+            try { (Get-LambekSentenceReading -Text 'ma sœur habite à Lyon' -Language fr).GetType().Name | Should -Be 'LambekDictionary' }
+            finally { $script:WordSource = 'forms' }
+        }
     }
 }

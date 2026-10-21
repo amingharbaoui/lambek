@@ -14,7 +14,7 @@ function Get-LambekGeneralReading {
         [switch] $Once
     )
 
-    # A sentence about anything, read with the same pregroup grammar as an order but with the words of the dictionary:
+    # A sentence about anything, read with the same pregroup grammar as an order, each word typed by what it was read as:
     # a noun is n, a verb takes its subject on the left (n^r s) and maybe an object on the right (n^r s n^l),
     # "my" and "the" make a noun of a noun (n n^l), "in" adds a place to the sentence (s^r s n^l).
     # When the words reduce to s, the cancellations say who does what, to what, where. Nothing is guessed:
@@ -24,7 +24,8 @@ function Get-LambekGeneralReading {
     $general = $null
     if ($lexicon.Dialogue) { $general = $lexicon.Dialogue['General'] }
     if (-not $general) { return $null }
-    $dictionary = Get-LambekDictionary -Language $language
+    # What each word may be: read by the forms Lambek learned, in this very sentence
+    $dictionary = Get-LambekSentenceReading -Text "$($Request.Original)" -Language $language
     if (-not $dictionary) { return $null }
 
     # The words as they were typed: a word corrected towards a word of a pack ("live" read as "move") is not the word said
@@ -99,7 +100,7 @@ function Get-LambekGeneralReading {
         }
     }
 
-    # The types each word may have: the small words from the language file, the others from the dictionary
+    # The types each word may have: the small words from the language file, the others from what the word was read as
     $typed = [System.Collections.Generic.List[object]]::new()
     $kinds = @{}
     $lemmas = @{}
@@ -133,9 +134,14 @@ function Get-LambekGeneralReading {
         elseif ($token -in @($general['WhatObject'])) { $kind = 'what'; $types.Add('s n^ll s^l') }
         elseif ($token -in @($general['WhatSubject'])) { $kind = 'what'; $types.Add('s s^l n') }
         elseif ($token -in $first -or $token -in $second -or $token -in @($general['Pronouns'])) { $kind = 'pronoun'; $types.Add('n') }
-        elseif ($token -in @($general['Determiners'])) { $types.Add('n n^l') }
+        # ("la liste des courses", "the name of my cat": a word that links a noun to another noun, n^r n n^l)
+        elseif ($token -in @($general['Determiners'])) { $types.Add('n n^l'); if ($token -in @($general['NounLinks'])) { $types.Add('n^r n n^l') } }
         # ("a" is "to" and "has": a word of place that also helps a verb is read both ways, the grammar chooses)
-        elseif ($token -in @($general['Prepositions']) -and $token -notin @($general['Auxiliaries'])) { $kind = 'preposition'; $types.AddRange([string[]] @('s^r s n^l', 's s^l n^l')) }
+        elseif ($token -in @($general['Prepositions']) -and $token -notin @($general['Auxiliaries'])) {
+            $kind = 'preposition'
+            $types.AddRange([string[]] @('s^r s n^l', 's s^l n^l'))
+            if ($token -in @($general['NounLinks'])) { $types.Add('n^r n n^l') }
+        }
         else {
             $found = @($dictionary.Lemmas($token, $language))
             $pos = @($found | ForEach-Object { $_.Pos } | Select-Object -Unique)
@@ -215,7 +221,7 @@ function Get-LambekGeneralChoice {
     )
 
     # One reading of the sentence: who, the verb, what, where
-    $dictionary = Get-LambekDictionary -Language $Request.Language
+    $dictionary = Get-LambekSentenceReading -Text "$($Request.Original)" -Language $Request.Language
     $typedAs = $Request
     $tokens = @($Request.Tokens)
 

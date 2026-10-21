@@ -102,8 +102,14 @@ function Invoke-LambekMessageBenchmark {
     $deterministic = 0
     $compared = 0
     try {
-        # The first message of a session loads the dictionaries: that time is not the time of an answer
-        $null = & $converse ([pscustomobject]@{ Id = 'warm'; Text = 'bonjour' })
+        # The first message of a session in each language loads what reads it and what says the answer: that time is
+        # not the time of an answer
+        foreach ($warm in @(
+                [pscustomobject]@{ Id = 'warm'; Text = 'bonjour'; Language = 'fr' }
+                [pscustomobject]@{ Id = 'warm'; Text = 'ma soeur habite a Lyon'; Language = 'fr' }
+                [pscustomobject]@{ Id = 'warm'; Text = 'hello'; Language = 'en' }
+                [pscustomobject]@{ Id = 'warm'; Text = 'my brother lives in Paris'; Language = 'en' }
+            )) { $null = & $converse $warm }
 
         $first = [ordered]@{}
         foreach ($case in $cases) { $first[$case.Id] = @(& $converse $case) }

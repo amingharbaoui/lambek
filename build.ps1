@@ -128,7 +128,7 @@ if ($Task -eq 'Benchmark') {
 
     # The forms of words, learned without a dictionary, on treebanks they never learned from; next to them, what the
     # dictionaries Lambek reads today give on the same words
-    foreach ($treebank in @(@{ Language = 'fr'; File = 'fr_gsd-ud-test.conllu' }, @{ Language = 'en'; File = 'en_ewt-ud-test.conllu' })) {
+    foreach ($treebank in @(@{ Language = 'fr'; File = 'fr_gsd-ud-test.conllu' }, @{ Language = 'fr'; File = 'fr_parisstories-ud-test.conllu' }, @{ Language = 'en'; File = 'en_ewt-ud-test.conllu' })) {
         $report = Invoke-LambekFormBenchmark -Path (Join-Path $PSScriptRoot "bench/forms/$($treebank.File)") -Language $treebank.Language -Dictionary
         Write-Host ''
         Write-Host "Forms ($($treebank.Language), $($treebank.File))"
@@ -190,13 +190,13 @@ if ($Task -eq 'Fingerprint') {
             "$($turn.Id)#$($turn.Turn)|$($turn.Status)|$(@($turn.Actions) -join ',')|$(($turn.Reply -replace "`r", '') -replace "`n", ' / ')"
         })
     # And what the forms models read in every word of their test treebanks
-    foreach ($treebank in @(@{ Language = 'fr'; File = 'fr_gsd-ud-test.conllu' }, @{ Language = 'en'; File = 'en_ewt-ud-test.conllu' })) {
+    foreach ($treebank in @(@{ Language = 'fr'; File = 'fr_gsd-ud-test.conllu' }, @{ Language = 'fr'; File = 'fr_parisstories-ud-test.conllu' }, @{ Language = 'en'; File = 'en_ewt-ud-test.conllu' })) {
         $model = & (Get-Module Lambek) { param($language) Get-LambekFormModel -Language $language } $treebank.Language
         $index = 0
         $lines = @($lines) + @(foreach ($sentence in [LambekTreebank]::Read((Join-Path $PSScriptRoot "bench/forms/$($treebank.File)"))) {
                 $index++
                 $read = $model.Read([string[]] @($sentence | ForEach-Object Form))
-                "$($treebank.Language)#$($index.ToString($invariant))|$(($read | ForEach-Object { "$($_.Lemma)/$($_.Upos)/$($_.Feats)" }) -join ' ')"
+                "$($treebank.File)#$($index.ToString($invariant))|$(($read | ForEach-Object { "$($_.Lemma)/$($_.Upos)/$($_.Feats)" }) -join ' ')"
             })
     }
 

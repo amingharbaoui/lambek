@@ -33,7 +33,6 @@ param(
 
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot '../engine/Lambek/Lambek.psd1') -Force
-if (-not ('LambekNearest' -as [type])) { Add-Type -Path (Join-Path $PSScriptRoot 'Nearest/LambekNearest.cs') }
 
 $train = [LambekTreebank]::Read((Resolve-Path -LiteralPath $Path).Path)
 $measured = [LambekTreebank]::Read((Resolve-Path -LiteralPath $Measure).Path)

@@ -14,14 +14,19 @@
     - how written text is cut into words ("du": de le, "l'avion": l' avion), from the same treebanks.
 
     The treebanks of the models of Lambek, release 2.18 of Universal Dependencies (CC BY-SA 4.0), train and dev
-    files (the test files are in bench/forms, to measure the models, never to learn from):
+    files (the test files are in bench/forms, to measure the models, never to learn from). For French, the written
+    French of GSD and the spoken French of ParisStories and Rhapsodie, where people say tu and ask questions:
       https://raw.githubusercontent.com/UniversalDependencies/UD_French-GSD/r2.18/fr_gsd-ud-train.conllu
       https://raw.githubusercontent.com/UniversalDependencies/UD_French-GSD/r2.18/fr_gsd-ud-dev.conllu
+      https://raw.githubusercontent.com/UniversalDependencies/UD_French-ParisStories/r2.18/fr_parisstories-ud-train.conllu
+      https://raw.githubusercontent.com/UniversalDependencies/UD_French-ParisStories/r2.18/fr_parisstories-ud-dev.conllu
+      https://raw.githubusercontent.com/UniversalDependencies/UD_French-Rhapsodie/r2.18/fr_rhapsodie-ud-train.conllu
+      https://raw.githubusercontent.com/UniversalDependencies/UD_French-Rhapsodie/r2.18/fr_rhapsodie-ud-dev.conllu
       https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.18/en_ewt-ud-train.conllu
       https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.18/en_ewt-ud-dev.conllu
     Their SHA-256 are checked when they are given with these names.
 .EXAMPLE
-    ./tools/Build-LambekForms.ps1 -Language fr -Path ./ud/fr_gsd-ud-train.conllu, ./ud/fr_gsd-ud-dev.conllu -OutFile ./engine/Lambek/Data/Forms/fr.forms.gz
+    ./tools/Build-LambekForms.ps1 -Language fr -Path (Get-ChildItem ./ud/fr_*-ud-train.conllu, ./ud/fr_*-ud-dev.conllu) -OutFile ./engine/Lambek/Data/Forms/fr.forms.gz
 #>
 param(
     [Parameter(Mandatory)]
@@ -45,6 +50,10 @@ Import-Module (Join-Path $PSScriptRoot '../engine/Lambek/Lambek.psd1') -Force
 $known = @{
     'fr_gsd-ud-train.conllu' = '4b9a87b1b7e6e7003219df1d3ccca87ffaca0f00a6055b12b1857df5373589d2'
     'fr_gsd-ud-dev.conllu'   = '9221e5084cc6a1b1540671cfbd2fc0456efc223b2fe8dd2146c2bad921be02d4'
+    'fr_parisstories-ud-train.conllu' = '558c125ecb84f4e16ef8d8871368e24b8c6054446a06da9a5211fc67abb65a1d'
+    'fr_parisstories-ud-dev.conllu' = '3b37b918ab0d7885604f0fe5b91c412320157f18d0257eda11dbdec94e0666ad'
+    'fr_rhapsodie-ud-train.conllu' = '082695d3b008734319c3c2303722acb45afbc70d1223c2591100754b24f4726e'
+    'fr_rhapsodie-ud-dev.conllu' = 'f69bafa87da277d04d56c8c08c9518ea6c622cf5c4493cd7261580973853b450'
     'en_ewt-ud-train.conllu' = 'd68e06122a702464c613076523d56740f047e5bbe89dd90ec32737e04d952143'
     'en_ewt-ud-dev.conllu'   = '39239e0a60db3ae68f4b7036189f11b6692741d10ff8240dd91f74f2760d90f8'
 }

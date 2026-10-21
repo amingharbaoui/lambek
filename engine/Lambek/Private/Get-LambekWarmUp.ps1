@@ -8,11 +8,14 @@ function Get-LambekWarmUp {
     $pieces.Add([pscustomobject]@{ Work = 'System'; Language = ''; Text = '' })
     $pieces.Add([pscustomobject]@{ Work = 'Knowledge'; Language = ''; Text = '' })
     $pieces.Add([pscustomobject]@{ Work = 'Memory'; Language = ''; Text = '' })
+    # The router of acts learns its vectors once
+    $pieces.Add([pscustomobject]@{ Work = 'Router'; Language = ''; Text = '' })
     # The dictionaries load on their own thread; the senses of the actions are read from them once they are in
     foreach ($language in Get-LambekAvailableLanguage) { $pieces.Add([pscustomobject]@{ Work = 'Dictionary'; Language = $language; Text = '' }) }
 
     foreach ($language in Get-LambekAvailableLanguage) {
         $pieces.Add([pscustomobject]@{ Work = 'Lexicon'; Language = $language; Text = '' })
+        $pieces.Add([pscustomobject]@{ Work = 'Forms'; Language = $language; Text = '' })
         $pieces.Add([pscustomobject]@{ Work = 'Index'; Language = $language; Text = '' })
         $pieces.Add([pscustomobject]@{ Work = 'Speech'; Language = $language; Text = '' })
 
@@ -39,6 +42,8 @@ function Invoke-LambekWarmUpPiece {
             'System' { $null = Get-LambekSystemVocabulary; $null = Get-LambekEntityRule }
             'Knowledge' { $null = Get-LambekKnowledge }
             'Memory' { $null = Get-LambekMemoryStore; $null = Get-LambekPursuitStore }
+            'Router' { $null = Get-LambekRoute -Text 'bonjour' -Language 'fr' }
+            'Forms' { $null = Get-LambekFormModel -Language $Piece.Language }
             'Lexicon' { $null = Get-LambekLexicon -Language $Piece.Language; $null = Get-LambekGrammarLexicon -Language $Piece.Language }
             'Index' { $null = Get-LambekActionIndex -Language $Piece.Language; $null = Get-LambekExampleMemory -Language $Piece.Language }
             'Dictionary' { Get-LambekDictionary -Language $Piece.Language -Background }

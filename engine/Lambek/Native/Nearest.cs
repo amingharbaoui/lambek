@@ -59,12 +59,14 @@ public class LambekNearest
             // A feature seen once tells little, however pure
             weights[f] = telling * telling * Math.Log(1 + postings[f].Count);
         }
+        // (rounded: the last digit of a logarithm may differ from one machine to another, the vote may not)
+        for (int f = 0; f < weights.Length; f++) weights[f] = Math.Round(weights[f], 9);
         norms = new double[examples.Count];
         for (int e = 0; e < examples.Count; e++)
         {
             double sum = 0;
             foreach (int f in examples[e]) sum += weights[f] * weights[f];
-            norms[e] = Math.Sqrt(sum);
+            norms[e] = Math.Round(Math.Sqrt(sum), 9);
         }
     }
 

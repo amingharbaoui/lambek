@@ -79,6 +79,9 @@ $script:Router = $null
 $script:SmallWords = $null
 # The learned forms models of words, by language, loaded on first use (Get-LambekFormModel)
 $script:FormModels = $null
+# Where the readers of sentences learn what a word may be: the learned forms (forms) or the dictionaries (dictionary)
+$script:WordSource = 'forms'
+$script:SentenceWords = $null
 $script:AuditPath = Join-Path $dataFolder 'audit.jsonl'
 $script:HostState = @{ Plans = [ordered]@{}; Simulations = @{}; Approvals = @{} }
 $script:ProgressHandler = $null

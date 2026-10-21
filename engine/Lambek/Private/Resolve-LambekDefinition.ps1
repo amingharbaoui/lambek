@@ -28,7 +28,8 @@ function Resolve-LambekDefinition {
         # the language of the question first on a tie
         $best = $null
         foreach ($in in @($language) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $language })) {
-            $senses = @(Find-LambekWord -Word $word -Language $in -First 3 -ErrorAction SilentlyContinue)
+            # (without a dictionary for that language, it has no sense to give)
+            $senses = @(try { Find-LambekWord -Word $word -Language $in -First 3 -ErrorAction SilentlyContinue } catch { Write-Verbose $_.Exception.Message })
             if ($senses.Count -eq 0) { continue }
             $exact = @($senses | Where-Object { (ConvertTo-LambekNormalizedText -Text $_.Lemma) -eq ($word -replace ' ', '_') }).Count -gt 0
             if (-not $best -or ($exact -and -not $best.Exact)) { $best = [pscustomobject]@{ Word = $word; Language = $language; Of = $in; Senses = $senses; Exact = $exact } }

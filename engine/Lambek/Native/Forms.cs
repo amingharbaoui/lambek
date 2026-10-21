@@ -305,6 +305,13 @@ public class LambekFormReading
     public string Upos;
     public string Feats;
     public string Rule;
+    // For a word never seen: the part of speech its nearest rare words give, and whether it differs from the tagger's
+    public string Second;
+    public bool Doubt;
+    // For a word never seen: the best tag of the tagger with another part of speech, for the grammar to weigh too
+    public string Alternative;
+    // A verb never seen whose lemma was found by analogy with the verbs seen, not by its rule
+    public bool Analogous;
 }
 
 // The model of forms of one language: a tagger (part of speech and features) and a lemmatiser (the rule of form)
@@ -314,7 +321,7 @@ public class LambekForms
     public LambekPerceptron Tagger = new LambekPerceptron();
     public LambekPerceptron Lemmatiser = new LambekPerceptron();
     public int Passes = 10;
-    public const string Format = "lambek-forms-2";
+    public const string Format = "lambek-forms-6";
 
     // How the written text is cut into the words the model reads, learned from the same treebanks: the written tokens
     // that stand for several words ("du": de le, "au": à le), the pieces cut before an apostrophe ("l'", "qu'") and
@@ -328,6 +335,164 @@ public class LambekForms
 
     // Whether a word was seen when learning
     public bool Knows(string word) { return Vocabulary.Contains(word.ToLowerInvariant()); }
+
+    // The second reader of the words never seen: the rare words of the treebanks (seen at most twice), each with the
+    // words around it and its part of speech, and the most common words, the only neighbours it looks at
+    public readonly SortedSet<string> Common = new SortedSet<string>(StringComparer.Ordinal);
+
+    // The tags each word was seen with, the most frequent first: a word may be read otherwise than the tagger read it
+    // ("lives": a verb or the plural of "life"), and the grammar of the sentence then chooses
+    public readonly SortedDictionary<string, string[]> Tags = new SortedDictionary<string, string[]>(StringComparer.Ordinal);
+
+    // The lemma of a form read with a tag
+    public string LemmaFor(string form, string tag)
+    {
+        int rule = Rule(form, tag);
+        return VerbLemma(form, tag, rule >= 0 ? LambekFormRule.Apply(Lemmatiser.Classes[rule], form) : form.ToLowerInvariant());
+    }
+
+    // The lemma of a verb: as its rule gives it, unless the verb was never seen and its rule leads to a lemma never seen
+    string VerbLemma(string form, string tag, string lemma)
+    {
+        if (Lemmas.Count == 0 || !(tag == "VERB" || tag.StartsWith("VERB|", StringComparison.Ordinal))) return lemma;
+        if (Knows(form) || Lemmas.Contains(lemma.ToLowerInvariant())) return lemma;
+        return Analogy(form) ?? lemma;
+    }
+
+    // The lemmas seen when learning, in small letters, and the verbs seen with their lemma. A verb never seen whose
+    // rule leads to a lemma never seen ("dors": "dortir", the rule of "sors") takes the lemma of the verb seen that
+    // begins as it does ("dort", "dorment": dormir), as a child conjugates by analogy
+    public readonly SortedSet<string> Lemmas = new SortedSet<string>(StringComparer.Ordinal);
+    public readonly SortedDictionary<string, string> Verbs = new SortedDictionary<string, string>(StringComparer.Ordinal);
+    string[] verbForms;
+
+    public int Rule(string form, string tag)
+    {
+        return Lemmatiser.Best(LemmaFeatures(form, tag), c => LambekFormRule.Apply(Lemmatiser.Classes[c], form) != null);
+    }
+
+    // The lemma of a verb never seen, by analogy with the verbs seen; null when none begins as it does
+    public string Analogy(string form)
+    {
+        string lower = form.ToLowerInvariant();
+        if (verbForms == null) verbForms = Verbs.Keys.ToArray();
+        int need = Math.Max(3, lower.Length - 3);
+        if (lower.Length < need) return null;
+        // The verbs seen that share the first letters, found by binary search in their sorted forms
+        string stem = lower.Substring(0, need);
+        int at = Array.BinarySearch(verbForms, stem, StringComparer.Ordinal);
+        if (at < 0) at = ~at;
+        string best = null;
+        int bestLength = -1;
+        for (int i = at; i < verbForms.Length && verbForms[i].StartsWith(stem, StringComparison.Ordinal); i++)
+        {
+            int length = 0;
+            while (length < lower.Length && length < verbForms[i].Length && lower[length] == verbForms[i][length]) length++;
+            if (length > bestLength) { bestLength = length; best = verbForms[i]; }
+        }
+        return best == null ? null : Verbs[best];
+    }
+
+    public readonly List<string[]> Rare = new List<string[]>();
+    public int Neighbours = 10;
+    public double Width = 0.5;
+    LambekNearest second;
+
+    // What the second reader sees of a word: its ends, its shape, its length, and its neighbours when they are common
+    public List<string> RareFeatures(string form, string left, string right, bool first)
+    {
+        string lower = form.ToLowerInvariant();
+        List<string> features = new List<string>(16);
+        for (int n = 1; n <= 4; n++) if (lower.Length >= n) features.Add("s" + n + "=" + lower.Substring(lower.Length - n));
+        for (int n = 1; n <= 3; n++) if (lower.Length >= n) features.Add("p" + n + "=" + lower.Substring(0, n));
+        if (form.Length > 0 && char.IsUpper(form[0])) features.Add("cap");
+        if (form.Length > 1 && form.All(char.IsUpper)) features.Add("allcap");
+        if (form.Any(char.IsDigit)) features.Add("digit");
+        if (form.IndexOf('-') >= 0) features.Add("hyphen");
+        if (first) features.Add("first");
+        features.Add("len=" + Math.Min(lower.Length, 12).ToString(CultureInfo.InvariantCulture));
+        string l = left.ToLowerInvariant();
+        string r = right.ToLowerInvariant();
+        features.Add("w-1=" + (l == "<s>" || Common.Contains(l) ? l : "*"));
+        features.Add("w+1=" + (r == "</s>" || Common.Contains(r) ? r : "*"));
+        return features;
+    }
+
+    LambekNearest Second
+    {
+        get
+        {
+            if (second != null) return second;
+            LambekNearest memory = new LambekNearest { Supervised = true };
+            foreach (string[] rare in Rare) memory.Add(RareFeatures(rare[0], rare[1], rare[2], rare[1] == "<s>").ToArray(), rare[3], rare[0]);
+            second = memory;
+            return second;
+        }
+    }
+
+    void Remember(List<LambekTreebankWord[]> sentences)
+    {
+        Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (LambekTreebankWord[] sentence in sentences)
+        {
+            foreach (LambekTreebankWord word in sentence)
+            {
+                string lower = word.Form.ToLowerInvariant();
+                int count;
+                counts.TryGetValue(lower, out count);
+                counts[lower] = count + 1;
+            }
+        }
+        foreach (KeyValuePair<string, int> pair in counts.OrderByDescending(pair => pair.Value).ThenBy(pair => pair.Key, StringComparer.Ordinal).Take(200)) Common.Add(pair.Key);
+        Dictionary<string, Dictionary<string, int>> tags = new Dictionary<string, Dictionary<string, int>>(StringComparer.Ordinal);
+        foreach (LambekTreebankWord[] sentence in sentences)
+        {
+            foreach (LambekTreebankWord word in sentence)
+            {
+                string lower = word.Form.ToLowerInvariant();
+                Dictionary<string, int> seen;
+                if (!tags.TryGetValue(lower, out seen)) tags[lower] = seen = new Dictionary<string, int>(StringComparer.Ordinal);
+                int count;
+                seen.TryGetValue(word.Tag, out count);
+                seen[word.Tag] = count + 1;
+            }
+        }
+        // Only the tags a word really has: seen twice at least, and at least one time in twenty (a slip of the
+        // annotators, "it" read once as "if", is no reading of the word)
+        // The verbs seen, each with its most frequent lemma
+        Dictionary<string, Dictionary<string, int>> verbs = new Dictionary<string, Dictionary<string, int>>(StringComparer.Ordinal);
+        foreach (LambekTreebankWord[] sentence in sentences)
+        {
+            foreach (LambekTreebankWord word in sentence)
+            {
+                if (word.Upos != "VERB" || string.IsNullOrEmpty(word.Lemma) || word.Lemma == "_") continue;
+                string lower = word.Form.ToLowerInvariant();
+                Dictionary<string, int> seen;
+                if (!verbs.TryGetValue(lower, out seen)) verbs[lower] = seen = new Dictionary<string, int>(StringComparer.Ordinal);
+                int count;
+                seen.TryGetValue(word.Lemma, out count);
+                seen[word.Lemma] = count + 1;
+            }
+        }
+        foreach (KeyValuePair<string, Dictionary<string, int>> pair in verbs)
+        {
+            Verbs[pair.Key] = pair.Value.OrderByDescending(lemma => lemma.Value).ThenBy(lemma => lemma.Key, StringComparer.Ordinal).First().Key;
+        }
+        foreach (KeyValuePair<string, Dictionary<string, int>> pair in tags)
+        {
+            int total = pair.Value.Values.Sum();
+            Tags[pair.Key] = pair.Value.Where(tag => tag.Value >= 2 && tag.Value * 20 >= total)
+                .OrderByDescending(tag => tag.Value).ThenBy(tag => tag.Key, StringComparer.Ordinal).Select(tag => tag.Key).ToArray();
+        }
+        foreach (LambekTreebankWord[] sentence in sentences)
+        {
+            for (int i = 0; i < sentence.Length; i++)
+            {
+                if (counts[sentence[i].Form.ToLowerInvariant()] > 2) continue;
+                Rare.Add(new[] { sentence[i].Form, i > 0 ? sentence[i - 1].Form : "<s>", i + 1 < sentence.Length ? sentence[i + 1].Form : "</s>", sentence[i].Upos });
+            }
+        }
+    }
 
     public void LearnTokens(IEnumerable<string> paths)
     {
@@ -507,7 +672,15 @@ public class LambekForms
     // own guesses as the tags before (as it will when reading), the lemmatiser with the true tags
     public void Train(List<LambekTreebankWord[]> sentences, Action<int> progress)
     {
-        foreach (LambekTreebankWord[] sentence in sentences) foreach (LambekTreebankWord word in sentence) Vocabulary.Add(word.Form.ToLowerInvariant());
+        foreach (LambekTreebankWord[] sentence in sentences)
+        {
+            foreach (LambekTreebankWord word in sentence)
+            {
+                Vocabulary.Add(word.Form.ToLowerInvariant());
+                if (!string.IsNullOrEmpty(word.Lemma) && word.Lemma != "_") Lemmas.Add(word.Lemma.ToLowerInvariant());
+            }
+        }
+        Remember(sentences);
         for (int pass = 0; pass < Passes; pass++)
         {
             foreach (LambekTreebankWord[] sentence in sentences)
@@ -540,12 +713,27 @@ public class LambekForms
         string previous = "<s>", beforePrevious = "<s>";
         for (int i = 0; i < forms.Length; i++)
         {
-            int tagClass = Tagger.Best(TagFeatures(forms, i, previous, beforePrevious), null);
+            List<string> seen = TagFeatures(forms, i, previous, beforePrevious);
+            int tagClass = Tagger.Best(seen, null);
             string tag = tagClass >= 0 ? Tagger.Classes[tagClass] : "X|_";
+            string alternative = null;
+            if (tagClass >= 0 && !Knows(forms[i]))
+            {
+                long[] scores = Tagger.Score(seen);
+                string upos = tag.Substring(0, Math.Max(0, tag.IndexOf('|')));
+                int other = -1;
+                for (int c = 0; c < scores.Length; c++)
+                {
+                    string name = Tagger.Classes[c];
+                    if (name.StartsWith(upos + "|", StringComparison.Ordinal)) continue;
+                    if (other < 0 || scores[c] > scores[other]) other = c;
+                }
+                if (other >= 0) alternative = Tagger.Classes[other];
+            }
             beforePrevious = previous;
             previous = tag;
             string form = forms[i];
-            int ruleClass = Lemmatiser.Best(LemmaFeatures(form, tag), c => LambekFormRule.Apply(Lemmatiser.Classes[c], form) != null);
+            int ruleClass = Rule(form, tag);
             string rule = ruleClass >= 0 ? Lemmatiser.Classes[ruleClass] : "l|0||0|";
             int bar = tag.IndexOf('|');
             readings[i] = new LambekFormReading
@@ -554,8 +742,25 @@ public class LambekForms
                 Rule = rule,
                 Lemma = LambekFormRule.Apply(rule, form) ?? form.ToLowerInvariant(),
                 Upos = bar >= 0 ? tag.Substring(0, bar) : tag,
-                Feats = bar >= 0 ? tag.Substring(bar + 1) : "_"
+                Feats = bar >= 0 ? tag.Substring(bar + 1) : "_",
+                Alternative = alternative
             };
+            string byRule = readings[i].Lemma;
+            readings[i].Lemma = VerbLemma(form, tag, byRule);
+            readings[i].Analogous = readings[i].Lemma != byRule;
+            // A word never seen is read a second time, from the rare words it is nearest to: when the two readers
+            // disagree, the word is in doubt, and both parts of speech are kept for the grammar to choose
+            if (Rare.Count > 0 && !Knows(form))
+            {
+                double share;
+                string[] near;
+                string other = Second.Vote(RareFeatures(form, i > 0 ? forms[i - 1] : "<s>", i + 1 < forms.Length ? forms[i + 1] : "</s>", i == 0).ToArray(), Neighbours, Width, out share, out near);
+                if (other != null)
+                {
+                    readings[i].Second = other;
+                    readings[i].Doubt = other != readings[i].Upos;
+                }
+            }
         }
         return readings;
     }
@@ -576,6 +781,21 @@ public class LambekForms
             foreach (string piece in After) writer.Write(piece);
             writer.Write(Vocabulary.Count);
             foreach (string word in Vocabulary) writer.Write(word);
+            writer.Write(Lemmas.Count);
+            foreach (string lemma in Lemmas) writer.Write(lemma);
+            writer.Write(Verbs.Count);
+            foreach (KeyValuePair<string, string> pair in Verbs) { writer.Write(pair.Key); writer.Write(pair.Value); }
+            writer.Write(Common.Count);
+            foreach (string word in Common) writer.Write(word);
+            writer.Write(Tags.Count);
+            foreach (KeyValuePair<string, string[]> pair in Tags)
+            {
+                writer.Write(pair.Key);
+                writer.Write(pair.Value.Length);
+                foreach (string tag in pair.Value) writer.Write(tag);
+            }
+            writer.Write(Rare.Count);
+            foreach (string[] rare in Rare) foreach (string part in rare) writer.Write(part);
             Tagger.Write(writer);
             Lemmatiser.Write(writer);
         }
@@ -598,9 +818,148 @@ public class LambekForms
             for (int i = 0; i < after; i++) forms.After.Add(reader.ReadString());
             int vocabulary = reader.ReadInt32();
             for (int i = 0; i < vocabulary; i++) forms.Vocabulary.Add(reader.ReadString());
+            int lemmas = reader.ReadInt32();
+            for (int i = 0; i < lemmas; i++) forms.Lemmas.Add(reader.ReadString());
+            int verbs = reader.ReadInt32();
+            for (int i = 0; i < verbs; i++) forms.Verbs[reader.ReadString()] = reader.ReadString();
+            int common = reader.ReadInt32();
+            for (int i = 0; i < common; i++) forms.Common.Add(reader.ReadString());
+            int tagged = reader.ReadInt32();
+            for (int i = 0; i < tagged; i++)
+            {
+                string word = reader.ReadString();
+                string[] list = new string[reader.ReadInt32()];
+                for (int j = 0; j < list.Length; j++) list[j] = reader.ReadString();
+                forms.Tags[word] = list;
+            }
+            int rare = reader.ReadInt32();
+            for (int i = 0; i < rare; i++) forms.Rare.Add(new[] { reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString() });
             forms.Tagger = LambekPerceptron.ReadFrom(reader);
             forms.Lemmatiser = LambekPerceptron.ReadFrom(reader);
             return forms;
         }
+    }
+}
+
+// The words of one sentence as the forms model read them, offered the way the dictionaries offer theirs (Lemmas): the
+// readers of sentences ask a word what it may be, and get the lemma, the part of speech and the participle the model
+// read in this very sentence, instead of every reading a dictionary lists for the word out of context. A word in
+// doubt (never seen, and the two readers of the model disagree) gets both parts of speech, for the grammar to choose
+public class LambekSentenceWords
+{
+    readonly Dictionary<string, List<LambekLemma>> words = new Dictionary<string, List<LambekLemma>>(StringComparer.Ordinal);
+    public LambekFormReading[] Readings = new LambekFormReading[0];
+
+    static string Pos(string upos)
+    {
+        switch (upos)
+        {
+            case "VERB": return "v";
+            case "NOUN": return "n";
+            case "PROPN": return "n";
+            case "ADJ": return "a";
+            case "ADV": return "r";
+            case "DET": return "det";
+            case "ADP": return "prep";
+            default: return upos.ToLowerInvariant();
+        }
+    }
+
+    void Add(string key, LambekLemma lemma)
+    {
+        List<LambekLemma> list;
+        if (!words.TryGetValue(key, out list)) words[key] = list = new List<LambekLemma>();
+        if (!list.Any(seen => seen.Lemma == lemma.Lemma && seen.Pos == lemma.Pos && seen.Tag == lemma.Tag)) list.Add(lemma);
+    }
+
+    void AddReading(string key, LambekFormReading reading, string upos)
+    {
+        AddReading(key, reading.Lemma, upos, reading.Feats);
+    }
+
+    void AddReading(string key, string shown, string upos, string feats)
+    {
+        string lemma = LambekDictionary.Normalize(shown);
+        // A participle, as the dictionaries of Lambek mark it (K)
+        string tag = feats != null && feats.Contains("VerbForm=Part") ? "K" : "";
+        if (upos == "AUX")
+        {
+            // A verb that helps the others is also a verb ("est" in "mon frere est content")
+            Add(key, new LambekLemma { Lemma = lemma, Shown = shown, Pos = "v", Tag = tag });
+            Add(key, new LambekLemma { Lemma = lemma, Shown = shown, Pos = "aux", Tag = tag });
+            return;
+        }
+        Add(key, new LambekLemma { Lemma = lemma, Shown = shown, Pos = Pos(upos), Tag = tag });
+    }
+
+    static string Key(string form)
+    {
+        return LambekDictionary.Normalize(form).Replace("'", "").Replace("’", "");
+    }
+
+    public static LambekSentenceWords Read(LambekForms model, string text)
+    {
+        return Read(model, text, null, null);
+    }
+
+    // With a dictionary, only as a last resort: a verb never seen, whose lemma the model could not find among the
+    // lemmas it has seen ("dors"), takes the lemma the dictionary gives it
+    public static LambekSentenceWords Read(LambekForms model, string text, LambekDictionary dictionary, string language)
+    {
+        LambekSentenceWords sentence = new LambekSentenceWords();
+        sentence.Readings = model.ReadText(text ?? "");
+        foreach (LambekFormReading reading in sentence.Readings)
+        {
+            string key = Key(reading.Form);
+            if (key.Length == 0) continue;
+            if (dictionary != null && reading.Upos == "VERB" && !model.Knows(reading.Form) && (reading.Analogous || !model.Lemmas.Contains(reading.Lemma.ToLowerInvariant())))
+            {
+                LambekLemma verb = dictionary.Lemmas(reading.Form.ToLowerInvariant(), language).FirstOrDefault(found => found.Pos == "v");
+                if (verb != null) reading.Lemma = string.IsNullOrEmpty(verb.Shown) ? verb.Lemma : verb.Shown;
+            }
+            sentence.AddReading(key, reading, reading.Upos);
+            // (the second reading with its own lemma: "raining" read as a noun is "raining", as a verb "rain")
+            // (a word never seen is never a verb that helps the others: those are few, and all seen)
+            if (reading.Doubt && reading.Second != null && reading.Second != "AUX") sentence.AddReading(key, model.LemmaFor(reading.Form, reading.Second + "|_"), reading.Second, "_");
+            // A word never seen may also be what the tagger read second
+            if (reading.Alternative != null && !reading.Alternative.StartsWith("AUX|", StringComparison.Ordinal))
+            {
+                int cut = reading.Alternative.IndexOf('|');
+                sentence.AddReading(key, model.LemmaFor(reading.Form, reading.Alternative), reading.Alternative.Substring(0, cut), reading.Alternative.Substring(cut + 1));
+            }
+            // Then the other parts of speech the word was seen with, after the one read here
+            string[] seen;
+            if (model.Tags.TryGetValue(reading.Form.ToLowerInvariant(), out seen))
+            {
+                HashSet<string> parts = new HashSet<string>(StringComparer.Ordinal) { reading.Upos };
+                foreach (string other in seen)
+                {
+                    int bar = other.IndexOf('|');
+                    string upos = bar >= 0 ? other.Substring(0, bar) : other;
+                    if (upos == "X" || upos == "SYM" || upos == "PUNCT" || upos == "INTJ" || !parts.Add(upos)) continue;
+                    sentence.AddReading(key, model.LemmaFor(reading.Form, other), upos, bar >= 0 ? other.Substring(bar + 1) : "_");
+                }
+            }
+        }
+        // A written token that stands for several words ("du": de le) may be any of them
+        string plain = " " + string.Join(" ", System.Text.RegularExpressions.Regex.Split(LambekDictionary.Normalize(text ?? ""), @"[^\p{L}\p{N}']+")) + " ";
+        foreach (KeyValuePair<string, string> contraction in model.Contractions)
+        {
+            string surface = Key(contraction.Key);
+            if (surface.Length == 0 || plain.IndexOf(" " + LambekDictionary.Normalize(contraction.Key) + " ", StringComparison.Ordinal) < 0) continue;
+            foreach (string part in contraction.Value.Split(' '))
+            {
+                List<LambekLemma> found;
+                if (sentence.words.TryGetValue(Key(part), out found)) foreach (LambekLemma lemma in found.ToArray()) sentence.Add(surface, lemma);
+            }
+        }
+        return sentence;
+    }
+
+    public LambekLemma[] Lemmas(string word, string language)
+    {
+        List<LambekLemma> found;
+        if (word != null && words.TryGetValue(Key(word), out found)) return found.ToArray();
+        return new LambekLemma[0];
     }
 }
