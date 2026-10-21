@@ -10,6 +10,10 @@ function Read-LambekRequest {
         [string] $Language = 'auto'
     )
 
+    $key = "read`n$Language`n$Text`n$Original"
+    $kept = Get-LambekReadCopy -Key $key
+    if ($kept) { return $kept }
+
     # Entities
     $extraction = Get-LambekEntity -Text $Text
 
@@ -39,7 +43,7 @@ function Read-LambekRequest {
     $canonical = $terms -join ' '
     $hash = Get-LambekHash -Text "$detectedLanguage|$canonical"
 
-    [pscustomobject]@{
+    $request = [pscustomobject]@{
         PSTypeName  = 'Lambek.Request'
         Original    = $Original
         Language    = $detectedLanguage
@@ -55,4 +59,6 @@ function Read-LambekRequest {
         Canonical   = $canonical
         Hash        = $hash
     }
+    $script:ReadCache[$key] = $request
+    return $request.PSObject.Copy()
 }

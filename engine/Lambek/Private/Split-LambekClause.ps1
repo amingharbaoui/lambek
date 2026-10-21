@@ -25,19 +25,10 @@ function Split-LambekClause {
 
     # "and" or "et" before an action word starts a new step: "list the files in C:\A and delete the .tmp files";
     # before a pronoun it goes on with the same files: "move them and put them in D:\B"
-    $verbs = [System.Collections.Generic.HashSet[string]]::new()
-    foreach ($pack in $script:Packs.Values) {
-        foreach ($language in $pack.Words.Keys) {
-            # (a word of place that opens or ends a sentence, "in C:\A, ...", is no action: "...and in Paris")
-            $actionWords = @($pack.Words[$language].Keys | Where-Object { @(@($pack.Words[$language][$_]) | Where-Object { $_ -match '(^|\s)s(\s|$)' -and $_ -notmatch 's\^r s|^s s\^l d\^l$' }).Count -gt 0 })
-            foreach ($word in $actionWords) { [void] $verbs.Add($word) }
-            if ($pack.BaseForms.ContainsKey($language)) {
-                foreach ($form in $pack.BaseForms[$language].Keys) {
-                    if ($pack.BaseForms[$language][$form] -in $actionWords) { [void] $verbs.Add($form) }
-                }
-            }
-        }
-    }
+    # (gathered once for the packs as they are: a pack imported again is another object)
+    $signature = @($script:Packs.Values | ForEach-Object { [System.Runtime.CompilerServices.RuntimeHelpers]::GetHashCode($_) }) -join ','
+    if ($script:ClauseVerbs -and $script:ClauseVerbs.Signature -eq $signature) { $verbs = $script:ClauseVerbs.Verbs }
+    else { $verbs = Get-LambekClauseVerb; $script:ClauseVerbs = [pscustomobject]@{ Signature = $signature; Verbs = $verbs } }
     $clauses = @(foreach ($clause in $clauses) {
             $start = 0
             foreach ($match in [regex]::Matches($clause, '\s*,?\s*\b(?:and|et|y|und|e|ed|en)\s+(\p{L}+)\b(?!\s+(?:it|them)\b|[\s-]+(?:le|la|les|l)(?:\s*$|\s+(?:dans|sur|vers|ailleurs)\b))', 'IgnoreCase')) {
@@ -65,4 +56,22 @@ function Split-LambekClause {
     }
 
     return $result.ToArray()
+}
+
+function Get-LambekClauseVerb {
+    # The words that open an action in the packs, and their forms
+    $verbs = [System.Collections.Generic.HashSet[string]]::new()
+    foreach ($pack in $script:Packs.Values) {
+        foreach ($language in $pack.Words.Keys) {
+            # (a word of place that opens or ends a sentence, "in C:\A, ...", is no action: "...and in Paris")
+            $actionWords = @($pack.Words[$language].Keys | Where-Object { @(@($pack.Words[$language][$_]) | Where-Object { $_ -match '(^|\s)s(\s|$)' -and $_ -notmatch 's\^r s|^s s\^l d\^l$' }).Count -gt 0 })
+            foreach ($word in $actionWords) { [void] $verbs.Add($word) }
+            if ($pack.BaseForms.ContainsKey($language)) {
+                foreach ($form in $pack.BaseForms[$language].Keys) {
+                    if ($pack.BaseForms[$language][$form] -in $actionWords) { [void] $verbs.Add($form) }
+                }
+            }
+        }
+    }
+    return , $verbs
 }

@@ -20,7 +20,7 @@ function Invoke-LambekMessageBenchmark {
         [Parameter(Mandatory)]
         [string] $Path,
 
-        [ValidateSet('all', 'calibration', 'test')]
+        [ValidateSet('all', 'calibration', 'test', 'fresh')]
         [string] $Split = 'all'
     )
 

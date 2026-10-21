@@ -64,6 +64,9 @@ function Get-LambekLanguageScore {
     # Matrix Language Frame (Myers-Scotton): the small words of grammar (articles, prepositions, pronouns) come from the
     # language that frames the sentence, the content words may come from another. A small word counts two, any other
     # word of the language one; words every language shares count for none of them
+    $key = "languages`n" + ($Tokens -join "`n")
+    $kept = $null
+    if ($script:ReadCache.TryGetValue($key, [ref] $kept)) { return $kept }
     $lower = @($Tokens | ForEach-Object { $_.ToLowerInvariant() })
     $languages = @(Get-LambekAvailableLanguage)
     $lexicons = @{}
@@ -79,6 +82,7 @@ function Get-LambekLanguageScore {
             $scores[$language] += $weight
         }
     }
+    $script:ReadCache[$key] = $scores
     return $scores
 }
 

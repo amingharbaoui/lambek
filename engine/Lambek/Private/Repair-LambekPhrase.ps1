@@ -7,6 +7,10 @@ function Repair-LambekPhrase {
         [string] $Text
     )
 
+    $key = "phrase`n$Text"
+    $cached = $null
+    if ($script:ReadCache.TryGetValue($key, [ref] $cached)) { return $cached }
+
     # A greeting before a request is only politeness: "salut, supprime les .tmp" is "supprime les .tmp"
     $result = $Text
     if ($null -eq $script:GreetingPattern) {
@@ -41,5 +45,6 @@ function Repair-LambekPhrase {
         }
     }
     $result = [regex]::Replace($result, "$open(\d+)$close", { param($match) $kept[[int] $match.Groups[1].Value] })
+    $script:ReadCache[$key] = $result
     return $result
 }

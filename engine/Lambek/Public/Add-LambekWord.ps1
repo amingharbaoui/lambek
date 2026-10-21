@@ -23,6 +23,7 @@ function Add-LambekWord {
     if ($Language -notin (Get-LambekAvailableLanguage)) {
         throw "Language '$Language' is not available."
     }
+    Clear-LambekReadCache
     $new = ConvertTo-LambekNormalizedText -Text $Word
     $known = ConvertTo-LambekNormalizedText -Text $Meaning
     if ($new -notmatch '^\p{L}+$') {

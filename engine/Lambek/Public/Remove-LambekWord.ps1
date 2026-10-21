@@ -15,6 +15,7 @@ function Remove-LambekWord {
         [string] $Language
     )
 
+    Clear-LambekReadCache
     $word = ConvertTo-LambekNormalizedText -Text $Word
     $learned = Get-LambekLearnedWord
     if (-not $learned.ContainsKey($Language) -or -not $learned[$Language].ContainsKey($word)) {

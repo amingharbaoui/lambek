@@ -16,6 +16,8 @@ function Get-LambekWarmUp {
     foreach ($language in Get-LambekAvailableLanguage) {
         $pieces.Add([pscustomobject]@{ Work = 'Lexicon'; Language = $language; Text = '' })
         $pieces.Add([pscustomobject]@{ Work = 'Forms'; Language = $language; Text = '' })
+        # The types the words of each part of speech take, for a sentence with two words the grammar does not know
+        $pieces.Add([pscustomobject]@{ Work = 'Parts'; Language = $language; Text = '' })
         $pieces.Add([pscustomobject]@{ Work = 'Index'; Language = $language; Text = '' })
         $pieces.Add([pscustomobject]@{ Work = 'Speech'; Language = $language; Text = '' })
 
@@ -44,6 +46,7 @@ function Invoke-LambekWarmUpPiece {
             'Memory' { $null = Get-LambekMemoryStore; $null = Get-LambekPursuitStore }
             'Router' { $null = Get-LambekRoute -Text 'bonjour' -Language 'fr' }
             'Forms' { $null = Get-LambekFormModel -Language $Piece.Language }
+            'Parts' { $null = Get-LambekPartType -Language $Piece.Language }
             'Lexicon' { $null = Get-LambekLexicon -Language $Piece.Language; $null = Get-LambekGrammarLexicon -Language $Piece.Language }
             'Index' { $null = Get-LambekActionIndex -Language $Piece.Language; $null = Get-LambekExampleMemory -Language $Piece.Language }
             'Dictionary' { Get-LambekDictionary -Language $Piece.Language -Background }

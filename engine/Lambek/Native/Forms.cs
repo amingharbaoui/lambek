@@ -321,7 +321,7 @@ public class LambekForms
     public LambekPerceptron Tagger = new LambekPerceptron();
     public LambekPerceptron Lemmatiser = new LambekPerceptron();
     public int Passes = 10;
-    public const string Format = "lambek-forms-6";
+    public const string Format = "lambek-forms-7";
 
     // How the written text is cut into the words the model reads, learned from the same treebanks: the written tokens
     // that stand for several words ("du": de le, "au": à le), the pieces cut before an apostrophe ("l'", "qu'") and
@@ -366,6 +366,12 @@ public class LambekForms
     public readonly SortedDictionary<string, string> Verbs = new SortedDictionary<string, string>(StringComparer.Ordinal);
     string[] verbForms;
 
+    // The paradigms: the forms each lemma was seen with, for its part of speech and its features, and how often
+    // ("VERB\tprendre\tMood=Ind|Number=Plur|Person=1|Tense=Pres|VerbForm=Fin": "prenons"). With them Lambek says a
+    // word as well as it reads it: the form of a verb for the one spoken to, an adjective that agrees. The verbs that
+    // help the others (AUX) are verbs here, as "etre" is one verb whether it helps or not
+    public readonly SortedDictionary<string, SortedDictionary<string, int>> Paradigms = new SortedDictionary<string, SortedDictionary<string, int>>(StringComparer.Ordinal);
+
     public int Rule(string form, string tag)
     {
         return Lemmatiser.Best(LemmaFeatures(form, tag), c => LambekFormRule.Apply(Lemmatiser.Classes[c], form) != null);
@@ -391,6 +397,29 @@ public class LambekForms
             if (length > bestLength) { bestLength = length; best = verbForms[i]; }
         }
         return best == null ? null : Verbs[best];
+    }
+
+    // The lemmas of the verbs seen whose forms share the longest beginning with a word (four letters at least, or the
+    // whole word but its last three): "courons": courir, courber...
+    public string[] Beginning(string form)
+    {
+        string lower = form.ToLowerInvariant();
+        if (verbForms == null) verbForms = Verbs.Keys.ToArray();
+        int need = Math.Max(3, lower.Length - 3);
+        if (lower.Length < need) return new string[0];
+        string stem = lower.Substring(0, need);
+        int at = Array.BinarySearch(verbForms, stem, StringComparer.Ordinal);
+        if (at < 0) at = ~at;
+        int best = -1;
+        SortedSet<string> lemmas = new SortedSet<string>(StringComparer.Ordinal);
+        for (int i = at; i < verbForms.Length && verbForms[i].StartsWith(stem, StringComparison.Ordinal); i++)
+        {
+            int length = 0;
+            while (length < lower.Length && length < verbForms[i].Length && lower[length] == verbForms[i][length]) length++;
+            if (length > best) { best = length; lemmas.Clear(); }
+            if (length == best) lemmas.Add(Verbs[verbForms[i]].ToLowerInvariant());
+        }
+        return lemmas.ToArray();
     }
 
     public readonly List<string[]> Rare = new List<string[]>();
@@ -484,6 +513,7 @@ public class LambekForms
             Tags[pair.Key] = pair.Value.Where(tag => tag.Value >= 2 && tag.Value * 20 >= total)
                 .OrderByDescending(tag => tag.Value).ThenBy(tag => tag.Key, StringComparer.Ordinal).Select(tag => tag.Key).ToArray();
         }
+        LearnParadigms(sentences);
         foreach (LambekTreebankWord[] sentence in sentences)
         {
             for (int i = 0; i < sentence.Length; i++)
@@ -492,6 +522,501 @@ public class LambekForms
                 Rare.Add(new[] { sentence[i].Form, i > 0 ? sentence[i - 1].Form : "<s>", i + 1 < sentence.Length ? sentence[i + 1].Form : "</s>", sentence[i].Upos });
             }
         }
+    }
+
+    // The forms each lemma was seen with
+    public void LearnParadigms(List<LambekTreebankWord[]> sentences)
+    {
+        Paradigms.Clear();
+        foreach (LambekTreebankWord[] sentence in sentences)
+        {
+            foreach (LambekTreebankWord word in sentence)
+            {
+                string key = ParadigmKey(word.Upos, word.Lemma, word.Feats);
+                if (key == null) continue;
+                SortedDictionary<string, int> forms;
+                if (!Paradigms.TryGetValue(key, out forms)) Paradigms[key] = forms = new SortedDictionary<string, int>(StringComparer.Ordinal);
+                string lower = word.Form.ToLowerInvariant();
+                int count;
+                forms.TryGetValue(lower, out count);
+                forms[lower] = count + 1;
+            }
+        }
+        speaking = null;
+    }
+
+    // The key of a paradigm; null for what has no forms to say (punctuation, symbols, words of no part of speech)
+    public static string ParadigmKey(string upos, string lemma, string feats)
+    {
+        if (string.IsNullOrEmpty(lemma) || lemma == "_" || upos == "PUNCT" || upos == "SYM" || upos == "X") return null;
+        // (a slip of the hand, "énérgie", or a shortened word, "cts", is no form to say)
+        if (feats != null && (feats.Contains("Typo=Yes") || feats.Contains("Abbr=Yes"))) return null;
+        return (upos == "AUX" ? "VERB" : upos) + "\t" + lemma.ToLowerInvariant() + "\t" + (string.IsNullOrEmpty(feats) ? "_" : feats);
+    }
+
+    static HashSet<string> FeatureSet(string feats)
+    {
+        HashSet<string> set = new HashSet<string>(StringComparer.Ordinal);
+        if (string.IsNullOrEmpty(feats) || feats == "_") return set;
+        foreach (string feature in feats.Split('|')) if (feature.Length > 0) set.Add(feature);
+        return set;
+    }
+
+    // Built once, from the paradigms: the features each part of speech was seen with, the lemma written with its
+    // accents for each lemma without them ("etre": être), and for each part of speech and features the lemmas seen,
+    // written backwards and sorted, each with the rule that leads from it to its most frequent form
+    class Speaking
+    {
+        public Dictionary<string, List<KeyValuePair<string, HashSet<string>>>> Features = new Dictionary<string, List<KeyValuePair<string, HashSet<string>>>>(StringComparer.Ordinal);
+        public Dictionary<string, string> Accented = new Dictionary<string, string>(StringComparer.Ordinal);
+        public Dictionary<string, string[]> Backwards = new Dictionary<string, string[]>(StringComparer.Ordinal);
+        public Dictionary<string, string[]> Rules = new Dictionary<string, string[]>(StringComparer.Ordinal);
+        public Dictionary<string, int[]> Counts = new Dictionary<string, int[]>(StringComparer.Ordinal);
+        // Each lemma seen, with the change of ending of each of its forms seen, by features
+        public Dictionary<string, Dictionary<string, string>> Cells = new Dictionary<string, Dictionary<string, string>>(StringComparer.Ordinal);
+    }
+    Speaking speaking;
+
+    static string Backward(string text)
+    {
+        char[] letters = text.ToCharArray();
+        Array.Reverse(letters);
+        return new string(letters);
+    }
+
+    Speaking Speak()
+    {
+        if (speaking != null) return speaking;
+        Speaking built = new Speaking();
+        Dictionary<string, HashSet<string>> featuresSeen = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
+        Dictionary<string, Dictionary<string, int>> accents = new Dictionary<string, Dictionary<string, int>>(StringComparer.Ordinal);
+        Dictionary<string, List<string[]>> entries = new Dictionary<string, List<string[]>>(StringComparer.Ordinal);
+        foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in Paradigms)
+        {
+            string[] parts = paradigm.Key.Split('\t');
+            HashSet<string> seen;
+            if (!featuresSeen.TryGetValue(parts[0], out seen)) featuresSeen[parts[0]] = seen = new HashSet<string>(StringComparer.Ordinal);
+            seen.Add(parts[2]);
+            int total = paradigm.Value.Values.Sum();
+            string plain = LambekDictionary.Normalize(parts[1]);
+            Dictionary<string, int> written;
+            if (!accents.TryGetValue(plain, out written)) accents[plain] = written = new Dictionary<string, int>(StringComparer.Ordinal);
+            int count;
+            written.TryGetValue(parts[1], out count);
+            written[parts[1]] = count + total;
+            string form = paradigm.Value.OrderByDescending(pair => pair.Value).ThenBy(pair => pair.Key, StringComparer.Ordinal).First().Key;
+            string slot = parts[0] + "\t" + parts[2];
+            List<string[]> list;
+            if (!entries.TryGetValue(slot, out list)) entries[slot] = list = new List<string[]>();
+            string ending = Ending(parts[1], form);
+            list.Add(new[] { Backward(parts[1]), ending, total.ToString(CultureInfo.InvariantCulture) });
+            Dictionary<string, string> cells;
+            if (!built.Cells.TryGetValue(parts[0] + "\t" + parts[1], out cells)) built.Cells[parts[0] + "\t" + parts[1]] = cells = new Dictionary<string, string>(StringComparer.Ordinal);
+            cells[parts[2]] = ending;
+        }
+        foreach (KeyValuePair<string, HashSet<string>> pair in featuresSeen)
+        {
+            built.Features[pair.Key] = pair.Value.OrderBy(feats => feats, StringComparer.Ordinal).Select(feats => new KeyValuePair<string, HashSet<string>>(feats, FeatureSet(feats))).ToList();
+        }
+        foreach (KeyValuePair<string, Dictionary<string, int>> pair in accents)
+        {
+            built.Accented[pair.Key] = pair.Value.OrderByDescending(item => item.Value).ThenBy(item => item.Key, StringComparer.Ordinal).First().Key;
+        }
+        foreach (KeyValuePair<string, List<string[]>> pair in entries)
+        {
+            string[][] sorted = pair.Value.OrderBy(entry => entry[0], StringComparer.Ordinal).ToArray();
+            built.Backwards[pair.Key] = sorted.Select(entry => entry[0]).ToArray();
+            built.Rules[pair.Key] = sorted.Select(entry => entry[1]).ToArray();
+            built.Counts[pair.Key] = sorted.Select(entry => int.Parse(entry[2], CultureInfo.InvariantCulture)).ToArray();
+        }
+        speaking = built;
+        return speaking;
+    }
+
+    // The lemma as the paradigms write it: "etre" is "être" when only "être" was seen
+    public string Written(string lemma)
+    {
+        string lower = (lemma ?? "").ToLowerInvariant();
+        string plain = LambekDictionary.Normalize(lower);
+        // (written with its accents already: as it is)
+        if (lower != plain) return lower;
+        string accented;
+        if (Speak().Accented.TryGetValue(plain, out accented)) return accented;
+        return lower;
+    }
+
+    // The forms of a lemma with the features wanted (all of them; the form may have more), the most frequent first:
+    // the forms seen with this very lemma when it was seen so, otherwise the form the lemmas that end most like it
+    // take, by the rule most of them follow ("prendre", 2nd person plural, never seen: "comprendre" gives
+    // "comprenez", so "prenez"), as a child conjugates a verb it never heard by the ones it knows. Nothing when no
+    // lemma seen so ends as it does
+    public string[] Inflect(string lemma, string upos, string wanted)
+    {
+        if (string.IsNullOrEmpty(lemma) || string.IsNullOrEmpty(upos)) return new string[0];
+        if (upos == "AUX") upos = "VERB";
+        Speaking table = Speak();
+        List<KeyValuePair<string, HashSet<string>>> seen;
+        if (!table.Features.TryGetValue(upos, out seen)) return new string[0];
+        string written = Written(lemma);
+        HashSet<string> want = FeatureSet(wanted);
+        Dictionary<string, string> own;
+        table.Cells.TryGetValue(upos + "\t" + written, out own);
+        // The features that have every one wanted, the fewest others that change a form first (a voice, a slip of
+        // the hand, change none): each group of them is tried in full before the next
+        foreach (IGrouping<int, KeyValuePair<string, HashSet<string>>> group in seen.Where(feats => want.IsSubsetOf(feats.Value))
+            .GroupBy(feats => feats.Value.Count(feature => !want.Contains(feature) && Inflectional(feature))).OrderBy(group => group.Key))
+        {
+            string[] said = Attested(upos, written, group);
+            if (said.Length == 0 && own != null) said = Proportional(table, upos, written, own, group);
+            if (said.Length == 0 && own != null) said = Bridged(table, upos, written, own, group);
+            if (said.Length == 0) said = BySuffix(table, upos, written, group);
+            if (said.Length > 0) return said;
+        }
+        // A noun or an adjective that nothing ends like ("CGI", "junior") is said as its lemma in the singular
+        if ((upos == "NOUN" || upos == "ADJ" || upos == "PROPN") && !want.Contains("Number=Plur")) return new[] { written };
+        return new string[0];
+    }
+
+    // The features that change how a word is written
+    static bool Inflectional(string feature)
+    {
+        int equal = feature.IndexOf('=');
+        string name = equal > 0 ? feature.Substring(0, equal) : feature;
+        return name == "Gender" || name == "Number" || name == "Person" || name == "Mood" || name == "Tense" || name == "VerbForm";
+    }
+
+    static string[] Ranked(Dictionary<string, long> votes)
+    {
+        return votes.OrderByDescending(pair => pair.Value).ThenBy(pair => pair.Key, StringComparer.Ordinal).Select(pair => pair.Key).ToArray();
+    }
+
+    // The forms seen with this very lemma so
+    string[] Attested(string upos, string written, IEnumerable<KeyValuePair<string, HashSet<string>>> group)
+    {
+        Dictionary<string, long> found = new Dictionary<string, long>(StringComparer.Ordinal);
+        foreach (KeyValuePair<string, HashSet<string>> feats in group)
+        {
+            SortedDictionary<string, int> forms;
+            if (!Paradigms.TryGetValue(upos + "\t" + written + "\t" + feats.Key, out forms)) continue;
+            foreach (KeyValuePair<string, int> form in forms)
+            {
+                long count;
+                found.TryGetValue(form.Key, out count);
+                found[form.Key] = count + form.Value;
+            }
+        }
+        return Ranked(found);
+    }
+
+    // The lemma was seen with other features: the lemmas that end like it, seen with the features wanted, and whose
+    // forms seen with the same other features change as its own do ("dormir": "dort", "dorment", as "sortir": "sort",
+    // "sortent"; never "finir": "finit", "finissent"), lend it their form: "sors", so "dors"
+    string[] Proportional(Speaking table, string upos, string written, Dictionary<string, string> own, IEnumerable<KeyValuePair<string, HashSet<string>>> group)
+    {
+        string backward = Backward(written);
+        for (int length = written.Length - 1; length >= 2; length--)
+        {
+            string end = backward.Substring(0, length);
+            Dictionary<string, long> votes = new Dictionary<string, long>(StringComparer.Ordinal);
+            foreach (KeyValuePair<string, HashSet<string>> feats in group)
+            {
+                string slot = upos + "\t" + feats.Key;
+                string[] lemmas;
+                if (!table.Backwards.TryGetValue(slot, out lemmas)) continue;
+                for (int i = First(lemmas, end); i < lemmas.Length && lemmas[i].StartsWith(end, StringComparison.Ordinal); i++)
+                {
+                    Dictionary<string, string> other = table.Cells[upos + "\t" + Backward(lemmas[i])];
+                    int agree = 0, disagree = 0;
+                    foreach (KeyValuePair<string, string> cell in own)
+                    {
+                        // (a form that is the lemma itself, the infinitive, tells nothing of how a verb changes)
+                        string change;
+                        if (cell.Value == "\t" || !other.TryGetValue(cell.Key, out change)) continue;
+                        if (Alike(change, cell.Value)) agree++; else disagree++;
+                    }
+                    if (agree == 0 || disagree > 0) continue;
+                    string said = Shift(table.Rules[slot][i], written);
+                    if (said == null) continue;
+                    long vote;
+                    votes.TryGetValue(said, out vote);
+                    // (each lemma counts once, then how often it was seen: the many verbs, not the frequent one)
+                    votes[said] = vote + 1000000L + table.Counts[slot][i];
+                }
+            }
+            if (votes.Count > 0) return Ranked(votes);
+        }
+        return new string[0];
+    }
+
+    // A form of the lemma seen with other features is changed as the forms of the other lemmas, seen with both,
+    // change from the one to the other ("reussissent" ends as "partent", and "partent" is "partez": "reussissez"),
+    // by the way most trusted
+    string[] Bridged(Speaking table, string upos, string written, Dictionary<string, string> own, IEnumerable<KeyValuePair<string, HashSet<string>>> group)
+    {
+        double trust = 0;
+        Dictionary<string, long> best = null;
+        foreach (KeyValuePair<string, string> cell in own.OrderBy(cell => cell.Key, StringComparer.Ordinal))
+        {
+            if (cell.Value == "\t") continue;
+            string from = Change(cell.Value, written);
+            if (from == null) continue;
+            foreach (KeyValuePair<string, HashSet<string>> feats in group)
+            {
+                if (feats.Key == cell.Key) continue;
+                Bridge bridge = Between(table, upos, cell.Key, feats.Key);
+                if (bridge.Forms.Length < 3 || bridge.Trust < 0.5 || bridge.Trust <= trust) continue;
+                Dictionary<string, long> votes = Vote(bridge, from, -1);
+                if (votes.Count == 0) continue;
+                trust = bridge.Trust;
+                best = votes;
+            }
+        }
+        return best == null ? new string[0] : Ranked(best);
+    }
+
+    // The lemmas seen with these features that share the longest ending with this one, and the endings they change:
+    // the longest ending shared by a lemma whose change fits this one decides, the change of the most lemmas first
+    string[] BySuffix(Speaking table, string upos, string written, IEnumerable<KeyValuePair<string, HashSet<string>>> group)
+    {
+        string backward = Backward(written);
+        for (int length = written.Length; length >= 2; length--)
+        {
+            string end = backward.Substring(0, length);
+            Dictionary<string, long> votes = new Dictionary<string, long>(StringComparer.Ordinal);
+            foreach (KeyValuePair<string, HashSet<string>> feats in group)
+            {
+                string slot = upos + "\t" + feats.Key;
+                string[] lemmas;
+                if (!table.Backwards.TryGetValue(slot, out lemmas)) continue;
+                for (int i = First(lemmas, end); i < lemmas.Length && lemmas[i].StartsWith(end, StringComparison.Ordinal); i++)
+                {
+                    string said = Change(table.Rules[slot][i], written);
+                    if (said == null) continue;
+                    long vote;
+                    votes.TryGetValue(said, out vote);
+                    votes[said] = vote + 1000000L + table.Counts[slot][i];
+                }
+            }
+            if (votes.Count > 0) return Ranked(votes);
+        }
+        return new string[0];
+    }
+
+    // Every form of the paradigms, by its letters as written and without accents: the form, the part of speech, the
+    // lemma and the features it had, the most frequent first
+    Dictionary<string, List<string[]>> heard;
+    string[][] heardBackward;
+    string[] heardKeys;
+    public Dictionary<string, List<string[]>> Heard()
+    {
+        if (heard != null) return heard;
+        Dictionary<string, List<string[]>> built = new Dictionary<string, List<string[]>>(StringComparer.Ordinal);
+        Dictionary<string[], int> counts = new Dictionary<string[], int>();
+        List<string[]> backward = new List<string[]>();
+        foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in Paradigms)
+        {
+            string[] parts = paradigm.Key.Split('\t');
+            foreach (KeyValuePair<string, int> form in paradigm.Value)
+            {
+                string[] reading = new[] { form.Key, parts[0], parts[1], parts[2] };
+                counts[reading] = form.Value;
+                foreach (string key in new[] { form.Key, LambekDictionary.Normalize(form.Key) }.Distinct())
+                {
+                    List<string[]> list;
+                    if (!built.TryGetValue(key, out list)) built[key] = list = new List<string[]>();
+                    list.Add(reading);
+                }
+                if (parts[0] == "VERB" || parts[0] == "NOUN" || parts[0] == "ADJ") backward.Add(new[] { Backward(form.Key), parts[0], parts[1], parts[2] });
+            }
+        }
+        foreach (List<string[]> list in built.Values)
+        {
+            string[][] sorted = list.OrderByDescending(reading => counts[reading]).ThenBy(reading => string.Join("\t", reading), StringComparer.Ordinal).ToArray();
+            list.Clear();
+            list.AddRange(sorted);
+        }
+        heardBackward = backward.OrderBy(entry => entry[0], StringComparer.Ordinal).ThenBy(entry => string.Join("\t", entry), StringComparer.Ordinal).ToArray();
+        heardKeys = heardBackward.Select(entry => entry[0]).ToArray();
+        heard = built;
+        return heard;
+    }
+
+    // What a word never seen may be, found by saying it: the forms seen that end as it does give each a lemma and its
+    // features ("aboie" ends as "envoie": "aboyer", present, third person; as "voie": "aboir"), and only the readings
+    // whose lemma, said again with these features, gives back the very word are kept ("aboir" would be "aboit").
+    // A lemma already seen comes first ("dort": "dormir", known from "dorment", before "dortir" made from "sort"),
+    // then the readings most of the forms lead to
+    public LambekFormReading[] Analyze(string form)
+    {
+        string lower = (form ?? "").ToLowerInvariant();
+        List<LambekFormReading> readings = new List<LambekFormReading>();
+        if (lower.Length < 3 || Paradigms.Count == 0 || !lower.All(char.IsLetter)) return readings.ToArray();
+        Heard();
+        Dictionary<string, long> votes = new Dictionary<string, long>(StringComparer.Ordinal);
+        List<string> verbFeatures = new List<string>();
+        string backward = Backward(lower);
+        // Each part of speech on its own: the many nouns in "-age" must not hide the verbs ("nage": "partage")
+        foreach (string upos in new[] { "VERB", "NOUN", "ADJ" })
+        {
+            bool found = false;
+            for (int length = lower.Length - 1; length >= 3 && !found; length--)
+            {
+                string end = backward.Substring(0, length);
+                int tried = 0;
+                for (int i = First(heardKeys, end); i < heardBackward.Length && heardBackward[i][0].StartsWith(end, StringComparison.Ordinal) && tried < 64; i++)
+                {
+                    string[] entry = heardBackward[i];
+                    if (entry[1] != upos) continue;
+                    string seen = Backward(entry[0]);
+                    if (upos == "VERB" && !verbFeatures.Contains(entry[3])) verbFeatures.Add(entry[3]);
+                    string lemma = Change(Ending(seen, entry[2]), lower);
+                    if (lemma == null || lemma.Length < 2) continue;
+                    tried++;
+                    string[] said = Inflect(lemma, upos, entry[3]);
+                    if (said.Length == 0 || said[0] != lower) continue;
+                    string key = upos + "\t" + lemma + "\t" + entry[3];
+                    long vote;
+                    votes.TryGetValue(key, out vote);
+                    votes[key] = vote + 1 + (Lemmas.Contains(lemma) ? 1000000L : 0);
+                    found = true;
+                }
+            }
+        }
+        // The verbs seen that begin as this word does, when they say this word with features the endings suggest
+        foreach (string known in Beginning(lower))
+        {
+            foreach (string feats in verbFeatures)
+            {
+                string[] said = Inflect(known, "VERB", feats);
+                if (said.Length == 0 || said[0] != lower) continue;
+                string key = "VERB\t" + known.ToLowerInvariant() + "\t" + feats;
+                long vote;
+                votes.TryGetValue(key, out vote);
+                votes[key] = vote + 2000000L;
+            }
+        }
+        foreach (KeyValuePair<string, long> vote in votes.OrderByDescending(pair => pair.Value).ThenBy(pair => pair.Key, StringComparer.Ordinal))
+        {
+            string[] parts = vote.Key.Split('\t');
+            readings.Add(new LambekFormReading { Form = form, Lemma = parts[1], Upos = parts[0], Feats = parts[2], Rule = "analysis" });
+        }
+        return readings.ToArray();
+    }
+
+    // The change of ending from a lemma to its form, after the letters both begin with: "prendre", "prenez" is "dre"
+    // off, "ez" on
+    static string Ending(string lemma, string form)
+    {
+        int shared = Shared(lemma, form);
+        return lemma.Substring(shared) + "\t" + form.Substring(shared);
+    }
+
+    // A change of ending made on another lemma; null when the lemma does not end as the change needs, or when
+    // nothing of the lemma would be left
+    static string Change(string rule, string lemma)
+    {
+        int tab = rule.IndexOf('\t');
+        string off = rule.Substring(0, tab);
+        if (off.Length >= lemma.Length || !lemma.EndsWith(off, StringComparison.Ordinal)) return null;
+        return lemma.Substring(0, lemma.Length - off.Length) + rule.Substring(tab + 1);
+    }
+
+    // From the form of a lemma with some features to its form with others, as the lemmas seen with both change: the
+    // forms of the others that share the longest ending with this one, each lemma counted once. How far this way can
+    // be trusted is measured on the lemmas seen with both, each found again from all the others (the present plural
+    // tells the second person plural well, "-ons": "-ez"; the third person plural less well, "viennent": "venez")
+    class Bridge
+    {
+        public string[] Forms;
+        public string[] Changes;
+        public double Trust;
+    }
+    Dictionary<string, Bridge> bridges = new Dictionary<string, Bridge>(StringComparer.Ordinal);
+
+    Bridge Between(Speaking table, string upos, string fromFeats, string toFeats)
+    {
+        string key = upos + "\t" + fromFeats + "\t" + toFeats;
+        Bridge bridge;
+        if (bridges.TryGetValue(key, out bridge)) return bridge;
+        List<string[]> found = new List<string[]>();
+        foreach (KeyValuePair<string, Dictionary<string, string>> lemma in table.Cells)
+        {
+            if (!lemma.Key.StartsWith(upos + "\t", StringComparison.Ordinal)) continue;
+            string one, other;
+            if (!lemma.Value.TryGetValue(fromFeats, out one) || !lemma.Value.TryGetValue(toFeats, out other)) continue;
+            string name = lemma.Key.Substring(upos.Length + 1);
+            string a = Change(one, name), b = Change(other, name);
+            if (a == null || b == null) continue;
+            found.Add(new[] { Backward(a), Ending(a, b) });
+        }
+        found.Sort((x, y) => string.CompareOrdinal(x[0], y[0]) != 0 ? string.CompareOrdinal(x[0], y[0]) : string.CompareOrdinal(x[1], y[1]));
+        bridge = new Bridge { Forms = found.Select(item => item[0]).ToArray(), Changes = found.Select(item => item[1]).ToArray() };
+        int right = 0;
+        for (int i = 0; i < bridge.Forms.Length; i++)
+        {
+            string form = Backward(bridge.Forms[i]);
+            Dictionary<string, long> votes = Vote(bridge, form, i);
+            string said = votes.Count == 0 ? null : votes.OrderByDescending(pair => pair.Value).ThenBy(pair => pair.Key, StringComparer.Ordinal).First().Key;
+            if (said != null && said == Change(bridge.Changes[i], form)) right++;
+        }
+        bridge.Trust = bridge.Forms.Length == 0 ? 0 : (double) right / bridge.Forms.Length;
+        bridges[key] = bridge;
+        return bridge;
+    }
+
+    static Dictionary<string, long> Vote(Bridge bridge, string form, int skip)
+    {
+        Dictionary<string, long> votes = new Dictionary<string, long>(StringComparer.Ordinal);
+        string backward = Backward(form);
+        for (int length = form.Length; length >= 2 && votes.Count == 0; length--)
+        {
+            string end = backward.Substring(0, length);
+            for (int i = First(bridge.Forms, end); i < bridge.Forms.Length && bridge.Forms[i].StartsWith(end, StringComparison.Ordinal); i++)
+            {
+                if (i == skip) continue;
+                string said = Change(bridge.Changes[i], form);
+                if (said == null) continue;
+                long vote;
+                votes.TryGetValue(said, out vote);
+                votes[said] = vote + 1;
+            }
+        }
+        return votes;
+    }
+
+    // Two changes of ending that take off as many letters and put on the same ones
+    static bool Alike(string a, string b)
+    {
+        int ta = a.IndexOf('\t'), tb = b.IndexOf('\t');
+        return ta == tb && string.CompareOrdinal(a, ta + 1, b, tb + 1, Math.Max(a.Length - ta, b.Length - tb)) == 0;
+    }
+
+    // A change of ending made by its number of letters only: "sortir", "sors" (three off, "s" on) made on "dormir"
+    static string Shift(string rule, string lemma)
+    {
+        int tab = rule.IndexOf('\t');
+        if (tab >= lemma.Length) return null;
+        return lemma.Substring(0, lemma.Length - tab) + rule.Substring(tab + 1);
+    }
+
+    // The first of the sorted words that comes at or after a beginning
+    static int First(string[] sorted, string start)
+    {
+        int low = 0, high = sorted.Length;
+        while (low < high)
+        {
+            int middle = (low + high) / 2;
+            if (string.CompareOrdinal(sorted[middle], start) < 0) low = middle + 1;
+            else high = middle;
+        }
+        return low;
+    }
+
+    static int Shared(string a, string b)
+    {
+        int length = 0;
+        while (length < a.Length && length < b.Length && a[length] == b[length]) length++;
+        return length;
     }
 
     public void LearnTokens(IEnumerable<string> paths)
@@ -796,6 +1321,13 @@ public class LambekForms
             }
             writer.Write(Rare.Count);
             foreach (string[] rare in Rare) foreach (string part in rare) writer.Write(part);
+            writer.Write(Paradigms.Count);
+            foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in Paradigms)
+            {
+                writer.Write(paradigm.Key);
+                writer.Write(paradigm.Value.Count);
+                foreach (KeyValuePair<string, int> form in paradigm.Value) { writer.Write(form.Key); writer.Write(form.Value); }
+            }
             Tagger.Write(writer);
             Lemmatiser.Write(writer);
         }
@@ -834,6 +1366,15 @@ public class LambekForms
             }
             int rare = reader.ReadInt32();
             for (int i = 0; i < rare; i++) forms.Rare.Add(new[] { reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString() });
+            int paradigms = reader.ReadInt32();
+            for (int i = 0; i < paradigms; i++)
+            {
+                string key = reader.ReadString();
+                SortedDictionary<string, int> list = new SortedDictionary<string, int>(StringComparer.Ordinal);
+                int count = reader.ReadInt32();
+                for (int j = 0; j < count; j++) list[reader.ReadString()] = reader.ReadInt32();
+                forms.Paradigms[key] = list;
+            }
             forms.Tagger = LambekPerceptron.ReadFrom(reader);
             forms.Lemmatiser = LambekPerceptron.ReadFrom(reader);
             return forms;
@@ -904,7 +1445,7 @@ public class LambekSentenceWords
 
     // With a dictionary, only as a last resort: a verb never seen, whose lemma the model could not find among the
     // lemmas it has seen ("dors"), takes the lemma the dictionary gives it
-    public static LambekSentenceWords Read(LambekForms model, string text, LambekDictionary dictionary, string language)
+    public static LambekSentenceWords Read(LambekForms model, string text, ILambekWords dictionary, string language)
     {
         LambekSentenceWords sentence = new LambekSentenceWords();
         sentence.Readings = model.ReadText(text ?? "");

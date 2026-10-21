@@ -39,6 +39,10 @@ if (-not ('LambekDictionary' -as [type])) {
     else { Add-Type -Path $sources }
 }
 
+# The patterns of the readers are many (every rule of entity, of phrase, of clause): kept compiled, not compiled again
+# each time a sentence is read (the default keeps only the last 15)
+if ([System.Text.RegularExpressions.Regex]::CacheSize -lt 2048) { [System.Text.RegularExpressions.Regex]::CacheSize = 2048 }
+
 # Load functions
 $privateFiles = @(Get-ChildItem -Path "$PSScriptRoot/Private" -Filter '*.ps1')
 $publicFiles = @(Get-ChildItem -Path "$PSScriptRoot/Public" -Filter '*.ps1')
@@ -81,7 +85,13 @@ $script:SmallWords = $null
 $script:FormModels = $null
 # Where the readers of sentences learn what a word may be: the learned forms (forms) or the dictionaries (dictionary)
 $script:WordSource = 'forms'
-$script:SentenceWords = $null
+# What one message reads several times (the same sentence, the same words) is read once, until the next message
+$script:ReadCache = [System.Collections.Generic.Dictionary[string, object]]::new([StringComparer]::Ordinal)
+$script:PlanDepth = 0
+$script:ClauseVerbs = $null
+$script:PartTypes = $null
+# The dictionaries asked for, once loaded
+$script:Dictionaries = @{}
 $script:AuditPath = Join-Path $dataFolder 'audit.jsonl'
 $script:HostState = @{ Plans = [ordered]@{}; Simulations = @{}; Approvals = @{} }
 $script:ProgressHandler = $null

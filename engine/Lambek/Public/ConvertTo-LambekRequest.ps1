@@ -20,7 +20,12 @@ function ConvertTo-LambekRequest {
             throw "Language '$Language' is not available."
         }
 
-        # The reading the grammar explains best
-        Repair-LambekRequest -Text $Text.Normalize([System.Text.NormalizationForm]::FormC) -Original $Text -Language $Language
+        # The reading the grammar explains best (read once per message: the readers ask for the same sentence again)
+        $key = "request`n$Language`n$Text"
+        $kept = Get-LambekReadCopy -Key $key
+        if ($kept) { return $kept }
+        $request = Repair-LambekRequest -Text $Text.Normalize([System.Text.NormalizationForm]::FormC) -Original $Text -Language $Language
+        $script:ReadCache[$key] = $request
+        $request.PSObject.Copy()
     }
 }

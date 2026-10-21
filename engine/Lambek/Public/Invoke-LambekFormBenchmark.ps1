@@ -9,6 +9,10 @@ function Invoke-LambekFormBenchmark {
         dictionaries Lambek reads today are measured on the same words: whether they know the form, and whether the
         right lemma is among their readings. Every sentence is read twice, the second time in the other order: the
         readings must be the same.
+
+        Lambek is also measured speaking: each verb, noun and adjective of the treebank is said again from its lemma and
+        its features (Speak), and the words whose lemma was never seen so when learning are counted apart
+        (SpeakUnseen): those it says by analogy with the lemmas it knows.
     .EXAMPLE
         Invoke-LambekFormBenchmark -Path ./bench/forms/fr_gsd-ud-test.conllu -Language fr -Dictionary
     #>
@@ -29,11 +33,15 @@ function Invoke-LambekFormBenchmark {
     $sentences = [LambekTreebank]::Read((Resolve-Path -LiteralPath $Path).Path)
     $words = if ($Dictionary) { Get-LambekDictionary -Language $Language }
 
-    $count = @{ Words = 0; Upos = 0; Feats = 0; All = 0; Lemma = 0; Unseen = 0; UnseenLemma = 0; UnseenUpos = 0; Known = 0; Among = 0 }
+    $count = @{ Words = 0; Upos = 0; Feats = 0; All = 0; Lemma = 0; Unseen = 0; UnseenLemma = 0; UnseenUpos = 0; Known = 0; Among = 0; Said = 0; SaidRight = 0; New = 0; NewRight = 0 }
     $first = [System.Collections.Generic.List[string]]::new()
-    $clock = [System.Diagnostics.Stopwatch]::StartNew()
+    # (only the reading is timed: saying the words again is measured apart)
+    $clock = [System.Diagnostics.Stopwatch]::new()
     foreach ($sentence in $sentences) {
-        $readings = $model.Read([string[]] @($sentence | ForEach-Object Form))
+        $forms = [string[]] @($sentence | ForEach-Object Form)
+        $clock.Start()
+        $readings = $model.Read($forms)
+        $clock.Stop()
         for ($i = 0; $i -lt $sentence.Length; $i++) {
             $gold = $sentence[$i]
             $read = $readings[$i]
@@ -50,6 +58,18 @@ function Invoke-LambekFormBenchmark {
                 $count.Unseen++
                 if ($lemma) { $count.UnseenLemma++ }
                 if ($upos) { $count.UnseenUpos++ }
+            }
+            # Said again from its lemma and its features
+            $key = [LambekForms]::ParadigmKey($gold.Upos, $gold.Lemma, $gold.Feats)
+            if ($key -and $gold.Upos -in 'VERB', 'AUX', 'NOUN', 'ADJ' -and $gold.Feats -ne '_') {
+                $said = @($model.Inflect($gold.Lemma, $gold.Upos, $gold.Feats))
+                $right = $said.Count -gt 0 -and $said[0] -ceq $gold.Form.ToLowerInvariant()
+                $count.Said++
+                if ($right) { $count.SaidRight++ }
+                if (-not $model.Paradigms.ContainsKey($key)) {
+                    $count.New++
+                    if ($right) { $count.NewRight++ }
+                }
             }
             if ($words) {
                 $lemmas = @($words.Lemmas($gold.Form, $Language))
@@ -85,6 +105,8 @@ function Invoke-LambekFormBenchmark {
         Unseen          = $count.Unseen
         UnseenLemma     = & $rate $count.UnseenLemma $count.Unseen
         UnseenUpos      = & $rate $count.UnseenUpos $count.Unseen
+        Speak           = & $rate $count.SaidRight $count.Said
+        SpeakUnseen     = & $rate $count.NewRight $count.New
         DictionaryKnown = $(if ($Dictionary) { & $rate $count.Known $count.Words })
         DictionaryLemma = $(if ($Dictionary) { & $rate $count.Among $count.Words })
         Determinism     = & $rate $same $first.Count

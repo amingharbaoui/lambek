@@ -30,7 +30,7 @@ public class LambekRelated
     public int Rank;
 }
 
-public class LambekDictionary
+public class LambekDictionary : ILambekWords
 {
     public List<string> Sources = new List<string>();
     public HashSet<string> Languages = new HashSet<string>(StringComparer.Ordinal);
@@ -394,7 +394,7 @@ public class LambekDictionary
         return found.ToArray();
     }
 
-    static bool OneEdit(string buffer, int start, int length, string word)
+    internal static bool OneEdit(string buffer, int start, int length, string word)
     {
         // Exactly one edit between buffer[start, start + length) and word (never zero: the same form is no slip)
         int n = word.Length;

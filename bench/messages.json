@@ -1,6 +1,6 @@
 {
   "Version": "1.0",
-  "Description": "Free messages for evaluating Lambek as a conversational system, sent as the app sends them. Each case is a conversation of its own. Expect.Reply is answer (Contains: every item must appear, alternatives split by |; Avoid: none may appear), abstain (Lambek must say it does not understand or does not know, or say one of Accept), or action (a ready plan with that action). The test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek.",
+  "Description": "Free messages for evaluating Lambek as a conversational system, sent as the app sends them. Each case is a conversation of its own. Expect.Reply is answer (Contains: every item must appear, alternatives split by |; Avoid: none may appear), abstain (Lambek must say it does not understand or does not know, or say one of Accept), or action (a ready plan with that action). The test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek. The fresh split holds messages written for one step and never looked at while working on it: measured once at the end of the step, they then join the calibration split, and new fresh messages are written for the next step.",
   "Now": "2026-10-19T12:00:00",
   "TestHash": "e4029ddad8748556de63bcceadbca8497b9edef33bf0c77119e515d8f3ec3702",
   "Cases": [
@@ -2162,6 +2162,487 @@
       "Expect": {
         "Reply": "action",
         "Action": "files.delete"
+      }
+    },
+    {
+      "Id": "F001",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "coucou",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bonjour|salut|coucou"
+        ]
+      }
+    },
+    {
+      "Id": "F002",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "good morning",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "hello|good morning|hi"
+        ]
+      }
+    },
+    {
+      "Id": "F003",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "mon frère travaille à Bruxelles"
+        },
+        {
+          "Text": "où travaille mon frère ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "bruxelles"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F004",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "my aunt lives in Lyon"
+        },
+        {
+          "Text": "where does my aunt live?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "lyon"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F005",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "ma voisine s'appelle Inès"
+        },
+        {
+          "Text": "comment s'appelle ma voisine ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "inès|ines"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F006",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les lions sont des félins"
+        },
+        {
+          "Text": "Simba est un lion"
+        },
+        {
+          "Text": "Simba est-il un félin ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F007",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "aucun poisson n'est un mammifère"
+        },
+        {
+          "Text": "Nemo est un poisson"
+        },
+        {
+          "Text": "Nemo est-il un mammifère ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F008",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "all squares are rectangles"
+        },
+        {
+          "Text": "this shape is a square"
+        },
+        {
+          "Text": "is this shape a rectangle?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F009",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les oiseaux pondent des oeufs"
+        },
+        {
+          "Text": "Coco est un oiseau"
+        },
+        {
+          "Text": "Coco pond-il des oeufs ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F010",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "default"
+      ],
+      "Turns": [
+        {
+          "Text": "normalement, les chats dorment beaucoup"
+        },
+        {
+          "Text": "Minou est un chat"
+        },
+        {
+          "Text": "Minou dort-il beaucoup ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|normalement|suppos"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F011",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "default"
+      ],
+      "Turns": [
+        {
+          "Text": "en général, les poissons nagent"
+        },
+        {
+          "Text": "Nemo est un poisson"
+        },
+        {
+          "Text": "Nemo nage-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|normalement|suppos"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F012",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "s'il neige, je mets mes bottes"
+        },
+        {
+          "Text": "il neige"
+        },
+        {
+          "Text": "est-ce que je mets mes bottes ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|vous mettez vos bottes"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F013",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "quand je suis fatigué, je bois un café"
+        },
+        {
+          "Text": "je suis fatigué"
+        },
+        {
+          "Text": "est-ce que je bois un café ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|vous buvez un café"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F014",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "if it is cold, I wear a coat"
+        },
+        {
+          "Text": "it is cold"
+        },
+        {
+          "Text": "do I wear a coat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes|you wear a coat"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F015",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "combien font 45 divisé par 9 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "5"
+        ]
+      }
+    },
+    {
+      "Id": "F016",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "what is 13 times 6?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "78"
+        ]
+      }
+    },
+    {
+      "Id": "F017",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "order"
+      ],
+      "Text": "liste les fichiers .pdf dans C:\\Docs",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.list"
+      }
+    },
+    {
+      "Id": "F018",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "order"
+      ],
+      "Text": "delete the .bak files in C:\\Old",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.delete"
+      }
+    },
+    {
+      "Id": "F019",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "bonjoru",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bonjour|salut"
+        ]
+      }
+    },
+    {
+      "Id": "F020",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Text": "réserve une table pour ce soir",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "F021",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "who will win the next election?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "F022",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "contradiction"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul habite à Gand"
+        },
+        {
+          "Text": "Paul n'habite pas à Gand",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "contr|oppos|les deux"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F023",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "why"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les métaux conduisent l'électricité"
+        },
+        {
+          "Text": "le fer est un métal"
+        },
+        {
+          "Text": "le fer conduit-il l'électricité ?"
+        },
+        {
+          "Text": "pourquoi ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "métal|metal"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "F024",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "que veut dire bibliothèque ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "livre"
+        ]
       }
     }
   ]

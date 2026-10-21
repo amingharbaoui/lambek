@@ -50,7 +50,7 @@ public sealed class LambekFluency
     }
 
     // The symbol a word is learned and scored as
-    public string Symbol(string token, bool first, LambekDictionary dictionary)
+    public string Symbol(string token, bool first, ILambekWords dictionary)
     {
         if (token.Length == 0) return "<Unk>";
         if (char.IsDigit(token[0])) return "<Num>";
@@ -65,7 +65,7 @@ public sealed class LambekFluency
         return kind;
     }
 
-    string KindOf(string lower, LambekDictionary dictionary)
+    string KindOf(string lower, ILambekWords dictionary)
     {
         string found;
         if (kinds.TryGetValue(lower, out found)) return found;
@@ -105,7 +105,7 @@ public sealed class LambekFluency
         return key;
     }
 
-    int[] Encode(string[] tokens, LambekDictionary dictionary)
+    int[] Encode(string[] tokens, ILambekWords dictionary)
     {
         int[] s = new int[tokens.Length + Order];
         for (int i = 0; i < Order - 1; i++) s[i] = ids[Start];
@@ -116,7 +116,7 @@ public sealed class LambekFluency
 
     // Learned from sentences, one per line; the same line twice counts once. Keep: how many frequent words are kept as
     // themselves. Least: the fewest times an n-gram of each order (2 and up) must be seen to be kept
-    public static LambekFluency Train(IEnumerable<string> lines, string language, LambekDictionary dictionary, int order, int keep, int[] least)
+    public static LambekFluency Train(IEnumerable<string> lines, string language, ILambekWords dictionary, int order, int keep, int[] least)
     {
         LambekFluency model = new LambekFluency { Language = language, Order = order };
         List<string[]> sentences = new List<string[]>();
@@ -242,7 +242,7 @@ public sealed class LambekFluency
     }
 
     // The log10 probability of a sentence, with its end, and how many symbols it has
-    public double[] Score(string text, LambekDictionary dictionary)
+    public double[] Score(string text, ILambekWords dictionary)
     {
         string[] tokens = Tokenize(text);
         int[] s = Encode(tokens, dictionary);
@@ -252,7 +252,7 @@ public sealed class LambekFluency
     }
 
     // The symbols a sentence is read as (to see what the model sees)
-    public string[] Shape(string text, LambekDictionary dictionary)
+    public string[] Shape(string text, ILambekWords dictionary)
     {
         string[] tokens = Tokenize(text);
         string[] shape = new string[tokens.Length];

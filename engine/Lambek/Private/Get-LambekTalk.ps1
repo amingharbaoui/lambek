@@ -40,7 +40,11 @@ function Get-LambekTalk {
             for ($start = 0; $start -le $words.Count - $phrase.Count; $start++) {
                 $same = $true
                 for ($i = 0; $i -lt $phrase.Count; $i++) {
-                    if (-not (Test-LambekTalkWord -Word $words[$start + $i] -Expected $phrase[$i])) { $same = $false; break }
+                    # (the same word, or a word too far apart to be a typo, is told at once, without a call)
+                    $word = $words[$start + $i]
+                    $expected = $phrase[$i]
+                    if ($word -eq $expected) { continue }
+                    if ($expected.Length -lt 5 -or [math]::Abs($word.Length - $expected.Length) -gt 1 -or -not (Test-LambekTalkWord -Word $word -Expected $expected)) { $same = $false; break }
                 }
                 if (-not $same) { continue }
                 for ($i = 0; $i -lt $phrase.Count; $i++) { $covered[$start + $i] = $true }

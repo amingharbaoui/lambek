@@ -110,7 +110,8 @@ if ($Task -eq 'Benchmark') {
     $baseline = $null
     $baselinePath = Join-Path $PSScriptRoot 'bench/baseline.json'
     if (Test-Path -LiteralPath $baselinePath) { $baseline = Get-Content -LiteralPath $baselinePath -Raw | ConvertFrom-Json }
-    foreach ($split in 'calibration', 'test') {
+    # (the fresh split: messages written for this step and measured once, with no baseline)
+    foreach ($split in 'calibration', 'test', 'fresh') {
         $report = Invoke-LambekMessageBenchmark -Path $messages -Split $split
         $before = $null
         if ($baseline -and $baseline.Messages.PSObject.Properties[$split]) { $before = $baseline.Messages.$split }
@@ -126,13 +127,40 @@ if ($Task -eq 'Benchmark') {
         }
     }
 
+    # The same messages without the dictionaries: Lambek reads and speaks with the words it learned only (the
+    # roadmap removes the dictionaries once these figures are those above, with nothing said wrong). In a session of
+    # its own, so that nothing the dictionaries gave above (a lemma kept, a reading kept) is used again here
+    $empty = Join-Path ([IO.Path]::GetTempPath()) "lambek-no-dictionaries-$PID"
+    New-Item -ItemType Directory -Path $empty -Force | Out-Null
+    $alone = {
+        param($Engine, $Root, $Messages)
+        Import-Module (Join-Path $Engine 'Lambek/Lambek.psd1') -Force
+        Import-LambekPack -Path (Join-Path $Root 'dsl/files') | Out-Null
+        Import-LambekPack -Path (Join-Path $Root 'dsl/code') | Out-Null
+        foreach ($split in 'calibration', 'test', 'fresh') {
+            $report = Invoke-LambekMessageBenchmark -Path $Messages -Split $split
+            Write-Output ''
+            Write-Output "Free messages ($split, without dictionaries)"
+            foreach ($name in 'Turns', 'Correct', 'Unanswered', 'Wrong', 'WrongActions', 'Determinism', 'MedianMs') {
+                Write-Output ("  {0,-16} {1}" -f $name, $report.$name)
+            }
+        }
+    }
+    $before = $env:LAMBEK_DICTIONARIES
+    $env:LAMBEK_DICTIONARIES = $empty
+    try {
+        $command = "& { $alone } -Engine '$($engine -replace "'", "''")' -Root '$($PSScriptRoot -replace "'", "''")' -Messages '$($messages -replace "'", "''")'"
+        & ([Environment]::ProcessPath) -NoProfile -NonInteractive -Command $command | ForEach-Object { Write-Host $_ }
+    }
+    finally { $env:LAMBEK_DICTIONARIES = $before }
+
     # The forms of words, learned without a dictionary, on treebanks they never learned from; next to them, what the
     # dictionaries Lambek reads today give on the same words
     foreach ($treebank in @(@{ Language = 'fr'; File = 'fr_gsd-ud-test.conllu' }, @{ Language = 'fr'; File = 'fr_parisstories-ud-test.conllu' }, @{ Language = 'en'; File = 'en_ewt-ud-test.conllu' })) {
         $report = Invoke-LambekFormBenchmark -Path (Join-Path $PSScriptRoot "bench/forms/$($treebank.File)") -Language $treebank.Language -Dictionary
         Write-Host ''
         Write-Host "Forms ($($treebank.Language), $($treebank.File))"
-        foreach ($name in 'Words', 'Upos', 'Feats', 'AllTags', 'Lemma', 'Unseen', 'UnseenLemma', 'UnseenUpos', 'DictionaryKnown', 'DictionaryLemma', 'Determinism', 'WordsPerSecond') {
+        foreach ($name in 'Words', 'Upos', 'Feats', 'AllTags', 'Lemma', 'Unseen', 'UnseenLemma', 'UnseenUpos', 'Speak', 'SpeakUnseen', 'DictionaryKnown', 'DictionaryLemma', 'Determinism', 'WordsPerSecond') {
             Write-Host ("  {0,-16} {1}" -f $name, $report.$name)
         }
     }

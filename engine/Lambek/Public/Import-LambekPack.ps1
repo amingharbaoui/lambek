@@ -12,6 +12,7 @@ function Import-LambekPack {
     )
 
     process {
+        Clear-LambekReadCache
         # Find pack.json
         $file = $Path
         if (Test-Path -LiteralPath $Path -PathType Container) {

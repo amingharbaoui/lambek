@@ -152,7 +152,7 @@ public static class LambekSpeech
     }
 
     // French and English rules, applied to what Lambek says (never inside a quote, a path or a name)
-    public static string Polish(string text, string language, LambekDictionary dictionary)
+    public static string Polish(string text, string language, ILambekWords dictionary)
     {
         if (string.IsNullOrEmpty(text)) return text;
         List<Token> tokens = Split(text);
@@ -161,7 +161,7 @@ public static class LambekSpeech
         return Join(tokens);
     }
 
-    static void PolishFrench(List<Token> tokens, LambekDictionary dictionary)
+    static void PolishFrench(List<Token> tokens, ILambekWords dictionary)
     {
         // Number before a noun: 0 and 1 take the singular, 2 and more the plural
         for (int i = 0; i < tokens.Count; i++)
@@ -289,7 +289,7 @@ public static class LambekSpeech
         }
     }
 
-    static void PolishEnglish(List<Token> tokens, LambekDictionary dictionary)
+    static void PolishEnglish(List<Token> tokens, ILambekWords dictionary)
     {
         // "a" before a vowel sound is "an"; "an" before a consonant is "a"
         HashSet<string> consonantSound = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "user", "use", "usb", "unicode", "unique", "unit", "url", "one", "once", "european", "uniform" };
@@ -333,7 +333,7 @@ public static class LambekSpeech
     }
 
     // French words through Lefff
-    static string NounGender(LambekDictionary dictionary, string word)
+    static string NounGender(ILambekWords dictionary, string word)
     {
         // Only a word Lefff reads as a noun and in one gender (Lefff writes "soeur" where the user writes "s\u0153ur")
         HashSet<string> genders = new HashSet<string>(StringComparer.Ordinal);
@@ -356,7 +356,7 @@ public static class LambekSpeech
         if (open != word) yield return open;
     }
 
-    static string NounNumber(LambekDictionary dictionary, string word)
+    static string NounNumber(ILambekWords dictionary, string word)
     {
         HashSet<string> numbers = new HashSet<string>(StringComparer.Ordinal);
         foreach (LambekLemma lemma in dictionary.Lemmas(word, "fr", true))
@@ -368,12 +368,12 @@ public static class LambekSpeech
         return numbers.Count == 1 ? numbers.First() : null;
     }
 
-    static string Gender(LambekDictionary dictionary, string noun)
+    static string Gender(ILambekWords dictionary, string noun)
     {
         return NounGender(dictionary, noun) ?? "m";
     }
 
-    static bool IsBeOrHave(LambekDictionary dictionary, string word)
+    static bool IsBeOrHave(ILambekWords dictionary, string word)
     {
         // A form of "etre" or "avoir", the verbs a participle follows
         foreach (LambekLemma lemma in dictionary.Lemmas(word.ToLowerInvariant(), "fr"))
@@ -383,7 +383,7 @@ public static class LambekSpeech
         return false;
     }
 
-    static bool IsParticiple(LambekDictionary dictionary, string word)
+    static bool IsParticiple(ILambekWords dictionary, string word)
     {
         // Only a word that is nothing but a participle or an adjective: "plus" is also an adverb, it never agrees
         bool participle = false;
@@ -395,7 +395,7 @@ public static class LambekSpeech
         return participle;
     }
 
-    static string Inflect(LambekDictionary dictionary, string word, string pos, string gender, string number)
+    static string Inflect(ILambekWords dictionary, string word, string pos, string gender, string number)
     {
         // The form of the same lemma with the number asked (and the gender, when given)
         foreach (LambekLemma lemma in dictionary.Lemmas(word, "fr", true))
@@ -415,7 +415,7 @@ public static class LambekSpeech
         return null;
     }
 
-    static string Agree(LambekDictionary dictionary, string word, string gender, string number)
+    static string Agree(ILambekWords dictionary, string word, string gender, string number)
     {
         // A past participle (K) or an adjective in the gender and number of its noun
         foreach (LambekLemma lemma in dictionary.Lemmas(word, "fr", true))
@@ -435,7 +435,7 @@ public static class LambekSpeech
     }
 
     // Tu instead of vous, for a user who says tu: the verbs of the second person plural become singular (Lefff gives the form)
-    public static string Familiar(string text, LambekDictionary dictionary)
+    public static string Familiar(string text, ILambekWords dictionary)
     {
         if (string.IsNullOrEmpty(text) || dictionary == null) return text;
         List<Token> tokens = Split(text);
@@ -506,17 +506,17 @@ public static class LambekSpeech
     // The small pronouns that stand between a subject and its verb
     static readonly HashSet<string> Clitics = new HashSet<string>(StringComparer.Ordinal) { "me", "m", "te", "t", "se", "s", "nous", "vous", "le", "la", "les", "l", "lui", "leur", "y", "en" };
 
-    static bool IsVerb(LambekDictionary dictionary, string word)
+    static bool IsVerb(ILambekWords dictionary, string word)
     {
         return dictionary.Lemmas(word, "fr", true).Any(l => l.Pos == "v");
     }
 
-    static bool IsSecondPlural(LambekDictionary dictionary, string word)
+    static bool IsSecondPlural(ILambekWords dictionary, string word)
     {
         return dictionary.Lemmas(word, "fr", true).Any(l => l.Pos == "v" && l.Tag.Contains('2') && l.Tag.EndsWith("p", StringComparison.Ordinal));
     }
 
-    static bool IsImperative(LambekDictionary dictionary, string word, List<Token> tokens, int at)
+    static bool IsImperative(ILambekWords dictionary, string word, List<Token> tokens, int at)
     {
         // An imperative plural form, first in its clause (after the start, a period, a colon or a comma)
         if (!dictionary.Lemmas(word, "fr", true).Any(l => l.Pos == "v" && l.Tag.Contains('Y') && l.Tag.Contains('2') && l.Tag.EndsWith("p", StringComparison.Ordinal))) return false;
@@ -526,7 +526,7 @@ public static class LambekSpeech
         return before == "." || before == ":" || before == "," || before == ";" || before == "!" || before == "?" || before == "puis" || before == "et";
     }
 
-    static string Singular(LambekDictionary dictionary, string word, bool imperative)
+    static string Singular(ILambekWords dictionary, string word, bool imperative)
     {
         // The same lemma and mood, second person singular; an imperative first when one is asked
         List<LambekLemma> readings = dictionary.Lemmas(word, "fr", true).Where(l => l.Pos == "v" && l.Tag.Contains('2') && l.Tag.EndsWith("p", StringComparison.Ordinal)).ToList();

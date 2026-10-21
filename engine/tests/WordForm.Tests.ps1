@@ -197,3 +197,126 @@ Describe 'Reading sentences with the learned forms' {
         }
     }
 }
+
+Describe 'Saying words from what was learned' {
+
+    It 'says a lemma with the features asked: <Lemma> <Wanted> -> <Form>' -ForEach @(
+        @{ Lemma = 'prendre'; Upos = 'VERB'; Wanted = 'Mood=Ind|Number=Plur|Person=2|Tense=Pres'; Form = 'prenez' }
+        @{ Lemma = 'être'; Upos = 'VERB'; Wanted = 'Mood=Ind|Number=Plur|Person=2|Tense=Pres'; Form = 'êtes' }
+        @{ Lemma = 'voler'; Upos = 'VERB'; Wanted = 'Mood=Cnd|Number=Sing|Person=3'; Form = 'volerait' }
+        @{ Lemma = 'noir'; Upos = 'ADJ'; Wanted = 'Gender=Fem|Number=Sing'; Form = 'noire' }
+    ) {
+        $model = InModuleScope Lambek { Get-LambekFormModel -Language fr }
+        @($model.Inflect($Lemma, $Upos, $Wanted))[0] | Should -BeExactly $Form
+    }
+
+    It 'says by analogy a form it never saw: <Lemma> -> <Form>' -ForEach @(
+        # (never seen in the second person plural: the verbs seen in "-ir" that change as it does)
+        @{ Lemma = 'réussir'; Wanted = 'Mood=Ind|Number=Plur|Person=2|Tense=Pres'; Form = 'réussissez' }
+        @{ Lemma = 'dormir'; Wanted = 'Mood=Ind|Number=Sing|Person=1|Tense=Pres'; Form = 'dors' }
+        @{ Lemma = 'zorgluber'; Wanted = 'Mood=Ind|Number=Plur|Person=2|Tense=Pres'; Form = 'zorglubez' }
+    ) {
+        $model = InModuleScope Lambek { Get-LambekFormModel -Language fr }
+        $model.Paradigms.ContainsKey("VERB`t$Lemma`t$Wanted|VerbForm=Fin") | Should -BeFalse
+        @($model.Inflect($Lemma, 'VERB', $Wanted))[0] | Should -BeExactly $Form
+    }
+
+    It 'finds what a word never seen may be by saying it again' {
+        $model = InModuleScope Lambek { Get-LambekFormModel -Language fr }
+        $model.Knows('aboient') | Should -BeFalse
+        $verb = @($model.Analyze('aboient') | Where-Object Upos -EQ 'VERB')[0]
+        $verb.Lemma | Should -BeExactly 'aboyer'
+        @($model.Inflect('aboyer', 'VERB', $verb.Feats))[0] | Should -BeExactly 'aboient'
+    }
+
+    It 'speaks well enough on the treebank it never learned from' {
+        $report = Invoke-LambekFormBenchmark -Path "$PSScriptRoot/../../bench/forms/fr_gsd-ud-test.conllu" -Language fr
+        $report.Speak | Should -BeGreaterOrEqual 0.98
+        $report.SpeakUnseen | Should -BeGreaterOrEqual 0.9
+    }
+
+    It 'offers the words it learned the way the dictionaries offer theirs, in their tags' {
+        $words = InModuleScope Lambek { [LambekLearnedWords]::new((Get-LambekFormModel -Language fr), 'fr') }
+        $read = @($words.Lemmas('prends', 'fr'))
+        @($read | Where-Object { $_.Lemma -eq 'prendre' -and $_.Pos -eq 'v' -and $_.Tag -eq 'P1s' }).Count | Should -Be 1
+        @($words.Forms('prendre', 'fr', 'v', 'P2p'))[0] | Should -BeExactly 'prenez'
+        @($words.Forms('noir', 'fr', 'a', 'fp'))[0] | Should -BeExactly 'noires'
+        $words.Participle('supprimer', 'fr') | Should -BeExactly 'supprimé'
+        @($words.Near('capitalle', 'fr', 1)) | Should -Be @('capitale')
+    }
+}
+
+Describe 'Lambek without its dictionaries' {
+
+    BeforeAll {
+        Import-LambekPack -Path "$PSScriptRoot/../../dsl/files" | Out-Null
+        Import-LambekPack -Path "$PSScriptRoot/../../dsl/code" | Out-Null
+    }
+
+    BeforeEach {
+        InModuleScope Lambek {
+            $script:Told = $null; $script:Board = $null; $script:ToldJournal = [System.Collections.Generic.List[object]]::new()
+            $script:Incognito = $true; $script:CategoryPending = $null; $script:LastProofs = $null; $script:ProblemStores = $null
+            $script:SavedDictionaryPath = $script:DictionaryPath
+            $script:DictionaryPath = Join-Path $TestDrive 'no-dictionaries'
+        }
+    }
+
+    AfterEach {
+        InModuleScope Lambek { $script:DictionaryPath = $script:SavedDictionaryPath }
+    }
+
+    AfterAll {
+        InModuleScope Lambek { $script:Incognito = $false }
+    }
+
+    It 'conjugates what it says back for the one it speaks to' {
+        $null = New-LambekPlan -Text "s'il pleut, je prends le bus" | ConvertTo-LambekAnswer
+        $null = New-LambekPlan -Text 'il pleut' | ConvertTo-LambekAnswer
+        New-LambekPlan -Text 'est-ce que je prends le bus ?' | ConvertTo-LambekAnswer | Should -BeLike '*vous prenez le bus*'
+    }
+
+    It 'reasons on categories with the words it learned' {
+        foreach ($text in 'tous les hommes sont mortels', 'Socrate est un homme') { $null = New-LambekPlan -Text $text | ConvertTo-LambekAnswer }
+        New-LambekPlan -Text 'Socrate est-il mortel ?' | ConvertTo-LambekAnswer | Should -BeLike 'Oui*'
+    }
+
+    It 'links two forms of a verb it never saw' {
+        foreach ($text in 'normalement, les chiens aboient', 'Rex est un chien') { $null = New-LambekPlan -Text $text | ConvertTo-LambekAnswer }
+        New-LambekPlan -Text 'Rex aboie-t-il ?' | ConvertTo-LambekAnswer | Should -BeLike 'Normalement oui*'
+    }
+}
+
+Describe 'Two words the grammar does not know' {
+
+    BeforeAll {
+        Import-LambekPack -Path "$PSScriptRoot/../../dsl/files" | Out-Null
+    }
+
+    It 'solves both, and asks only about the one that names the action' {
+        $step = (New-LambekPlan -Text 'zorglube les flurps dans C:\Temp').Steps[0]
+        $step.Guess.Token | Should -Be 'zorglube'
+        $step.Guess.IsAction | Should -BeTrue
+        $step.Guess.Also.Token | Should -Be 'flurps'
+        @($step.Guess.Also.Types) | Should -Contain 'o'
+        $step.Questions[0] | Should -BeLike '*zorglube*:*'
+    }
+}
+
+Describe 'Reading a message once' {
+
+    It 'reads the same sentence once in a message, and again in the next' {
+        InModuleScope Lambek {
+            Clear-LambekReadCache
+            $first = ConvertTo-LambekRequest -Text 'liste les fichiers dans C:\Temp'
+            $second = ConvertTo-LambekRequest -Text 'liste les fichiers dans C:\Temp'
+            $second.Hash | Should -Be $first.Hash
+            # (a copy: what a reader adds to its request is not added to the one kept)
+            $second | Add-Member -NotePropertyName Extra -NotePropertyValue 1
+            (ConvertTo-LambekRequest -Text 'liste les fichiers dans C:\Temp').PSObject.Properties['Extra'] | Should -BeNullOrEmpty
+            $script:ReadCache.Count | Should -BeGreaterThan 0
+            $null = New-LambekPlan -Text 'bonjour'
+            $script:ReadCache.ContainsKey("request`nauto`nliste les fichiers dans C:\Temp") | Should -BeFalse
+        }
+    }
+}

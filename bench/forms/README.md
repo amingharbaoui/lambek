@@ -12,3 +12,7 @@ train and dev files of the same treebanks (`tools/Build-LambekForms.ps1`).
 
 Both are distributed unchanged, under their licence (https://creativecommons.org/licenses/by-sa/4.0/), with credit to
 their authors as given in the README of each treebank.
+
+Lambek is measured reading the words of these files (lemma, part of speech, features) and saying them: each verb, noun
+and adjective is said again from its lemma and its features (`Speak`), and apart, the ones whose lemma was never seen so
+when learning (`SpeakUnseen`).

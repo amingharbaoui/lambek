@@ -11,7 +11,9 @@
     - a perceptron that says the part of speech and the features of a word from the word, its ends and its neighbours,
       and one that says which rule of form to apply; all in integers, every pass in the same order, so the same
       treebanks give the same model, byte for byte, on every machine;
-    - how written text is cut into words ("du": de le, "l'avion": l' avion), from the same treebanks.
+    - how written text is cut into words ("du": de le, "l'avion": l' avion), from the same treebanks;
+    - the paradigms: the forms each lemma was seen with, by part of speech and features, to say words as well as to
+      read them (a slip of the annotators, Typo=Yes, or a shortened word, Abbr=Yes, is left out).
 
     The treebanks of the models of Lambek, release 2.18 of Universal Dependencies (CC BY-SA 4.0), train and dev
     files (the test files are in bench/forms, to measure the models, never to learn from). For French, the written
