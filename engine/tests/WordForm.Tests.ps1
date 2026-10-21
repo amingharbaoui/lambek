@@ -104,6 +104,13 @@ Describe 'Get-LambekWordForm' {
         @(Get-LambekWordForm -Text 'le chien du voisin' -Language fr | ForEach-Object Form) | Should -Be @('le', 'chien', 'de', 'le', 'voisin')
     }
 
+    It 'says why it read a word as it did' {
+        $word = Get-LambekWordForm -Text 'Ils zorglubaient tout le temps.' -Language fr -Explain | Where-Object Form -EQ 'zorglubaient'
+        @($word.Why | Where-Object { $_ -like 'tag: *' }).Count | Should -BeGreaterThan 0
+        @($word.Why | Where-Object { $_ -like 'lemma: *' }).Count | Should -BeGreaterThan 0
+        @($word.Why | Where-Object { $_ -like '*aient*' }).Count | Should -BeGreaterThan 0
+    }
+
     It 'reads a word it never saw from its ends' {
         $word = Get-LambekWordForm -Text 'Ils zorglubaient tout le temps.' -Language fr | Where-Object Form -EQ 'zorglubaient'
         $word.Known | Should -BeFalse

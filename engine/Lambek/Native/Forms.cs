@@ -224,6 +224,24 @@ public class LambekPerceptron
         return guess;
     }
 
+    // Why a class was chosen: the features that weigh most for it, with their weight (averaged over the steps, said
+    // with two decimals, only to be read)
+    public string[] Explain(IList<string> active, int @class, int top)
+    {
+        List<KeyValuePair<string, long>> parts = new List<KeyValuePair<string, long>>();
+        foreach (string name in active.Distinct(StringComparer.Ordinal))
+        {
+            int feature = FeatureOf(name, false);
+            int slot;
+            if (feature < 0 || @class < 0 || !slots[feature].TryGetValue(@class, out slot)) continue;
+            long value = averaged ? final[slot] : weights[slot];
+            if (value > 0) parts.Add(new KeyValuePair<string, long>(name, value));
+        }
+        double scale = averaged && step > 0 ? step : 1;
+        return parts.OrderByDescending(part => part.Value).ThenBy(part => part.Key, StringComparer.Ordinal).Take(top)
+            .Select(part => part.Key + " (+" + (part.Value / scale).ToString("0.00", CultureInfo.InvariantCulture) + ")").ToArray();
+    }
+
     public void Average()
     {
         final = new long[weights.Count];
@@ -235,6 +253,7 @@ public class LambekPerceptron
     public void Write(BinaryWriter writer)
     {
         if (!averaged) Average();
+        writer.Write(step);
         writer.Write(Classes.Count);
         foreach (string name in Classes) writer.Write(name);
         int kept = 0;
@@ -253,6 +272,7 @@ public class LambekPerceptron
     public static LambekPerceptron ReadFrom(BinaryReader reader)
     {
         LambekPerceptron model = new LambekPerceptron();
+        model.step = reader.ReadInt64();
         int classes = reader.ReadInt32();
         for (int i = 0; i < classes; i++) model.ClassOf(reader.ReadString(), true);
         int count = reader.ReadInt32();
@@ -294,7 +314,7 @@ public class LambekForms
     public LambekPerceptron Tagger = new LambekPerceptron();
     public LambekPerceptron Lemmatiser = new LambekPerceptron();
     public int Passes = 10;
-    public const string Format = "lambek-forms-1";
+    public const string Format = "lambek-forms-2";
 
     // How the written text is cut into the words the model reads, learned from the same treebanks: the written tokens
     // that stand for several words ("du": de le, "au": à le), the pieces cut before an apostrophe ("l'", "qu'") and
@@ -407,6 +427,19 @@ public class LambekForms
 
     // Reads a written sentence
     public LambekFormReading[] ReadText(string text) { return Read(Tokenize(text)); }
+
+    // Why word i of the sentence was read as it was: what weighs most for its tag, then for its rule of form
+    public string[] Why(string[] forms, int index, int top)
+    {
+        LambekFormReading[] readings = Read(forms);
+        string previous = index > 0 ? readings[index - 1].Upos + "|" + readings[index - 1].Feats : "<s>";
+        string beforePrevious = index > 1 ? readings[index - 2].Upos + "|" + readings[index - 2].Feats : "<s>";
+        string tag = readings[index].Upos + "|" + readings[index].Feats;
+        List<string> why = new List<string>();
+        why.AddRange(Tagger.Explain(TagFeatures(forms, index, previous, beforePrevious), Tagger.ClassOf(tag, false), top).Select(part => "tag: " + part));
+        why.AddRange(Lemmatiser.Explain(LemmaFeatures(forms[index], tag), Lemmatiser.ClassOf(readings[index].Rule, false), top).Select(part => "lemma: " + part));
+        return why.ToArray();
+    }
 
     static string Lower(string word) { return word.ToLowerInvariant(); }
 
