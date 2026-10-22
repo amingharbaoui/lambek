@@ -2166,7 +2166,7 @@
     },
     {
       "Id": "F001",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "talk"
@@ -2181,7 +2181,7 @@
     },
     {
       "Id": "F002",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "talk"
@@ -2196,7 +2196,7 @@
     },
     {
       "Id": "F003",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "told"
@@ -2218,7 +2218,7 @@
     },
     {
       "Id": "F004",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "told"
@@ -2240,7 +2240,7 @@
     },
     {
       "Id": "F005",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "told"
@@ -2262,7 +2262,7 @@
     },
     {
       "Id": "F006",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "category"
@@ -2287,7 +2287,7 @@
     },
     {
       "Id": "F007",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "category"
@@ -2312,7 +2312,7 @@
     },
     {
       "Id": "F008",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "category"
@@ -2337,7 +2337,7 @@
     },
     {
       "Id": "F009",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "category"
@@ -2362,7 +2362,7 @@
     },
     {
       "Id": "F010",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "default"
@@ -2387,7 +2387,7 @@
     },
     {
       "Id": "F011",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "default"
@@ -2412,7 +2412,7 @@
     },
     {
       "Id": "F012",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "condition"
@@ -2437,7 +2437,7 @@
     },
     {
       "Id": "F013",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "condition"
@@ -2462,7 +2462,7 @@
     },
     {
       "Id": "F014",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "condition"
@@ -2487,7 +2487,7 @@
     },
     {
       "Id": "F015",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "calc"
@@ -2502,7 +2502,7 @@
     },
     {
       "Id": "F016",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "calc"
@@ -2517,7 +2517,7 @@
     },
     {
       "Id": "F017",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "order"
@@ -2530,7 +2530,7 @@
     },
     {
       "Id": "F018",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "order"
@@ -2543,7 +2543,7 @@
     },
     {
       "Id": "F019",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "typo"
@@ -2558,7 +2558,7 @@
     },
     {
       "Id": "F020",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "out-of-domain"
@@ -2570,7 +2570,7 @@
     },
     {
       "Id": "F021",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "abstain"
@@ -2582,7 +2582,7 @@
     },
     {
       "Id": "F022",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "contradiction"
@@ -2604,7 +2604,7 @@
     },
     {
       "Id": "F023",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "why"
@@ -2632,7 +2632,7 @@
     },
     {
       "Id": "F024",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "definition"
@@ -2642,6 +2642,487 @@
         "Reply": "answer",
         "Contains": [
           "livre"
+        ]
+      }
+    },
+    {
+      "Id": "G001",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "bonsoir Lambek",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bonsoir|bonjour|salut"
+        ]
+      }
+    },
+    {
+      "Id": "G002",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "hey there",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "hello|hi|hey"
+        ]
+      }
+    },
+    {
+      "Id": "G003",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "ma cousine habite à Namur"
+        },
+        {
+          "Text": "où habite ma cousine ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "namur"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G004",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "my uncle works in Ghent"
+        },
+        {
+          "Text": "where does my uncle work?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ghent"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G005",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "mon chien s'appelle Rex"
+        },
+        {
+          "Text": "comment s'appelle mon chien ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G006",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les cerisiers sont des arbres"
+        },
+        {
+          "Text": "ce cerisier est dans le jardin"
+        },
+        {
+          "Text": "le cerisier est-il un arbre ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G007",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "aucune étagère n'est vivante"
+        },
+        {
+          "Text": "Billy est une étagère"
+        },
+        {
+          "Text": "Billy est-elle vivante ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G008",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "all violins are instruments"
+        },
+        {
+          "Text": "Stradi is a violin"
+        },
+        {
+          "Text": "is Stradi an instrument?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G009",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "category"
+      ],
+      "Turns": [
+        {
+          "Text": "toutes les abeilles fabriquent du miel"
+        },
+        {
+          "Text": "Maya est une abeille"
+        },
+        {
+          "Text": "Maya fabrique-t-elle du miel ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G010",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "default"
+      ],
+      "Turns": [
+        {
+          "Text": "normalement, les enfants aiment les bonbons"
+        },
+        {
+          "Text": "Léo est un enfant"
+        },
+        {
+          "Text": "Léo aime-t-il les bonbons ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|normalement|suppos"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G011",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "default"
+      ],
+      "Turns": [
+        {
+          "Text": "usually, dogs bark"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "does Rex bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes|usually|normally|suppos"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G012",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "s'il pleut, je prends mon parapluie"
+        },
+        {
+          "Text": "il pleut"
+        },
+        {
+          "Text": "est-ce que je prends mon parapluie ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|vous prenez votre parapluie"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G013",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "quand j'ai faim, je mange une pomme"
+        },
+        {
+          "Text": "j'ai faim"
+        },
+        {
+          "Text": "est-ce que je mange une pomme ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui|vous mangez une pomme"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G014",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "condition"
+      ],
+      "Turns": [
+        {
+          "Text": "if it rains, I stay home"
+        },
+        {
+          "Text": "it rains"
+        },
+        {
+          "Text": "do I stay home?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes|you stay home"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G015",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "combien font 17 plus 26 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "43"
+        ]
+      }
+    },
+    {
+      "Id": "G016",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "what is 120 minus 45?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "75"
+        ]
+      }
+    },
+    {
+      "Id": "G017",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "order"
+      ],
+      "Text": "liste les fichiers .txt dans C:\\Notes",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.list"
+      }
+    },
+    {
+      "Id": "G018",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "order"
+      ],
+      "Text": "list the .jpg files in C:\\Photos",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.list"
+      }
+    },
+    {
+      "Id": "G019",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "typo"
+      ],
+      "Text": "bonjuor",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bonjour|salut"
+        ]
+      }
+    },
+    {
+      "Id": "G020",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "out-of-domain"
+      ],
+      "Text": "commande-moi une pizza",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "G021",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "what will the weather be next month?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "G022",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "contradiction"
+      ],
+      "Turns": [
+        {
+          "Text": "Marie aime le thé"
+        },
+        {
+          "Text": "Marie n'aime pas le thé",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "contr|oppos|les deux"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G023",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "why"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les oiseaux ont des plumes"
+        },
+        {
+          "Text": "le moineau est un oiseau"
+        },
+        {
+          "Text": "le moineau a-t-il des plumes ?"
+        },
+        {
+          "Text": "pourquoi ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oiseau"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "G024",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "definition"
+      ],
+      "Text": "que veut dire boulangerie ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "pain"
         ]
       }
     }

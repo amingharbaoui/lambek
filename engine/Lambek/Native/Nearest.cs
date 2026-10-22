@@ -72,10 +72,25 @@ public class LambekNearest
 
     // The class the k nearest examples vote for, with the share of the vote it got; width is the width of the bell
     // (on the distance between unit vectors, from 0 to 2). Neighbours: the three nearest, to say why
+    // (the sums are kept in an array as long as the examples, reused from one question to the next on the same
+    // thread, and only the k nearest are kept while going through them: the same votes, without sorting them all)
+    [ThreadStatic] static double[] sums;
+    [ThreadStatic] static int[] touched;
+    [ThreadStatic] static int[] marks;
+    [ThreadStatic] static int question;
+
     public string Vote(string[] features, int k, double width, out double share, out string[] neighbours)
     {
         Prepare();
-        Dictionary<int, double> dots = new Dictionary<int, double>();
+        if (sums == null || sums.Length < examples.Count || question == int.MaxValue)
+        {
+            sums = new double[examples.Count];
+            touched = new int[examples.Count];
+            marks = new int[examples.Count];
+            question = 0;
+        }
+        question++;
+        int met = 0;
         double sum = 0;
         foreach (string name in features.Distinct(StringComparer.Ordinal))
         {
@@ -85,30 +100,54 @@ public class LambekNearest
             sum += w * w;
             foreach (int e in postings[f])
             {
-                double dot;
-                dots.TryGetValue(e, out dot);
-                dots[e] = dot + w * w;
+                if (marks[e] != question) { marks[e] = question; touched[met++] = e; }
+                sums[e] += w * w;
             }
         }
         double norm = Math.Sqrt(sum);
         share = 0;
         neighbours = new string[0];
-        if (dots.Count == 0 || norm <= 0) return null;
-        List<KeyValuePair<int, double>> near = dots.Select(pair => new KeyValuePair<int, double>(pair.Key, Math.Round(pair.Value / (norm * norms[pair.Key]), 9)))
-            .OrderByDescending(pair => pair.Value).ThenBy(pair => pair.Key).Take(k).ToList();
+        // The k nearest, by similarity then by the order the examples were learned in
+        // (a similarity that is no number comes last, as it did when they were all sorted)
+        int[] keys = new int[Math.Max(k, 0)];
+        double[] values = new double[keys.Length];
+        double[] raw = new double[keys.Length];
+        int kept = 0;
+        for (int t = 0; t < met; t++)
+        {
+            int e = touched[t];
+            double dot = sums[e];
+            sums[e] = 0;
+            if (norm <= 0 || keys.Length == 0) continue;
+            double similarity = Math.Round(dot / (norm * norms[e]), 9);
+            double value = double.IsNaN(similarity) ? double.NegativeInfinity : similarity;
+            if (kept == keys.Length && (value < values[kept - 1] || (value == values[kept - 1] && e > keys[kept - 1]))) continue;
+            int at = kept < keys.Length ? kept++ : kept - 1;
+            while (at > 0 && (values[at - 1] < value || (values[at - 1] == value && keys[at - 1] > e)))
+            {
+                values[at] = values[at - 1];
+                raw[at] = raw[at - 1];
+                keys[at] = keys[at - 1];
+                at--;
+            }
+            values[at] = value;
+            raw[at] = similarity;
+            keys[at] = e;
+        }
+        if (kept == 0) return null;
         double[] votes = new double[Classes.Count];
         double total = 0;
-        foreach (KeyValuePair<int, double> pair in near)
+        for (int n = 0; n < kept; n++)
         {
-            double distance = Math.Sqrt(Math.Max(0, 2 - 2 * pair.Value));
+            double distance = Math.Sqrt(Math.Max(0, 2 - 2 * raw[n]));
             double bell = Math.Round(Math.Exp(-(distance * distance) / (2 * width * width)), 9);
-            votes[labels[pair.Key]] += bell;
+            votes[labels[keys[n]]] += bell;
             total += bell;
         }
         int best = 0;
         for (int c = 1; c < votes.Length; c++) if (votes[c] > votes[best]) best = c;
         share = total > 0 ? votes[best] / total : 0;
-        neighbours = near.Take(3).Select(pair => texts[pair.Key] + " " + Classes[labels[pair.Key]]).ToArray();
+        neighbours = Enumerable.Range(0, Math.Min(3, kept)).Select(n => texts[keys[n]] + " " + Classes[labels[keys[n]]]).ToArray();
         return Classes[best];
     }
 }

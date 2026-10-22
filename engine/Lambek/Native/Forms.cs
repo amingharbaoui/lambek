@@ -127,6 +127,11 @@ public class LambekPerceptron
     bool averaged;
     long[] final;
     long[] scores = new long[0];
+    // A model read from its file is only asked, never taught: its weights are kept in three flat arrays (where the
+    // classes of each feature start, the classes, the weights) instead of a table per feature, a third of the memory
+    int[] starts;
+    int[] slotClasses;
+    long[] slotValues;
 
     public int ClassOf(string name, bool add)
     {
@@ -153,7 +158,27 @@ public class LambekPerceptron
 
     public int FeatureCount { get { return features.Count; } }
     public bool Has(string feature) { return featureIds.ContainsKey(feature); }
-    public int WeightCount { get { return weights.Count; } }
+    public int WeightCount { get { return starts != null ? slotValues.Length : weights.Count; } }
+
+    // A model read from its file taught again: its tables made again from the flat arrays, as they were read
+    void Thaw()
+    {
+        if (starts == null) return;
+        final = slotValues;
+        for (int f = 0; f < features.Count; f++)
+        {
+            slots[f] = new Dictionary<int, int>();
+            for (int s = starts[f]; s < starts[f + 1]; s++)
+            {
+                slots[f][slotClasses[s]] = s;
+                weights.Add(0);
+                stamps.Add(0);
+            }
+        }
+        starts = null;
+        slotClasses = null;
+        slotValues = null;
+    }
 
     // The score of every class for these features
     public long[] Score(IList<string> active)
@@ -164,6 +189,11 @@ public class LambekPerceptron
         {
             int feature = FeatureOf(name, false);
             if (feature < 0) continue;
+            if (starts != null)
+            {
+                for (int s = starts[feature]; s < starts[feature + 1]; s++) scores[slotClasses[s]] += slotValues[s];
+                continue;
+            }
             foreach (KeyValuePair<int, int> slot in slots[feature])
             {
                 scores[slot.Key] += averaged ? final[slot.Value] : weights[slot.Value];
@@ -209,6 +239,7 @@ public class LambekPerceptron
     // One example: when the guess is wrong, the right class gains one on each feature and the guess loses one
     public int Learn(IList<string> active, int truth, Func<int, bool> allowed)
     {
+        Thaw();
         averaged = false;
         int guess = Best(active, allowed);
         if (guess != truth)
@@ -232,9 +263,20 @@ public class LambekPerceptron
         foreach (string name in active.Distinct(StringComparer.Ordinal))
         {
             int feature = FeatureOf(name, false);
-            int slot;
-            if (feature < 0 || @class < 0 || !slots[feature].TryGetValue(@class, out slot)) continue;
-            long value = averaged ? final[slot] : weights[slot];
+            int slot = -1;
+            if (feature < 0 || @class < 0) continue;
+            long value;
+            if (starts != null)
+            {
+                for (int s = starts[feature]; s < starts[feature + 1]; s++) if (slotClasses[s] == @class) slot = s;
+                if (slot < 0) continue;
+                value = slotValues[slot];
+            }
+            else
+            {
+                if (!slots[feature].TryGetValue(@class, out slot)) continue;
+                value = averaged ? final[slot] : weights[slot];
+            }
             if (value > 0) parts.Add(new KeyValuePair<string, long>(name, value));
         }
         double scale = averaged && step > 0 ? step : 1;
@@ -252,6 +294,7 @@ public class LambekPerceptron
     // Written in a fixed order, so the same model gives the same bytes
     public void Write(BinaryWriter writer)
     {
+        Thaw();
         if (!averaged) Average();
         writer.Write(step);
         writer.Write(Classes.Count);
@@ -276,22 +319,30 @@ public class LambekPerceptron
         int classes = reader.ReadInt32();
         for (int i = 0; i < classes; i++) model.ClassOf(reader.ReadString(), true);
         int count = reader.ReadInt32();
+        List<int> starts = new List<int>(count + 1);
+        List<int> owners = new List<int>();
         List<long> values = new List<long>();
         for (int i = 0; i < count; i++)
         {
-            int feature = model.FeatureOf(reader.ReadString(), true);
+            string name = reader.ReadString();
+            if (model.featureIds.ContainsKey(name)) throw new InvalidDataException("A feature of the model is written twice.");
+            model.featureIds[name] = model.features.Count;
+            model.features.Add(name);
+            // (no table: the flat arrays hold its weights)
+            model.slots.Add(null);
+            starts.Add(values.Count);
             int live = reader.ReadInt32();
             for (int j = 0; j < live; j++)
             {
-                int @class = reader.ReadInt32();
-                long value = reader.ReadInt64();
-                model.slots[feature][@class] = values.Count;
-                values.Add(value);
-                model.weights.Add(0);
-                model.stamps.Add(0);
+                owners.Add(reader.ReadInt32());
+                values.Add(reader.ReadInt64());
             }
         }
-        model.final = values.ToArray();
+        starts.Add(values.Count);
+        model.starts = starts.ToArray();
+        model.slotClasses = owners.ToArray();
+        model.slotValues = values.ToArray();
+        model.final = model.slotValues;
         model.averaged = true;
         return model;
     }
@@ -355,7 +406,13 @@ public class LambekForms
     string VerbLemma(string form, string tag, string lemma)
     {
         if (Lemmas.Count == 0 || !(tag == "VERB" || tag.StartsWith("VERB|", StringComparison.Ordinal))) return lemma;
-        if (Knows(form) || Lemmas.Contains(lemma.ToLowerInvariant())) return lemma;
+        if (KnowsLemma(lemma.ToLowerInvariant())) return lemma;
+        // A form seen, but not as a verb ("bois", seen as a noun, read as a verb here): the verb seen that says it so,
+        // with the same features ("boire"), rather than the lemma its rule makes up ("boir")
+        string feats = tag.Length > 5 ? tag.Substring(5) : "_";
+        LambekFormReading said = Analyze(form).FirstOrDefault(reading => reading.Upos == "VERB" && reading.Feats == feats && KnowsLemma(reading.Lemma));
+        if (said != null) return said.Lemma;
+        if (Knows(form)) return lemma;
         return Analogy(form) ?? lemma;
     }
 
@@ -371,6 +428,66 @@ public class LambekForms
     // word as well as it reads it: the form of a verb for the one spoken to, an adjective that agrees. The verbs that
     // help the others (AUX) are verbs here, as "etre" is one verb whether it helps or not
     public readonly SortedDictionary<string, SortedDictionary<string, int>> Paradigms = new SortedDictionary<string, SortedDictionary<string, int>>(StringComparer.Ordinal);
+
+    // What Lambek learned on its own from plain text (Reading.cs), kept apart from what the treebanks taught: the
+    // words read, by form, their paradigms and their lemmas. Never saved with the model: it is its own notebook
+    public readonly Dictionary<string, LambekLearnedWord> Learned = new Dictionary<string, LambekLearnedWord>(StringComparer.Ordinal);
+    public readonly HashSet<string> LearnedLemmas = new HashSet<string>(StringComparer.Ordinal);
+    SortedDictionary<string, SortedDictionary<string, int>> merged;
+
+    // A lemma Lambek knows: from the treebanks, or learned from plain text
+    public bool KnowsLemma(string lemma) { return Lemmas.Contains(lemma) || LearnedLemmas.Contains(lemma); }
+
+    // The paradigms of the treebanks with the forms learned from plain text
+    SortedDictionary<string, SortedDictionary<string, int>> AllParadigms()
+    {
+        if (Learned.Count == 0) return Paradigms;
+        if (merged != null) return merged;
+        SortedDictionary<string, SortedDictionary<string, int>> all = new SortedDictionary<string, SortedDictionary<string, int>>(StringComparer.Ordinal);
+        foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in Paradigms) all[paradigm.Key] = new SortedDictionary<string, int>(paradigm.Value, StringComparer.Ordinal);
+        foreach (LambekLearnedWord word in Learned.Values)
+        {
+            string key = ParadigmKey(word.Upos, word.Lemma, word.Feats);
+            if (key == null) continue;
+            SortedDictionary<string, int> forms;
+            if (!all.TryGetValue(key, out forms)) all[key] = forms = new SortedDictionary<string, int>(StringComparer.Ordinal);
+            int count;
+            forms.TryGetValue(word.Form, out count);
+            forms[word.Form] = count + word.Agreeing;
+        }
+        merged = all;
+        return merged;
+    }
+
+    // Takes in what was learned from plain text: the forms are read, said and analysed with it from now on
+    // Changes each time what was learned from plain text changes: what is kept from the model elsewhere is then asked again
+    public int Version;
+
+    public void AddLearned(IEnumerable<LambekLearnedWord> words)
+    {
+        Version++;
+        foreach (LambekLearnedWord word in words)
+        {
+            Learned[word.Form] = word;
+            LearnedLemmas.Add(word.Lemma);
+        }
+        merged = null;
+        speaking = null;
+        heard = null;
+        bridges.Clear();
+    }
+
+    // Forgets what was learned from plain text: the model as the treebanks alone made it
+    public void ClearLearned()
+    {
+        Version++;
+        Learned.Clear();
+        LearnedLemmas.Clear();
+        merged = null;
+        speaking = null;
+        heard = null;
+        bridges.Clear();
+    }
 
     public int Rule(string form, string tag)
     {
@@ -421,6 +538,14 @@ public class LambekForms
         }
         return lemmas.ToArray();
     }
+
+    // How often a word learned from plain text must have been met, read so 8 times in 10, to be read as it was there
+    // rather than as the tagger reads it here
+    public int OverrideCount = 5;
+
+    // Whether a word never seen is read a second time, from the rare words it is nearest to (the reading of plain
+    // text in bulk does without: it compares the readings of many sentences instead)
+    public bool SecondReader = true;
 
     public readonly List<string[]> Rare = new List<string[]>();
     public int Neighbours = 10;
@@ -591,7 +716,7 @@ public class LambekForms
         Dictionary<string, HashSet<string>> featuresSeen = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
         Dictionary<string, Dictionary<string, int>> accents = new Dictionary<string, Dictionary<string, int>>(StringComparer.Ordinal);
         Dictionary<string, List<string[]>> entries = new Dictionary<string, List<string[]>>(StringComparer.Ordinal);
-        foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in Paradigms)
+        foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in AllParadigms())
         {
             string[] parts = paradigm.Key.Split('\t');
             HashSet<string> seen;
@@ -640,6 +765,8 @@ public class LambekForms
         string plain = LambekDictionary.Normalize(lower);
         // (written with its accents already: as it is)
         if (lower != plain) return lower;
+        // (a lemma the treebanks wrote without accents is that lemma: "cafe" is not "café" when both were seen)
+        if (Lemmas.Contains(lower)) return lower;
         string accented;
         if (Speak().Accented.TryGetValue(plain, out accented)) return accented;
         return lower;
@@ -697,7 +824,7 @@ public class LambekForms
         foreach (KeyValuePair<string, HashSet<string>> feats in group)
         {
             SortedDictionary<string, int> forms;
-            if (!Paradigms.TryGetValue(upos + "\t" + written + "\t" + feats.Key, out forms)) continue;
+            if (!AllParadigms().TryGetValue(upos + "\t" + written + "\t" + feats.Key, out forms)) continue;
             foreach (KeyValuePair<string, int> form in forms)
             {
                 long count;
@@ -813,7 +940,7 @@ public class LambekForms
         Dictionary<string, List<string[]>> built = new Dictionary<string, List<string[]>>(StringComparer.Ordinal);
         Dictionary<string[], int> counts = new Dictionary<string[], int>();
         List<string[]> backward = new List<string[]>();
-        foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in Paradigms)
+        foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in AllParadigms())
         {
             string[] parts = paradigm.Key.Split('\t');
             foreach (KeyValuePair<string, int> form in paradigm.Value)
@@ -877,7 +1004,7 @@ public class LambekForms
                     string key = upos + "\t" + lemma + "\t" + entry[3];
                     long vote;
                     votes.TryGetValue(key, out vote);
-                    votes[key] = vote + 1 + (Lemmas.Contains(lemma) ? 1000000L : 0);
+                    votes[key] = vote + 1 + (KnowsLemma(lemma) ? 1000000L : 0);
                     found = true;
                 }
             }
@@ -1273,9 +1400,25 @@ public class LambekForms
             string byRule = readings[i].Lemma;
             readings[i].Lemma = VerbLemma(form, tag, byRule);
             readings[i].Analogous = readings[i].Lemma != byRule;
+            // A word learned from plain text: the lemma it was read with there, when it is read as the same part of
+            // speech here; read so in most of the sentences it was met in, it is read so here too, the tagger's
+            // reading kept second
+            LambekLearnedWord learned;
+            if (!Knows(form) && Learned.TryGetValue(form.ToLowerInvariant(), out learned))
+            {
+                if (learned.Upos == readings[i].Upos) { readings[i].Lemma = learned.Lemma; readings[i].Analogous = false; }
+                else if (learned.Count >= OverrideCount && learned.Agreeing * 10 >= learned.Count * 8)
+                {
+                    readings[i].Alternative = readings[i].Upos + "|" + readings[i].Feats;
+                    readings[i].Upos = learned.Upos;
+                    readings[i].Feats = learned.Feats;
+                    readings[i].Lemma = learned.Lemma;
+                    readings[i].Analogous = false;
+                }
+            }
             // A word never seen is read a second time, from the rare words it is nearest to: when the two readers
             // disagree, the word is in doubt, and both parts of speech are kept for the grammar to choose
-            if (Rare.Count > 0 && !Knows(form))
+            if (SecondReader && Rare.Count > 0 && !Knows(form))
             {
                 double share;
                 string[] near;
@@ -1453,7 +1596,7 @@ public class LambekSentenceWords
         {
             string key = Key(reading.Form);
             if (key.Length == 0) continue;
-            if (dictionary != null && reading.Upos == "VERB" && !model.Knows(reading.Form) && (reading.Analogous || !model.Lemmas.Contains(reading.Lemma.ToLowerInvariant())))
+            if (dictionary != null && reading.Upos == "VERB" && !model.Knows(reading.Form) && !model.Learned.ContainsKey(reading.Form.ToLowerInvariant()) && (reading.Analogous || !model.KnowsLemma(reading.Lemma.ToLowerInvariant())))
             {
                 LambekLemma verb = dictionary.Lemmas(reading.Form.ToLowerInvariant(), language).FirstOrDefault(found => found.Pos == "v");
                 if (verb != null) reading.Lemma = string.IsNullOrEmpty(verb.Shown) ? verb.Lemma : verb.Shown;

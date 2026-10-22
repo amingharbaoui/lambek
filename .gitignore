@@ -23,3 +23,6 @@ engine/Lambek.Native/bin/
 # App (Tauri / Node), added later
 node_modules/
 app/src-tauri/target/
+
+# The plain texts Lambek learns words from (tools/Get-LambekCorpus.ps1): never in the repository
+lambek-corpus/

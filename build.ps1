@@ -137,6 +137,8 @@ if ($Task -eq 'Benchmark') {
         Import-Module (Join-Path $Engine 'Lambek/Lambek.psd1') -Force
         Import-LambekPack -Path (Join-Path $Root 'dsl/files') | Out-Null
         Import-LambekPack -Path (Join-Path $Root 'dsl/code') | Out-Null
+        # (warmed as the session above was, by the requests first: the times are compared with those above)
+        Invoke-LambekBenchmark -Path (Join-Path $Root 'bench/requests.json') -Split calibration | Out-Null
         foreach ($split in 'calibration', 'test', 'fresh') {
             $report = Invoke-LambekMessageBenchmark -Path $Messages -Split $split
             Write-Output ''

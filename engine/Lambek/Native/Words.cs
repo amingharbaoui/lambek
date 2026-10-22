@@ -176,7 +176,25 @@ public class LambekLearnedWords : ILambekWords
 
     // What a word may be, out of any sentence: every reading it was seen with often enough; a word never seen, what
     // the model reads in it from its ends
+    // (what a word may be is asked many times a message: kept, until the model learns again)
+    readonly Dictionary<string, LambekLemma[]> known = new Dictionary<string, LambekLemma[]>(StringComparer.Ordinal);
+    int knownVersion;
+
     public LambekLemma[] Lemmas(string word, string language, bool exact)
+    {
+        if (knownVersion != Model.Version) { known.Clear(); knownVersion = Model.Version; }
+        string key = (exact ? "1" : "0") + language + "\t" + word;
+        LambekLemma[] kept;
+        if (!known.TryGetValue(key, out kept))
+        {
+            kept = Find(word, language, exact);
+            if (known.Count > 50000) known.Clear();
+            known[key] = kept;
+        }
+        return (LambekLemma[]) kept.Clone();
+    }
+
+    LambekLemma[] Find(string word, string language, bool exact)
     {
         List<LambekLemma> found = new List<LambekLemma>();
         if (string.IsNullOrEmpty(word) || language != Language || word.IndexOf('_') >= 0 || word.IndexOf(' ') >= 0) return found.ToArray();
