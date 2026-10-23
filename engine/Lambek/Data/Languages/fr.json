@@ -2439,13 +2439,21 @@
       "principale",
       "principales",
       "actuelle",
-      "actuel"
+      "actuel",
+      "actuellement",
+      "aujourd",
+      "hui",
+      "maintenant"
     ],
     "Kinds": {
       "country": [
         "pays",
         "etat",
-        "nation"
+        "etats",
+        "nation",
+        "nations",
+        "etat membre",
+        "etats membres"
       ],
       "city": [
         "ville",
@@ -2477,6 +2485,40 @@
         "peinture",
         "toile",
         "oeuvre"
+      ],
+      "album": [
+        "album",
+        "albums",
+        "disque"
+      ],
+      "videogame": [
+        "jeu",
+        "jeux",
+        "jeu video",
+        "jeux video"
+      ],
+      "river": [
+        "fleuve",
+        "fleuves",
+        "riviere",
+        "rivieres",
+        "cours d eau"
+      ],
+      "mountain": [
+        "montagne",
+        "montagnes",
+        "sommet",
+        "sommets",
+        "mont",
+        "pic"
+      ],
+      "ocean": [
+        "ocean",
+        "oceans"
+      ],
+      "planet": [
+        "planete",
+        "planetes"
       ]
     },
     "Genders": {
@@ -2595,7 +2637,10 @@
         "au monde",
         "sur terre",
         "de la terre",
-        "de la planete"
+        "de la planete",
+        "du systeme solaire",
+        "dans le systeme solaire",
+        "de notre systeme solaire"
       ],
       "WorldSay": "du monde",
       "Or": [
@@ -2654,6 +2699,108 @@
           "Say": {
             "country": "Le pays le moins peuplé {scope} est {value}, avec {digits} habitants en {year}"
           }
+        },
+        {
+          "Words": [
+            "le plus long",
+            "la plus longue",
+            "plus long",
+            "plus longue"
+          ],
+          "Property": "P2043",
+          "Order": "max",
+          "Kinds": [
+            "river"
+          ],
+          "Say": {
+            "river": "Le cours d'eau le plus long {scope} est {value}, avec {digits} km"
+          }
+        },
+        {
+          "Words": [
+            "la plus haute",
+            "le plus haut",
+            "plus haute",
+            "plus haut",
+            "le plus eleve",
+            "la plus elevee",
+            "plus eleve",
+            "plus elevee"
+          ],
+          "Property": "P2044",
+          "Order": "max",
+          "Kinds": [
+            "mountain"
+          ],
+          "Say": {
+            "mountain": "Le sommet le plus haut {scope} est {value}, à {digits} m"
+          }
+        },
+        {
+          "Words": [
+            "le plus grand",
+            "la plus grande",
+            "plus grand",
+            "plus grande",
+            "le plus vaste",
+            "plus vaste"
+          ],
+          "Property": "P2046",
+          "Order": "max",
+          "Kinds": [
+            "country",
+            "ocean"
+          ],
+          "Say": {
+            "country": "Le plus grand pays {scope} est {value}, avec {digits} km²",
+            "ocean": "Le plus grand océan {scope} est {value}, avec {digits} km²"
+          }
+        },
+        {
+          "Words": [
+            "le plus petit",
+            "la plus petite",
+            "plus petit",
+            "plus petite"
+          ],
+          "Property": "P2046",
+          "Order": "min",
+          "Kinds": [
+            "country"
+          ],
+          "Say": {
+            "country": "Le plus petit pays {scope} est {value}, avec {digits} km²"
+          }
+        },
+        {
+          "Words": [
+            "la plus grande",
+            "la plus grosse",
+            "plus grande",
+            "plus grosse"
+          ],
+          "Property": "P2120",
+          "Order": "max",
+          "Kinds": [
+            "planet"
+          ],
+          "Say": {
+            "planet": "La plus grande planète {scope} est {value}, avec un rayon de {digits} km"
+          }
+        },
+        {
+          "Words": [
+            "la plus petite",
+            "plus petite"
+          ],
+          "Property": "P2120",
+          "Order": "min",
+          "Kinds": [
+            "planet"
+          ],
+          "Say": {
+            "planet": "La plus petite planète {scope} est {value}, avec un rayon de {digits} km"
+          }
         }
       ],
       "Within": {
@@ -2670,7 +2817,19 @@
           [
             "P30"
           ]
-        ]
+        ],
+        "river": [
+          [
+            "P17!"
+          ]
+        ],
+        "mountain": [
+          [
+            "P17"
+          ]
+        ],
+        "ocean": [],
+        "planet": []
       },
       "Compare": [
         {
@@ -2722,7 +2881,53 @@
         }
       ],
       "SayBefore": "Avant",
-      "SayAfter": "Après"
+      "SayAfter": "Après",
+      "Counts": [
+        {
+          "Kind": "country",
+          "Property": "P463",
+          "Words": [
+            "sont membres de l",
+            "sont membres de",
+            "sont membres du",
+            "sont membres d",
+            "font partie de l",
+            "font partie de",
+            "font partie du",
+            "font partie d",
+            "composent l",
+            "composent",
+            "compte l",
+            "compte",
+            "forment l",
+            "forment",
+            "appartiennent a l",
+            "appartiennent a",
+            "y a t il dans l",
+            "y a t il dans",
+            "dans l",
+            "dans",
+            "membres de l",
+            "membres de",
+            "membres du",
+            "membres d"
+          ],
+          "Say": "{count} pays sont membres {of}"
+        }
+      ],
+      "WorldNeeds": {
+        "mountain": "P17",
+        "river": "P17"
+      },
+      "WorldSays": {
+        "planet": "du système solaire"
+      },
+      "Named": [
+        "country",
+        "river",
+        "ocean",
+        "mountain"
+      ]
     },
     "Relations": [
       {
@@ -2860,7 +3065,9 @@
       {
         "Property": "P17",
         "Subject": [
-          "city"
+          "city",
+          "river",
+          "mountain"
         ],
         "Asks": [
           "country",
@@ -3119,6 +3326,296 @@
           "fait"
         ],
         "Say": "Le tableau {label} a été peint {date}"
+      },
+      {
+        "Property": "P577",
+        "Subject": [
+          "album"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "sorti",
+          "sortie",
+          "sort",
+          "paru",
+          "parue",
+          "publie"
+        ],
+        "Say": "L'album {label} est sorti {date}"
+      },
+      {
+        "Property": "P577",
+        "Subject": [
+          "videogame"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "sorti",
+          "sortie",
+          "sort",
+          "paru",
+          "parue",
+          "publie",
+          "edite"
+        ],
+        "Say": "Le jeu {label} est sorti {date}"
+      },
+      {
+        "Property": "P175",
+        "Subject": [
+          "album"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Role": [
+          "interprete",
+          "artiste",
+          "chanteur",
+          "chanteuse",
+          "groupe"
+        ],
+        "Cues": [
+          "chante",
+          "interprete",
+          "artiste",
+          "chanteur",
+          "chanteuse",
+          "groupe",
+          "enregistre",
+          "a sorti",
+          "a enregistre"
+        ],
+        "Say": "{label} est un album de {value}",
+        "SayYes": "Oui, {label} est un album de {value}",
+        "SayNo": "Non : {label} est un album de {value}"
+      },
+      {
+        "Property": "P178",
+        "Subject": [
+          "videogame"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Role": [
+          "developpeur",
+          "createur",
+          "studio"
+        ],
+        "Cues": [
+          "developpe",
+          "developpeur",
+          "studio",
+          "cree",
+          "concu"
+        ],
+        "Say": "Le jeu {label} a été développé par {value}",
+        "SayYes": "Oui, le jeu {label} a été développé par {value}",
+        "SayNo": "Non : le jeu {label} a été développé par {value}"
+      },
+      {
+        "Property": "P179",
+        "Subject": [
+          "film",
+          "book",
+          "videogame"
+        ],
+        "Asks": [
+          "what",
+          "yesno"
+        ],
+        "Cues": [
+          "serie",
+          "saga",
+          "franchise",
+          "fait partie",
+          "fait il partie",
+          "fait elle partie"
+        ],
+        "Say": "{label} fait partie de la série {value}",
+        "SayYes": "Oui, {label} fait partie de la série {value}",
+        "SayNo": "Non : {label} fait partie de la série {value}"
+      },
+      {
+        "Property": "P161",
+        "Subject": [
+          "film"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Limit": 5,
+        "Cues": [
+          "joue",
+          "jouent",
+          "jouait",
+          "jouaient",
+          "acteurs",
+          "acteur",
+          "actrice",
+          "actrices",
+          "distribution",
+          "casting",
+          "joue dans",
+          "a joue"
+        ],
+        "Say": "Dans {label}, on trouve notamment {value}",
+        "SayYes": "Oui, {object} joue dans {label}",
+        "SayNo": "Non : dans {label}, on trouve notamment {value}"
+      },
+      {
+        "Property": "P161",
+        "Inverse": true,
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "what"
+        ],
+        "Cues": [
+          "joue dans",
+          "a joue dans",
+          "a joue",
+          "joue",
+          "jouait dans"
+        ],
+        "Say": "{label} a joué notamment dans {value}"
+      },
+      {
+        "Property": "P162",
+        "Subject": [
+          "film"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Role": [
+          "producteur",
+          "productrice"
+        ],
+        "Limit": 5,
+        "Cues": [
+          "produit",
+          "producteur",
+          "productrice",
+          "production"
+        ],
+        "Say": "{label} a été produit par {value}",
+        "SayYes": "Oui, {label} a été produit notamment par {value}",
+        "SayNo": "Non : {label} a été produit par {value}"
+      },
+      {
+        "Property": "P463",
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "yesno"
+        ],
+        "Limit": 5,
+        "Cues": [
+          "membre",
+          "membres",
+          "fait partie",
+          "fait il partie",
+          "fait elle partie",
+          "appartient",
+          "adhere"
+        ],
+        "Say": "{subject} est membre notamment de {value}",
+        "SayYes": "Oui, {subject} est membre {objectof}",
+        "SayNo": "Non, {subject} n'est pas membre {objectof}",
+        "Bare": "{label} est membre notamment de {value}",
+        "BareYes": "Oui, {label} est membre {objectof}",
+        "BareNo": "Non, {label} n'est pas membre {objectof}"
+      },
+      {
+        "Property": "P2046",
+        "Subject": [
+          "country",
+          "ocean"
+        ],
+        "Asks": [
+          "what",
+          "howmany"
+        ],
+        "Unit": "km²",
+        "Cues": [
+          "superficie",
+          "surface",
+          "aire",
+          "taille",
+          "fait",
+          "mesure"
+        ],
+        "Say": "La superficie {of} est de {measure} km²",
+        "Bare": "{label} : {measure} km²"
+      },
+      {
+        "Property": "P2043",
+        "Subject": [
+          "river"
+        ],
+        "Asks": [
+          "what",
+          "howmany"
+        ],
+        "Unit": "km",
+        "Cues": [
+          "longueur",
+          "long",
+          "mesure",
+          "fait"
+        ],
+        "Say": "{label} mesure {measure} km",
+        "Bare": "{label} : {measure} km"
+      },
+      {
+        "Property": "P2044",
+        "Subject": [
+          "mountain"
+        ],
+        "Asks": [
+          "what",
+          "howmany"
+        ],
+        "Unit": "m",
+        "Cues": [
+          "altitude",
+          "haut",
+          "hauteur",
+          "culmine",
+          "mesure",
+          "fait"
+        ],
+        "Say": "{label} culmine à {measure} m",
+        "Bare": "{label} : {measure} m"
+      },
+      {
+        "Property": "P2120",
+        "Subject": [
+          "planet"
+        ],
+        "Asks": [
+          "what",
+          "howmany"
+        ],
+        "Unit": "km",
+        "Cues": [
+          "rayon"
+        ],
+        "Say": "Le rayon de {label} est de {measure} km",
+        "Bare": "{label} : rayon de {measure} km"
       },
       {"Property": "Age", "Subject": ["person"], "Asks": ["age"], "Cues": ["mort", "morte", "decede", "decedee", "meurt", "mourut", "quand il est mort", "quand elle est morte", "lorsqu il est mort", "lorsqu elle est morte", "quand il mourut", "quand elle mourut", "a", "avait", "a t il", "a t elle", "est", "etait"], "Say": "{label} est mort{e} à {age} ans", "SayAlive": "{label} a {age} ans"},
       {

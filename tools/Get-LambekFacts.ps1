@@ -1,14 +1,16 @@
 #Requires -Version 7.4
 <#
 .SYNOPSIS
-    Reads in Wikidata what Lambek knows of the world (step 4.7 of the roadmap): countries, cities, people, books,
-    films and paintings, with their names in French and English and the facts of tools/facts.json, into
+    Reads in Wikidata what Lambek knows of the world: countries, cities, people, books, films, paintings, albums,
+    video games, rivers, mountains, oceans and planets, with their names in French and English and the facts of
+    tools/facts.json, into
     engine/Lambek/Data/Knowledge/wikidata.facts.gz.
 .DESCRIPTION
     Every kind of tools/facts.json is asked to the SPARQL endpoint written there (QLever, which answers large questions
     on all of Wikidata): the things of that kind, their labels, other names and descriptions in French and English, and
     the values of each property with their rank. Only the values Wikidata prefers are kept (a deprecated value never);
-    a date keeps its precision, so that a year is never said as a day; a population keeps the year it was counted.
+    a date keeps its precision, so that a year is never said as a day; a population keeps the year it was counted; a
+    measure (a length, a height, an area) is kept in the unit the manifest gives, converted from the units it lists.
     The things the facts point at (a language, a currency, a place of birth, an author) are written too, with their
     names. The file is plain text (gzip), one line a thing: K the kinds of a thing and how many Wikipedias have a page
     on it, L a label, A another name, D a description, F a fact. Its first line names the endpoint and the day.
@@ -196,6 +198,13 @@ public sealed class LambekWorld
     // property keeps (keep: "latest" the latest count, "earliest" the first release). Counted by property
     public Dictionary<string, int> Facts(string path, string shape, Dictionary<string, string> keep)
     {
+        return Facts(path, shape, keep, new Dictionary<string, decimal>(StringComparer.Ordinal));
+    }
+
+    // (a measure is kept in the unit the manifest gives: units holds "property|unit" and what one of that unit is
+    // worth in it; a measure in another unit is not kept)
+    public Dictionary<string, int> Facts(string path, string shape, Dictionary<string, string> keep, Dictionary<string, decimal> units)
+    {
         Dictionary<string, List<Value>> found = new Dictionary<string, List<Value>>(StringComparer.Ordinal);
         List<string> order = new List<string>();
         foreach (Dictionary<string, string> row in Rows(path))
@@ -215,6 +224,16 @@ public sealed class LambekWorld
                 System.Text.RegularExpressions.Match m = System.Text.RegularExpressions.Regex.Match(text ?? "", @"^([+-]?\d+)-(\d\d)-(\d\d)");
                 if (m.Success) { value = long.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture) + "-" + m.Groups[2].Value + "-" + m.Groups[3].Value; }
                 extra = Get(row, "precision") ?? "";
+            }
+            else if (shape == "measure")
+            {
+                decimal number;
+                decimal factor;
+                string unit = Item(Get(row, "unit"));
+                if (unit != null && units.TryGetValue(property + "|" + unit, out factor) && decimal.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out number))
+                {
+                    value = Math.Round(number * factor, 1).ToString(CultureInfo.InvariantCulture);
+                }
             }
             else if (shape == "quantity")
             {
@@ -302,6 +321,26 @@ $filter = '(' + (@($manifest.Languages | ForEach-Object { "LANG(?name) = `"$_`""
 $world = [LambekWorld]::new([string[]] @($manifest.Languages))
 $keep = [System.Collections.Generic.Dictionary[string, string]]::new()
 foreach ($property in $manifest.Properties.PSObject.Properties) { if ($property.Value.PSObject.Properties['Keep']) { $keep[$property.Name] = $property.Value.Keep } }
+# A measure in the unit of the manifest: for each unit Wikidata may give, what it is worth in it ("km": 1 for a length
+# in km, "mile": 1.609344)
+$units = [System.Collections.Generic.Dictionary[string, decimal]]::new()
+foreach ($property in $manifest.Properties.PSObject.Properties) {
+    if (-not $property.Value.PSObject.Properties['Units']) { continue }
+    foreach ($unit in $property.Value.Units.PSObject.Properties) { $units["$($property.Name)|$($unit.Name)"] = [decimal] $unit.Value }
+}
+# (a value kept only when it is itself what the manifest asks: an actor of a film only when known enough, Where)
+function Get-LambekFactWhere {
+    param([string] $Property)
+    if ($manifest.Properties.$Property.PSObject.Properties['Where']) { return " $($manifest.Properties.$Property.Where)" }
+    return ''
+}
+# (a fact that is true today only, Current: a statement with an end is left out, the United Kingdom is no longer a
+# member of the European Union)
+function Get-LambekFactNow {
+    param([string] $Property)
+    if ($manifest.Properties.$Property.PSObject.Properties['Current'] -and $manifest.Properties.$Property.Current) { return ' FILTER NOT EXISTS { ?st pq:P582 ?ended }' }
+    return ''
+}
 
 foreach ($kind in @($manifest.Kinds)) {
     $members = "{ SELECT DISTINCT ?e ?links WHERE { $($kind.Pattern) } }"
@@ -311,14 +350,18 @@ foreach ($kind in @($manifest.Kinds)) {
     $world.Names((Invoke-LambekSparql -Query "SELECT ?e ?what ?name WHERE { $members VALUES ?what { rdfs:label skos:altLabel schema:description } ?e ?what ?name . FILTER $filter }"), 'e')
 
     # The facts, one question for each shape of value: every property of the kind at once, with the rank of each value
-    foreach ($group in @($kind.Facts | Group-Object { $manifest.Properties.$_.Value })) {
-        $pairs = @($group.Group | ForEach-Object { "(`"$_`" p:$_ $(if ($group.Name -eq 'time') { 'psv' } else { 'ps' }):$_)" }) -join ' '
-        $query = switch ($group.Name) {
+    # (a property with a Where of its own, in a question of its own)
+    foreach ($group in @($kind.Facts | Group-Object { "$($manifest.Properties.$_.Value)|$(Get-LambekFactWhere -Property $_)|$(Get-LambekFactNow -Property $_)" })) {
+        $shape = "$($manifest.Properties.($group.Group[0]).Value)"
+        $where = (Get-LambekFactWhere -Property $group.Group[0]) + (Get-LambekFactNow -Property $group.Group[0])
+        $pairs = @($group.Group | ForEach-Object { "(`"$_`" p:$_ $(if ($shape -in 'time', 'measure') { 'psv' } else { 'ps' }):$_)" }) -join ' '
+        $query = switch ($shape) {
             'time' { "SELECT ?e ?property ?v ?precision ?rank WHERE { $members VALUES (?property ?claim ?statement) { $pairs } ?e ?claim ?st . ?st ?statement ?node ; wikibase:rank ?rank . ?node wikibase:timeValue ?v ; wikibase:timePrecision ?precision . }" }
             'quantity' { "SELECT ?e ?property ?v ?time ?rank WHERE { $members VALUES (?property ?claim ?statement) { $pairs } ?e ?claim ?st . ?st ?statement ?v ; wikibase:rank ?rank . OPTIONAL { ?st pq:P585 ?time } }" }
-            default { "SELECT ?e ?property ?v ?rank WHERE { $members VALUES (?property ?claim ?statement) { $pairs } ?e ?claim ?st . ?st ?statement ?v ; wikibase:rank ?rank . }" }
+            'measure' { "SELECT ?e ?property ?v ?unit ?rank WHERE { $members VALUES (?property ?claim ?statement) { $pairs } ?e ?claim ?st . ?st ?statement ?node ; wikibase:rank ?rank . ?node wikibase:quantityAmount ?v ; wikibase:quantityUnit ?unit . }" }
+            default { "SELECT ?e ?property ?v ?rank WHERE { $members VALUES (?property ?claim ?statement) { $pairs } ?e ?claim ?st . ?st ?statement ?v ; wikibase:rank ?rank .$where }" }
         }
-        $counts = $world.Facts((Invoke-LambekSparql -Query $query), $group.Name, $keep)
+        $counts = $world.Facts((Invoke-LambekSparql -Query $query), $shape, $keep, $units)
         foreach ($property in @($group.Group)) {
             $count = 0
             if ($counts.ContainsKey($property)) { $count = $counts[$property] }
@@ -329,7 +372,7 @@ foreach ($kind in @($manifest.Kinds)) {
     # The names of the things these facts point at (a language, a place of birth, an author), a question for each
     # property: the values of the best rank are the direct ones (wdt:)
     foreach ($property in @($kind.Facts | Where-Object { $manifest.Properties.$_.Value -eq 'item' })) {
-        $world.Names((Invoke-LambekSparql -Query "SELECT ?v ?name WHERE { { SELECT DISTINCT ?v WHERE { $members ?e wdt:$property ?v . } } ?v rdfs:label ?name . FILTER $filter }"), 'v')
+        $world.Names((Invoke-LambekSparql -Query "SELECT ?v ?name WHERE { { SELECT DISTINCT ?v WHERE { $members ?e wdt:$property ?v .$(Get-LambekFactWhere -Property $property) } } ?v rdfs:label ?name . FILTER $filter }"), 'v')
     }
 }
 

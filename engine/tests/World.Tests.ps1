@@ -24,6 +24,13 @@ BeforeAll {
         "F`tQ90`tP1082`t2100000`t2023", "F`tQ37776`tP17`tQ142`t", "F`tQ37776`tP1082`t120000`t2023"
         "K`tQ183`tcountry`t300", "L`tQ183`tfr`tAllemagne", "L`tQ183`ten`tGermany", "F`tQ183`tP36`tQ64`t", "F`tQ183`tP30`tQ46`t", "F`tQ183`tP1082`t84000000`t2024"
         "K`tQ64`tcity`t250", "L`tQ64`tfr`tBerlin", "L`tQ64`ten`tBerlin", "F`tQ64`tP17`tQ183`t", "F`tQ64`tP1082`t3700000`t2025"
+        "K`tQ1469`triver`t108", "L`tQ1469`tfr`tLoire", "L`tQ1469`ten`tLoire", "F`tQ1469`tP17`tQ142`t", "F`tQ1469`tP2043`t1006.0`t"
+        "K`tQ584`triver`t190", "L`tQ584`tfr`tRhin", "L`tQ584`ten`tRhine", "F`tQ584`tP17`tQ142`t", "F`tQ584`tP17`tQ183`t", "F`tQ584`tP2043`t1232.7`t"
+        "K`tQ583`tmountain`t127", "L`tQ583`tfr`tmont Blanc", "L`tQ583`ten`tMont Blanc", "F`tQ583`tP17`tQ142`t", "F`tQ583`tP2044`t4805.6`t"
+        "K`tQ1471`triver`t100", "L`tQ1471`tfr`tSeine", "L`tQ1471`ten`tSeine", "F`tQ1471`tP17`tQ142`t", "F`tQ1471`tP2043`t777.0`t"
+        "K`tQ3375`tmountain`t80", "L`tQ3375`tfr`tZugspitze", "L`tQ3375`ten`tZugspitze", "F`tQ3375`tP17`tQ183`t", "F`tQ3375`tP2044`t2962`t"
+        "K`tQ520`tmountain`t90", "L`tQ520`tfr`tOlympus Mons", "L`tQ520`ten`tOlympus Mons", "F`tQ520`tP2044`t21229`t"
+        "K`tQ458`tvalue`t0", "L`tQ458`tfr`tUnion européenne", "L`tQ458`ten`tEuropean Union", "F`tQ142`tP463`tQ458`t", "F`tQ183`tP463`tQ458`t", "F`tQ142`tP2046`t643801`t"
         "K`tQ1055`tcity`t200", "L`tQ1055`tfr`tHambourg", "L`tQ1055`ten`tHamburg", "F`tQ1055`tP17`tQ183`t", "F`tQ1055`tP1082`t1900000`t2024"
         "K`tQ3052772`tperson`t200", "L`tQ3052772`tfr`tEmmanuel Macron", "L`tQ3052772`ten`tEmmanuel Macron", "F`tQ3052772`tP569`t1977-12-21`t11"
         "K`tQ155`tcountry`t250", "L`tQ155`tfr`tBrésil", "L`tQ155`ten`tBrazil", "F`tQ155`tP37`tQ5146`t", "F`tQ155`tP36`tQ2844`t"
@@ -120,6 +127,22 @@ Describe 'What Lambek knows of the world' {
         @{ Text = 'what is the most populous city in Germany?'; Said = 'The most populous city in Germany is Berlin, with 3,700,000 inhabitants in 2025, according to Wikidata.' }
     ) {
         Ask $Text | Should -Be $Said
+    }
+
+    It 'answers from the facts of the other kinds of things it read: <Text>' -ForEach @(
+        # (a river of France flows in France only: the Rhine flows in Germany too)
+        @{ Text = 'quel est le plus long fleuve de France ?'; Said = "Le cours d'eau le plus long de France est la Loire, avec 1$([char] 0x00A0)006 km, d'après Wikidata." }
+        # (a mountain of the world is on the Earth, in a country: Olympus Mons is on Mars)
+        @{ Text = 'what is the highest mountain in the world?'; Said = 'The highest mountain in the world is Mont Blanc, at 4,806 m, according to Wikidata.' }
+        @{ Text = "combien de pays sont membres de l'Union européenne ?"; Said = "2 pays sont membres de l'Union européenne, d'après Wikidata." }
+        @{ Text = "la France fait-elle partie de l'Union européenne ?"; Said = "Oui, la France est membre de l'Union européenne, d'après Wikidata." }
+        @{ Text = 'quelle est la superficie de la France ?'; Said = "La superficie de la France est de 643$([char] 0x00A0)801 km², d'après Wikidata." }
+    ) {
+        Ask $Text | Should -Be $Said
+    }
+
+    It 'counts only among things it has every one of' {
+        InModuleScope Lambek { Resolve-LambekFact -Text 'combien de livres a écrit Victor Hugo ?' } | Should -BeNullOrEmpty
     }
 
     It 'gives the age of a living person from the day it is' {

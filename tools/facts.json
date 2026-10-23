@@ -1,12 +1,12 @@
 {
-  "Description": "What Lambek knows of the world (step 4.7 of the roadmap): the facts of Wikidata it reads, written into engine/Lambek/Data/Knowledge/wikidata.facts.gz by tools/Get-LambekFacts.ps1. Each kind is the things of Wikidata that Pattern finds (?e), the best known of them first (by how many Wikipedias have a page on them); Facts are the properties read for that kind, with the rank of each value, so that only the values Wikidata prefers are kept. The labels, other names and descriptions are those in French and English, and the names Wikidata gives for every language at once (mul: Victor Hugo has no French label of his own). Wikidata is CC0: its facts may be copied without asking, Lambek still says where each one comes from.",
+  "Description": "What Lambek knows of the world: the facts of Wikidata it reads, written into engine/Lambek/Data/Knowledge/wikidata.facts.gz by tools/Get-LambekFacts.ps1. Each kind is the things of Wikidata that Pattern finds (?e), the best known of them first (by how many Wikipedias have a page on them); Facts are the properties read for that kind, with the rank of each value, so that only the values Wikidata prefers are kept. The labels, other names and descriptions are those in French and English, and the names Wikidata gives for every language at once (mul: Victor Hugo has no French label of his own). Wikidata is CC0: its facts may be copied without asking, Lambek still says where each one comes from. A measure (Value measure) is kept in the Unit given, converted from the Units listed (what one of each unit of Wikidata is worth in it); Where keeps a value only when it is itself known enough (the actors of a film), and asks for those values in a question of their own; Current keeps only what is true today (a statement with an end is left out).",
   "Endpoint": "https://qlever.dev/api/wikidata",
   "Languages": [ "fr", "en", "mul" ],
   "Kinds": [
     {
       "Kind": "country",
       "Pattern": "{ ?e wdt:P31 wd:Q3624078 } UNION { ?e wdt:P31 wd:Q6256 } FILTER NOT EXISTS { ?e wdt:P576 ?end } FILTER NOT EXISTS { ?e wdt:P31 wd:Q3024240 } ?e wikibase:sitelinks ?links .",
-      "Facts": [ "P36", "P37", "P38", "P1082", "P30" ]
+      "Facts": [ "P36", "P37", "P38", "P1082", "P30", "P2046", "P463" ]
     },
     {
       "Kind": "city",
@@ -21,17 +21,47 @@
     {
       "Kind": "book",
       "Pattern": "?e wdt:P31/wdt:P279* wd:Q7725634 ; wdt:P50 ?author ; wikibase:sitelinks ?links . FILTER(?links >= 12)",
-      "Facts": [ "P50", "P577" ]
+      "Facts": [ "P50", "P577", "P179" ]
     },
     {
       "Kind": "film",
       "Pattern": "?e wdt:P31/wdt:P279* wd:Q11424 ; wikibase:sitelinks ?links . FILTER(?links >= 20)",
-      "Facts": [ "P57", "P577" ]
+      "Facts": [ "P57", "P577", "P161", "P162", "P179" ]
     },
     {
       "Kind": "painting",
       "Pattern": "?e wdt:P31 wd:Q3305213 ; wdt:P170 ?painter ; wikibase:sitelinks ?links . FILTER(?links >= 10)",
       "Facts": [ "P170", "P571" ]
+    },
+    {
+      "Kind": "album",
+      "Pattern": "?e wdt:P31 wd:Q482994 ; wikibase:sitelinks ?links . FILTER(?links >= 10)",
+      "Facts": [ "P175", "P577" ]
+    },
+    {
+      "Kind": "videogame",
+      "Pattern": "?e wdt:P31 wd:Q7889 ; wikibase:sitelinks ?links . FILTER(?links >= 15)",
+      "Facts": [ "P577", "P179", "P178" ]
+    },
+    {
+      "Kind": "river",
+      "Pattern": "?e wdt:P31/wdt:P279* wd:Q4022 ; wikibase:sitelinks ?links . FILTER(?links >= 20)",
+      "Facts": [ "P2043", "P17" ]
+    },
+    {
+      "Kind": "mountain",
+      "Pattern": "?e wdt:P31/wdt:P279* wd:Q8502 ; wikibase:sitelinks ?links . FILTER(?links >= 20)",
+      "Facts": [ "P2044", "P17" ]
+    },
+    {
+      "Kind": "ocean",
+      "Pattern": "?e wdt:P31 wd:Q9430 ; wdt:P361 wd:Q715269 ; wikibase:sitelinks ?links .",
+      "Facts": [ "P2046" ]
+    },
+    {
+      "Kind": "planet",
+      "Pattern": "VALUES ?e { wd:Q308 wd:Q313 wd:Q2 wd:Q111 wd:Q319 wd:Q193 wd:Q324 wd:Q332 } ?e wikibase:sitelinks ?links .",
+      "Facts": [ "P2120" ]
     }
   ],
   "Properties": {
@@ -46,11 +76,21 @@
     "P38": { "Name": "currency", "Value": "item" },
     "P50": { "Name": "author", "Value": "item" },
     "P57": { "Name": "director", "Value": "item" },
+    "P161": { "Name": "cast member", "Value": "item", "Where": "?v wikibase:sitelinks ?vl . FILTER(?vl >= 15)" },
+    "P162": { "Name": "producer", "Value": "item" },
     "P170": { "Name": "creator", "Value": "item" },
+    "P175": { "Name": "performer", "Value": "item" },
+    "P178": { "Name": "developer", "Value": "item" },
+    "P179": { "Name": "part of the series", "Value": "item" },
+    "P463": { "Name": "member of", "Value": "item", "Current": true },
     "P569": { "Name": "date of birth", "Value": "time" },
     "P570": { "Name": "date of death", "Value": "time" },
     "P571": { "Name": "inception", "Value": "time" },
     "P577": { "Name": "publication date", "Value": "time", "Keep": "earliest" },
-    "P1082": { "Name": "population", "Value": "quantity", "Keep": "latest" }
+    "P1082": { "Name": "population", "Value": "quantity", "Keep": "latest" },
+    "P2043": { "Name": "length", "Value": "measure", "Unit": "km", "Units": { "Q828224": 1, "Q11573": 0.001, "Q253276": 1.609344, "Q3710": 0.0003048 } },
+    "P2044": { "Name": "elevation above sea level", "Value": "measure", "Unit": "m", "Units": { "Q11573": 1, "Q3710": 0.3048, "Q828224": 1000 } },
+    "P2046": { "Name": "area", "Value": "measure", "Unit": "km2", "Units": { "Q712226": 1, "Q232291": 2.589988110336, "Q25343": 0.000001, "Q35852": 0.01 } },
+    "P2120": { "Name": "radius", "Value": "measure", "Unit": "km", "Units": { "Q828224": 1, "Q11573": 0.001, "Q253276": 1.609344 } }
   }
 }

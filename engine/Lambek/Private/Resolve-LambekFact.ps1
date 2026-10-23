@@ -279,7 +279,8 @@ function Resolve-LambekFactReading {
                     if ($object) { $wanted = 'yesno' }
                     elseif (-not $wanted -or $wanted -eq 'yesno') { $wanted = 'what' }
                     if ($wanted -notin @($relation['Asks'])) { continue }
-                    $candidates.Add([pscustomobject]@{ Relation = $relation; Mention = $mention; Start = $start; Things = $things; Object = $object; Inverse = $inverse })
+                    $objectStart = $(if ($object) { $object.Start - $from } else { -1 })
+                    $candidates.Add([pscustomobject]@{ Relation = $relation; Mention = $mention; Start = $start; Things = $things; Object = $object; ObjectStart = $objectStart; Inverse = $inverse })
                 }
             }
         }
@@ -385,10 +386,19 @@ function Get-LambekFactReply {
             if ($named.Count -eq 0) { return $null }
             # Yes or no: is the thing asked about one of the values?
             if ($Candidate.Object) {
-                $yes = @($Candidate.Object.Things | Where-Object { $_.Id -in @($named | ForEach-Object Id) }).Count -gt 0
+                $asked = @($Candidate.Object.Things | Where-Object { $_.Id -in @($named | ForEach-Object Id) })
+                $yes = $asked.Count -gt 0
                 if (-not $yes) { $template = "$($relation['SayNo'])" }
                 if (-not $template) { return $null }
+                $fill.object = $(if ($yes) { $asked[0].Label($Language) } else { @($Candidate.Object.Things)[0].Label($Language) })
+                # (with the small words said before it: "membre de l'Union europeenne", "a member of the European Union")
+                $said = @()
+                if ($Candidate.PSObject.Properties['ObjectStart'] -and $Candidate.ObjectStart -gt 0) { $said = @($Words[([math]::Max(0, $Candidate.ObjectStart - 2))..($Candidate.ObjectStart - 1)]) }
+                $objectPlace = Get-LambekFactPlace -Label $fill.object -Language $Language -Facts $Facts -Before $said
+                $fill.objectof = $(if ($objectPlace) { $objectPlace.Of } else { $fill.object })
             }
+            # (many values: the best known of them, Limit: the actors of a film, what a country is a member of)
+            if ($relation.Contains('Limit') -and $named.Count -gt [int] $relation['Limit']) { $named = @($named | Sort-Object { - $_.Links }, Id | Select-Object -First ([int] $relation['Limit'])) }
             $labels = @($named | ForEach-Object { $_.Label($Language) })
             $fill.value = Join-LambekFactList -Items $labels -And $Facts['And']
             $fill.bare = $fill.value
@@ -407,6 +417,13 @@ function Get-LambekFactReply {
                 }
             }
             $core = "wikidata($($thing.Id), $property, $(@($named | ForEach-Object Id) -join ' '))"
+        }
+        elseif ($relation.Contains('Unit')) {
+            # A measure (an area, a length, a height): the largest of those given, as Wikidata gives several (the radius
+            # of a planet at its equator and at its poles)
+            $numbers = @($values | ForEach-Object { [decimal] $_.Value } | Sort-Object -Descending)
+            $fill.measure = Format-LambekFactNumber -Number $numbers[0] -Facts $Facts
+            $core = "wikidata($($thing.Id), $property, $($numbers[0]))"
         }
         elseif ($property -eq 'P1082') {
             $number = [decimal] $values[0].Value
@@ -430,8 +447,11 @@ function Get-LambekFactReply {
         if ($Candidate.Start -gt 0) { $before = @($Words[([math]::Max(0, $Candidate.Start - 2))..($Candidate.Start - 1)]) }
         $place = Get-LambekFactPlace -Label $label -Language $Language -Facts $Facts -Before $before
         if (-not $place) {
-            if (-not $relation.Contains('Bare')) { return $null }
-            $template = "$($relation['Bare'])"
+            # (in a yes or no, the bare sentence of that answer: BareYes, BareNo)
+            $bare = 'Bare'
+            if ($Candidate.Object) { $bare = $(if ($template -ceq "$($relation['SayNo'])") { 'BareNo' } else { 'BareYes' }) }
+            if (-not $relation.Contains($bare)) { return $null }
+            $template = "$($relation[$bare])"
         }
         else { $fill.of = $place.Of; $fill.in = $place.In; $fill.subject = $place.The }
     }

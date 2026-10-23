@@ -4079,7 +4079,7 @@
     },
     {
       "Id": "J001",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4095,7 +4095,7 @@
     },
     {
       "Id": "J002",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4111,7 +4111,7 @@
     },
     {
       "Id": "J003",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4127,7 +4127,7 @@
     },
     {
       "Id": "J004",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4143,7 +4143,7 @@
     },
     {
       "Id": "J005",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4159,7 +4159,7 @@
     },
     {
       "Id": "J006",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4175,7 +4175,7 @@
     },
     {
       "Id": "J007",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4191,7 +4191,7 @@
     },
     {
       "Id": "J008",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4207,7 +4207,7 @@
     },
     {
       "Id": "J009",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4223,7 +4223,7 @@
     },
     {
       "Id": "J010",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4236,7 +4236,7 @@
     },
     {
       "Id": "J011",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4249,7 +4249,7 @@
     },
     {
       "Id": "J012",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4262,7 +4262,7 @@
     },
     {
       "Id": "J013",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4278,7 +4278,7 @@
     },
     {
       "Id": "J014",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4294,7 +4294,7 @@
     },
     {
       "Id": "J015",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4310,7 +4310,7 @@
     },
     {
       "Id": "J016",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4326,7 +4326,7 @@
     },
     {
       "Id": "J017",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4342,7 +4342,7 @@
     },
     {
       "Id": "J018",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4358,7 +4358,7 @@
     },
     {
       "Id": "J019",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4374,7 +4374,7 @@
     },
     {
       "Id": "J020",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4390,7 +4390,7 @@
     },
     {
       "Id": "J021",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4406,7 +4406,7 @@
     },
     {
       "Id": "J022",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4419,7 +4419,7 @@
     },
     {
       "Id": "J023",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4432,7 +4432,7 @@
     },
     {
       "Id": "J024",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4448,7 +4448,7 @@
     },
     {
       "Id": "J025",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4464,7 +4464,7 @@
     },
     {
       "Id": "J026",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4480,7 +4480,7 @@
     },
     {
       "Id": "J027",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "knowledge",
@@ -4496,7 +4496,7 @@
     },
     {
       "Id": "J028",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4512,7 +4512,7 @@
     },
     {
       "Id": "J029",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4528,7 +4528,7 @@
     },
     {
       "Id": "J030",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "knowledge",
@@ -4539,6 +4539,480 @@
         "Reply": "answer",
         "Contains": [
           "steventon"
+        ]
+      }
+    },
+    {
+      "Id": "K001",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel est le plus long fleuve d'Espagne ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "ebre|èbre"
+        ]
+      }
+    },
+    {
+      "Id": "K002",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la plus haute montagne de France ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "blanc"
+        ]
+      }
+    },
+    {
+      "Id": "K003",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la plus petite planète du système solaire ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "mercure"
+        ]
+      }
+    },
+    {
+      "Id": "K004",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "combien de pays sont membres de l'Organisation des Nations unies ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "193"
+        ]
+      }
+    },
+    {
+      "Id": "K005",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel est le plus grand pays d'Afrique ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "algerie|algérie"
+        ]
+      }
+    },
+    {
+      "Id": "K006",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "Minecraft est-il sorti avant Fortnite ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "oui"
+        ]
+      }
+    },
+    {
+      "Id": "K007",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "qui joue dans Pulp Fiction ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "travolta|thurman|jackson|willis"
+        ]
+      }
+    },
+    {
+      "Id": "K008",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la superficie du Japon ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "377"
+        ]
+      }
+    },
+    {
+      "Id": "K009",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "l'Allemagne est-elle membre de l'Union européenne ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "oui"
+        ]
+      }
+    },
+    {
+      "Id": "K010",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "la Suisse fait-elle partie de l'Union européenne ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "non"
+        ]
+      }
+    },
+    {
+      "Id": "K011",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quand est sorti l'album Nevermind ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1991"
+        ]
+      }
+    },
+    {
+      "Id": "K012",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "qui a développé Fortnite ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "epic"
+        ]
+      }
+    },
+    {
+      "Id": "K013",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel est le plus long fleuve d'Afrique ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "nil"
+        ]
+      }
+    },
+    {
+      "Id": "K014",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "what is the smallest country in the world?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "vatican"
+        ]
+      }
+    },
+    {
+      "Id": "K015",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "what is the largest country in South America?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "brazil"
+        ]
+      }
+    },
+    {
+      "Id": "K016",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "how many countries are in NATO?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "32|thirty-two"
+        ]
+      }
+    },
+    {
+      "Id": "K017",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "how tall is Mount Everest?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "8,849|8849|8,848|8848"
+        ]
+      }
+    },
+    {
+      "Id": "K018",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "who starred in The Godfather?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "pacino|brando"
+        ]
+      }
+    },
+    {
+      "Id": "K019",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "is Switzerland a member of the European Union?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "no"
+        ]
+      }
+    },
+    {
+      "Id": "K020",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "who developed The Legend of Zelda: Breath of the Wild?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "nintendo"
+        ]
+      }
+    },
+    {
+      "Id": "K021",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "when was the album Nevermind released?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1991"
+        ]
+      }
+    },
+    {
+      "Id": "K022",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "which is the longest river in Italy?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "po"
+        ]
+      }
+    },
+    {
+      "Id": "K023",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "how many planets are in the solar system?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "8|eight"
+        ]
+      }
+    },
+    {
+      "Id": "K024",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "what is the area of Canada?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "9,984,670|9984670"
+        ]
+      }
+    },
+    {
+      "Id": "K025",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel est le plus vieux jeu de la série Zelda ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "K026",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "combien d'albums a sortis Michael Jackson ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "K027",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la plus haute montagne d'Italie ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "blanc"
+        ]
+      }
+    },
+    {
+      "Id": "K028",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "Nevermind est-il sorti avant Thriller ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "non"
+        ]
+      }
+    },
+    {
+      "Id": "K029",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la plus grande planète ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "jupiter"
+        ]
+      }
+    },
+    {
+      "Id": "K030",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "which is the biggest ocean?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "pacific"
         ]
       }
     }

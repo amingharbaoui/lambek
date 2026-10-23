@@ -26,6 +26,8 @@ function Resolve-LambekFactQuery {
         $words = @(Get-LambekFactQuestionWord -Words $all -Facts $facts)
         if ($words.Count -eq 0) { continue }
 
+        $counted = Resolve-LambekFactCount -Words $words -Language $language -Facts $facts
+        if ($counted) { return $counted }
         $compared = Resolve-LambekFactCompare -Words $words -Asked $Asked -Language $language -Facts $facts
         if ($compared) { return $compared }
 
@@ -221,7 +223,7 @@ function Get-LambekFactMost {
             $mentions = @($base.Find(($Words -join ' ')) | Where-Object Start -EQ $j | Sort-Object Length -Descending)
             foreach ($mention in $mentions) {
                 $places = @($mention.Things | Where-Object { $_.Labels.Count -gt 0 })
-                $places = @($places | Where-Object { $place = $_; @($paths | Where-Object { $base.Having("$(@($_)[-1])", $place.Id).Count -gt 0 }).Count -gt 0 })
+                $places = @($places | Where-Object { $place = $_; @($paths | Where-Object { $base.Having("$(@($_)[-1])".TrimEnd('!'), $place.Id).Count -gt 0 }).Count -gt 0 })
                 if ($places.Count -eq 0) { break }
                 if ($places.Count -gt 1 -and $places[0].Links -lt 2 * $places[1].Links) { return $null }
                 $scope = $places[0]
@@ -234,15 +236,27 @@ function Get-LambekFactMost {
 
     # Every thing of the kind in that place, with the value of the fact
     $property = "$($Entry['Property'])"
+    $template = "$($Entry['Say'][$Kind])"
+    $counted = $template.Contains('{year}')
     $kept = [System.Collections.Generic.List[object]]::new()
+    # (in the world: on the Earth, a mountain or a river in a country, Query.WorldNeeds: Olympus Mons is on Mars)
+    $needs = $(if (-not $scope -and $query.Contains('WorldNeeds') -and $query['WorldNeeds'].Contains($Kind)) { "$($query['WorldNeeds'][$Kind])" })
     foreach ($thing in $base.OfKind($Kind)) {
         if ($scope -and -not (Test-LambekFactWithin -Thing $thing -Scope $scope -Paths @($query['Within'][$Kind]))) { continue }
+        if ($needs -and @($thing.Values($needs)).Count -eq 0) { continue }
         $values = @($thing.Values($property))
-        # (one count, of a known year: a count without one is not kept)
-        if ($values.Count -ne 1 -or "$($values[0].Extra)" -notmatch '^\d{4}$') { continue }
-        $number = 0.0
-        if (-not [double]::TryParse($values[0].Value, [Globalization.NumberStyles]::Float, [cultureinfo]::InvariantCulture, [ref] $number)) { continue }
-        $kept.Add([pscustomobject]@{ Thing = $thing; Number = $number; Year = $values[0].Extra })
+        if ($values.Count -eq 0) { continue }
+        # (a count: one only, of a known year, a count without one is not kept; a measure: the largest of those given,
+        # as for the radius of a planet at its equator and at its poles)
+        if ($counted) {
+            if ($values.Count -ne 1 -or "$($values[0].Extra)" -notmatch '^\d{4}$') { continue }
+        }
+        $numbers = @(foreach ($value in $values) {
+                $number = 0.0
+                if ([double]::TryParse($value.Value, [Globalization.NumberStyles]::Float, [cultureinfo]::InvariantCulture, [ref] $number)) { $number }
+            })
+        if ($numbers.Count -eq 0) { continue }
+        $kept.Add([pscustomobject]@{ Thing = $thing; Number = ($numbers | Measure-Object -Maximum).Maximum; Year = $values[0].Extra })
     }
     if ($kept.Count -lt 2) { return $null }
     $sorted = @($kept | Sort-Object Number -Descending:($Entry['Order'] -eq 'max'))
@@ -250,7 +264,7 @@ function Get-LambekFactMost {
     if ($sorted[0].Number -eq $sorted[1].Number) { return $null }
     $best = $sorted[0]
 
-    $digits = ([decimal] $best.Number).ToString('#,0', [cultureinfo]::InvariantCulture) -replace ',', $Facts['Number']['Group']
+    $digits = Format-LambekFactNumber -Number ([decimal] $best.Number) -Facts $Facts
     if ($scope) {
         # (with the small words the user said before it: "de France", "du Japon", "d'Afrique", "in Brazil")
         $label = $scope.Label($Language)
@@ -258,14 +272,20 @@ function Get-LambekFactMost {
         if ($said -eq 'd') { $where = "d'$label" }
         else { $where = "$said $label" }
     }
-    else { $where = "$($query['WorldSay'])" }
-    $template = "$($Entry['Say'][$Kind])"
-    if (-not $template -or -not $best.Year) { return $null }
-    # (a country with its article in French: "le Nigeria", "la Russie"; a city without: "Paris")
+    else {
+        $where = "$($query['WorldSay'])"
+        if ($query.Contains('WorldSays') -and $query['WorldSays'].Contains($Kind)) { $where = "$($query['WorldSays'][$Kind])" }
+    }
+    if (-not $template -or ($counted -and -not $best.Year)) { return $null }
+    # (with its article, for the kinds of Query.Named: "le Nigeria", "la Loire", "the Nile"; a city or a planet
+    # without: "Paris", "Jupiter")
     $value = $best.Thing.Label($Language)
-    if ($Kind -eq 'country' -and $Facts.Contains('Places') -and $Facts['Places']) {
-        $article = Get-LambekFactPlace -Label $value -Language $Language -Facts $Facts
-        if ($article) { $value = $article.The }
+    if ($Kind -in @($query['Named'])) {
+        if ($Facts.Contains('Places') -and $Facts['Places']) {
+            $article = Get-LambekFactPlace -Label $value -Language $Language -Facts $Facts
+            if ($article) { $value = $article.The }
+        }
+        elseif ($query.Contains('Articles') -and $query['Articles'].Contains($Kind)) { $value = "$($query['Articles'][$Kind]) $value" }
     }
     $fill = @{ scope = $where; value = $value; digits = $digits; year = $best.Year }
     $sentence = [regex]::Replace($template, '\{(\w+)\}', { param($m) "$($fill[$m.Groups[1].Value])" })
@@ -282,7 +302,13 @@ function Test-LambekFactWithin {
     $base = Get-LambekFactBase
     foreach ($path in $Paths) {
         $here = @($Thing)
-        foreach ($property in @($path)) {
+        foreach ($step in @($path)) {
+            # ("P17!": every value is that place, a river of France flows in France only)
+            $property = "$step".TrimEnd('!')
+            if ("$step".EndsWith('!')) {
+                $all = @($here | ForEach-Object { @($_.Values($property)) })
+                if ($all.Count -eq 0 -or @($all | Where-Object { $_.Value -ne $Scope.Id }).Count -gt 0) { $here = @(); break }
+            }
             $next = [System.Collections.Generic.List[object]]::new()
             foreach ($item in $here) {
                 foreach ($fact in @($item.Values("$property"))) {
@@ -296,6 +322,62 @@ function Test-LambekFactWithin {
         if (@($here | Where-Object { $_.Id -eq $Scope.Id }).Count -gt 0) { return $true }
     }
     return $false
+}
+
+function Resolve-LambekFactCount {
+    # "combien de pays sont membres de l'Union europeenne ?", "how many countries are in the European Union?": counted
+    # only among things Lambek has every one of (every country of the world), as Query.Counts says; never among those it
+    # has only the best known of (the books of an author)
+    param([string[]] $Words, [string] $Language, [hashtable] $Facts)
+
+    $base = Get-LambekFactBase
+    $query = $Facts['Query']
+    if (-not $query.Contains('Counts')) { return $null }
+    $fillers = [System.Collections.Generic.HashSet[string]]::new([string[]] @($Facts['Fillers']), [StringComparer]::Ordinal)
+    # (the question word first, after small words only: "actuellement, combien de pays...")
+    $first = 0
+    while ($first -lt $Words.Count -and $fillers.Contains($Words[$first])) { $first++ }
+    $howmany = @(Find-LambekFactSpan -Words $Words -Phrases @($Facts['Questions']['howmany']) -From $first -Before ($first + 1))
+    if ($howmany.Count -eq 0) { return $null }
+    $at = $first + $howmany[0].Length
+    foreach ($entry in @($query['Counts'])) {
+        $kind = "$($entry['Kind'])"
+        $property = "$($entry['Property'])"
+        $noun = @(Find-LambekFactSpan -Words $Words -Phrases @($Facts['Kinds'][$kind]) -From $at -Before ($at + 1))
+        if ($noun.Count -eq 0) { continue }
+        $marks = [bool[]]::new($Words.Count)
+        for ($k = 0; $k -lt $at + $noun[0].Length; $k++) { $marks[$k] = $true }
+        foreach ($cue in @(Find-LambekFactSpan -Words $Words -Phrases @($entry['Words']) -From ($at + $noun[0].Length))) {
+            for ($k = $cue.Start; $k -lt $cue.Start + $cue.Length; $k++) { $marks[$k] = $true }
+        }
+        # The thing they belong to: a name no word read is part of, that things of that kind point at
+        $found = $null
+        foreach ($mention in @($base.Find(($Words -join ' ')) | Sort-Object { - $_.Length }, Start)) {
+            $free = $true
+            for ($k = $mention.Start; $k -lt $mention.Start + $mention.Length; $k++) { if ($marks[$k]) { $free = $false; break } }
+            if (-not $free) { continue }
+            $groups = @($mention.Things | Where-Object { $group = $_; @($base.Having($property, $group.Id) | Where-Object { $_.Is($kind) }).Count -gt 0 })
+            if ($groups.Count -eq 0) { continue }
+            if ($groups.Count -gt 1 -and $groups[0].Links -lt 2 * $groups[1].Links) { return $null }
+            $found = [pscustomobject]@{ Mention = $mention; Thing = $groups[0] }
+            for ($k = $mention.Start; $k -lt $mention.Start + $mention.Length; $k++) { $marks[$k] = $true }
+            break
+        }
+        if (-not $found) { continue }
+        $left = @(for ($k = 0; $k -lt $Words.Count; $k++) { if (-not $marks[$k] -and -not $fillers.Contains($Words[$k])) { $k } })
+        if ($left.Count -gt 0) { continue }
+
+        $members = @($base.Having($property, $found.Thing.Id) | Where-Object { $_.Is($kind) })
+        $label = $found.Thing.Label($Language)
+        $before = @($(if ($found.Mention.Start -gt 0) { $Words[([math]::Max(0, $found.Mention.Start - 2))..($found.Mention.Start - 1)] }))
+        $place = Get-LambekFactPlace -Label $label -Language $Language -Facts $Facts -Before $before
+        if (-not $place) { return $null }
+        $sentence = "$($entry['Say'])" -replace '\{count\}', "$($members.Count)" -replace '\{of\}', $place.Of
+        $core = "wikidata(count, $kind, $property, $($found.Thing.Id), $($members.Count))"
+        $fact = Add-LambekFactRead -Text ($sentence + $Facts['According'] + '.') -Language $Language -Core $core -Thing $found.Thing.Id -Property $property -Bare "$sentence."
+        return [pscustomobject]@{ Language = $Language; Reply = ($sentence + $Facts['According'] + '.'); Fact = $fact }
+    }
+    return $null
 }
 
 function Resolve-LambekFactCompare {
@@ -420,6 +502,18 @@ function Compare-LambekFactDate {
         if ($parts[0][$k] -gt $parts[1][$k]) { return 1 }
     }
     return 0
+}
+
+function Format-LambekFactNumber {
+    # A number as the language writes it, in groups ("2 100 000", "2,100,000"); below 10 with its decimals ("0,49")
+    param([decimal] $Number, [hashtable] $Facts)
+
+    $group = "$($Facts['Number']['Group'])"
+    $point = $(if ($group -eq ',') { '.' } else { ',' })
+    if ([math]::Abs($Number) -lt 10 -and $Number -ne [math]::Round($Number)) {
+        return ([math]::Round($Number, 2)).ToString('0.##', [cultureinfo]::InvariantCulture).Replace('.', $point)
+    }
+    return ([math]::Round($Number)).ToString('#,0', [cultureinfo]::InvariantCulture) -replace ',', $group
 }
 
 function Add-LambekFactRead {
