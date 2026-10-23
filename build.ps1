@@ -206,6 +206,13 @@ if ($Task -eq 'Benchmark') {
             Write-Warning 'The test split of bench/acts.json is not the frozen one (TestHash): its figures cannot be compared.'
         }
     }
+
+    # Sentences written less well (a typo, no accents, capitals, politeness, a filler word, no punctuation): the same
+    # understanding as the clean sentence as often as can be, and never an action noise made (tools/Measure-LambekRobustness.ps1)
+    Write-Host ''
+    Write-Host 'Robustness (calibration sentences spoiled)'
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekRobustness.ps1')
+    if ($LASTEXITCODE -ne 0) { throw 'A spoiled sentence made an action the clean one did not make.' }
 }
 
 # Fingerprint: what Lambek answers to every request of the benchmark, one line each, and the hash of them all.
