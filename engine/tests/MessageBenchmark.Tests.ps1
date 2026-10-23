@@ -32,9 +32,9 @@ Describe 'What a reply is' {
     }
 
     It 'reads "I did not understand" as not understood, in every register' {
-        Get-TestKind "Je n'ai pas compris cette phrase. Je sais retenir ce que vous me dites et raisonner dessus, calculer, définir un mot, et m'occuper de : fichiers et code." | Should -Be 'NotUnderstood'
-        Get-TestKind "Je n'ai pas compris cette phrase. Je sais retenir ce que tu me dis et raisonner dessus, calculer, définir un mot, et m'occuper de : fichiers et code." | Should -Be 'NotUnderstood'
-        Get-TestKind 'I did not understand that. I can remember what you tell me and reason about it, calculate, define a word, and take care of files and code.' | Should -Be 'NotUnderstood'
+        Get-TestKind "Je n'ai pas compris cette phrase. Je sais retenir ce que vous me dites et raisonner dessus, calculer, définir un mot, répondre à des questions de culture générale, et m'occuper de : fichiers et code." | Should -Be 'NotUnderstood'
+        Get-TestKind "Je n'ai pas compris cette phrase. Je sais retenir ce que tu me dis et raisonner dessus, calculer, définir un mot, répondre à des questions de culture générale, et m'occuper de : fichiers et code." | Should -Be 'NotUnderstood'
+        Get-TestKind 'I did not understand that. I can remember what you tell me and reason about it, calculate, define a word, answer general knowledge questions, and take care of files and code.' | Should -Be 'NotUnderstood'
     }
 
     It 'reads an honest "I do not know" as abstained' {

@@ -37,6 +37,8 @@ function ConvertTo-LambekAnswer {
         # Lines said as they came (a server's reply), never changed by the rules of the language
         $raw = [System.Collections.Generic.HashSet[int]]::new()
         if (-not $Register) { $Register = Get-LambekRegister -Text "$($Plan.Original)" -Language $language }
+        # (nothing said in this message: the one the user last said in the chat)
+        if (-not $Register -and $script:ChatRegister -and $language -eq 'fr') { $Register = $script:ChatRegister }
         if (-not $Register) { $Register = 'vous' }
         # What the memory gave: "like on 12 March: ..." or that nothing was remembered
         if (-not $Simulation -and -not $Execution -and $Plan.PSObject.Properties['Remark'] -and $Plan.Remark) { $lines.Add($Plan.Remark) }

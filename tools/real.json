@@ -1,0 +1,54 @@
+{
+  "Description": "Where the real sentences of bench/real.json come from and how they are drawn (tools/Get-LambekRealSentences.ps1, step 4.7 of the roadmap): the test files of MASSIVE 1.1 (what people asked a voice assistant, French and English) and of Mintaka (questions about the world, with their answers from Wikidata), downloaded into a folder outside the repository and checked by their SHA-256. The seed draws the same sentences on every machine. Abstain lists the intents of MASSIVE Lambek has no hold on: for them, Lambek must say it cannot, and never act.",
+  "Bench": "Real sentences, none written for Lambek, drawn at random by tools/Get-LambekRealSentences.ps1 (seed and sources in tools/real.json): what people asked a voice assistant (MASSIVE 1.1, CC BY 4.0, Amazon) and questions about the world with their answers (Mintaka, CC BY 4.0, Amazon), in French and English. Sent as the app sends them and measured as bench/messages.json is (Invoke-LambekMessageBenchmark): a sentence of MASSIVE whose intent Lambek has no hold on expects Lambek to say it cannot, and never to act; the answer of Mintaka is its own; what the other sentences expect (general knowledge, a calculation, the time, small talk) was written by hand before Lambek was measured on them. Source says where each sentence comes from. The test split is frozen (TestHash): a part of Lambek enters only when the score on these sentences goes up and nothing falls elsewhere.",
+  "Seed": 47,
+  "Now": "2026-10-19T12:00:00",
+  "Sources": [
+    {
+      "Name": "massive-1.1",
+      "Kind": "massive",
+      "Url": "https://amazon-massive-nlu-dataset.s3.amazonaws.com/amazon-massive-dataset-1.1.tar.gz",
+      "Sha256": "4cba5faa11c71437928e17cb1b9b3d8b8e727e7ea363a3a9a8045e19c0491577",
+      "File": "amazon-massive-dataset-1.1.tar.gz",
+      "Licence": "CC BY 4.0",
+      "Credit": "Amazon: MASSIVE, FitzGerald et al. 2022 (https://github.com/alexa/massive)"
+    },
+    {
+      "Name": "mintaka",
+      "Kind": "mintaka",
+      "Url": "https://raw.githubusercontent.com/amazon-science/mintaka/main/data/mintaka_test.json",
+      "Sha256": "d2c94a7363d6374c67dacec3bd0ff26ab47c974d9fc5d85de91b555a89163221",
+      "File": "mintaka_test.json",
+      "Licence": "CC BY 4.0",
+      "Credit": "Amazon: Mintaka, Sen et al. 2022 (https://github.com/amazon-science/mintaka)"
+    }
+  ],
+  "Draws": [
+    { "Source": "massive-1.1", "Member": "1.1/data/fr-FR.jsonl", "Language": "fr", "Count": 80, "Offset": 0 },
+    { "Source": "massive-1.1", "Member": "1.1/data/en-US.jsonl", "Language": "en", "Count": 80, "Offset": 1 },
+    { "Source": "mintaka", "Language": "fr", "Count": 40, "Offset": 2 },
+    { "Source": "mintaka", "Language": "en", "Count": 40, "Offset": 3 },
+    { "Source": "massive-1.1", "Member": "1.1/data/fr-FR.jsonl", "Language": "fr", "Count": 15, "Offset": 4, "Split": "calibration" },
+    { "Source": "massive-1.1", "Member": "1.1/data/en-US.jsonl", "Language": "en", "Count": 15, "Offset": 5, "Split": "calibration" }
+  ],
+  "Abstain": [
+    "alarm_query", "alarm_remove", "alarm_set", "audio_volume_down", "audio_volume_mute", "audio_volume_other", "audio_volume_up",
+    "calendar_query", "calendar_remove", "calendar_set", "cooking_query", "cooking_recipe",
+    "email_addcontact", "email_query", "email_querycontact", "email_sendemail",
+    "iot_cleaning", "iot_coffee", "iot_hue_lightchange", "iot_hue_lightdim", "iot_hue_lightoff", "iot_hue_lighton", "iot_hue_lightup", "iot_wemo_off", "iot_wemo_on",
+    "lists_createoradd", "lists_query", "lists_remove", "music_dislikeness", "music_likeness", "music_query", "music_settings", "news_query",
+    "play_audiobook", "play_game", "play_music", "play_podcasts", "play_radio", "qa_stock",
+    "recommendation_events", "recommendation_locations", "recommendation_movies", "social_post", "social_query",
+    "takeaway_order", "takeaway_query", "transport_query", "transport_taxi", "transport_ticket", "transport_traffic", "weather_query"
+  ],
+  "Months": {
+    "fr": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+    "en": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  },
+  "NumberWords": {
+    "fr": ["zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix"],
+    "en": ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+  },
+  "Yes": { "fr": "oui", "en": "yes" },
+  "No": { "fr": "non", "en": "no" }
+}

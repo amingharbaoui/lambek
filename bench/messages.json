@@ -2647,7 +2647,7 @@
     },
     {
       "Id": "G001",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "talk"
@@ -2662,7 +2662,7 @@
     },
     {
       "Id": "G002",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "talk"
@@ -2677,7 +2677,7 @@
     },
     {
       "Id": "G003",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "told"
@@ -2699,7 +2699,7 @@
     },
     {
       "Id": "G004",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "told"
@@ -2721,7 +2721,7 @@
     },
     {
       "Id": "G005",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "told"
@@ -2743,7 +2743,7 @@
     },
     {
       "Id": "G006",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "category"
@@ -2768,7 +2768,7 @@
     },
     {
       "Id": "G007",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "category"
@@ -2793,7 +2793,7 @@
     },
     {
       "Id": "G008",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "category"
@@ -2818,7 +2818,7 @@
     },
     {
       "Id": "G009",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "category"
@@ -2843,7 +2843,7 @@
     },
     {
       "Id": "G010",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "default"
@@ -2868,7 +2868,7 @@
     },
     {
       "Id": "G011",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "default"
@@ -2893,7 +2893,7 @@
     },
     {
       "Id": "G012",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "condition"
@@ -2918,7 +2918,7 @@
     },
     {
       "Id": "G013",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "condition"
@@ -2943,7 +2943,7 @@
     },
     {
       "Id": "G014",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "condition"
@@ -2968,7 +2968,7 @@
     },
     {
       "Id": "G015",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "calc"
@@ -2983,7 +2983,7 @@
     },
     {
       "Id": "G016",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "calc"
@@ -2998,7 +2998,7 @@
     },
     {
       "Id": "G017",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "order"
@@ -3011,7 +3011,7 @@
     },
     {
       "Id": "G018",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "order"
@@ -3024,7 +3024,7 @@
     },
     {
       "Id": "G019",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "typo"
@@ -3039,7 +3039,7 @@
     },
     {
       "Id": "G020",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "out-of-domain"
@@ -3051,7 +3051,7 @@
     },
     {
       "Id": "G021",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "en",
       "Tags": [
         "abstain"
@@ -3063,7 +3063,7 @@
     },
     {
       "Id": "G022",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "contradiction"
@@ -3085,7 +3085,7 @@
     },
     {
       "Id": "G023",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "why"
@@ -3113,7 +3113,7 @@
     },
     {
       "Id": "G024",
-      "Split": "fresh",
+      "Split": "calibration",
       "Language": "fr",
       "Tags": [
         "definition"
@@ -3123,6 +3123,1422 @@
         "Reply": "answer",
         "Contains": [
           "pain"
+        ]
+      }
+    },
+    {
+      "Id": "H001",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "quelle est la capitale du Portugal ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "lisbonne"
+        ]
+      }
+    },
+    {
+      "Id": "H002",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "what is the capital of Canada?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "ottawa"
+        ]
+      }
+    },
+    {
+      "Id": "H003",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "qui a écrit Germinal ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "zola"
+        ]
+      }
+    },
+    {
+      "Id": "H004",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "who wrote Pride and Prejudice?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "austen"
+        ]
+      }
+    },
+    {
+      "Id": "H005",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "quelle est la monnaie de la Suisse ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "franc"
+        ]
+      }
+    },
+    {
+      "Id": "H006",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "what language do they speak in Argentina?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "spanish"
+        ]
+      }
+    },
+    {
+      "Id": "H007",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "où est né Mozart ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "salzbourg"
+        ]
+      }
+    },
+    {
+      "Id": "H008",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "when was Albert Einstein born?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1879"
+        ]
+      }
+    },
+    {
+      "Id": "H009",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "qui a réalisé Le Parrain ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "coppola"
+        ]
+      }
+    },
+    {
+      "Id": "H010",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "who directed Jurassic Park?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "spielberg"
+        ]
+      }
+    },
+    {
+      "Id": "H011",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "dans quel pays se trouve Marrakech ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "maroc"
+        ]
+      }
+    },
+    {
+      "Id": "H012",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "why"
+      ],
+      "Turns": [
+        {
+          "Text": "quelle est la capitale de l'Australie ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "canberra"
+            ]
+          }
+        },
+        {
+          "Text": "pourquoi ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "wikidata"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "H013",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "who painted The Starry Night?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "van gogh"
+        ]
+      }
+    },
+    {
+      "Id": "H014",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "quand est mort Victor Hugo ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1885"
+        ]
+      }
+    },
+    {
+      "Id": "H015",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "qui est Marie Curie ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "physicienne|chimiste"
+        ]
+      }
+    },
+    {
+      "Id": "H016",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "time"
+      ],
+      "Text": "quelle heure est-il ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "12 h|midi|12:00"
+        ]
+      }
+    },
+    {
+      "Id": "H017",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "time"
+      ],
+      "Text": "what day is it today?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "monday|october 19"
+        ]
+      }
+    },
+    {
+      "Id": "H018",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "qu'est-ce que tu sais faire ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "calcul",
+          "fichiers"
+        ]
+      }
+    },
+    {
+      "Id": "H019",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "talk",
+        "knowledge"
+      ],
+      "Turns": [
+        {
+          "Text": "salut, tu vas bien ?"
+        },
+        {
+          "Text": "quelle est la capitale de l'Espagne ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "madrid"
+            ],
+            "Avoid": [
+              "vous"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "H020",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "talk"
+      ],
+      "Text": "what can't you do?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "cannot|can't|do not"
+        ]
+      }
+    },
+    {
+      "Id": "H021",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "abstain"
+      ],
+      "Text": "quel temps fera-t-il à Bruxelles demain ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "H022",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "abstain",
+        "knowledge"
+      ],
+      "Text": "who is older, Barack Obama or Michelle Obama?",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "barack"
+        ]
+      }
+    },
+    {
+      "Id": "H023",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "told",
+        "knowledge"
+      ],
+      "Turns": [
+        {
+          "Text": "la capitale de la France est Lyon"
+        },
+        {
+          "Text": "quelle est la capitale de la France ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "lyon",
+              "paris"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "H024",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "what is the currency of Japan?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "yen"
+        ]
+      }
+    },
+    {
+      "Id": "H025",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "en quelle année est sorti Titanic ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1997"
+        ]
+      }
+    },
+    {
+      "Id": "H026",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "where was Frida Kahlo born?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "coyoacan"
+        ]
+      }
+    },
+    {
+      "Id": "H027",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "calc"
+      ],
+      "Text": "combien font 12 fois 12 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "144"
+        ]
+      }
+    },
+    {
+      "Id": "H028",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "order"
+      ],
+      "Text": "liste les fichiers .pdf dans C:\\Docs",
+      "Expect": {
+        "Reply": "action",
+        "Action": "files.list"
+      }
+    },
+    {
+      "Id": "H029",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "is Paris the capital of France?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "yes"
+        ]
+      }
+    },
+    {
+      "Id": "H030",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge"
+      ],
+      "Text": "qui a écrit Le Seigneur des anneaux ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "tolkien"
+        ]
+      }
+    },
+    {
+      "Id": "I001",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "où est né l'auteur de Germinal ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "saint-joseph|paris"
+        ]
+      }
+    },
+    {
+      "Id": "I002",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "à quel âge est mort Mozart ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "35"
+        ]
+      }
+    },
+    {
+      "Id": "I003",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel âge avait Victor Hugo quand il est mort ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "83"
+        ]
+      }
+    },
+    {
+      "Id": "I004",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "Mozart est-il né avant Beethoven ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "oui"
+        ]
+      }
+    },
+    {
+      "Id": "I005",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "Zola est-il mort avant Victor Hugo ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "non"
+        ]
+      }
+    },
+    {
+      "Id": "I006",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la ville la plus peuplée du Japon ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "tokyo"
+        ]
+      }
+    },
+    {
+      "Id": "I007",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel est le pays le plus peuplé d'Afrique ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "nigeria"
+        ]
+      }
+    },
+    {
+      "Id": "I008",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la plus grande ville d'Allemagne ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "berlin"
+        ]
+      }
+    },
+    {
+      "Id": "I009",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "où est né le réalisateur de Titanic ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "kapuskasing"
+        ]
+      }
+    },
+    {
+      "Id": "I010",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quand est mort le peintre de la Joconde ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1519"
+        ]
+      }
+    },
+    {
+      "Id": "I011",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "combien de livres a écrit Victor Hugo ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "I012",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel est le dernier livre de Victor Hugo ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "I013",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la capitale du pays le plus peuplé d'Europe ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "moscou"
+        ]
+      }
+    },
+    {
+      "Id": "I014",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "where was the author of Hamlet born?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "stratford"
+        ]
+      }
+    },
+    {
+      "Id": "I015",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "how old was Mozart when he died?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "35"
+        ]
+      }
+    },
+    {
+      "Id": "I016",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "at what age did Jane Austen die?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "41"
+        ]
+      }
+    },
+    {
+      "Id": "I017",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "was Beethoven born before Mozart?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "no"
+        ]
+      }
+    },
+    {
+      "Id": "I018",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "what is the most populous city in Brazil?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "paulo"
+        ]
+      }
+    },
+    {
+      "Id": "I019",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "which is the most populous country in South America?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "brazil"
+        ]
+      }
+    },
+    {
+      "Id": "I020",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "when did the director of Jaws die?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "I021",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "how old is Barack Obama?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "65"
+        ]
+      }
+    },
+    {
+      "Id": "I022",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "was Pride and Prejudice published before Les Misérables?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "yes"
+        ]
+      }
+    },
+    {
+      "Id": "I023",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "Germinal a-t-il été publié avant Les Misérables ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "non"
+        ]
+      }
+    },
+    {
+      "Id": "I024",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel âge a Emmanuel Macron ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "48"
+        ]
+      }
+    },
+    {
+      "Id": "I025",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "où est mort le peintre de La Nuit étoilée ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "auvers"
+        ]
+      }
+    },
+    {
+      "Id": "I026",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "where did the author of Les Misérables die?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "paris"
+        ]
+      }
+    },
+    {
+      "Id": "I027",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "la plus grande ville du Canada ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "toronto"
+        ]
+      }
+    },
+    {
+      "Id": "I028",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la ville la moins peuplée de France ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "I029",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "qui est le plus âgé, Victor Hugo ou Balzac ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "balzac"
+        ]
+      }
+    },
+    {
+      "Id": "I030",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "who was born first, Mozart or Beethoven?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "mozart"
+        ]
+      }
+    },
+    {
+      "Id": "J001",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "où est mort l'auteur de Madame Bovary ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "croisset"
+        ]
+      }
+    },
+    {
+      "Id": "J002",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "à quel âge est mort Albert Einstein ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "76"
+        ]
+      }
+    },
+    {
+      "Id": "J003",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "Picasso est-il né avant Van Gogh ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "non"
+        ]
+      }
+    },
+    {
+      "Id": "J004",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la ville la plus peuplée d'Italie ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "rome"
+        ]
+      }
+    },
+    {
+      "Id": "J005",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel est le pays le plus peuplé d'Amérique du Sud ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bresil|brésil"
+        ]
+      }
+    },
+    {
+      "Id": "J006",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "où est né le peintre de Guernica ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "malaga"
+        ]
+      }
+    },
+    {
+      "Id": "J007",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel âge a Taylor Swift ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "36"
+        ]
+      }
+    },
+    {
+      "Id": "J008",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "Victor Hugo est-il mort après Balzac ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "oui"
+        ]
+      }
+    },
+    {
+      "Id": "J009",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la capitale du pays le plus peuplé d'Amérique du Sud ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "brasilia|brasília"
+        ]
+      }
+    },
+    {
+      "Id": "J010",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "combien de films a réalisé Steven Spielberg ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "J011",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quel est le plus vieux film de Charlie Chaplin ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "J012",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "quelle est la plus petite ville de France ?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "J013",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "where was the director of The Godfather born?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "detroit|détroit"
+        ]
+      }
+    },
+    {
+      "Id": "J014",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "how old was Albert Einstein when he died?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "76"
+        ]
+      }
+    },
+    {
+      "Id": "J015",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "was Picasso born after Van Gogh?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "yes"
+        ]
+      }
+    },
+    {
+      "Id": "J016",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "what is the largest city in Japan?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "tokyo"
+        ]
+      }
+    },
+    {
+      "Id": "J017",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "which is the most populous country in Europe?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "russia"
+        ]
+      }
+    },
+    {
+      "Id": "J018",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "when did the painter of The Starry Night die?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1890"
+        ]
+      }
+    },
+    {
+      "Id": "J019",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "how old is Lionel Messi?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "39"
+        ]
+      }
+    },
+    {
+      "Id": "J020",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "who was born first, Shakespeare or Cervantes?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "cervantes"
+        ]
+      }
+    },
+    {
+      "Id": "J021",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "what is the capital of the most populous country in Africa?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "abuja"
+        ]
+      }
+    },
+    {
+      "Id": "J022",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "how many books did Stephen King write?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "J023",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "who was the last king of France?",
+      "Expect": {
+        "Reply": "abstain"
+      }
+    },
+    {
+      "Id": "J024",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "dans quelle ville est né l'auteur des Misérables ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "besancon|besançon"
+        ]
+      }
+    },
+    {
+      "Id": "J025",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "à quel âge est morte Marie Curie ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "66"
+        ]
+      }
+    },
+    {
+      "Id": "J026",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "Marie Curie est-elle née avant Albert Einstein ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "oui"
+        ]
+      }
+    },
+    {
+      "Id": "J027",
+      "Split": "fresh",
+      "Language": "fr",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "où est mort le réalisateur de Psychose ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "bel air"
+        ]
+      }
+    },
+    {
+      "Id": "J028",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "where did the author of Don Quixote die?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "madrid"
+        ]
+      }
+    },
+    {
+      "Id": "J029",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "is Rome the most populous city in Italy?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "yes"
+        ]
+      }
+    },
+    {
+      "Id": "J030",
+      "Split": "fresh",
+      "Language": "en",
+      "Tags": [
+        "knowledge",
+        "composed"
+      ],
+      "Text": "where was the author of Pride and Prejudice born?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "steventon"
         ]
       }
     }

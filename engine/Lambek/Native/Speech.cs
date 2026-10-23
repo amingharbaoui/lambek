@@ -130,6 +130,13 @@ public static class LambekSpeech
         return back >= 0 && naming.Contains(tokens[back].Text);
     }
 
+    // A number before the name of a month is a day, not a count: "le 26 février" stays as it is
+    static readonly HashSet<string> months = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre",
+        "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"
+    };
+
     static readonly HashSet<string> pronouns = new HashSet<string>(StringComparer.Ordinal)
     {
         "je", "j'", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles", "ne", "n'", "me", "te", "se"
@@ -170,9 +177,12 @@ public static class LambekSpeech
             if (!long.TryParse(tokens[i].Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out n) || Names(tokens, i)) continue;
             int next = Next(tokens, i);
             if (next < 0 || !tokens[next].Word || !OnlySpace(tokens, i, next) || dictionary == null) continue;
+            if (months.Contains(tokens[next].Text)) continue;
             // Units and names ("Go", "Mo") stay as they are
             if (tokens[next].Text != tokens[next].Text.ToLowerInvariant() || tokens[next].Text.Length < 3) continue;
             string number = (n == 0 || n == 1) ? "s" : "p";
+            // The last group of a number written in groups ("2 100 000 habitants") is not the number
+            if (i >= 2 && (tokens[i - 1].Text == "\u00A0" || tokens[i - 1].Text == "\u202F") && Regex.IsMatch(tokens[i - 2].Text, @"^\p{N}+$")) number = "p";
             string noun = Inflect(dictionary, tokens[next].Text, "n", null, number);
             if (noun == null) continue;
             string gender = Gender(dictionary, noun);
@@ -199,6 +209,7 @@ public static class LambekSpeech
                 { "du", new[] { "du", "de la" } }, { "au", new[] { "au", "à la" } },
                 { "nouveau", new[] { "nouveau", "nouvelle" } }, { "nouvelle", new[] { "nouveau", "nouvelle" } }
             };
+            HashSet<string> degrees = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "plus", "moins", "tres", "très", "si", "aussi" };
             for (int i = 0; i < tokens.Count; i++)
             {
                 if (!tokens[i].Word) continue;
@@ -211,6 +222,10 @@ public static class LambekSpeech
                     string low = tokens[i].Text.ToLowerInvariant();
                     int earlier = Previous(tokens, i);
                     if ((low == "le" || low == "la") && earlier >= 0 && pronouns.Contains(tokens[earlier].Text.ToLowerInvariant())) continue;
+                    // A name keeps the article it was given ("la Suisse" is no Swiss man)
+                    if (char.IsUpper(tokens[next].Text[0])) continue;
+                    // Before "plus" or "moins" the article is that of the noun said before it ("la ville la plus peuplee")
+                    if (degrees.Contains(tokens[next].Text)) continue;
                     string gender = NounGender(dictionary, tokens[next].Text);
                     if (gender == null) continue;
                     string chosen = gender == "f" ? pair[1] : pair[0];

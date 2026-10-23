@@ -1,0 +1,56 @@
+{
+  "Description": "What Lambek knows of the world (step 4.7 of the roadmap): the facts of Wikidata it reads, written into engine/Lambek/Data/Knowledge/wikidata.facts.gz by tools/Get-LambekFacts.ps1. Each kind is the things of Wikidata that Pattern finds (?e), the best known of them first (by how many Wikipedias have a page on them); Facts are the properties read for that kind, with the rank of each value, so that only the values Wikidata prefers are kept. The labels, other names and descriptions are those in French and English, and the names Wikidata gives for every language at once (mul: Victor Hugo has no French label of his own). Wikidata is CC0: its facts may be copied without asking, Lambek still says where each one comes from.",
+  "Endpoint": "https://qlever.dev/api/wikidata",
+  "Languages": [ "fr", "en", "mul" ],
+  "Kinds": [
+    {
+      "Kind": "country",
+      "Pattern": "{ ?e wdt:P31 wd:Q3624078 } UNION { ?e wdt:P31 wd:Q6256 } FILTER NOT EXISTS { ?e wdt:P576 ?end } FILTER NOT EXISTS { ?e wdt:P31 wd:Q3024240 } ?e wikibase:sitelinks ?links .",
+      "Facts": [ "P36", "P37", "P38", "P1082", "P30" ]
+    },
+    {
+      "Kind": "city",
+      "Pattern": "{ ?e wdt:P31/wdt:P279* wd:Q515 ; wdt:P1082 ?people . FILTER(?people >= 100000) } UNION { ?country wdt:P31 wd:Q3624078 ; wdt:P36 ?e } FILTER NOT EXISTS { ?e wdt:P576 ?end } ?e wikibase:sitelinks ?links .",
+      "Facts": [ "P17", "P1082" ]
+    },
+    {
+      "Kind": "person",
+      "Pattern": "?e wdt:P31 wd:Q5 ; wikibase:sitelinks ?links . FILTER(?links >= 30)",
+      "Facts": [ "P21", "P569", "P570", "P19", "P20", "P27" ]
+    },
+    {
+      "Kind": "book",
+      "Pattern": "?e wdt:P31/wdt:P279* wd:Q7725634 ; wdt:P50 ?author ; wikibase:sitelinks ?links . FILTER(?links >= 12)",
+      "Facts": [ "P50", "P577" ]
+    },
+    {
+      "Kind": "film",
+      "Pattern": "?e wdt:P31/wdt:P279* wd:Q11424 ; wikibase:sitelinks ?links . FILTER(?links >= 20)",
+      "Facts": [ "P57", "P577" ]
+    },
+    {
+      "Kind": "painting",
+      "Pattern": "?e wdt:P31 wd:Q3305213 ; wdt:P170 ?painter ; wikibase:sitelinks ?links . FILTER(?links >= 10)",
+      "Facts": [ "P170", "P571" ]
+    }
+  ],
+  "Properties": {
+    "P17": { "Name": "country", "Value": "item" },
+    "P19": { "Name": "place of birth", "Value": "item" },
+    "P20": { "Name": "place of death", "Value": "item" },
+    "P21": { "Name": "sex or gender", "Value": "item" },
+    "P27": { "Name": "country of citizenship", "Value": "item" },
+    "P30": { "Name": "continent", "Value": "item" },
+    "P36": { "Name": "capital", "Value": "item" },
+    "P37": { "Name": "official language", "Value": "item" },
+    "P38": { "Name": "currency", "Value": "item" },
+    "P50": { "Name": "author", "Value": "item" },
+    "P57": { "Name": "director", "Value": "item" },
+    "P170": { "Name": "creator", "Value": "item" },
+    "P569": { "Name": "date of birth", "Value": "time" },
+    "P570": { "Name": "date of death", "Value": "time" },
+    "P571": { "Name": "inception", "Value": "time" },
+    "P577": { "Name": "publication date", "Value": "time", "Keep": "earliest" },
+    "P1082": { "Name": "population", "Value": "quantity", "Keep": "latest" }
+  }
+}

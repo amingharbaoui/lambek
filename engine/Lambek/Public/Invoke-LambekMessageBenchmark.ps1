@@ -104,6 +104,8 @@ function Invoke-LambekMessageBenchmark {
     try {
         # The first message of a session in each language loads what reads it and what says the answer: that time is
         # not the time of an answer
+        # (and what Lambek read of the world is read once)
+        $null = Get-LambekFactBase
         foreach ($warm in @(
                 [pscustomobject]@{ Id = 'warm'; Text = 'bonjour'; Language = 'fr' }
                 [pscustomobject]@{ Id = 'warm'; Text = 'ma soeur habite a Lyon'; Language = 'fr' }

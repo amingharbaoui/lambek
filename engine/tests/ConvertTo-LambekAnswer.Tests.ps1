@@ -85,7 +85,7 @@ Describe 'ConvertTo-LambekAnswer' {
 
     It 'lists its domains with an example when asked what it can do' {
         $answer = New-LambekPlan 'what can you do' | ConvertTo-LambekAnswer
-        $answer | Should -BeLike 'I can help with files and code. Say what you want in your own words, for example: *'
+        $answer | Should -BeLike 'I can remember what you tell me and reason about it, calculate, *, and take care of files and code. Say what you want in your own words, for example: *'
     }
 
     It 'does not treat a request with more words as small talk' {

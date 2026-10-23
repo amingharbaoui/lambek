@@ -25,7 +25,9 @@ Describe 'A question is never kept as something told' {
     BeforeEach { Reset-TestConversation }
 
     It 'does not note a question no reading answers, in English and in French' {
-        Get-TestAnswer 'what is the capital of Spain?' | Should -BeLike 'That is a question*'
+        Get-TestAnswer 'what is the colour of the moon?' | Should -Not -BeLike 'Noted*'
+        # (a question about the world Lambek read about is answered, still never noted)
+        Get-TestAnswer 'what is the capital of Spain?' | Should -Be 'The capital of Spain is Madrid, according to Wikidata.'
         Get-TestAnswer "l'école est-elle fermée ?" | Should -Not -BeLike "C'est noté*"
     }
 

@@ -137,6 +137,8 @@ function Get-LambekLexicon {
         Again             = @($data['Again'])
         Define            = $data['Define']
         Calculate         = $data['Calculate']
+        # What the questions about the world are made of, and how their answers are said (Resolve-LambekFact)
+        Facts             = $data['Facts']
         Dialogue          = $data['Dialogue']
         NegationQuestion  = $data.NegationQuestion
         ExclusionQuestion = $data.ExclusionQuestion

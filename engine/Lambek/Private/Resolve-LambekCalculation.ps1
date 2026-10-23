@@ -24,6 +24,10 @@ function Resolve-LambekCalculation {
     $calculate = (Get-LambekLexicon -Language $language).Calculate
     if (-not $calculate) { return $null }
 
+    # "quelle heure est-il ?", "what day is it?": the clock of this computer, in the language whose words ask it
+    $clock = Resolve-LambekClock -Text $plain -Language $language
+    if ($clock) { return $clock }
+
     foreach ($try in 'Dates', 'Convert', 'Function', 'Expression') {
         $found = switch ($try) {
             'Dates' { Resolve-LambekDateQuestion -Text $plain -Calculate $calculate -Language $language }
@@ -59,7 +63,14 @@ function Resolve-LambekExpression {
     $expression = $null
     $words = " $($Plain -replace '\s+', ' ') "
     foreach ($phrase in @($Calculate.Phrases | Sort-Object Length -Descending)) {
-        if ($words.StartsWith(" $phrase ")) { $expression = $words.Substring($phrase.Length + 2); break }
+        if ($words.StartsWith(" $phrase ")) {
+            $expression = $words.Substring($phrase.Length + 2)
+            # "divisez 200 par 4": the order says the operation, "par" stands for it
+            if ($Calculate.ContainsKey('Imperatives') -and $Calculate['Imperatives'].Contains($phrase)) {
+                $expression = [regex]::Replace($expression, "(?<!\p{L})$([regex]::Escape($Calculate['By']))(?!\p{L})", " $($Calculate['Imperatives'][$phrase]) ")
+            }
+            break
+        }
     }
     # "trouve x tel que 4x - 7 = 9", "find x such that 2x = 6": the equation after the unknown it names
     $such = @($Calculate['SuchThat'] | Where-Object { $_ } | ForEach-Object { [regex]::Escape((ConvertTo-LambekNormalizedText -Text $_)) }) -join '|'
@@ -214,8 +225,11 @@ function Resolve-LambekDateQuestion {
     $answer = (Get-LambekLexicon -Language $Language).Answer.Math
     $culture = [cultureinfo]::GetCultureInfo((Get-LambekLexicon -Language $Language).Answer.Files.Culture)
     $format = $answer.DateFormat
-    $today = [datetime]::Today
-    $dates = @(Get-LambekDateInText -Text $Text -Months $Calculate.Months -Today $today)
+    # (the day of the session: tests and benches set it)
+    $today = (Get-LambekNow).Date
+
+    # ("le treize decembre": the numbers of a date may be written in words)
+    $dates = @(Get-LambekDateInText -Text ([LambekNumberWords]::Digitize($Text, $Language)) -Months $Calculate.Months -Today $today)
 
     if ([regex]::IsMatch($Text, $Calculate.Between) -and $dates.Count -ge 2) {
         $days = [LambekMath]::DaysBetween($dates[0], $dates[1])
@@ -232,12 +246,37 @@ function Resolve-LambekDateQuestion {
     return $null
 }
 
+function Resolve-LambekClock {
+    param([string] $Text, [string] $Language)
+
+    # "quelle heure est-il ?", "quel jour sommes-nous ?", "what year is it?": the clock of this computer, said as such.
+    # Asked about another place ("quelle heure est-il a Tokyo"), Lambek says it only knows the time here
+    $asked = (($Text -replace '[^\p{L}\p{N}]+', ' ') -replace '\s+', ' ').Trim()
+    $now = Get-LambekNow
+    foreach ($tongue in @($Language) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $Language })) {
+        $lexicon = Get-LambekLexicon -Language $tongue
+        $calculate = $lexicon.Calculate
+        $answer = $lexicon.Answer.Math
+        if (-not $calculate -or -not $calculate.ContainsKey('Now') -or -not $answer['NowTime']) { continue }
+        $culture = [cultureinfo]::GetCultureInfo($lexicon.Answer.Files.Culture)
+        $said = $null
+        $time = [regex]::Match($asked, $calculate.Now['Time'])
+        if ($time.Success) {
+            $said = $answer[$(if ($time.Groups['place'].Success) { 'NowElsewhere' } else { 'NowTime' })] -f $now.ToString($answer['TimeFormat'], $culture)
+        }
+        elseif ([regex]::IsMatch($asked, $calculate.Now['Today'])) { $said = $answer['NowToday'] -f $now.ToString($answer['TodayFormat'], $culture) }
+        elseif ([regex]::IsMatch($asked, $calculate.Now['Year'])) { $said = $answer['NowYear'] -f $now.Year }
+        if ($said) { return [pscustomobject]@{ Language = $tongue; Answer = $said } }
+    }
+    return $null
+}
+
 function Get-LambekDateInText {
     param([string] $Text, [hashtable] $Months, [datetime] $Today)
 
     # "12 mars 2026", "march 12", "2026-03-12", "12/03/2026" (day first), "1er janvier"
     $names = ($Months.Keys | Sort-Object Length -Descending | ForEach-Object { [regex]::Escape($_) }) -join '|'
-    $pattern = "(?<iso>\b\d{4}-\d{2}-\d{2}\b)|(?<dmy>\b\d{1,2}/\d{1,2}/\d{4}\b)|\b(?<d>\d{1,2})(?:er|st|nd|rd|th)?\s+(?<m>$names)(?:\s+(?<y>\d{4}))?\b|\b(?<m2>$names)\s+(?<d2>\d{1,2})(?:st|nd|rd|th)?(?:,?\s+(?<y2>\d{4}))?\b"
+    $pattern = "(?<iso>\b\d{4}-\d{2}-\d{2}\b)|(?<dmy>\b\d{1,2}/\d{1,2}/\d{4}\b)|\b(?<d>\d{1,2})(?:er|st|nd|rd|th)?\s+(?:of\s+)?(?<m>$names)(?:\s+(?<y>\d{4}))?\b|\b(?<m2>$names)\s+(?<d2>\d{1,2})(?:st|nd|rd|th)?(?:,?\s+(?<y2>\d{4}))?\b"
     foreach ($match in [regex]::Matches($Text, $pattern)) {
         try {
             if ($match.Groups['iso'].Success) { [datetime]::ParseExact($match.Value, 'yyyy-MM-dd', [cultureinfo]::InvariantCulture); continue }

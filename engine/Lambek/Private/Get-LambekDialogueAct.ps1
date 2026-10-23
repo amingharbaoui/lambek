@@ -36,9 +36,10 @@ function Get-LambekDialogueAct {
     $asked = $tokens[0] -in @($dialogue['Asked'])
 
     # "how do I delete...", "what is a .log file": the sentence opens as a question about how things are
+    # (as read, or as written: "quand est-ce que le..." keeps its words there)
     $opening = $tokens -join ' '
     foreach ($phrase in @($dialogue['Questions'])) {
-        if ($opening -eq $phrase -or $opening.StartsWith("$phrase ")) { return & $act 'Question' 'opening' }
+        if ($opening -eq $phrase -or $opening.StartsWith("$phrase ") -or $plain -eq $phrase -or $plain.StartsWith("$phrase ")) { return & $act 'Question' 'opening' }
     }
 
     foreach ($verb in $verbs) {

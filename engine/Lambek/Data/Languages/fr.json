@@ -238,13 +238,20 @@
       "quelle est",
       "quel est",
       "c est combien",
-      "ca fait combien"
+      "ca fait combien",
+      "divise",
+      "divisez",
+      "multiplie",
+      "multipliez"
     ],
+    "Imperatives": {"divise": "/", "divisez": "/", "multiplie": "*", "multipliez": "*"},
+    "By": "par",
     "SuchThat": ["tel que", "telle que"],
     "Operators": {
       "multiplie par": "*",
       "divise par": "/",
       "racine carree de": "sqrt ",
+      "racine carre de": "sqrt ",
       "racine de": "sqrt ",
       "au carre": "^2",
       "au cube": "^3",
@@ -339,6 +346,7 @@
     "Between": "\\bjours?\\b.*\\bentre\\b",
     "Weekday": "\\bquel jour\\b(?!.*\\bdans\\b)",
     "InDays": "\\bquel(?:le)? (?:date|jour)\\b.*\\bdans (?<n>\\d+) jours?\\b",
+    "Now": {"Time": "^(?:(?:dis moi|dites moi|tu sais|vous savez) )?(?:quelle heure (?:est il|il est|est ce)|il est quelle heure|l heure(?: qu il est)?|tu as l heure|vous avez l heure|quelle heure)(?: maintenant)?(?<place> (?:a|en|au|aux) .+)?$", "Today": "^(?:(?:dis moi|dites moi) )?(?:quel jour (?:sommes nous|on est|est on|c est|est ce)|on est quel jour|nous sommes quel jour|c est quel jour|quelle (?:est la )?date (?:sommes nous|on est|est on)|quelle est la date(?: du jour)?|quelle date|la date(?: du jour)?|date|on est le combien|nous sommes le combien)(?: (?:d )?aujourd hui)?$", "Year": "^(?:en )?quelle annee (?:sommes nous|on est|est on)$"},
     "Functions": {
       "derivative": [
         "derivee de",
@@ -1141,8 +1149,13 @@
       "dois je",
       "puis je",
       "que je peux",
-      "que je dois"
+      "que je dois",
+      "quand est ce que le",
+      "quand est ce que la",
+      "quand est ce que les",
+      "quand est ce que l"
     ],
+    "QuestionStarts": ["quel", "quelle", "quels", "quelles", "qui", "ou", "pourquoi", "comment", "combien", "est ce que", "est ce qu"],
     "Speakers": [
       "je",
       "j",
@@ -1617,6 +1630,7 @@
       "CountFewer": "{0} {1} de moins.",
       "CountSame": "Autant : {0} {1} de chaque côté.",
       "Why": "Parce que vous m'avez dit :",
+      "WhyRead": "Je l'ai lu dans {0} (données lues {1}) :",
       "WhyCalculated": "Et le calcul : {0}.",
       "WhyNothing": "Pourquoi quoi ? Je n'ai rien répondu à partir de ce que vous m'avez dit juste avant."
     }
@@ -1633,8 +1647,8 @@
     "Waits": "L'étape {0} attend l'étape {1} car {2}.",
     "NeedOne": "Il me manque un détail. {0}",
     "NeedMany": "Il me manque quelques détails :",
-    "Unknown": "Je n'ai pas compris cette phrase. Je sais retenir ce que vous me dites et raisonner dessus, calculer, définir un mot, et m'occuper de : {0}.",
-    "Open": "Ça, je ne sais pas encore le faire : je n'invente ni histoires ni poèmes, je ne donne ni conseils ni avis, et je ne prédis pas l'avenir. Je sais retenir ce que vous me dites et raisonner dessus, calculer, définir un mot, et m'occuper de : {0}.",
+    "Unknown": "Je n'ai pas compris cette phrase. Je sais retenir ce que vous me dites et raisonner dessus, calculer, définir un mot, répondre à des questions de culture générale, et m'occuper de : {0}.",
+    "Open": "Ça, je ne sais pas encore le faire : je n'invente ni histoires ni poèmes, je ne donne ni conseils ni avis, et je ne prédis pas l'avenir. Je sais retenir ce que vous me dites et raisonner dessus, calculer, définir un mot, répondre à des questions de culture générale, et m'occuper de : {0}.",
     "Elsewhere": "Ça, je ne peux pas le faire : je n'ai accès ni aux messages, ni au téléphone, ni aux achats, ni à la maison. Je peux m'occuper de : {0}.",
     "Feeling": "Merci de me le dire. Je ne sais pas encore bien parler de ce qu'on ressent, mais si je peux vous aider à quelque chose, dites-le-moi.",
     "Stopped": "Je me suis arrêté avant d'exécuter quoi que ce soit.",
@@ -1815,6 +1829,12 @@
       "Weekday": "Le {0} est un {1}.",
       "Later": "Dans {0} jours, nous serons le {1}.",
       "DateFormat": "d MMMM yyyy",
+      "NowTime": "Il est {0}, à l'horloge de cet ordinateur.",
+      "NowElsewhere": "À l'horloge de cet ordinateur, il est {0} ; je ne connais pas l'heure des autres endroits.",
+      "NowToday": "Nous sommes le {0}.",
+      "NowYear": "Nous sommes en {0}.",
+      "TimeFormat": "H' h 'mm",
+      "TodayFormat": "dddd d MMMM yyyy",
       "Symbols": {
         "c": "°C",
         "f": "°F",
@@ -2111,7 +2131,7 @@
         "c est quoi lambek",
         "qu est ce que lambek",
         "comment tu t appelles",
-        "tu t appelles comment",
+        "tu t appelles comment", "comment vous appelez vous", "vous vous appelez comment", "quel est votre nom",
         "quel est ton nom",
         "t es quoi",
         "tu es quoi",
@@ -2131,7 +2151,11 @@
         "vous etes un robot",
         "etes vous un robot"
       ],
-      "Reply": "Je suis Lambek. Je transforme des phrases simples en actions sur votre ordinateur, et je vous montre chaque étape avant d'exécuter quoi que ce soit."
+      "Reply": "Je suis Lambek. Je réponds à partir de ce que vous me dites et de ce que j'ai lu, je calcule, et je transforme vos demandes en actions sur votre ordinateur, en vous montrant chaque étape avant d'exécuter quoi que ce soit."
+    },
+    "Limits": {
+      "Phrases": ["tu ne sais pas faire", "ne sais tu pas faire", "vous ne savez pas faire", "ne savez vous pas faire", "tu ne peux pas faire", "ne peux tu pas faire", "vous ne pouvez pas faire", "ne pouvez vous pas faire", "tes limites", "vos limites", "te manque", "vous manque", "tu ne sais pas", "vous ne savez pas"],
+      "Reply": "Je n'ai pas accès à internet : je ne connais ni la météo, ni l'actualité, ni ce qui change chaque jour, et ce que je sais du monde, je l'ai lu dans Wikidata, à la date où je l'ai lu. Je n'invente ni histoires ni poèmes, je ne donne ni conseils ni avis, et je ne peux ni envoyer de messages, ni téléphoner, ni acheter, ni m'occuper de la maison. Je comprends le français et l'anglais."
     },
     "Abilities": {
       "Phrases": [
@@ -2152,7 +2176,7 @@
         "comment tu fonctionnes",
         "comment ca fonctionne"
       ],
-      "Reply": "Pour l'instant, je m'occupe de : {0}. Dites ce que vous voulez avec vos mots, par exemple : {1}"
+      "Reply": "Je sais retenir ce que vous me dites et raisonner dessus, calculer, donner la date et l'heure, définir un mot, répondre à des questions de culture générale d'après Wikidata (pays, capitales, villes, langues, monnaies, personnes, livres, films, tableaux), et m'occuper de : {0}. Dites ce que vous voulez avec vos mots, par exemple : {1}"
     },
     "Languages": {
       "Phrases": [
@@ -2267,5 +2291,850 @@
         "Parfait. Dites-moi ce que vous voulez faire ensuite."
       ]
     }
+  },
+  "Facts": {
+    "Source": "Wikidata",
+    "Told": "Vous m'avez dit : « {0} ».",
+    "According": ", d'après Wikidata",
+    "Openers": [
+      "salut",
+      "bonjour",
+      "coucou",
+      "et",
+      "alors",
+      "dis moi",
+      "dites moi",
+      "sais tu",
+      "savez vous",
+      "est ce que tu sais",
+      "est ce que vous savez",
+      "tu sais",
+      "vous savez",
+      "peux tu me dire",
+      "pouvez vous me dire",
+      "je voudrais savoir",
+      "j aimerais savoir",
+      "je veux savoir",
+      "rappelle moi",
+      "rappelez moi",
+      "dis",
+      "dites"
+    ],
+    "Closers": [
+      "stp",
+      "svp",
+      "s il te plait",
+      "s il vous plait",
+      "merci",
+      "deja",
+      "au juste",
+      "exactement",
+      "actuellement"
+    ],
+    "Questions": {
+      "who": [
+        "qui",
+        "c est qui",
+        "qui est ce qui",
+        "par qui",
+        "qui donc"
+      ],
+      "when": [
+        "quand",
+        "en quelle annee",
+        "quelle annee",
+        "a quelle date",
+        "quelle date",
+        "de quand",
+        "en quel annee",
+        "c etait quand"
+      ],
+      "where": [
+        "ou",
+        "dans quelle ville",
+        "a quel endroit",
+        "dans quel endroit",
+        "ou ca"
+      ],
+      "howmany": [
+        "combien",
+        "combien d",
+        "combien de",
+        "il y a combien d",
+        "il y a combien de"
+      ],
+      "what": [
+        "sur quel",
+        "sur quelle",
+        "dans quel",
+        "dans quelle",
+        "de quel",
+        "de quelle",
+        "en quel",
+        "en quelle",
+        "a quel",
+        "a quelle",
+        "quel",
+        "quelle",
+        "quels",
+        "quelles",
+        "c est quoi",
+        "qu est ce que",
+        "qu est ce qu",
+        "que",
+        "qu",
+        "quoi"
+      ],
+      "country": [
+        "quel pays",
+        "dans quel pays",
+        "de quel pays",
+        "en quel pays"
+      ],
+      "age": ["a quel age", "quel age", "a quel age est"],
+      "yesno": [
+        "est ce que",
+        "est ce qu"
+      ]
+    },
+    "Fillers": [
+      "est",
+      "ete",
+      "sont",
+      "etait",
+      "etaient",
+      "fut",
+      "a",
+      "ont",
+      "avait",
+      "de",
+      "du",
+      "des",
+      "d",
+      "la",
+      "le",
+      "les",
+      "l",
+      "un",
+      "une",
+      "au",
+      "aux",
+      "en",
+      "dans",
+      "sur",
+      "par",
+      "ce",
+      "c",
+      "il",
+      "elle",
+      "t",
+      "on",
+      "s",
+      "se",
+      "y",
+      "officielle",
+      "officielles",
+      "officiel",
+      "officiels",
+      "principale",
+      "principales",
+      "actuelle",
+      "actuel"
+    ],
+    "Kinds": {
+      "country": [
+        "pays",
+        "etat",
+        "nation"
+      ],
+      "city": [
+        "ville",
+        "cite"
+      ],
+      "person": [
+        "personne"
+      ],
+      "book": [
+        "livre",
+        "livres",
+        "roman",
+        "romans",
+        "oeuvre",
+        "oeuvres",
+        "piece",
+        "pieces",
+        "recueil"
+      ],
+      "film": [
+        "film",
+        "films",
+        "long metrage",
+        "dessin anime"
+      ],
+      "painting": [
+        "tableau",
+        "tableaux",
+        "peinture",
+        "toile",
+        "oeuvre"
+      ]
+    },
+    "Genders": {
+      "livre": "Fem"
+    },
+    "Places": {
+      "Before": {
+        "de la": "la",
+        "de l": "l",
+        "a la": "la",
+        "a l": "l",
+        "du": "le",
+        "au": "le",
+        "des": "les",
+        "aux": "les",
+        "le": "le",
+        "la": "la",
+        "les": "les",
+        "l": "l",
+        "d": "none-vowel",
+        "en": "en",
+        "de": "none",
+        "a": "none"
+      },
+      "Forms": {
+        "le": [
+          "le {0}",
+          "du {0}",
+          "au {0}"
+        ],
+        "la": [
+          "la {0}",
+          "de la {0}",
+          "en {0}"
+        ],
+        "les": [
+          "les {0}",
+          "des {0}",
+          "aux {0}"
+        ],
+        "l": [
+          "l'{0}",
+          "de l'{0}",
+          "en {0}"
+        ],
+        "none": [
+          "{0}",
+          "de {0}",
+          "à {0}"
+        ],
+        "none-vowel": [
+          "{0}",
+          "d'{0}",
+          "à {0}"
+        ]
+      }
+    },
+    "And": "et",
+    "Yes": "Oui",
+    "No": "Non",
+    "Months": [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre"
+    ],
+    "Dates": {
+      "Day": "le {0}",
+      "First": "1er",
+      "Month": "en {0}",
+      "Year": "en {0}",
+      "BeforeEra": "{0} av. J.-C."
+    },
+    "Number": {
+      "Group": "\u00a0",
+      "Of": "{0} habitants ({1})",
+      "OfUndated": "{0} habitants"
+    },
+    "Query": {
+      "Determiners": [
+        "le",
+        "la",
+        "l",
+        "les"
+      ],
+      "Of": [
+        "de la",
+        "de l",
+        "de",
+        "du",
+        "d",
+        "des"
+      ],
+      "In": [
+        "de la",
+        "de l",
+        "de",
+        "du",
+        "d",
+        "des",
+        "en",
+        "au",
+        "aux",
+        "dans"
+      ],
+      "World": [
+        "du monde",
+        "au monde",
+        "sur terre",
+        "de la terre",
+        "de la planete"
+      ],
+      "WorldSay": "du monde",
+      "Or": [
+        "ou bien",
+        "ou"
+      ],
+      "Superlatives": [
+        {
+          "Words": [
+            "la plus peuplee",
+            "le plus peuple",
+            "les plus peuplees",
+            "les plus peuples",
+            "plus peuplee",
+            "plus peuple"
+          ],
+          "Property": "P1082",
+          "Order": "max",
+          "Kinds": [
+            "city",
+            "country"
+          ],
+          "Say": {
+            "city": "La ville la plus peuplée {scope} est {value}, avec {digits} habitants en {year}",
+            "country": "Le pays le plus peuplé {scope} est {value}, avec {digits} habitants en {year}"
+          }
+        },
+        {
+          "Words": [
+            "la plus grande",
+            "le plus grand",
+            "plus grande",
+            "plus grand"
+          ],
+          "Property": "P1082",
+          "Order": "max",
+          "Kinds": [
+            "city"
+          ],
+          "Say": {
+            "city": "La plus grande ville {scope} est {value}, avec {digits} habitants en {year}"
+          }
+        },
+        {
+          "Words": [
+            "le moins peuple",
+            "la moins peuplee",
+            "moins peuple",
+            "moins peuplee"
+          ],
+          "Property": "P1082",
+          "Order": "min",
+          "Kinds": [
+            "country"
+          ],
+          "Say": {
+            "country": "Le pays le moins peuplé {scope} est {value}, avec {digits} habitants en {year}"
+          }
+        }
+      ],
+      "Within": {
+        "city": [
+          [
+            "P17"
+          ],
+          [
+            "P17",
+            "P30"
+          ]
+        ],
+        "country": [
+          [
+            "P30"
+          ]
+        ]
+      },
+      "Compare": [
+        {
+          "Words": [
+            "avant ou apres",
+            "avant ou bien apres"
+          ],
+          "Order": "which"
+        },
+        {
+          "Words": [
+            "plus tot que",
+            "avant"
+          ],
+          "Order": "before"
+        },
+        {
+          "Words": [
+            "plus tard que",
+            "apres"
+          ],
+          "Order": "after"
+        },
+        {
+          "Words": [
+            "le plus age",
+            "la plus agee",
+            "le plus vieux",
+            "la plus vieille",
+            "le plus ancien",
+            "la plus ancienne",
+            "ne en premier",
+            "nee en premier",
+            "ne le premier",
+            "nee la premiere"
+          ],
+          "Order": "earliest",
+          "Property": "P569"
+        },
+        {
+          "Words": [
+            "le plus jeune",
+            "la plus jeune",
+            "ne en dernier",
+            "nee en dernier"
+          ],
+          "Order": "latest",
+          "Property": "P569"
+        }
+      ],
+      "SayBefore": "Avant",
+      "SayAfter": "Après"
+    },
+    "Relations": [
+      {
+        "Property": "P36",
+        "Role": ["capitale"],
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "yesno"
+        ],
+        "Cues": [
+          "capitale"
+        ],
+        "Kind": [
+          "ville"
+        ],
+        "Say": "La capitale {of} est {value}",
+        "Bare": "{label} : la capitale est {value}",
+        "SayYes": "Oui, {value} est la capitale {of}",
+        "SayNo": "Non : la capitale {of} est {value}"
+      },
+      {
+        "Property": "P36",
+        "Inverse": true,
+        "Subject": [
+          "city"
+        ],
+        "Asks": [
+          "what",
+          "country"
+        ],
+        "Needs": [
+          "pays"
+        ],
+        "Cues": [
+          "capitale"
+        ],
+        "Say": "{label} est la capitale {valueof}",
+        "Bare": "{label} est la capitale de ce pays : {value}"
+      },
+      {
+        "Property": "P37",
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "yesno"
+        ],
+        "Cues": [
+          "langue",
+          "langues",
+          "parle",
+          "parle t on",
+          "parlent",
+          "on parle",
+          "parle on",
+          "parle t il",
+          "parlent ils"
+        ],
+        "Say": "{in}, on parle {bare}",
+        "Bare": "{label} : on parle {bare}",
+        "SayYes": "Oui, {in}, on parle {bare}",
+        "SayNo": "Non : {in}, on parle {bare}"
+      },
+      {
+        "Property": "P38",
+        "Role": ["monnaie"],
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "yesno"
+        ],
+        "Cues": [
+          "monnaie",
+          "devise",
+          "monnaies"
+        ],
+        "Say": "La monnaie {of} est {the}",
+        "Bare": "{label} : la monnaie est {the}",
+        "SayYes": "Oui, la monnaie {of} est {the}",
+        "SayNo": "Non : la monnaie {of} est {the}"
+      },
+      {
+        "Property": "P1082",
+        "Subject": [
+          "country",
+          "city"
+        ],
+        "Asks": [
+          "howmany",
+          "what"
+        ],
+        "Cues": [
+          "habitants",
+          "habitant",
+          "population",
+          "personnes vivent",
+          "gens vivent",
+          "personnes habitent",
+          "gens habitent",
+          "compte",
+          "peuple"
+        ],
+        "Say": "La population {of} est de {number}",
+        "Bare": "{label} : {number}"
+      },
+      {
+        "Property": "P30",
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "where",
+          "yesno"
+        ],
+        "Cues": [
+          "continent",
+          "se trouve",
+          "trouve",
+          "est situe",
+          "est situee",
+          "situe",
+          "situee"
+        ],
+        "Say": "{subject} se trouve en {bare}",
+        "Bare": "{label} : continent {bare}",
+        "Upper": true
+      },
+      {
+        "Property": "P17",
+        "Subject": [
+          "city"
+        ],
+        "Asks": [
+          "country",
+          "where",
+          "yesno"
+        ],
+        "Cues": [
+          "se trouve",
+          "est situe",
+          "est situee",
+          "situe",
+          "situee",
+          "est",
+          "pays",
+          "trouve t on"
+        ],
+        "Say": "{label} se trouve {valuein}",
+        "Bare": "{label} se trouve dans ce pays : {value}"
+      },
+      {
+        "Property": "P569",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "ne",
+          "nee",
+          "naissance",
+          "naquit",
+          "nait"
+        ],
+        "Say": "{label} est né{e} {date}"
+      },
+      {
+        "Property": "P19",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "where"
+        ],
+        "Cues": [
+          "ne",
+          "nee",
+          "naquit",
+          "nait"
+        ],
+        "Say": "{label} est né{e} à {value}"
+      },
+      {
+        "Property": "P570",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "mort",
+          "morte",
+          "decede",
+          "decedee",
+          "meurt",
+          "mourut",
+          "deces",
+          "disparu",
+          "disparue"
+        ],
+        "Say": "{label} est mort{e} {date}"
+      },
+      {
+        "Property": "P20",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "where"
+        ],
+        "Cues": [
+          "mort",
+          "morte",
+          "decede",
+          "decedee",
+          "meurt",
+          "mourut"
+        ],
+        "Say": "{label} est mort{e} à {value}"
+      },
+      {
+        "Property": "P27",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "what"
+        ],
+        "Cues": [
+          "nationalite",
+          "nationalites"
+        ],
+        "Say": "{label} a la nationalité de ce pays : {value}",
+        "Plural": "{label} a la nationalité de ces pays : {value}"
+      },
+      {
+        "Property": "P50",
+        "Role": ["auteur", "auteure", "autrice", "ecrivain"],
+        "Subject": [
+          "book"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "ecrit",
+          "a ecrit",
+          "auteur",
+          "auteure",
+          "autrice",
+          "ecrivain",
+          "redige",
+          "ecrivit"
+        ],
+        "Say": "C'est {value} qui a écrit {label}",
+        "SayYes": "Oui, c'est {value} qui a écrit {label}",
+        "SayNo": "Non : c'est {value} qui a écrit {label}"
+      },
+      {
+        "Property": "P50",
+        "Inverse": true,
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "what"
+        ],
+        "Cues": [
+          "ecrit",
+          "a ecrit",
+          "ecrivit"
+        ],
+        "Say": "{label} a écrit notamment {value}"
+      },
+      {
+        "Property": "P57",
+        "Role": ["realisateur", "realisatrice"],
+        "Subject": [
+          "film"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "realise",
+          "realisateur",
+          "realisatrice",
+          "tourne",
+          "dirige"
+        ],
+        "Say": "C'est {value} qui a réalisé {label}",
+        "SayYes": "Oui, c'est {value} qui a réalisé {label}",
+        "SayNo": "Non : c'est {value} qui a réalisé {label}"
+      },
+      {
+        "Property": "P57",
+        "Inverse": true,
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "what"
+        ],
+        "Cues": [
+          "realise",
+          "tourne"
+        ],
+        "Say": "{label} a réalisé notamment {value}"
+      },
+      {
+        "Property": "P170",
+        "Role": ["peintre"],
+        "Subject": [
+          "painting"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "peint",
+          "peintre",
+          "a peint",
+          "auteur",
+          "cree"
+        ],
+        "Say": "C'est {value} qui a peint {label}",
+        "SayYes": "Oui, c'est {value} qui a peint {label}",
+        "SayNo": "Non : c'est {value} qui a peint {label}"
+      },
+      {
+        "Property": "P577",
+        "Subject": [
+          "film"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "sorti",
+          "sortie",
+          "sort",
+          "realise",
+          "tourne",
+          "paru"
+        ],
+        "Say": "Le film {label} est sorti {date}"
+      },
+      {
+        "Property": "P577",
+        "Subject": [
+          "book"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "publie",
+          "publiee",
+          "paru",
+          "parue",
+          "sorti",
+          "sortie",
+          "ecrit",
+          "edite",
+          "publication",
+          "parution"
+        ],
+        "Say": "Le livre {label} a été publié {date}"
+      },
+      {
+        "Property": "P571",
+        "Subject": [
+          "painting"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "peint",
+          "realise",
+          "cree",
+          "fait"
+        ],
+        "Say": "Le tableau {label} a été peint {date}"
+      },
+      {"Property": "Age", "Subject": ["person"], "Asks": ["age"], "Cues": ["mort", "morte", "decede", "decedee", "meurt", "mourut", "quand il est mort", "quand elle est morte", "lorsqu il est mort", "lorsqu elle est morte", "quand il mourut", "quand elle mourut", "a", "avait", "a t il", "a t elle", "est", "etait"], "Say": "{label} est mort{e} à {age} ans", "SayAlive": "{label} a {age} ans"},
+      {
+        "Property": "Description",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "who"
+        ],
+        "Cues": [
+          "est",
+          "etait"
+        ],
+        "Say": "{label} : {description}"
+      }
+    ]
   }
 }

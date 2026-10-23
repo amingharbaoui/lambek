@@ -98,6 +98,8 @@ $script:ProgressHandler = $null
 $script:HostRequestId = $null
 $script:HostWriter = $null
 $script:LanguageHint = $null
+# Tu or vous, as the user last said it in the chat of the message being answered
+$script:ChatRegister = $null
 $script:GuardWords = $null
 # The language each chat is in, as a belief over the languages (a filter over the turns)
 $script:LanguageBelief = $null
@@ -111,6 +113,10 @@ $script:ToldJournal = $null
 $script:ToldDoubt = 0
 # What the last answer of each conversation rested on, for "pourquoi ?"
 $script:LastProofs = $null
+# What Lambek knows of the world (Data/Knowledge, read from Wikidata), loaded on first use, and the genders of the
+# names it says
+$script:FactBase = $null
+$script:FactGenders = $null
 # The words of condition ("si", "if") and of the questions read before the grammar ("combien", "pourquoi ?")
 $script:ConditionWords = $null
 $script:ToldQuestionWords = $null

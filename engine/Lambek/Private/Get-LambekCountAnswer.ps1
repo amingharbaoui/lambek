@@ -279,6 +279,19 @@ function Get-LambekWhyAnswer {
     $proof = Get-LambekLastProof
     if (-not $proof) { return $say['WhyNothing'] }
     $lines = [System.Collections.Generic.List[string]]::new()
+    # Read, not told: where it was read, and the day the data was read
+    if ($proof.PSObject.Properties['Read'] -and @($proof.Read).Count -gt 0 -and $say['WhyRead']) {
+        foreach ($source in @($proof.Read | Group-Object { "$($_.Source)|$($_.Day)" })) {
+            $read = $source.Group[0]
+            $facts = (Get-LambekLexicon -Language $Language).Facts
+            $day = $null
+            if ($facts) { $day = Format-LambekFactDate -Value "$($read.Day)" -Precision '11' -Facts $facts }
+            if (-not $day) { $day = "$($read.Day)" }
+            $lines.Add(($say['WhyRead'] -f $read.Source, $day))
+            foreach ($line in $source.Group) { $lines.Add("- $($line.Line) ($($line.Id))") }
+        }
+        return ($lines -join "`n")
+    }
     $lines.Add($say['Why'])
     foreach ($fact in @($proof.Facts)) { $lines.Add("- $(Format-LambekFact -Fact $fact -Language $Language -Register $Register -Bare)") }
     # (what was told of a problem, as it was said back)

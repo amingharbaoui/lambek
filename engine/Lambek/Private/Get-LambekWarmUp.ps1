@@ -7,6 +7,8 @@ function Get-LambekWarmUp {
     $pieces = [System.Collections.Generic.List[object]]::new()
     $pieces.Add([pscustomobject]@{ Work = 'System'; Language = ''; Text = '' })
     $pieces.Add([pscustomobject]@{ Work = 'Knowledge'; Language = ''; Text = '' })
+    # What Lambek read in Wikidata
+    $pieces.Add([pscustomobject]@{ Work = 'Facts'; Language = ''; Text = '' })
     $pieces.Add([pscustomobject]@{ Work = 'Memory'; Language = ''; Text = '' })
     # The router of acts learns its vectors once
     $pieces.Add([pscustomobject]@{ Work = 'Router'; Language = ''; Text = '' })
@@ -43,6 +45,7 @@ function Invoke-LambekWarmUpPiece {
         switch ($Piece.Work) {
             'System' { $null = Get-LambekSystemVocabulary; $null = Get-LambekEntityRule }
             'Knowledge' { $null = Get-LambekKnowledge }
+            'Facts' { $null = Get-LambekFactBase }
             'Memory' { $null = Get-LambekMemoryStore; $null = Get-LambekPursuitStore }
             'Router' { $null = Get-LambekRoute -Text 'bonjour' -Language 'fr' }
             'Forms' { $null = Get-LambekFormModel -Language $Piece.Language }

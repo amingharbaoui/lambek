@@ -52,6 +52,13 @@ function New-LambekPlan {
                 # Anything else said, a "pourquoi ?" after it is no longer about that answer
                 $told = Resolve-LambekToldQuestion -Text $Text
                 if (-not $told) { Set-LambekLastProof }
+                # "quelle est la capitale du Nigeria ?", "who wrote Hamlet?": what Lambek read in Wikidata, with where it read it
+                # ("combien d'habitants a la Belgique ?" reads as a count of what was told, too: Wikidata answers it first,
+                # and says what was told about it)
+                if (-not $told -or ($told.Asked.PSObject.Properties['Kind'] -and $told.Asked.Kind -eq 'count')) {
+                    $fact = Resolve-LambekFact -Text $Text
+                    if ($fact) { return ConvertTo-LambekReplyPlan -Text $Text -Language $fact.Language -Reply $fact.Reply -Spoken }
+                }
                 # "Marie a 2 ans de plus que Paul... quel age a Marie ?", "qui est au milieu ?": solved and checked
                 $problem = Resolve-LambekProblem -Text $Text
                 if ($problem) { return ConvertTo-LambekReplyPlan -Text $Text -Language $problem.Language -Reply $problem.Reply -Spoken }
@@ -114,6 +121,8 @@ function New-LambekPlan {
                 $vague = $null
                 for ($pass = 0; $pass -lt 2; $pass++) {
                     $request = ConvertTo-LambekRequest -Text $read
+                    # (what the user wrote, before a vague word was read again with its threshold)
+                    if ($pass -eq 0) { $written = $request }
                     $words = @($request.Entities | ForEach-Object { $_.Type }) -join ', '
                     $detail = "$($request.Language), $($request.Terms.Count) term(s)"
                     if ($words) { $detail += ", entities: $words" }
@@ -162,6 +171,16 @@ function New-LambekPlan {
                     }
 
                     Send-LambekProgress -Stage 'Check' -Step ($i + 1) -Percent (100 * (3 + 3 * $i) / $units) -Types (Format-LambekShownType -Step $step)
+                    # An action on files needs files (Test-LambekFileObject): "c'est quelle chanson celle-ci", "where is New
+                    # Zealand located on a map" plan nothing
+                    if ($step.Status -eq 'Ready' -and $step.Action -and -not (Test-LambekFileObject -Step $step -Request $written -Route $route)) {
+                        Add-LambekTrace -Trace $trace -Clock $clock -Stage 'Match' -Detail "$($step.Action) set aside: no file named" -Step ($i + 1)
+                        $step.Action = $null
+                        $step.Status = 'Unknown'
+                        $step.Confidence = 0.0
+                        $step.Parameters = [ordered]@{}
+                        $step.Questions = @((Get-LambekLexicon -Language $step.Language).SentenceQuestion)
+                    }
                     $step = Complete-LambekStep -Step $step
 
                     # "les gros fichiers": a reading takes the threshold at once and says it; a change asks first
@@ -259,8 +278,10 @@ function New-LambekPlan {
                     }
                     else {
                         # Still nothing: the optional proposer (a small transformer) may name an example of the action
-                        # the request looks like. It is only a "did you mean": the user has to say it for it to be read
-                        $proposed = Get-LambekProposal -Text $Text -Language $language
+                        # the request looks like. It is only a "did you mean": the user has to say it for it to be read.
+                        # Only for what the router takes for an order: "when i came back from this place" asks for nothing
+                        $proposed = $null
+                        if (-not $route -or $route.Proposed -eq 'Order') { $proposed = Get-LambekProposal -Text $Text -Language $language }
                         # Never towards an action that changes files: a "yes" said too fast must stay harmless
                         $harmless = $proposed -and (Get-LambekAction -Id $proposed.Action).Action.Risk -eq 'low'
                         if ($harmless -and $proposed.Example) {
@@ -309,4 +330,35 @@ function Add-LambekTrace {
             Milliseconds = [math]::Round($Clock.Elapsed.TotalMilliseconds, 1)
         })
     $Clock.Restart()
+}
+
+function Test-LambekFileObject {
+    param([pscustomobject] $Step, [pscustomobject] $Request, [pscustomobject] $Route)
+
+    # An action of the files pack needs files to act on. A folder, a path, a file name, an extension or a pronoun for
+    # files named before is enough;
+    # else the message must read as an order (the router proposes no other act for it), and name files with a word of
+    # the pack ("fichiers", "photos", "chansons") or a kind of file
+    if (-not "$($Step.Action)".StartsWith('files.')) { return $true }
+    $parameters = $Step.Parameters
+    foreach ($name in 'Path', 'Source', 'Destination', 'Parent', 'Name', 'NewName', 'Extension', 'ExceptExtension', 'ExceptName') {
+        if ($parameters.Contains($name) -and $parameters[$name]) { return $true }
+    }
+    # ("restaure-les": files named before, by a pronoun)
+    $tokens = @($Request.Tokens) + @($Request.Words)
+    # (a pronoun, not an article: joined to its verb, "restaure-les", or last, "show them")
+    $pronouns = @((Get-LambekLexicon -Language $Step.Language).FollowUp['Pronouns'])
+    $said = @($Request.Tokens)
+    if ($said.Count -gt 0 -and $said[-1] -in $pronouns) { return $true }
+    foreach ($pronoun in $pronouns) { if ("$($Request.Original)" -match "(?i)\p{L}-$([regex]::Escape($pronoun))(?!\p{L})") { return $true } }
+    if ($Route -and $Route.Proposed -and $Route.Proposed -ne 'Order') { return $false }
+    if ($parameters.Contains('Kind') -and $parameters['Kind']) { return $true }
+    foreach ($pack in $script:Packs.Values) {
+        if (-not $pack.Words.ContainsKey($Step.Language)) { continue }
+        $words = $pack.Words[$Step.Language]
+        foreach ($token in $tokens) {
+            if ($words.ContainsKey("$token") -and @($words["$token"] | Where-Object { $_ -eq 'o' }).Count -gt 0) { return $true }
+        }
+    }
+    return $false
 }

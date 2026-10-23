@@ -190,8 +190,12 @@
       "calculate",
       "compute",
       "evaluate",
-      "solve"
+      "solve",
+      "divide",
+      "multiply"
     ],
+    "Imperatives": {"divide": "/", "multiply": "*"},
+    "By": "by",
     "SuchThat": ["such that", "so that"],
     "Operators": {
       "multiplied by": "*",
@@ -307,6 +311,7 @@
     "Between": "\\bdays?\\b.*\\bbetween\\b",
     "Weekday": "\\b(?:what|which) day\\b(?!.*\\bin \\d)|\\bday of the week\\b",
     "InDays": "\\b(?:what|which) (?:date|day)\\b.*\\bin (?<n>\\d+) days?\\b",
+    "Now": {"Time": "^(?:(?:tell me|do you know) )?(?:what time is it|what s the time|whats the time|what is the time|the time|time|current time|what time it is|do you have the time)(?: now| right now)?(?<place> in .+)?$", "Today": "^(?:(?:tell me|do you know) )?(?:what day is it|what day is today|what s today|what is today|what is the date|what s the date|whats the date|what date is it|what is today s date|what s today s date|today s date|todays date|the date|date|what day)(?: today| now)?$", "Year": "^what year is it(?: now)?$"},
     "Functions": {
       "derivative": [
         "derivative of",
@@ -1004,6 +1009,7 @@
       "what s a",
       "what s an"
     ],
+    "QuestionStarts": ["what", "which", "who", "whom", "whose", "where", "why", "how"],
     "Speakers": [
       "i",
       "we"
@@ -1363,6 +1369,7 @@
       "CountFewer": "{0} fewer {1}.",
       "CountSame": "The same: {0} {1} each.",
       "Why": "Because you told me:",
+      "WhyRead": "I read it in {0} (data read {1}):",
       "WhyCalculated": "And the calculation: {0}.",
       "WhyNothing": "Why what? I did not answer anything from what you told me just before."
     }
@@ -1379,8 +1386,8 @@
     "Waits": "Step {0} waits for step {1} because {2}.",
     "NeedOne": "I need one more detail. {0}",
     "NeedMany": "I need a few details:",
-    "Unknown": "I did not understand that. I can remember what you tell me and reason about it, calculate, define a word, and take care of {0}.",
-    "Open": "That I cannot do yet: I do not make up stories or poems, I give no advice or opinions, and I do not predict the future. I can remember what you tell me and reason about it, calculate, define a word, and take care of {0}.",
+    "Unknown": "I did not understand that. I can remember what you tell me and reason about it, calculate, define a word, answer general knowledge questions, and take care of {0}.",
+    "Open": "That I cannot do yet: I do not make up stories or poems, I give no advice or opinions, and I do not predict the future. I can remember what you tell me and reason about it, calculate, define a word, answer general knowledge questions, and take care of {0}.",
     "Elsewhere": "That I cannot do: I have no access to messages, phones, shopping or the house. I can take care of {0}.",
     "Feeling": "Thank you for telling me. I am not good at talking about feelings yet, but if I can help you with something, just say so.",
     "Stopped": "I stopped before running anything.",
@@ -1561,6 +1568,12 @@
       "Weekday": "{0} is a {1}.",
       "Later": "In {0} days it will be {1}.",
       "DateFormat": "MMMM d, yyyy",
+      "NowTime": "It is {0} by this computer's clock.",
+      "NowElsewhere": "By this computer's clock it is {0}; I do not know the time in other places.",
+      "NowToday": "Today is {0}.",
+      "NowYear": "It is {0}.",
+      "TimeFormat": "HH:mm",
+      "TodayFormat": "dddd, MMMM d, yyyy",
       "Symbols": {
         "c": "°C",
         "f": "°F",
@@ -1824,7 +1837,11 @@
         "are you a machine",
         "are you a person"
       ],
-      "Reply": "I'm Lambek. I turn plain sentences into actions on your computer, and I show you each step before anything runs."
+      "Reply": "I'm Lambek. I answer from what you tell me and what I have read, I calculate, and I turn your requests into actions on your computer, showing you each step before anything runs."
+    },
+    "Limits": {
+      "Phrases": ["what can t you do", "what cant you do", "what can you not do", "what can not you do", "what are your limits", "what are your limitations", "what don t you know", "what do you not know", "what are you missing", "what don t you do", "what can t you"],
+      "Reply": "I have no access to the internet: I do not know the weather, the news or anything that changes every day, and what I know of the world I read in Wikidata, on the day I read it. I do not make up stories or poems, I give no advice or opinions, and I cannot send messages, call, shop or run the house. I understand English and French."
     },
     "Abilities": {
       "Phrases": [
@@ -1838,7 +1855,7 @@
         "how do you work",
         "how does this work"
       ],
-      "Reply": "I can help with {0}. Say what you want in your own words, for example: {1}"
+      "Reply": "I can remember what you tell me and reason about it, calculate, tell the date and the time, define a word, answer general knowledge questions from Wikidata (countries, capitals, cities, languages, currencies, people, books, films, paintings), and take care of {0}. Say what you want in your own words, for example: {1}"
     },
     "Languages": {
       "Phrases": [
@@ -1941,5 +1958,681 @@
         "Great. Tell me what to do next."
       ]
     }
+  },
+  "Facts": {
+    "Source": "Wikidata",
+    "Told": "You told me: \"{0}\".",
+    "According": ", according to Wikidata",
+    "Openers": [
+      "hi",
+      "hello",
+      "hey",
+      "and",
+      "so",
+      "tell me",
+      "can you tell me",
+      "could you tell me",
+      "do you know",
+      "i want to know",
+      "i would like to know",
+      "i d like to know",
+      "please tell me",
+      "remind me"
+    ],
+    "Closers": [
+      "please",
+      "exactly",
+      "again",
+      "currently",
+      "now",
+      "today"
+    ],
+    "Questions": {
+      "who": [
+        "who",
+        "by whom"
+      ],
+      "when": [
+        "when",
+        "what year",
+        "which year",
+        "in what year",
+        "in which year",
+        "what date",
+        "on what date"
+      ],
+      "where": [
+        "where"
+      ],
+      "howmany": [
+        "how many",
+        "how much"
+      ],
+      "what": [
+        "on which",
+        "on what",
+        "in which",
+        "in what",
+        "of which",
+        "what",
+        "which",
+        "what s",
+        "whats"
+      ],
+      "country": [
+        "which country",
+        "what country",
+        "in which country",
+        "in what country"
+      ],
+      "age": ["how old", "at what age", "what age"],
+      "yesno": [
+        "is",
+        "was",
+        "are",
+        "were",
+        "did",
+        "does",
+        "do",
+        "has",
+        "have"
+      ]
+    },
+    "Fillers": [
+      "is",
+      "been",
+      "has",
+      "are",
+      "was",
+      "were",
+      "the",
+      "a",
+      "an",
+      "of",
+      "in",
+      "on",
+      "by",
+      "did",
+      "does",
+      "do",
+      "it",
+      "s",
+      "there",
+      "they",
+      "people",
+      "official",
+      "main",
+      "current",
+      "located",
+      "situated"
+    ],
+    "Kinds": {
+      "country": [
+        "country",
+        "nation",
+        "state"
+      ],
+      "city": [
+        "city",
+        "town"
+      ],
+      "person": [
+        "person"
+      ],
+      "book": [
+        "book",
+        "books",
+        "novel",
+        "novels",
+        "play",
+        "plays",
+        "work",
+        "works"
+      ],
+      "film": [
+        "film",
+        "films",
+        "movie",
+        "movies",
+        "picture"
+      ],
+      "painting": [
+        "painting",
+        "paintings",
+        "picture",
+        "work"
+      ]
+    },
+    "Genders": {},
+    "And": "and",
+    "Yes": "Yes",
+    "No": "No",
+    "Months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "Dates": {
+      "Day": "on {0}",
+      "First": "",
+      "Month": "in {0}",
+      "Year": "in {0}",
+      "BeforeEra": "{0} BC"
+    },
+    "Number": {
+      "Group": ",",
+      "Of": "{0} ({1})",
+      "OfUndated": "{0}"
+    },
+    "Query": {
+      "Determiners": [
+        "the"
+      ],
+      "Of": [
+        "of"
+      ],
+      "In": [
+        "in",
+        "of"
+      ],
+      "World": [
+        "in the world",
+        "on earth",
+        "of the world",
+        "in the whole world"
+      ],
+      "WorldSay": "in the world",
+      "Or": [
+        "or"
+      ],
+      "Superlatives": [
+        {
+          "Words": [
+            "most populous",
+            "most populated",
+            "biggest",
+            "largest"
+          ],
+          "Property": "P1082",
+          "Order": "max",
+          "Kinds": [
+            "city"
+          ],
+          "Say": {
+            "city": "The most populous city {scope} is {value}, with {digits} inhabitants in {year}"
+          }
+        },
+        {
+          "Words": [
+            "most populous",
+            "most populated"
+          ],
+          "Property": "P1082",
+          "Order": "max",
+          "Kinds": [
+            "country"
+          ],
+          "Say": {
+            "country": "The most populous country {scope} is {value}, with {digits} inhabitants in {year}"
+          }
+        },
+        {
+          "Words": [
+            "least populous",
+            "least populated"
+          ],
+          "Property": "P1082",
+          "Order": "min",
+          "Kinds": [
+            "country"
+          ],
+          "Say": {
+            "country": "The least populous country {scope} is {value}, with {digits} inhabitants in {year}"
+          }
+        }
+      ],
+      "Within": {
+        "city": [
+          [
+            "P17"
+          ],
+          [
+            "P17",
+            "P30"
+          ]
+        ],
+        "country": [
+          [
+            "P30"
+          ]
+        ]
+      },
+      "Compare": [
+        {
+          "Words": [
+            "before or after"
+          ],
+          "Order": "which"
+        },
+        {
+          "Words": [
+            "earlier than",
+            "before"
+          ],
+          "Order": "before"
+        },
+        {
+          "Words": [
+            "later than",
+            "after"
+          ],
+          "Order": "after"
+        },
+        {
+          "Words": [
+            "born first",
+            "the oldest",
+            "the eldest",
+            "older"
+          ],
+          "Order": "earliest",
+          "Property": "P569"
+        },
+        {
+          "Words": [
+            "born last",
+            "the youngest",
+            "younger"
+          ],
+          "Order": "latest",
+          "Property": "P569"
+        }
+      ],
+      "SayBefore": "Before",
+      "SayAfter": "After"
+    },
+    "Relations": [
+      {
+        "Property": "P36",
+        "Role": ["capital"],
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "yesno"
+        ],
+        "Cues": [
+          "capital",
+          "capital city"
+        ],
+        "Kind": [
+          "city"
+        ],
+        "Say": "The capital of {of} is {value}",
+        "SayYes": "Yes, {value} is the capital of {of}",
+        "SayNo": "No: the capital of {of} is {value}"
+      },
+      {
+        "Property": "P36",
+        "Inverse": true,
+        "Subject": [
+          "city"
+        ],
+        "Asks": [
+          "what",
+          "country"
+        ],
+        "Needs": [
+          "country"
+        ],
+        "Cues": [
+          "capital"
+        ],
+        "Say": "{label} is the capital of {value}"
+      },
+      {
+        "Property": "P37",
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "yesno"
+        ],
+        "Cues": [
+          "language",
+          "languages",
+          "speak",
+          "spoken"
+        ],
+        "Say": "In {of}, people speak {value}",
+        "SayYes": "Yes, in {of}, people speak {value}",
+        "SayNo": "No: in {of}, people speak {value}"
+      },
+      {
+        "Property": "P38",
+        "Role": ["currency"],
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "yesno"
+        ],
+        "Cues": [
+          "currency",
+          "currencies",
+          "money"
+        ],
+        "Say": "The currency of {of} is the {value}",
+        "SayYes": "Yes, the currency of {of} is the {value}",
+        "SayNo": "No: the currency of {of} is the {value}"
+      },
+      {
+        "Property": "P1082",
+        "Subject": [
+          "country",
+          "city"
+        ],
+        "Asks": [
+          "howmany",
+          "what"
+        ],
+        "Cues": [
+          "population",
+          "people live",
+          "people living",
+          "inhabitants",
+          "live",
+          "people",
+          "residents"
+        ],
+        "Say": "The population of {of} is {number}"
+      },
+      {
+        "Property": "P30",
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "what",
+          "where",
+          "yesno"
+        ],
+        "Cues": [
+          "continent",
+          "located",
+          "situated",
+          "is"
+        ],
+        "Say": "{of} is in {value}"
+      },
+      {
+        "Property": "P17",
+        "Subject": [
+          "city"
+        ],
+        "Asks": [
+          "country",
+          "where",
+          "yesno"
+        ],
+        "Cues": [
+          "country",
+          "located",
+          "situated",
+          "is"
+        ],
+        "Say": "{label} is in {value}"
+      },
+      {
+        "Property": "P569",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "born",
+          "birth",
+          "birthday"
+        ],
+        "Say": "{label} was born {date}"
+      },
+      {
+        "Property": "P19",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "where"
+        ],
+        "Cues": [
+          "born",
+          "birth"
+        ],
+        "Say": "{label} was born in {value}"
+      },
+      {
+        "Property": "P570",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "die",
+          "died",
+          "death",
+          "pass away",
+          "passed away"
+        ],
+        "Say": "{label} died {date}"
+      },
+      {
+        "Property": "P20",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "where"
+        ],
+        "Cues": [
+          "die",
+          "died",
+          "pass away",
+          "passed away"
+        ],
+        "Say": "{label} died in {value}"
+      },
+      {
+        "Property": "P27",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "what"
+        ],
+        "Cues": [
+          "nationality",
+          "citizenship"
+        ],
+        "Say": "{label} was a citizen of {value}"
+      },
+      {
+        "Property": "P50",
+        "Role": ["author", "writer"],
+        "Subject": [
+          "book"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "wrote",
+          "write",
+          "written",
+          "author",
+          "writer"
+        ],
+        "Say": "{label} was written by {value}",
+        "SayYes": "Yes, {label} was written by {value}",
+        "SayNo": "No: {label} was written by {value}"
+      },
+      {
+        "Property": "P50",
+        "Inverse": true,
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "what"
+        ],
+        "Cues": [
+          "wrote",
+          "write",
+          "written"
+        ],
+        "Say": "{label} wrote, among others, {value}"
+      },
+      {
+        "Property": "P57",
+        "Role": ["director"],
+        "Subject": [
+          "film"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "directed",
+          "direct",
+          "director",
+          "made"
+        ],
+        "Say": "{label} was directed by {value}",
+        "SayYes": "Yes, {label} was directed by {value}",
+        "SayNo": "No: {label} was directed by {value}"
+      },
+      {
+        "Property": "P57",
+        "Inverse": true,
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "what"
+        ],
+        "Cues": [
+          "directed",
+          "direct",
+          "made"
+        ],
+        "Say": "{label} directed, among others, {value}"
+      },
+      {
+        "Property": "P170",
+        "Role": ["painter"],
+        "Subject": [
+          "painting"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "painted",
+          "paint",
+          "painter",
+          "created",
+          "made"
+        ],
+        "Say": "{label} was painted by {value}",
+        "SayYes": "Yes, {label} was painted by {value}",
+        "SayNo": "No: {label} was painted by {value}"
+      },
+      {
+        "Property": "P577",
+        "Subject": [
+          "film"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "released",
+          "come out",
+          "came out",
+          "release",
+          "made",
+          "out"
+        ],
+        "Say": "{label} was released {date}"
+      },
+      {
+        "Property": "P577",
+        "Subject": [
+          "book"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "published",
+          "written",
+          "released",
+          "come out",
+          "came out",
+          "publish",
+          "write"
+        ],
+        "Say": "{label} was published {date}"
+      },
+      {
+        "Property": "P571",
+        "Subject": [
+          "painting"
+        ],
+        "Asks": [
+          "when"
+        ],
+        "Cues": [
+          "painted",
+          "made",
+          "created",
+          "paint"
+        ],
+        "Say": "{label} was painted {date}"
+      },
+      {"Property": "Age", "Subject": ["person"], "Asks": ["age"], "Cues": ["is", "was", "die", "died", "when he died", "when she died", "age"], "Say": "{label} died at the age of {age}", "SayAlive": "{label} is {age} years old"},
+      {
+        "Property": "Description",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "who"
+        ],
+        "Cues": [
+          "is",
+          "was"
+        ],
+        "Say": "{label}: {description}"
+      }
+    ]
   }
 }

@@ -134,6 +134,9 @@ function Repair-LambekFromDictionary {
     if (-not $dictionary) { return $Current }
     $lexicon = Get-LambekLexicon -Language $language
     $domain = Get-LambekDomainSense -Language $language
+    # A sentence that names no folder, file or extension is read as it was written: a synonym is then only proposed
+    # ("Guns N' Roses a remporte son premier prix" is no order to list files, whatever "remporter" may mean)
+    $named = @($Current.Request.Entities | Where-Object { $_.Type -in 'path', 'filename', 'extension' }).Count -gt 0
 
     # The words to look up: phrases of three or two words the dictionary knows together, then single words
     $tokens = @($Current.Request.Tokens)
@@ -180,7 +183,7 @@ function Repair-LambekFromDictionary {
             # A synonym, or a form of a known word, is that word. A meaning next to it is only proposed:
             # the user says yes before anything is read that way, when the senses are frequent enough to ask
             # and only when the word can only lead to reading: a synonym of a change is asked first ("withdraw" is not always "remove")
-            if ($candidate.Relation -in 'form', 'synonym' -and (Get-LambekVerbRisk -Word $candidate.Word -Lexicon $lexicon) -eq 'low') {
+            if (($candidate.Relation -eq 'form' -or ($named -and $candidate.Relation -eq 'synonym')) -and (Get-LambekVerbRisk -Word $candidate.Word -Lexicon $lexicon) -eq 'low') {
                 $Corrections.Add($found)
                 $Current = $reading
             }

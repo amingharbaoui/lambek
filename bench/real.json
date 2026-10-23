@@ -1,0 +1,5268 @@
+{
+  "Version": "1.0",
+  "Description": "Real sentences, none written for Lambek, drawn at random by tools/Get-LambekRealSentences.ps1 (seed and sources in tools/real.json): what people asked a voice assistant (MASSIVE 1.1, CC BY 4.0, Amazon) and questions about the world with their answers (Mintaka, CC BY 4.0, Amazon), in French and English. Sent as the app sends them and measured as bench/messages.json is (Invoke-LambekMessageBenchmark): a sentence of MASSIVE whose intent Lambek has no hold on expects Lambek to say it cannot, and never to act; the answer of Mintaka is its own; what the other sentences expect (general knowledge, a calculation, the time, small talk) was written by hand before Lambek was measured on them. Source says where each sentence comes from. The test split is frozen (TestHash): a part of Lambek enters only when the score on these sentences goes up and nothing falls elsewhere.",
+  "Now": "2026-10-19T12:00:00",
+  "TestHash": "3ab1394676c39262fac299e7859a996b647193853e0545ceaf65a4046e39802b",
+  "Cases": [
+    {
+      "Id": "R001",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "jouer toute la musique de garou",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "4838",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R002",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "jouer la racing",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10350",
+        "Intent": "play_game"
+      }
+    },
+    {
+      "Id": "R003",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "efface toutes les listes",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10565",
+        "Intent": "lists_remove"
+      }
+    },
+    {
+      "Id": "R004",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "cooking"
+      ],
+      "Text": "temps de cuisson du poulet au four",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10072",
+        "Intent": "cooking_recipe"
+      }
+    },
+    {
+      "Id": "R005",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "pour chaque dimanche impair définissez un rappel pour",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7151",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R006",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "vider la liste de course",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10756",
+        "Intent": "lists_remove"
+      }
+    },
+    {
+      "Id": "R007",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "s'il vous plaît vérifier mes e-mails pour moi",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16648",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R008",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "je t'aime",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "329",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R009",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "quel est le prix en dollar en inr",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13684",
+        "Intent": "qa_currency"
+      }
+    },
+    {
+      "Id": "R010",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "joue un jeu avec moi",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10292",
+        "Intent": "play_game"
+      }
+    },
+    {
+      "Id": "R011",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "comment ça nous arrive",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15845",
+        "Intent": "email_sendemail"
+      }
+    },
+    {
+      "Id": "R012",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "datetime"
+      ],
+      "Text": "quel jour est le treize décembre",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "dimanche"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2824",
+        "Intent": "datetime_query"
+      }
+    },
+    {
+      "Id": "R013",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "envoie un e-mail à joe à un. a. o. l. point com",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16245",
+        "Intent": "email_sendemail"
+      }
+    },
+    {
+      "Id": "R014",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "vérifiez mes nouveaux e-mails et dites-moi de quoi ils sont parlent",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15904",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R015",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "donnez-moi ma mise à jour facebook toutes les trois heures",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15205",
+        "Intent": "social_query"
+      }
+    },
+    {
+      "Id": "R016",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "avez-vous entendu de la bonne musique ces derniers temps",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6439",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R017",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "retirer le crayon de la papeterie",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10494",
+        "Intent": "lists_remove"
+      }
+    },
+    {
+      "Id": "R018",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "c'est quelle chanson à la radio",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2365",
+        "Intent": "music_query"
+      }
+    },
+    {
+      "Id": "R019",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "répondre à mes mails",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16318",
+        "Intent": "email_sendemail"
+      }
+    },
+    {
+      "Id": "R020",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "c'est l'anniversaire de jessica le douze avril",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "c'est note|je comprends"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "8767",
+        "Intent": "calendar_query"
+      }
+    },
+    {
+      "Id": "R021",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "news"
+      ],
+      "Text": "me tenir au date de l'actualité sports",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1061",
+        "Intent": "news_query"
+      }
+    },
+    {
+      "Id": "R022",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "ma journée a été géniale",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6388",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R023",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "vérifie outlook",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16052",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R024",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "marquer le vingt avril comme l'anniversaire de mon frère",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7654",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R025",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "news"
+      ],
+      "Text": "je veux savoir pour the brexit",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5196",
+        "Intent": "news_query"
+      }
+    },
+    {
+      "Id": "R026",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "quel est le plus haut batiment du monde",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "burj khalifa"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "12951",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R027",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "parle moi de la météo de cette semaine",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5837",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R028",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "quelle est la définition de la logique",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "raison"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13863",
+        "Intent": "qa_definition"
+      }
+    },
+    {
+      "Id": "R029",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "montre des réunions",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "8992",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R030",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "vérifie mes e-mails pour quelque chose à partir du nom",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15998",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R031",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "s'il vous plaît ajouter le dîner avec marie à mon calendrier le samedi",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9153",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R032",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "combien coûte l'action amazon",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "14253",
+        "Intent": "qa_stock"
+      }
+    },
+    {
+      "Id": "R033",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "à quel degré est-il à l'extérieur",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3426",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R034",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "news"
+      ],
+      "Text": "quelles sont les nouvelles site internetsur le c. n. n. site internet",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2921",
+        "Intent": "news_query"
+      }
+    },
+    {
+      "Id": "R035",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "veuillez éteindre les lumières",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "914",
+        "Intent": "iot_hue_lightoff"
+      }
+    },
+    {
+      "Id": "R036",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "le cours du dollar a-t-il augmenté",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13685",
+        "Intent": "qa_currency"
+      }
+    },
+    {
+      "Id": "R037",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "s'il te plaît envoie un e-mail à maman et papa pour leur demander comment ils vont",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16430",
+        "Intent": "email_sendemail"
+      }
+    },
+    {
+      "Id": "R038",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "olly il y a un bon groupe qui joue ce soir à vingt et une heure au jazz bar je veux y aller",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "c'est note|je comprends"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6819",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R039",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "marquer aujourd'hui comme le début de mon régime",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6539",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R040",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "ajouter du dentifrice à ma liste de course",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10815",
+        "Intent": "lists_createoradd"
+      }
+    },
+    {
+      "Id": "R041",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "cooking"
+      ],
+      "Text": "trouve moi une recette de gâteau au chocolat",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9940",
+        "Intent": "cooking_recipe"
+      }
+    },
+    {
+      "Id": "R042",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "je dois parler à maman",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13186",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R043",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "baisser les lumières",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "158",
+        "Intent": "iot_hue_lightdim"
+      }
+    },
+    {
+      "Id": "R044",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "cooking"
+      ],
+      "Text": "veuillez rechercher sur internet et afficher les vidéos youtube appropriées pour cuisiner des aliments italien",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9977",
+        "Intent": "cooking_recipe"
+      }
+    },
+    {
+      "Id": "R045",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "jouer le précédent podcast",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11476",
+        "Intent": "play_podcasts"
+      }
+    },
+    {
+      "Id": "R046",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "noter que j'aime jazz et je déteste discothèque",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3204",
+        "Intent": "music_likeness"
+      }
+    },
+    {
+      "Id": "R047",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "la météo pour le moment",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5524",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R048",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "datetime"
+      ],
+      "Text": "quelle est la date pour mardi prochain",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "20 octobre|27 octobre"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3361",
+        "Intent": "datetime_query"
+      }
+    },
+    {
+      "Id": "R049",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "transport"
+      ],
+      "Text": "dis-moi l'heure d'arrivée du train à marseille",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "12430",
+        "Intent": "transport_query"
+      }
+    },
+    {
+      "Id": "R050",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "pouvez-vous me donner les détails de la prochaine fonction annuel le vingt six mars",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7168",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R051",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "dis-moi le plus grand océan du monde",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "pacifique"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "14770",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R052",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "olly tweet apple que l'iphone ne fonctionne pas",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15358",
+        "Intent": "social_post"
+      }
+    },
+    {
+      "Id": "R053",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "quelle est la racine carré de six cent vingt cinq",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "25|vingt-cinq|vingt cinq"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13192",
+        "Intent": "qa_maths"
+      }
+    },
+    {
+      "Id": "R054",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "audio"
+      ],
+      "Text": "où est le réglage du volume",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1065",
+        "Intent": "audio_volume_other"
+      }
+    },
+    {
+      "Id": "R055",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "cooking"
+      ],
+      "Text": "comment faire des taco",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10150",
+        "Intent": "cooking_recipe"
+      }
+    },
+    {
+      "Id": "R056",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "publier cette vidéo sur facebook",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15337",
+        "Intent": "social_post"
+      }
+    },
+    {
+      "Id": "R057",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "suivant",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11261",
+        "Intent": "play_podcasts"
+      }
+    },
+    {
+      "Id": "R058",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "datetime"
+      ],
+      "Text": "quelle heure est-il à lyon",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "12 h|12:00|midi"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2927",
+        "Intent": "datetime_query"
+      }
+    },
+    {
+      "Id": "R059",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "rappel comment je me sens a propos de cette chanson",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "4809",
+        "Intent": "music_likeness"
+      }
+    },
+    {
+      "Id": "R060",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "noter toutes les listes sur cet appareil",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11174",
+        "Intent": "lists_query"
+      }
+    },
+    {
+      "Id": "R061",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "enregistre mon avis sur la chanson d' adele",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "4887",
+        "Intent": "music_likeness"
+      }
+    },
+    {
+      "Id": "R062",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "éteindre la prise",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2690",
+        "Intent": "iot_wemo_off"
+      }
+    },
+    {
+      "Id": "R063",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "s'il vous plaît prévenez-moi un jour avant l' anniversaire de jeff",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "8260",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R064",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "où est né le mahatma gandhi",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "porbandar"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "14509",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R065",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "coordonne tous les genres de chansons pop",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1115",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R066",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "joue slayer",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1467",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R067",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "envoie un e-mail à jake pour le remercier",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16297",
+        "Intent": "email_sendemail"
+      }
+    },
+    {
+      "Id": "R068",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "quelle est la capitale du nigéria",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "abuja"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13115",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R069",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "divisez deux cents par quatre",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "50|cinquante"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "14615",
+        "Intent": "qa_maths"
+      }
+    },
+    {
+      "Id": "R070",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "puis-je s'il te plaît avoir le temps pour demain ici à marseille",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1404",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R071",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "mettre en place un rappel le mois prochain pour faire changer l'huile",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6902",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R072",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "peux-tu mettre la liste de lecture amour",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3554",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R073",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "recommendation"
+      ],
+      "Text": "où se trouve la station de gaz la plus proche",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "12409",
+        "Intent": "recommendation_locations"
+      }
+    },
+    {
+      "Id": "R074",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "quelles sont les prévisions météorologiques pour samedi",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5085",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R075",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "tweeter un message à suqcom que j'attends toujours ma livraison",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15656",
+        "Intent": "social_post"
+      }
+    },
+    {
+      "Id": "R076",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "alarm"
+      ],
+      "Text": "réveille moi dans trente minutes",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "4848",
+        "Intent": "alarm_set"
+      }
+    },
+    {
+      "Id": "R077",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "je veux savoir la météo d'aujourd'hui",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6151",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R078",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "joue ma playlist de musique de fête",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5683",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R079",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "transport"
+      ],
+      "Text": "comment est le trafic en le moment",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "12838",
+        "Intent": "transport_traffic"
+      }
+    },
+    {
+      "Id": "R080",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "la couleur de la lumière doit être atténuée",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2128",
+        "Intent": "iot_hue_lightdim"
+      }
+    },
+    {
+      "Id": "R081",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "how would you describe a happy birthday",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13871",
+        "Intent": "qa_definition"
+      }
+    },
+    {
+      "Id": "R082",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "please tweet a complaint to comcast for bad customer service",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15626",
+        "Intent": "social_post"
+      }
+    },
+    {
+      "Id": "R083",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "is it going to rain later",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5433",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R084",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "please google location and information of mount rushmore",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "south dakota|keystone"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13869",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R085",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "get me latest updates from facebook",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15200",
+        "Intent": "social_query"
+      }
+    },
+    {
+      "Id": "R086",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "within the past three months how many meetings did i have with mr. richards",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "8667",
+        "Intent": "calendar_query"
+      }
+    },
+    {
+      "Id": "R087",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "remind me to take my medicine at nine am",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6936",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R088",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "tell me something to remind this week",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "8968",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R089",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "reply to dad write i will be late",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15825",
+        "Intent": "email_sendemail"
+      }
+    },
+    {
+      "Id": "R090",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "any new email since last time",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16758",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R091",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "remove the guest list i created last week",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11133",
+        "Intent": "lists_remove"
+      }
+    },
+    {
+      "Id": "R092",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "open contacts",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16225",
+        "Intent": "email_addcontact"
+      }
+    },
+    {
+      "Id": "R093",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "replace",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10696",
+        "Intent": "lists_remove"
+      }
+    },
+    {
+      "Id": "R094",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "can you delete the next event",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7500",
+        "Intent": "calendar_remove"
+      }
+    },
+    {
+      "Id": "R095",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "cooking"
+      ],
+      "Text": "how long should i boil the egg",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9930",
+        "Intent": "cooking_recipe"
+      }
+    },
+    {
+      "Id": "R096",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "tell me the weather this week",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "103",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R097",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "audio"
+      ],
+      "Text": "unmute after",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "608",
+        "Intent": "audio_volume_up"
+      }
+    },
+    {
+      "Id": "R098",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "which is the highest peak in the world",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "everest"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "12972",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R099",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "dictate email",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16754",
+        "Intent": "email_sendemail"
+      }
+    },
+    {
+      "Id": "R100",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "is there anything important happening on social media",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15513",
+        "Intent": "social_query"
+      }
+    },
+    {
+      "Id": "R101",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "are there any forecasts of rain or snow this week",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3407",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R102",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "can you create a list for me",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10563",
+        "Intent": "lists_createoradd"
+      }
+    },
+    {
+      "Id": "R103",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "datetime"
+      ],
+      "Text": "date today",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "october 19|19 october|2026-10-19|19/10/2026"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1796",
+        "Intent": "datetime_query"
+      }
+    },
+    {
+      "Id": "R104",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "what's the currency exchange rate for china",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13741",
+        "Intent": "qa_currency"
+      }
+    },
+    {
+      "Id": "R105",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "cancel the breakfast at tiffany's house",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6729",
+        "Intent": "calendar_remove"
+      }
+    },
+    {
+      "Id": "R106",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "alexa how much do you know about me",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "nothing|not told|have not told"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6650",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R107",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "datetime"
+      ],
+      "Text": "please change time zone to canada",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3532",
+        "Intent": "datetime_convert"
+      }
+    },
+    {
+      "Id": "R108",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "is this program is scheduled",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7141",
+        "Intent": "calendar_query"
+      }
+    },
+    {
+      "Id": "R109",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "how far is california from georgia",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13774",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R110",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "transport"
+      ],
+      "Text": "find me the cheapest train ticket to spain",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "12537",
+        "Intent": "transport_ticket"
+      }
+    },
+    {
+      "Id": "R111",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "can you let delta know i'm never using them again",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15565",
+        "Intent": "social_post"
+      }
+    },
+    {
+      "Id": "R112",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "what music is currently playing on",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1677",
+        "Intent": "music_query"
+      }
+    },
+    {
+      "Id": "R113",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "cooking"
+      ],
+      "Text": "do you know recipe for risotto",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10100",
+        "Intent": "cooking_recipe"
+      }
+    },
+    {
+      "Id": "R114",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "report weather for largo",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3338",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R115",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "friend updates",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6708",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R116",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "describe the new football game rules",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "14412",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R117",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "i would like it to help analyze ideas",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13524",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R118",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "explanation of the song",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1622",
+        "Intent": "music_query"
+      }
+    },
+    {
+      "Id": "R119",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "play radio with nonstop songs",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9565",
+        "Intent": "play_radio"
+      }
+    },
+    {
+      "Id": "R120",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "hey google play some jazz music for me",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3631",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R121",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "will i need sunscreen this afternoon",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6025",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R122",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "start the robot roomba",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "843",
+        "Intent": "iot_cleaning"
+      }
+    },
+    {
+      "Id": "R123",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "read some more of the daisy goodwin book for me",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9875",
+        "Intent": "play_audiobook"
+      }
+    },
+    {
+      "Id": "R124",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "recommendation"
+      ],
+      "Text": "look for shopping mall in sacramento for women's clothes",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11825",
+        "Intent": "recommendation_locations"
+      }
+    },
+    {
+      "Id": "R125",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "turn on the playlist i have dedicated to rock music",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3686",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R126",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "datetime"
+      ],
+      "Text": "what day of the week does the fifteenth of march fall on",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "monday|sunday"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1098",
+        "Intent": "datetime_query"
+      }
+    },
+    {
+      "Id": "R127",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "i have my clothes list",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "noted|i understand"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11186",
+        "Intent": "lists_query"
+      }
+    },
+    {
+      "Id": "R128",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "audio"
+      ],
+      "Text": "speak loudly",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3590",
+        "Intent": "audio_volume_up"
+      }
+    },
+    {
+      "Id": "R129",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "how much is the us dollar worth in canada",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "14228",
+        "Intent": "qa_currency"
+      }
+    },
+    {
+      "Id": "R130",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "please check for new email",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "17005",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R131",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "are their any new emails for me today",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16749",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R132",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "i want you to play bohemian raphsody for me",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5970",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R133",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "what are my plans for the month of may",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "8461",
+        "Intent": "calendar_query"
+      }
+    },
+    {
+      "Id": "R134",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "play song next",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "4477",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R135",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "what color are chairs",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13690",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R136",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "news"
+      ],
+      "Text": "show me some current events",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3099",
+        "Intent": "news_query"
+      }
+    },
+    {
+      "Id": "R137",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "what was the last movie will smith was in",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13546",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R138",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "delete all dates",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "8732",
+        "Intent": "calendar_remove"
+      }
+    },
+    {
+      "Id": "R139",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "when i came back from this place",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6596",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R140",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "delete all events from my calendar",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7993",
+        "Intent": "calendar_remove"
+      }
+    },
+    {
+      "Id": "R141",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "what was the weather for the week",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5074",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R142",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "do i have any incoming emails",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16666",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R143",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "recommendation"
+      ],
+      "Text": "can you find me a furniture store near me",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11942",
+        "Intent": "recommendation_locations"
+      }
+    },
+    {
+      "Id": "R144",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "takeaway"
+      ],
+      "Text": "it's time for junk food",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "noted|i understand"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3080",
+        "Intent": "takeaway_order"
+      }
+    },
+    {
+      "Id": "R145",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "my desire is to listen to some country music",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1108",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R146",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "start some music play the radio",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9353",
+        "Intent": "play_radio"
+      }
+    },
+    {
+      "Id": "R147",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "opinion petabit",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5691",
+        "Intent": "music_likeness"
+      }
+    },
+    {
+      "Id": "R148",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "set a notification for three two and one hours before next week's english final",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7199",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R149",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "alarm"
+      ],
+      "Text": "turn off eight am alarm",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "560",
+        "Intent": "alarm_remove"
+      }
+    },
+    {
+      "Id": "R150",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "transport"
+      ],
+      "Text": "book me a train ticket",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "12308",
+        "Intent": "transport_ticket"
+      }
+    },
+    {
+      "Id": "R151",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "olly save all the songs i have listened to more than once",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3683",
+        "Intent": "music_likeness"
+      }
+    },
+    {
+      "Id": "R152",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "email"
+      ],
+      "Text": "check for new email",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "16002",
+        "Intent": "email_query"
+      }
+    },
+    {
+      "Id": "R153",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "please activate my coffee pot for me",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3320",
+        "Intent": "iot_coffee"
+      }
+    },
+    {
+      "Id": "R154",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "transport"
+      ],
+      "Text": "please book train ticket from mumbai to sangli for tomorrow morning",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "12846",
+        "Intent": "transport_ticket"
+      }
+    },
+    {
+      "Id": "R155",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "when does the super bowl officially start",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9138",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R156",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "turn off the shed light",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2441",
+        "Intent": "iot_hue_lightoff"
+      }
+    },
+    {
+      "Id": "R157",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "please start vacuum cleaner",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "635",
+        "Intent": "iot_cleaning"
+      }
+    },
+    {
+      "Id": "R158",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "searching information online",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6561",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R159",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "continue the last chapter of the audio book i was listening to",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9844",
+        "Intent": "play_audiobook"
+      }
+    },
+    {
+      "Id": "R160",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "what's on the radio right now",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "5614",
+        "Intent": "music_query"
+      }
+    },
+    {
+      "Id": "R161",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "count"
+      ],
+      "Text": "Combien de films de la saga Star Wars ont-ils vu jouer le personnage connu sous le nom de Princesse Leia ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "6|six"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "4fd8f0b0",
+        "Complexity": "count",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R162",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Où jouent les Warriors ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Chase Center"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "31681534",
+        "Complexity": "generic",
+        "Category": "sports"
+      }
+    },
+    {
+      "Id": "R163",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "ordinal"
+      ],
+      "Text": "Quel était le dernier livre de William Faulkner ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Les Larrons|The Reivers"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "04ffcb45",
+        "Complexity": "ordinal",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R164",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "multihop"
+      ],
+      "Text": "Qui était l’épouse du 33e président des États-Unis ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Bess Truman"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "0465d9fb",
+        "Complexity": "multihop",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R165",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Quel livre de Harry Potter est le plus court ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Harry Potter à l'école des sorciers|Harry Potter and the Philosopher's Stone"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "50ffc480",
+        "Complexity": "superlative",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R166",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Quel film de Harry Potter a fait le moins d’argent ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Harry Potter et le Prisonnier d'Azkaban|Harry Potter and the Prisoner of Azkaban"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "5e11db69",
+        "Complexity": "superlative",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R167",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "count"
+      ],
+      "Text": "Combien de Super Bowls les Patriots ont-ils gagné ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "6|six"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "dae8d9a1",
+        "Complexity": "count",
+        "Category": "sports"
+      }
+    },
+    {
+      "Id": "R168",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Quelle est la cagnotte la plus élevée dans Dota 2 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "The International 2019"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "06926bd6",
+        "Complexity": "superlative",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R169",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Quels présidents américains n’ont pas obtenu de second mandat ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "William Howard Taft",
+          "Herbert Hoover",
+          "Gerald Ford",
+          "Jimmy Carter",
+          "George H. W. Bush",
+          "Joe Biden"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "09b912d2",
+        "Complexity": "difference",
+        "Category": "politics",
+        "Corrected": "Mintaka (2021) names Donald Trump, who was elected again in 2024; Joe Biden was not"
+      }
+    },
+    {
+      "Id": "R170",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Qui est un sénateur actuel du New Jersey ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Cory Booker|Andy Kim"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "5452c39c",
+        "Complexity": "generic",
+        "Category": "politics",
+        "Corrected": "Andy Kim is a senator of New Jersey too since 2024"
+      }
+    },
+    {
+      "Id": "R171",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Quel est le nom du film du réalisateur Christopher Nolan, sorti en 2000 et dans lequel Leonardo DiCaprio n’a interprété aucun rôle ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Memento"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "61216214",
+        "Complexity": "difference",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R172",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "count"
+      ],
+      "Text": "Combien d’États ont-ils été retournés de 2016 à 2020 lors des élections présidentielles de ces années-là ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "5|cinq"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "b68c2f13",
+        "Complexity": "count",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R173",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "comparative"
+      ],
+      "Text": "League of Legends est-il sorti après Runescape ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "oui"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "4e316854",
+        "Complexity": "comparative",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R174",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "De combien d’États proviennent les présidents ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "21"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "f5d22789",
+        "Complexity": "generic",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R175",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "multihop"
+      ],
+      "Text": "À quel âge l’auteure de Orgueil et Préjugés est-elle morte ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "41"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "4665c6c3",
+        "Complexity": "multihop",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R176",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "ordinal"
+      ],
+      "Text": "Quel était le dernier dirigeant de l’Union soviétique ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Mikhaïl Gorbatchev|Mikhail Gorbachev"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "9f926d41",
+        "Complexity": "ordinal",
+        "Category": "history"
+      }
+    },
+    {
+      "Id": "R177",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "ordinal"
+      ],
+      "Text": "Qui est le dernier président assassiné durant son mandat ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "John Fitzgerald Kennedy|John F. Kennedy"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "73799812",
+        "Complexity": "ordinal",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R178",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Qui a remporté le prix du meilleur joueur en deux mille dix-huit ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Patrick Mahomes"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "5c4e304f",
+        "Complexity": "generic",
+        "Category": "sports"
+      }
+    },
+    {
+      "Id": "R179",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "De qui Ayla tombe-t-elle amoureuse ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Jondalar"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "013cfbe5",
+        "Complexity": "generic",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R180",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Quel était l’un des principaux avions qui ne s’était pas écrasé dans un immeuble lors des attaques du 11 septembre ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "vol 93 United Airlines|United Airlines Flight 93"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "481d5324",
+        "Complexity": "difference",
+        "Category": "history"
+      }
+    },
+    {
+      "Id": "R181",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "Quel jeu Assassins Creed se déroule à l’époque de la révolution industrielle ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Assassin's Creed Syndicate"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "4ffd2599",
+        "Complexity": "intersection",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R182",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Quel est le principal personnage d’Agatha Christie qui était un détective non originaire d’Angleterre ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Hercule Poirot"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "dc41527c",
+        "Complexity": "difference",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R183",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "multihop"
+      ],
+      "Text": "Quel âge le chanteur principal de Creedence Clearwater Revival avait-il lorsqu’il ont presté à Woodstock ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "24"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "4460f91b",
+        "Complexity": "multihop",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R184",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "Quel film a été réalisé par George Lucas et est sorti en 1971 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "THX 1138"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "24e8eae1",
+        "Complexity": "intersection",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R185",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Quel est le jeu vidéo le plus vendu de tous les temps, en unités vendues ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Minecraft"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "7e623f90",
+        "Complexity": "generic",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R186",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Quel est le pays d’origine de AC/DC ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Australie|Australia"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "0a11e315",
+        "Complexity": "generic",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R187",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Actuellement, combien d’États membres composent l’Union européenne ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "27"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "0f91cb3b",
+        "Complexity": "generic",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R188",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Qui était le premier roi d’Israël ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Saül|Saul"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "0b93fcc0",
+        "Complexity": "generic",
+        "Category": "history"
+      }
+    },
+    {
+      "Id": "R189",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "ordinal"
+      ],
+      "Text": "Quand est-ce que le groupe Guns N’ Roses a-t-ils remporté son premier Prix Billboard Music Awards ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1988"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "12e7088a",
+        "Complexity": "ordinal",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R190",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "yesno"
+      ],
+      "Text": "Y a-t-il déjà eu deux joueurs sur la couverture d’un jeu Madden ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "oui"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "88b31815",
+        "Complexity": "yesno",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R191",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Quel film Star Wars n’a pas été réalisé en 1980 ou après ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Star Wars, épisode IV : Un nouvel espoir|Star Wars: Episode IV – A New Hope"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "4500a9c0",
+        "Complexity": "difference",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R192",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "comparative"
+      ],
+      "Text": "La chanson Shivers est-elle sortie la même année que Don’t Start Now ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "non"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "58bd0675",
+        "Complexity": "comparative",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R193",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Quel jeu pour Xbox 360 s’est vendue à plus d’exemplaires ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Kinect Adventures|Kinect Adventures!"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "00414d65",
+        "Complexity": "superlative",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R194",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "yesno"
+      ],
+      "Text": "Jimmy Carter a-t-il été réélu en 1980 ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "non"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "368dbf45",
+        "Complexity": "yesno",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R195",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "multihop"
+      ],
+      "Text": "Quelle est la personne dont le jumeau de Luigi est amoureux ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Princesse Peach|Princess Peach"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "bd1c9600",
+        "Complexity": "multihop",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R196",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Qui est la personne la plus âgée à avoir gagné un Grammy Award pour le meilleur album de blues classique ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Pinetop Perkins"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "e041cf74",
+        "Complexity": "superlative",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R197",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "multihop"
+      ],
+      "Text": "En quelle année est né l’acteur qui a joué Harry Potter dans Harry Potter et le Prince de sang-mêlé ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1989"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "9bde07bf",
+        "Complexity": "multihop",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R198",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "ordinal"
+      ],
+      "Text": "À quelle date le premier gouverneur militaire japonais de Guam a pris ses fonctions ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1941"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "c237b3e1",
+        "Complexity": "ordinal",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R199",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "comparative"
+      ],
+      "Text": "L’album Folklore de Taylor Swift est-il sorti avant ou après son album Lover ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "après"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "b87163d3",
+        "Complexity": "comparative",
+        "Category": "music",
+        "Corrected": "Mintaka answers in English: After"
+      }
+    },
+    {
+      "Id": "R200",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "mintaka",
+        "multihop"
+      ],
+      "Text": "Quelle est la date de naissance de l’auteure de Harry Potter ?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1965-07-31|31 juillet 1965"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "c34aac93",
+        "Complexity": "multihop",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R201",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "multihop"
+      ],
+      "Text": "How old is the 46th president of the United States?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "83"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "d798d519",
+        "Complexity": "multihop",
+        "Category": "politics",
+        "Corrected": "Mintaka says 78 (2021): Joe Biden is 83 on 2026-10-19"
+      }
+    },
+    {
+      "Id": "R202",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "Which book written by Tom Clancy featuring Jack Ryan was released in 1989?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Clear and Present Danger|Danger immédiat"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "7b8bbc4d",
+        "Complexity": "intersection",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R203",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Which team has the worst record in a season?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Cleveland Spiders|Spiders de Cleveland"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "b5ebc93b",
+        "Complexity": "generic",
+        "Category": "sports"
+      }
+    },
+    {
+      "Id": "R204",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "What is the name of the green dinosaur that Mario can ride on?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Yoshi"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "39d580b9",
+        "Complexity": "generic",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R205",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Which Back to the Future movie made the most money?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Back to the Future|Retour vers le futur"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "c55a0cf4",
+        "Complexity": "superlative",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R206",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "yesno"
+      ],
+      "Text": "Is Mexico City the capital of Mexico?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "yes"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "400982bb",
+        "Complexity": "yesno",
+        "Category": "geography"
+      }
+    },
+    {
+      "Id": "R207",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "count"
+      ],
+      "Text": "How many Percy Jackson books are there?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "5|five"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "4c8c7e0c",
+        "Complexity": "count",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R208",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "comparative"
+      ],
+      "Text": "Is Jared Polis older than Kate Brown?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "no"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "84835662",
+        "Complexity": "comparative",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R209",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "Which live-action movie did Adam Sandler produce and was directed by Dennis Dugan?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Jack and Jill|Jack et Julie"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "28332e38",
+        "Complexity": "intersection",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R210",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Which Harry Potter movie was the longest?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Harry Potter and the Chamber of Secrets|Harry Potter et la Chambre des secrets"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "b4027ff5",
+        "Complexity": "superlative",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R211",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "What was the third expansion for Warcraft that had Arthas as the main villain?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "World of Warcraft: Wrath of the Lich King"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "1f2d9afc",
+        "Complexity": "intersection",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R212",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Which major Axis country was not victorious during WW II?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Germany|Allemagne"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "7ebc0956",
+        "Complexity": "difference",
+        "Category": "history"
+      }
+    },
+    {
+      "Id": "R213",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "count"
+      ],
+      "Text": "How many books are in \"The Empirium\"?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "3|three"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "01ae0e6a",
+        "Complexity": "count",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R214",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "comparative"
+      ],
+      "Text": "Which war lasted longer, the Vietnam War or World War II?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Vietnam War|guerre du Viêt Nam"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "795df379",
+        "Complexity": "comparative",
+        "Category": "history"
+      }
+    },
+    {
+      "Id": "R215",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "count"
+      ],
+      "Text": "How many cities were hit by a nuclear bomb during WW II?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "2|two"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "f9e7ecd1",
+        "Complexity": "count",
+        "Category": "history"
+      }
+    },
+    {
+      "Id": "R216",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "Which city was once New Amsterdam?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "New York City|New York"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "407cba33",
+        "Complexity": "generic",
+        "Category": "geography"
+      }
+    },
+    {
+      "Id": "R217",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "What car was James Dean driving when he died?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Porsche 550"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "dfeb7f01",
+        "Complexity": "generic",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R218",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "In which year is Red Dead Redemption 2 set?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "1899"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "fd53089f",
+        "Complexity": "generic",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R219",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "In which Mario game do you play with a water gun on your back?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Super Mario Sunshine"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "07d941a2",
+        "Complexity": "intersection",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R220",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "comparative"
+      ],
+      "Text": "Which continent is less populated, South America or Antarctica?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Antarctica|Antarctique"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "aa329970",
+        "Complexity": "comparative",
+        "Category": "geography"
+      }
+    },
+    {
+      "Id": "R221",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "ordinal"
+      ],
+      "Text": "Who was the last president assassinated while in office?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "John F. Kennedy|John Fitzgerald Kennedy"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "73799812",
+        "Complexity": "ordinal",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R222",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "What is the name of the Nintendo Switch that does not allow the player to detach the controllers from the screen?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Nintendo Switch Lite"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "1bd26e2a",
+        "Complexity": "difference",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R223",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "ordinal"
+      ],
+      "Text": "Who was the first female chancellor of Germany?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Angela Merkel"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "6ed7c2bd",
+        "Complexity": "ordinal",
+        "Category": "history"
+      }
+    },
+    {
+      "Id": "R224",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "generic"
+      ],
+      "Text": "The Kings play in which NBA city?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Sacramento"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "7dbdfbf2",
+        "Complexity": "generic",
+        "Category": "sports"
+      }
+    },
+    {
+      "Id": "R225",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "ordinal"
+      ],
+      "Text": "What is the third Nas studio album?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "I Am..."
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "9848dbc6",
+        "Complexity": "ordinal",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R226",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "comparative"
+      ],
+      "Text": "Who is older, Keith Richards or Mick Jagger?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Mick Jagger"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "ac9c0bc5",
+        "Complexity": "comparative",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R227",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Which Fifth Harmony member left the band first?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Camila Cabello"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "eae417d2",
+        "Complexity": "difference",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R228",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Which gaming console had the lowest MSRP at its launch?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Atari 7800"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "a874a67c",
+        "Complexity": "superlative",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R229",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "Which actor starred in Jerry Maguire and was born in Syracuse, NY?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Tom Cruise"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "57ed9851",
+        "Complexity": "intersection",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R230",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "What Game of Thrones character was King in the North and died at the Red Wedding?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Robb Stark"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "55d7aaf8",
+        "Complexity": "intersection",
+        "Category": "books"
+      }
+    },
+    {
+      "Id": "R231",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "Which NFL team is based in California and used to have Joe Montana?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "San Francisco 49ers|49ers de San Francisco"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "a26ddbac",
+        "Complexity": "intersection",
+        "Category": "sports"
+      }
+    },
+    {
+      "Id": "R232",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Who won a U.S. Senate seat for Florida in 2010, but lost in the 2016 Florida Republican Presidential Primary to Donald Trump?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Marco Rubio"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "9cc5ac9c",
+        "Complexity": "difference",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R233",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Which country in Central America does not have Spanish as an official language?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Belize"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "63cc1040",
+        "Complexity": "difference",
+        "Category": "geography"
+      }
+    },
+    {
+      "Id": "R234",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "In what direction is South Korea not bordered by water?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "north|nord"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "3c26ba75",
+        "Complexity": "difference",
+        "Category": "geography"
+      }
+    },
+    {
+      "Id": "R235",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "yesno"
+      ],
+      "Text": "Is South Korea a democracy?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "yes"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "181f6005",
+        "Complexity": "yesno",
+        "Category": "politics"
+      }
+    },
+    {
+      "Id": "R236",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "yesno"
+      ],
+      "Text": "Did Bethesda create the Grand Theft Auto series?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "no"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "ec477855",
+        "Complexity": "yesno",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R237",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Which Australian states are not connected to the main Australian landmass?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Tasmania|Tasmanie"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "6faa0109",
+        "Complexity": "difference",
+        "Category": "geography"
+      }
+    },
+    {
+      "Id": "R238",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "difference"
+      ],
+      "Text": "Which Bioshock games were not developed by 2k Marin?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "BioShock",
+          "BioShock Infinite"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "71e1efc0",
+        "Complexity": "difference",
+        "Category": "videogames"
+      }
+    },
+    {
+      "Id": "R239",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "intersection"
+      ],
+      "Text": "Which actor is from Orange, NJ and starred in the movie Jaws?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Roy Scheider"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "e5d1c788",
+        "Complexity": "intersection",
+        "Category": "movies"
+      }
+    },
+    {
+      "Id": "R240",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "mintaka",
+        "superlative"
+      ],
+      "Text": "Which artist had the best album of 2017 according to the Rolling Stones?",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "Kendrick Lamar"
+        ]
+      },
+      "Source": {
+        "Corpus": "mintaka",
+        "Id": "55574b36",
+        "Complexity": "superlative",
+        "Category": "music"
+      }
+    },
+    {
+      "Id": "R241",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "je déteste la durée des embouteillages",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6295",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R242",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "combien de pattes a un chien",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "4|quatre"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13513",
+        "Intent": "qa_factoid"
+      }
+    },
+    {
+      "Id": "R243",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "montrer les événements futurs",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6992",
+        "Intent": "calendar_query"
+      }
+    },
+    {
+      "Id": "R244",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "je veux une réunion jusqu'à trois heure",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7549",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R245",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "mets la soirée dansante des année quatre vingt dix de pandora",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "4031",
+        "Intent": "play_music"
+      }
+    },
+    {
+      "Id": "R246",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "ai-je besoin d'un pull-over aujourd'hui",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2258",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R247",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "quelle est la racine carrée de neuf",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": [
+          "3|trois"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "13040",
+        "Intent": "qa_maths"
+      }
+    },
+    {
+      "Id": "R248",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "raconte moi une blague drôle",
+      "Expect": {
+        "Reply": "answer",
+        "Contains": []
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "412",
+        "Intent": "general_joke"
+      }
+    },
+    {
+      "Id": "R249",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "alarm"
+      ],
+      "Text": "activer une alarme pendant trois heures trente p. m. aujourd'hui",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "4930",
+        "Intent": "alarm_set"
+      }
+    },
+    {
+      "Id": "R250",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "news"
+      ],
+      "Text": "parle moi de trump",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1423",
+        "Intent": "news_query"
+      }
+    },
+    {
+      "Id": "R251",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "qa"
+      ],
+      "Text": "les stocks étaient-ils en hausse ou en baisse",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "14904",
+        "Intent": "qa_stock"
+      }
+    },
+    {
+      "Id": "R252",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "entrer une suggestion de chanson",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "4874",
+        "Intent": "music_likeness"
+      }
+    },
+    {
+      "Id": "R253",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "recommendation"
+      ],
+      "Text": "avez-vous des suggestions de films action",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11695",
+        "Intent": "recommendation_movies"
+      }
+    },
+    {
+      "Id": "R254",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "je veux le statut sur la luminosité de mon écran",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "41",
+        "Intent": "general_quirky"
+      }
+    },
+    {
+      "Id": "R255",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "reprends les podcast en séries",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11474",
+        "Intent": "play_podcasts"
+      }
+    },
+    {
+      "Id": "R256",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "social"
+      ],
+      "Text": "send a twitter complaint",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "15459",
+        "Intent": "social_post"
+      }
+    },
+    {
+      "Id": "R257",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "music"
+      ],
+      "Text": "i like the songs of yeshudas please play it",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1336",
+        "Intent": "music_likeness"
+      }
+    },
+    {
+      "Id": "R258",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "i want more light",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "2075",
+        "Intent": "iot_hue_lightup"
+      }
+    },
+    {
+      "Id": "R259",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "lists"
+      ],
+      "Text": "give me all available lists",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11172",
+        "Intent": "lists_query"
+      }
+    },
+    {
+      "Id": "R260",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "recommendation"
+      ],
+      "Text": "what's happening around my town",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "11570",
+        "Intent": "recommendation_events"
+      }
+    },
+    {
+      "Id": "R261",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "iot"
+      ],
+      "Text": "olly turn the lights off in the bedroom",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "19",
+        "Intent": "iot_hue_lightoff"
+      }
+    },
+    {
+      "Id": "R262",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "news"
+      ],
+      "Text": "what is the latest story from fox news",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "3576",
+        "Intent": "news_query"
+      }
+    },
+    {
+      "Id": "R263",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "please remove that event",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "9074",
+        "Intent": "calendar_remove"
+      }
+    },
+    {
+      "Id": "R264",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "remind me tomorrow at ten am about the meeting",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6901",
+        "Intent": "calendar_set"
+      }
+    },
+    {
+      "Id": "R265",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "what's was the upcoming event",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "7613",
+        "Intent": "calendar_query"
+      }
+    },
+    {
+      "Id": "R266",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "play"
+      ],
+      "Text": "play a game with me",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "10247",
+        "Intent": "play_game"
+      }
+    },
+    {
+      "Id": "R267",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "news"
+      ],
+      "Text": "go to the washington post website",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "1093",
+        "Intent": "news_query"
+      }
+    },
+    {
+      "Id": "R268",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "weather"
+      ],
+      "Text": "what's the weather next wednesday",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6411",
+        "Intent": "weather_query"
+      }
+    },
+    {
+      "Id": "R269",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "calendar"
+      ],
+      "Text": "please remove remainder",
+      "Expect": {
+        "Reply": "abstain"
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "8949",
+        "Intent": "calendar_remove"
+      }
+    },
+    {
+      "Id": "R270",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "massive",
+        "general"
+      ],
+      "Text": "my day is going well add a memo",
+      "Expect": {
+        "Reply": "abstain",
+        "Accept": [
+          "thank you for telling me"
+        ]
+      },
+      "Source": {
+        "Corpus": "massive-1.1",
+        "Id": "6417",
+        "Intent": "general_quirky"
+      }
+    }
+  ]
+}

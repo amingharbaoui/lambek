@@ -42,5 +42,40 @@
       "MedianMs": 243.5,
       "P95Ms": 614.5
     }
+  },
+  "Real": {
+    "Description": "The score on the real sentences of bench/real.json, measured once before step 4.7 changed anything (engine 0.13.0, commit cde74f1), the same on every machine. Times are left out: they were not measured on Amin's PC.",
+    "Date": "2026-10-22",
+    "TestHash": "3ab1394676c39262fac299e7859a996b647193853e0545ceaf65a4046e39802b",
+    "calibration": {
+      "Cases": 120,
+      "Turns": 120,
+      "Correct": 74,
+      "Unanswered": 43,
+      "NotUnderstood": 37,
+      "Abstained": 6,
+      "Asked": 0,
+      "Wrong": 3,
+      "WrongActions": 1,
+      "UnansweredRate": 0.9773,
+      "WrongRate": 0.025,
+      "WrongBound": 0.0633,
+      "Determinism": 1
+    },
+    "test": {
+      "Cases": 120,
+      "Turns": 120,
+      "Correct": 65,
+      "Unanswered": 48,
+      "NotUnderstood": 41,
+      "Abstained": 6,
+      "Asked": 1,
+      "Wrong": 7,
+      "WrongActions": 2,
+      "UnansweredRate": 0.96,
+      "WrongRate": 0.0583,
+      "WrongBound": 0.1068,
+      "Determinism": 1
+    }
   }
 }

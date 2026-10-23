@@ -127,6 +127,26 @@ if ($Task -eq 'Benchmark') {
         }
     }
 
+    # Real sentences, none written for Lambek (bench/real.json, drawn at random by tools/Get-LambekRealSentences.ps1):
+    # a part of the roadmap enters only when Correct goes up here and nothing falls elsewhere. Shown next to the score
+    # written in bench/baseline.json before step 4.7
+    $real = Join-Path $PSScriptRoot 'bench/real.json'
+    foreach ($split in 'calibration', 'test') {
+        $report = Invoke-LambekMessageBenchmark -Path $real -Split $split
+        $before = $null
+        if ($baseline -and $baseline.PSObject.Properties['Real'] -and $baseline.Real.PSObject.Properties[$split]) { $before = $baseline.Real.$split }
+        Write-Host ''
+        Write-Host "Real sentences ($split)"
+        foreach ($name in 'Cases', 'Correct', 'Unanswered', 'NotUnderstood', 'Abstained', 'Asked', 'Wrong', 'WrongActions', 'UnansweredRate', 'WrongRate', 'WrongBound', 'Determinism', 'MedianMs', 'P95Ms') {
+            $was = ''
+            if ($before -and $before.PSObject.Properties[$name]) { $was = "(before 4.7 $($before.$name))" }
+            Write-Host ("  {0,-16} {1,-10} {2}" -f $name, $report.$name, $was)
+        }
+        if ($split -eq 'test' -and -not $report.TestFrozen) {
+            Write-Warning 'The test split of bench/real.json is not the frozen one (TestHash): its figures cannot be compared.'
+        }
+    }
+
     # The same messages without the dictionaries: Lambek reads and speaks with the words it learned only (the
     # roadmap removes the dictionaries once these figures are those above, with nothing said wrong). In a session of
     # its own, so that nothing the dictionaries gave above (a lemma kept, a reading kept) is used again here
@@ -217,6 +237,11 @@ if ($Task -eq 'Fingerprint') {
     # And every reply to the free messages, so they too must be the same on every machine
     $messages = Invoke-LambekMessageBenchmark -Path (Join-Path $PSScriptRoot 'bench/messages.json')
     $lines = @($lines) + @(foreach ($turn in $messages.Results) {
+            "$($turn.Id)#$($turn.Turn)|$($turn.Status)|$(@($turn.Actions) -join ',')|$(($turn.Reply -replace "`r", '') -replace "`n", ' / ')"
+        })
+    # And every reply to the real sentences
+    $real = Invoke-LambekMessageBenchmark -Path (Join-Path $PSScriptRoot 'bench/real.json')
+    $lines = @($lines) + @(foreach ($turn in $real.Results) {
             "$($turn.Id)#$($turn.Turn)|$($turn.Status)|$(@($turn.Actions) -join ',')|$(($turn.Reply -replace "`r", '') -replace "`n", ' / ')"
         })
     # And what the forms models read in every word of their test treebanks

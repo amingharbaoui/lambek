@@ -109,6 +109,14 @@ function Invoke-LambekHostRequest {
                 $script:LanguageHint = Select-LambekLanguage -Belief $languages
                 if ($chat) { $state.Languages[$chat] = $languages }
 
+                # Tu or vous, as the user last said it in this chat: "salut, tu vas bien ?" then "quelle heure est-il ?"
+                # is still answered with tu
+                if (-not $state.Contains('Registers')) { $state.Registers = @{} }
+                $register = Get-LambekRegister -Text $params.text -Language $script:LanguageHint
+                if ($chat -and $register) { $state.Registers[$chat] = $register }
+                $script:ChatRegister = $register
+                if ($chat -and $state.Registers.ContainsKey($chat)) { $script:ChatRegister = $state.Registers[$chat] }
+
                 # What the user told in this chat: each chat has its own, kept in memory only
                 if (-not $state.Contains('Told')) { $state.Told = @{} }
                 if ($chat -and -not $state.Told.ContainsKey($chat)) { $state.Told[$chat] = [System.Collections.Generic.List[object]]::new() }

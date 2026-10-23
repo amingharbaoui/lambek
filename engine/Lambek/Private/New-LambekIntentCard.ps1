@@ -111,8 +111,14 @@ function New-LambekIntentCard {
             $act = [pscustomobject]@{ Kind = $(if ($statement) { 'Report' } else { 'Question' }); Rule = 'general'; Say = $act.Say; Subject = $null }
         }
         # A sentence that ends with a question mark asks; it never tells. "what is the capital of Spain?" and
-        # "l'ecole est-elle fermee ?" are not kept as things told when no reading found what they ask
-        if ($statement -and "$($request.Original)".TrimEnd() -match '\?$') {
+        # "l'ecole est-elle fermee ?" are not kept as things told when no reading found what they ask. Nor one that
+        # opens with a question word, typed without its mark: "what was the last movie he was in"
+        $opens = $false
+        if ($statement -and $lexicon.Dialogue -and $lexicon.Dialogue['QuestionStarts']) {
+            $plainStart = " $(((ConvertTo-LambekNormalizedText -Text "$($request.Original)") -replace '[^\p{L}\p{N}]+', ' ').Trim()) "
+            $opens = @($lexicon.Dialogue['QuestionStarts'] | Where-Object { $plainStart.StartsWith(" $_ ") }).Count -gt 0
+        }
+        if ($statement -and ("$($request.Original)".TrimEnd() -match '\?$' -or $opens)) {
             $statement = $null
             $act = [pscustomobject]@{ Kind = 'Question'; Rule = 'mark'; Say = $lexicon.Dialogue.Say['Question']; Subject = $null }
         }
