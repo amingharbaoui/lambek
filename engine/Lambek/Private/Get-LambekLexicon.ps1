@@ -140,6 +140,8 @@ function Get-LambekLexicon {
         # What the questions about the world are made of, and how their answers are said (Resolve-LambekFact)
         Facts             = $data['Facts']
         Dialogue          = $data['Dialogue']
+        # The words said around a request that are not the request ("euh", "stp ... merci", "could you ... thanks")
+        Courtesy          = $data['Courtesy']
         NegationQuestion  = $data.NegationQuestion
         ExclusionQuestion = $data.ExclusionQuestion
         UnusedQuestion    = $data.UnusedQuestion

@@ -20,7 +20,13 @@ param(
     [int] $Seed = 48,
 
     # At most this many sentences of each bench (the first ones), to keep a run short
-    [int] $Limit = 0
+    [int] $Limit = 0,
+
+    # Only these ways of spoiling a sentence (typo, accents, capitals, politeness, filler, punctuation)
+    [string[]] $Way = @(),
+
+    # Also print each spoiled sentence understood otherwise than the clean one
+    [switch] $Show
 )
 
 $ErrorActionPreference = 'Stop'
@@ -123,6 +129,8 @@ $ask = {
 }
 
 $rows = [ordered]@{}
+$Way = @($Way | ForEach-Object { "$_" -split "," } | Where-Object { $_ })
+foreach ($name in @($ways.Keys)) { if ($Way.Count -gt 0 -and $name -notin $Way) { $ways.Remove($name) } }
 foreach ($name in $ways.Keys) { $rows[$name] = [pscustomobject]@{ Way = $name; Sentences = 0; Same = 0; Unsafe = 0 } }
 $unsafe = [System.Collections.Generic.List[string]]::new()
 $number = 0
@@ -137,6 +145,7 @@ foreach ($sentence in $sentences) {
         $row = $rows[$name]
         $row.Sentences++
         if ($got.Status -eq $clean.Status -and $got.Actions -eq $clean.Actions -and $got.Kind -eq $clean.Kind) { $row.Same++ }
+        elseif ($Show) { Write-Host "  [$name] $($sentence.Id) $spoiled -> $($got.Status) $($got.Actions) $($got.Kind) (clean: $($clean.Status) $($clean.Actions) $($clean.Kind))" }
         # Noise must never create or change an action
         if ($got.Status -eq 'Ready' -and $got.Actions -and ($clean.Status -ne 'Ready' -or $got.Actions -ne $clean.Actions)) {
             $row.Unsafe++

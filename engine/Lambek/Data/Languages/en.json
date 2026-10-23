@@ -1959,6 +1959,43 @@
       ]
     }
   },
+  "Courtesy": {
+    "Before": [
+      "um",
+      "uh",
+      "umm",
+      "so",
+      "well",
+      "ok",
+      "okay",
+      "hey",
+      "hi",
+      "hello",
+      "please",
+      "kindly",
+      "could you please",
+      "can you please",
+      "would you please",
+      "could you",
+      "can you",
+      "would you"
+    ],
+    "After": [
+      "please",
+      "thanks",
+      "thank you",
+      "thanks a lot",
+      "thank you very much"
+    ],
+    "Asking": [
+      "could you please",
+      "can you please",
+      "would you please",
+      "could you",
+      "can you",
+      "would you"
+    ]
+  },
   "Facts": {
     "Source": "Wikidata",
     "Told": "You told me: \"{0}\".",

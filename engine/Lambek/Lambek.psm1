@@ -116,6 +116,7 @@ $script:LastProofs = $null
 # What Lambek knows of the world (Data/Knowledge, read from Wikidata), loaded on first use, and the genders of the
 # names it says
 $script:FactBase = $null
+$script:CourtesyPatterns = $null
 $script:FactGenders = $null
 # The words of condition ("si", "if") and of the questions read before the grammar ("combien", "pourquoi ?")
 $script:ConditionWords = $null

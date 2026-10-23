@@ -20,7 +20,10 @@ function New-LambekPlan {
         [System.Collections.IDictionary] $Referent,
 
         # Read the text alone, without the memory: no "like last time", no "did you mean"
-        [switch] $NoRecall
+        [switch] $NoRecall,
+
+        # Read the text as it is, without looking for the request inside the words said around it
+        [switch] $Bare
     )
 
     process {
@@ -31,6 +34,21 @@ function New-LambekPlan {
             # "slt", "cmt tu vas", "la capitalle": what was typed fast is read as it was meant, and the plan says so
             $typing = Repair-LambekTyping -Text $Text -Language $script:LanguageHint
             $Text = $typing.Text
+
+            # "euh, efface les fichiers .tmp stp", "could you delete the .log files, thanks": when the sentence as it
+            # was written makes no plan, the request without the words said around it is read too, and its plan is
+            # kept only when it is ready to act (what was understood before stays as it was: "salut, tu vas bien ?")
+            if ($script:PlanDepth -eq 1 -and -not $Bare) {
+                $spoken = ConvertTo-LambekBareRequest -Text $Text
+                if ($spoken -cne $Text) {
+                    $plan = New-LambekPlan -Text $Text -Dependency $Dependency -Referent $Referent -NoRecall:$NoRecall -Bare
+                    if ($plan.Status -ne 'Ready') {
+                        $barePlan = New-LambekPlan -Text $spoken -Dependency $Dependency -Referent $Referent -NoRecall:$NoRecall -Bare
+                        if ($barePlan.Status -eq 'Ready' -and @($barePlan.Steps | Where-Object { $_.Action }).Count -gt 0) { return $barePlan }
+                    }
+                    return $plan
+                }
+            }
 
             # "ma soeur en a 2", "je fais quoi ?": read as "ma soeur a 2 chats", "qu'est-ce que je fais ?"
             if (-not $NoRecall) { $Text = ConvertTo-LambekPlainSentence -Text $Text }
