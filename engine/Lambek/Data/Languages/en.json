@@ -482,6 +482,7 @@
   "UnusedQuestion": "I could not use: {0}. Could you say it another way?",
   "GuessQuestion": "What does \"{0}\" mean here: {1}?",
   "GuessOpenQuestion": "What does \"{0}\" mean here?",
+  "FrameQuestion": "I read \"{0}\": do you want me to do it now, with no condition?",
   "Protected": {
     "Text": "{0} is {1}: Lambek does not change it.",
     "Reasons": {
@@ -2486,6 +2487,77 @@
       }
     },
     "Relations": [
+      {
+        "Property": "P35",
+        "Role": [
+          "president",
+          "head of state",
+          "king",
+          "queen",
+          "monarch"
+        ],
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "president",
+          "head of state",
+          "king",
+          "queen",
+          "monarch"
+        ],
+        "Say": "The head of state of {of} is {value}",
+        "SayYes": "Yes, {value} is the head of state of {of}",
+        "SayNo": "No: the head of state of {of} is {value}"
+      },
+      {
+        "Property": "P6",
+        "Role": [
+          "prime minister",
+          "head of government",
+          "premier",
+          "chancellor"
+        ],
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "prime minister",
+          "head of government",
+          "premier",
+          "chancellor"
+        ],
+        "Say": "The head of government of {of} is {value}",
+        "SayYes": "Yes, {value} is the head of government of {of}",
+        "SayNo": "No: the head of government of {of} is {value}"
+      },
+      {
+        "Property": "P6",
+        "Role": [
+          "mayor"
+        ],
+        "Subject": [
+          "city"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "mayor"
+        ],
+        "Say": "The mayor of {of} is {value}",
+        "SayYes": "Yes, {value} is the mayor of {of}",
+        "SayNo": "No: the mayor of {of} is {value}"
+      },
       {
         "Property": "P36",
         "Role": ["capital"],

@@ -213,6 +213,13 @@ if ($Task -eq 'Benchmark') {
     Write-Host 'Robustness (calibration sentences spoiled)'
     & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekRobustness.ps1')
     if ($LASTEXITCODE -ne 0) { throw 'A spoiled sentence made an action the clean one did not make.' }
+
+    # Contrast: the same requests turned so that they must not act (a negation, a question of how, what someone else
+    # wanted, whether it is safe, a condition to check): none may act (tools/Measure-LambekContrast.ps1)
+    Write-Host ''
+    Write-Host 'Contrast (calibration requests turned so that they must not act)'
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekContrast.ps1')
+    if ($LASTEXITCODE -ne 0) { throw 'A request turned so that it must not act was ready to act.' }
 }
 
 # Fingerprint: what Lambek answers to every request of the benchmark, one line each, and the hash of them all.

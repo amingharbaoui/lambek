@@ -107,9 +107,20 @@ function Get-LambekUnplacedToken {
     $lexicon = Get-LambekLexicon -Language $Reading.Request.Language
     $tokens = @($Reading.Request.Tokens)
     $words = @($Reading.Request.Words)
+    # (a word written with a capital and small letters after the first one, that names a thing of the world Lambek read, is that name:
+    # "la France" is not "la grande"; a folder typed with a capital may still be corrected, "Dowloads")
+    $capitals = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $said = @([regex]::Matches("$($Reading.Request.Original)", '\p{L}[\p{L}\p{M}]*'))
+    for ($k = 1; $k -lt $said.Count; $k++) {
+        if ($said[$k].Value.Length -gt 1 -and [char]::IsUpper($said[$k].Value[0]) -and [char]::IsLower($said[$k].Value[1])) { [void] $capitals.Add((ConvertTo-LambekNormalizedText -Text $said[$k].Value)) }
+    }
     for ($i = 0; $i -lt $tokens.Count; $i++) {
         $token = $tokens[$i]
         if ($words[$i] -notin $Reading.Grammar.Unknown) { continue }
+        if ($capitals.Contains($token)) {
+            $world = Get-LambekFactBase
+            if ($world -and @($world.Find($token) | Where-Object { $_.Name -eq $token }).Count -gt 0) { continue }
+        }
         if ($lexicon.Vocabulary.Contains($token) -or $lexicon.BaseForms.ContainsKey($token)) { continue }
         # Never "correct" a negation or an exception: "sans" is not "dans", "pas" is not "par"
         if ($token -in $lexicon.Negations -or $token -in $lexicon.Exclusions) { continue }

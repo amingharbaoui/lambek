@@ -147,6 +147,7 @@ function Get-LambekLexicon {
         UnusedQuestion    = $data.UnusedQuestion
         GuessQuestion     = $data.GuessQuestion
         GuessOpenQuestion = $data.GuessOpenQuestion
+        FrameQuestion     = $data['FrameQuestion']
         Protected         = $data.Protected
         Answer            = $data.Answer
         FollowUp          = $data.FollowUp

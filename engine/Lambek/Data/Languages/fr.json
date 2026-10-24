@@ -518,6 +518,7 @@
   "UnusedQuestion": "Je n'ai pas pu utiliser : {0}. Pouvez-vous le dire autrement ?",
   "GuessQuestion": "Que veut dire « {0} » ici : {1} ?",
   "GuessOpenQuestion": "Que veut dire « {0} » ici ?",
+  "FrameQuestion": "Je lis « {0} » : voulez-vous que je le fasse maintenant, et sans condition ?",
   "Protected": {
     "Text": "{0} est {1} : Lambek n'y touche pas.",
     "Reasons": {
@@ -2990,6 +2991,75 @@
       ]
     },
     "Relations": [
+      {
+        "Property": "P35",
+        "Role": [
+          "president",
+          "presidente",
+          "roi",
+          "reine",
+          "monarque"
+        ],
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "president",
+          "presidente",
+          "roi",
+          "reine",
+          "monarque"
+        ],
+        "Say": "Le chef de l'État {of} est {value}",
+        "SayYes": "Oui, {value} est le chef de l'État {of}",
+        "SayNo": "Non : le chef de l'État {of} est {value}"
+      },
+      {
+        "Property": "P6",
+        "Role": [
+          "premier ministre",
+          "premiere ministre",
+          "chef du gouvernement"
+        ],
+        "Subject": [
+          "country"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "premier ministre",
+          "premiere ministre",
+          "chef du gouvernement"
+        ],
+        "Say": "Le chef du gouvernement {of} est {value}",
+        "SayYes": "Oui, {value} est le chef du gouvernement {of}",
+        "SayNo": "Non : le chef du gouvernement {of} est {value}"
+      },
+      {
+        "Property": "P6",
+        "Role": [
+          "maire"
+        ],
+        "Subject": [
+          "city"
+        ],
+        "Asks": [
+          "who",
+          "yesno"
+        ],
+        "Cues": [
+          "maire"
+        ],
+        "Say": "Le maire de {label} est {value}",
+        "SayYes": "Oui, {value} est le maire de {label}",
+        "SayNo": "Non : le maire de {label} est {value}"
+      },
       {
         "Property": "P36",
         "Role": ["capitale"],

@@ -40,6 +40,9 @@ BeforeAll {
         "K`tQ3787`tcity`t120", "L`tQ3787`tfr`tAbuja", "L`tQ3787`ten`tAbuja", "F`tQ3787`tP17`tQ1033`t"
         "K`tQ101`tcity`t150", "L`tQ101`tfr`tMarrakech", "L`tQ101`ten`tMarrakesh", "F`tQ101`tP17`tQ1028`t"
         "K`tQ1028`tcountry`t200", "L`tQ1028`tfr`tMaroc", "L`tQ1028`ten`tMorocco"
+        "F`tQ142`tP35`tQ3052772`t", "F`tQ90`tP6`tQ100`t", "K`tQ100`tvalue`t0", "L`tQ100`tfr`tEmmanuel Grégoire", "L`tQ100`ten`tEmmanuel Grégoire"
+        "K`tQ30`tcountry`t300", "L`tQ30`tfr`tÉtats-Unis", "L`tQ30`ten`tUnited States", "A`tQ30`ten`tthe United States", "F`tQ30`tP36`tQ61`t"
+        "K`tQ61`tcity`t200", "L`tQ61`tfr`tWashington", "L`tQ61`ten`tWashington, D.C.", "F`tQ61`tP17`tQ30`t"
     )
     $path = Join-Path $TestDrive 'world.facts.gz'
     $file = [IO.File]::Create($path)
@@ -143,6 +146,28 @@ Describe 'What Lambek knows of the world' {
 
     It 'counts only among things it has every one of' {
         InModuleScope Lambek { Resolve-LambekFact -Text 'combien de livres a écrit Victor Hugo ?' } | Should -BeNullOrEmpty
+    }
+
+    It 'says who leads a country or a city: <Text>' -ForEach @(
+        @{ Text = 'qui est le président de la France ?'; Said = "Le chef de l'État de la France est Emmanuel Macron, d'après Wikidata." }
+        @{ Text = 'qui est le maire de Paris ?'; Said = "Le maire de Paris est Emmanuel Grégoire, d'après Wikidata." }
+    ) {
+        Ask $Text | Should -Be $Said
+    }
+
+    It 'says a name with the article it was asked with' {
+        Ask 'what is the capital of the United States?' | Should -Be 'The capital of the United States is Washington, D.C., according to Wikidata.'
+    }
+
+    It 'asks about the one a role names, not about the role ("quel âge a le président de la France ?")' {
+        InModuleScope Lambek { $script:Now = [datetime] '2026-10-19T12:00:00' }
+        try {
+            Ask 'quel âge a le président de la France ?' | Should -Be (@(
+                    "Le chef de l'État de la France est Emmanuel Macron, d'après Wikidata."
+                    "Emmanuel Macron a 48 ans, d'après Wikidata."
+                ) -join "`n")
+        }
+        finally { InModuleScope Lambek { $script:Now = $null } }
     }
 
     It 'gives the age of a living person from the day it is' {

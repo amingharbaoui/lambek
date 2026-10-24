@@ -296,6 +296,16 @@ function New-LambekIntentCard {
         }
     }
 
+    # An order for another time, for someone else, or under a condition is no order to do now, even one that only
+    # reads: "hier, Paul a voulu afficher...", "affiche ... seulement si la sauvegarde est verifiee". Lambek asks
+    if ($status -eq 'Ready') {
+        $frame = Get-LambekRequestFrame -Request $request -Grammar $grammar
+        if ($frame) {
+            $status = 'NeedsInput'
+            $questions.Add(($lexicon.FrameQuestion -f $frame))
+        }
+    }
+
     # A word the grammar does not know, where the sentence needs one: ask what it means,
     # with the actions whose verb has the type the equation gave it ("purge" is s o^l, like delete or list)
     if (-not $guess -and $status -ne 'Ready' -and $Evidence.PSObject.Properties['Guess'] -and $Evidence.Guess) {

@@ -32,6 +32,11 @@ Describe 'Spelling correction' {
     It 'does not change words too far from any known word' {
         (ConvertTo-LambekRequest 'delete the weather files').Words | Should -Contain 'weather'
     }
+
+    It 'never changes a name written with a capital inside the sentence ("France" is not "grande")' {
+        $request = ConvertTo-LambekRequest 'quel âge a le président de la France ?'
+        @($request.Corrections | Where-Object From -EQ 'france').Count | Should -Be 0
+    }
 }
 
 Describe 'Correction chosen by the grammar' {

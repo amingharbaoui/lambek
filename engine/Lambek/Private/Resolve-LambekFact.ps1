@@ -445,6 +445,10 @@ function Get-LambekFactReply {
     if ($template -match '\{(of|in|subject)\}') {
         $before = @()
         if ($Candidate.Start -gt 0) { $before = @($Words[([math]::Max(0, $Candidate.Start - 2))..($Candidate.Start - 1)]) }
+        # (a name read with its article is said with it: "the capital of the United States")
+        $first = "$(@("$($Candidate.Mention.Name)" -split ' ')[0])"
+        $articles = $(if ($Facts.Contains('Places')) { $Facts['Places']['Before'] } else { @{ the = 'the' } })
+        if ("$($Candidate.Mention.Name)".Contains(' ') -and $articles.Contains($first)) { $before = @($before) + @($first) }
         $place = Get-LambekFactPlace -Label $label -Language $Language -Facts $Facts -Before $before
         if (-not $place) {
             # (in a yes or no, the bare sentence of that answer: BareYes, BareNo)

@@ -77,7 +77,8 @@ function Test-LambekFactAround {
     param([string[]] $Words, [hashtable] $Facts, [bool] $Asked)
 
     $fillers = [System.Collections.Generic.HashSet[string]]::new([string[]] @($Facts['Fillers']), [StringComparer]::Ordinal)
-    $phrases = @($Facts['Questions'].Values | ForEach-Object { @($_) })
+    # (only the question words that ask for the thing itself: "quel age a [le president de la France]" asks about it)
+    $phrases = @($Facts['Questions'].Keys | Where-Object { $_ -in 'who', 'what', 'yesno' } | ForEach-Object { @($Facts['Questions'][$_]) })
     $read = [bool[]]::new($Words.Count)
     $question = $false
     foreach ($span in @(Find-LambekFactSpan -Words $Words -Phrases $phrases)) {
