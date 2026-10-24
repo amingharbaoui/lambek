@@ -138,6 +138,8 @@ $script:SpeechFusion = $null
 $script:SpeechFrames = $null
 $script:SpeechReadings = $null
 $script:SpeechCapture = $null
+# How much likelier (log10) the reading of a sentence with one form of a slip must be than with any other, to choose it
+$script:SlipMargin = 1.0
 # A woman, a man, a person or a thing, by noun (WordNet)
 $script:NounKinds = $null
 $script:Now = $null

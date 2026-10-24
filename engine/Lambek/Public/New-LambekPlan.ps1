@@ -175,7 +175,7 @@ function New-LambekPlan {
                         FromHabit  = @($card.FromHabit)
                         Votes      = $(if ($card.Integrity) { $card.Integrity.Votes })
                         # How the step was read: the verb, the number of readings, the actions scored, the meaning computed
-                        Reading    = [pscustomobject]@{ Head = $card.Head; Readings = $card.Readings; Candidates = @($card.Candidates); Integrity = $card.Integrity; Meaning = @($card.Meaning); Corrections = @($request.Corrections); Rows = @($card.Rows); Borrowed = $request.Borrowed }
+                        Reading    = [pscustomobject]@{ Head = $card.Head; Readings = $card.Readings; Candidates = @($card.Candidates); Integrity = $card.Integrity; Meaning = @($card.Meaning); Corrections = @(@($typing.Changes | Where-Object Sense -EQ 'spelling' | ForEach-Object { [pscustomobject]@{ From = $_.From; To = $_.To } }) + @($request.Corrections)); Rows = @($card.Rows); Borrowed = $request.Borrowed }
                         Action     = $card.Action
                         Risk       = $card.Risk
                         Parameters = $card.Parameters

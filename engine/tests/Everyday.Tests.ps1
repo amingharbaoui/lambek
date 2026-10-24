@@ -68,6 +68,33 @@ Describe 'Repair-LambekTyping' {
         InModuleScope Lambek { (Repair-LambekTyping -Text 'les fichers du dossier' -Language fr).Changes.Count } | Should -Be 0
     }
 
+    It 'reads a word close to several words in its sentence, when one reading is far likelier: <Text>' -ForEach @(
+        @{ Text = 'the .log files in C:\Temp mkst be deleted'; Language = 'en'; Read = 'the .log files in C:\Temp must be deleted' }
+        @{ Text = 'please remove thwt event'; Language = 'en'; Read = 'please remove that event' }
+        @{ Text = 'fibd the files in C:\Data'; Language = 'en'; Read = 'find the files in C:\Data' }
+    ) {
+        InModuleScope Lambek -Parameters @{ Text = $Text; Language = $Language } { param($Text, $Language) (Repair-LambekTyping -Text $Text -Language $Language).Text } | Should -BeExactly $Read
+    }
+
+    It 'leaves it as it is when the readings stay about as likely ("met" or "mets")' {
+        $text = 'metd le rapport.txt dans C:\B'
+        InModuleScope Lambek -Parameters @{ Text = $text } { (Repair-LambekTyping -Text $Text -Language fr).Changes.Count } | Should -Be 0
+    }
+
+    It 'never reads a frequent word of the language as a slip, even one no dictionary of meanings has' {
+        InModuleScope Lambek { (Repair-LambekTyping -Text 'I take the bus when it rains' -Language en).Changes.Count } | Should -Be 0
+    }
+
+    It 'chooses the likeliest reading of the whole sentence, and says by how much (Viterbi)' {
+        $read = InModuleScope Lambek {
+            $model = Get-LambekFluency -Language fr
+            $found = $model.Decode('supprime les Xxxx dahs Xxxxxxx', [int[]] @(18), [string[][]] @(, [string[]] @('dais', 'dans')), [double[][]] @(, [double[]] @(0, 0)), (Get-LambekDictionary -Language fr))
+            [pscustomobject]@{ Choice = $found[0][0]; Margin = $found[0][1] }
+        }
+        $read.Choice | Should -Be 1
+        $read.Margin | Should -BeGreaterThan 1
+    }
+
     It 'never touches names, paths, file names or known words, nor a word of another language' {
         InModuleScope Lambek { (Repair-LambekTyping -Text 'Pingu is a penguin' -Language en).Changes.Count } | Should -Be 0
         InModuleScope Lambek { (Repair-LambekTyping -Text 'combien font 3/7 + 2/5 ?' -Language en).Changes.Count } | Should -Be 0

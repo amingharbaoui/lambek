@@ -1,6 +1,7 @@
 // How a language sounds: a Kneser-Ney model of the shapes of its sentences, learned from free corpora (Common Voice,
-// Europarl). It never chooses what Lambek says, only how: the words of the meaning are fixed, so every word that is not
-// one of the frequent small words of the language (articles, pronouns, "donc", "car", "est"...) is read as its kind
+// Europarl). It never chooses what Lambek says, only how (and which form a slip was meant as, among the ones it may
+// be): the words of the meaning are fixed, so every word that is not one of the frequent small words of the language
+// (articles, pronouns, "donc", "car", "est"...) is read as its kind
 // (a name, a noun, an adjective, a verb, a number). "Socrate est un homme, donc il est mortel" is learned and scored as
 // "<Name> est un <n> , donc il est <a>": what is judged is the way the sentence is built, never the facts in it.
 // Interpolated Kneser-Ney (Chen and Goodman): the highest order on counts, the lower ones on the number of different
@@ -29,6 +30,8 @@ public sealed class LambekFluency
     public int Sentences;
 
     const int Bits = 16;
+    // log10 of the share of its kind a word read as its kind has, when choosing among forms
+    const double KindShare = -3;
     const string Start = "<s>";
     const string End = "</s>";
     static readonly string[] Kinds = { "<Name>", "<Num>", "<Unk>", "<n>", "<a>", "<v>", "<r>", "<an>", "<nv>", "<av>", "<anv>", "<nr>", "<ar>", "<anr>", "<vr>", "<nvr>", "<avr>", "<anvr>" };
@@ -249,6 +252,101 @@ public sealed class LambekFluency
         double sum = 0;
         for (int at = Order - 1; at < s.Length; at++) sum += Conditional(s, at);
         return new double[] { sum, tokens.Length + 1 };
+    }
+
+    // Whether a word is one of the frequent words kept as themselves
+    public bool Knows(string word)
+    {
+        return word.Length > 0 && char.IsLetter(word[0]) && ids.ContainsKey(word);
+    }
+
+    // Reading a slip in context (Viterbi): some words of a sentence may each be one of several forms ("dahs" is "dais",
+    // "dams" or "dans"). Starts: where each such word begins in the text; forms: what it may be, with a prior (log10)
+    // for each. For each word: the form of the likeliest reading of the whole sentence, and how much likelier (log10)
+    // that reading is than the likeliest one with another form there (0 when the word is not found among the tokens)
+    public double[][] Decode(string text, int[] starts, string[][] forms, double[][] priors, ILambekWords dictionary)
+    {
+        List<string> tokens = new List<string>();
+        List<int> places = new List<int>();
+        foreach (Match m in TokenPattern.Matches(text ?? ""))
+        {
+            tokens.Add(Tokenize(m.Value).FirstOrDefault() ?? m.Value);
+            places.Add(m.Index);
+        }
+        int length = tokens.Count + Order;
+        int[][] symbols = new int[length][];
+        double[][] weights = new double[length][];
+        for (int i = 0; i < Order - 1; i++) { symbols[i] = new int[] { ids[Start] }; weights[i] = new double[] { 0 }; }
+        for (int i = 0; i < tokens.Count; i++)
+        {
+            symbols[Order - 1 + i] = new int[] { Id(Symbol(tokens[i], i == 0, dictionary)) };
+            weights[Order - 1 + i] = new double[] { 0 };
+        }
+        symbols[length - 1] = new int[] { ids[End] };
+        weights[length - 1] = new double[] { 0 };
+        int[] position = new int[starts.Length];
+        for (int w = 0; w < starts.Length; w++)
+        {
+            int i = places.IndexOf(starts[w]);
+            position[w] = i < 0 ? -1 : Order - 1 + i;
+            if (i < 0) continue;
+            symbols[position[w]] = forms[w].Select(f => Id(Symbol(f, i == 0, dictionary))).ToArray();
+            // A form read as its kind is one word among the thousands of that kind: about a thousandth of what the
+            // model gives the kind (a frequent word kept as itself has its own probability)
+            weights[position[w]] = priors[w].Select((p, o) => p + (Symbols[symbols[position[w]][o]].StartsWith("<") ? KindShare : 0)).ToArray();
+        }
+        double[][] found = new double[starts.Length][];
+        for (int w = 0; w < starts.Length; w++)
+        {
+            if (position[w] < 0) { found[w] = new double[] { 0, 0 }; continue; }
+            int choice = 0;
+            double best = double.NegativeInfinity;
+            double second = double.NegativeInfinity;
+            for (int o = 0; o < forms[w].Length; o++)
+            {
+                double score = Best(symbols, weights, position[w], o);
+                if (score > best) { second = best; best = score; choice = o; }
+                else if (score > second) second = score;
+            }
+            found[w] = new double[] { choice, double.IsNegativeInfinity(second) ? 99 : best - second };
+        }
+        return found;
+    }
+
+    // The score of the likeliest reading with the form at one place fixed: the state is the forms of the two words
+    // before (order 3)
+    double Best(int[][] symbols, double[][] weights, int fixedAt, int fixedForm)
+    {
+        if (Order != 3) throw new InvalidOperationException("Reading in context needs a model of order 3.");
+        int[] s = new int[3];
+        double[,] score = new double[1, 1];
+        for (int j = 2; j < symbols.Length; j++)
+        {
+            int before = symbols[j - 2].Length;
+            int last = symbols[j - 1].Length;
+            int here = symbols[j].Length;
+            double[,] next = new double[last, here];
+            for (int b = 0; b < last; b++)
+            {
+                for (int c = 0; c < here; c++)
+                {
+                    next[b, c] = double.NegativeInfinity;
+                    if (j == fixedAt && c != fixedForm) continue;
+                    if (j - 1 == fixedAt && b != fixedForm) continue;
+                    for (int a = 0; a < before; a++)
+                    {
+                        if (double.IsNegativeInfinity(score[a, b])) continue;
+                        s[0] = symbols[j - 2][a]; s[1] = symbols[j - 1][b]; s[2] = symbols[j][c];
+                        double value = score[a, b] + Conditional(s, 2) + weights[j][c];
+                        if (value > next[b, c]) next[b, c] = value;
+                    }
+                }
+            }
+            score = next;
+        }
+        double result = double.NegativeInfinity;
+        foreach (double value in score) if (value > result) result = value;
+        return result;
     }
 
     // The symbols a sentence is read as (to see what the model sees)

@@ -394,6 +394,14 @@ public class LambekDictionary : ILambekWords
         return found.ToArray();
     }
 
+    // Whether a form is one typing slip from a word, compared without accents ("dahs" from "dans")
+    public static bool Slip(string form, string word)
+    {
+        string a = Normalize(form);
+        string b = Normalize(word);
+        return Math.Abs(a.Length - b.Length) <= 1 && OneEdit(a, 0, a.Length, b);
+    }
+
     internal static bool OneEdit(string buffer, int start, int length, string word)
     {
         // Exactly one edit between buffer[start, start + length) and word (never zero: the same form is no slip)
