@@ -72,7 +72,7 @@ function Repair-LambekTyping {
                 $words = Get-LambekDictionary -Language $other
                 if ($words -and @($words.Lemmas($lower, $other)).Count -gt 0) { return $word }
             }
-            if ($capital) { return (Repair-LambekCapital -Word $word -Index $match.Index -Text $Text -Language $Language -Lexicon $lexicon -Dictionary $dictionary -Changes $changes -Shift $shift) }
+            if ($capital) { return (Repair-LambekCapital -Word $word -Index $match.Index -Text $Text -Language $Language -Lexicon $lexicon -Changes $changes -Shift $shift) }
             $near = @($dictionary.Near($lower, $Language, 1))
             if ($near.Count -eq 1) {
                 $changes.Add([pscustomobject]@{ From = $word; To = $near[0]; Sense = 'spelling' })
@@ -122,11 +122,13 @@ function Repair-LambekCapital {
     #   not "Paul", "Madame Bovary" stays);
     #   the first word of a sentence may be a small word of the language: one slip from exactly one of its question
     #   words, the words its questions start with, or its small words ("Clmbien": Combien), it is that word;
+    #   one slip from exactly one name the user said before (told in this conversation, or kept in the journal), it
+    #   is that name ("Mzrie" after "Marie habite a Lyon"): a name said is never changed;
     #   in a question about the world (as the router of acts reads it), one slip from exactly one name of one word
     #   Lambek knows, or from one far better known than any other (ten times the pages telling of it), it is that name,
     #   as it is written in the language ("Frahce": France). Elsewhere a name may be new ("Tweety est un oiseau" is not
     #   "Twenty"): it stays as it was typed. The known names come from Wikidata, never from what users typed
-    param([string] $Word, [int] $Index, [string] $Text, [string] $Language, [object] $Lexicon, [object] $Dictionary,
+    param([string] $Word, [int] $Index, [string] $Text, [string] $Language, [object] $Lexicon,
         [System.Collections.Generic.List[object]] $Changes, [ref] $Shift)
 
     $facts = Get-LambekFactBase
@@ -142,6 +144,18 @@ function Repair-LambekCapital {
         $starts = @(if ($Lexicon.Dialogue -and $Lexicon.Dialogue['QuestionStarts']) { $Lexicon.Dialogue['QuestionStarts'] })
         $small = @(@($Lexicon.Interrogatives) + @($Lexicon.StopWords) + $starts | Where-Object { $_ -match '^\p{L}+$' -and [LambekDictionary]::Slip($_, $lower) } | Select-Object -Unique)
         if ($small.Count -eq 1) { $with = $small[0].Substring(0, 1).ToUpperInvariant() + $small[0].Substring(1) }
+    }
+    if (-not $with) {
+        # (the names the user said before, told in this conversation or kept in the journal: for this user only,
+        # never knowledge) a name said is never changed; one slip from exactly one of them, it is that one
+        $said = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+        foreach ($entry in (Get-LambekBoard).Entries()) {
+            if ($entry.Source -notin 'user', 'journal' -or -not $entry.Payload -or -not $entry.Payload.PSObject.Properties['Text']) { continue }
+            foreach ($name in [regex]::Matches([string] $entry.Payload.Text, '(?<![\p{L}\p{N}])\p{Lu}\p{Ll}+(?![\p{L}\p{N}])')) { [void] $said.Add($name.Value) }
+        }
+        if ($said.Contains($Word)) { return $Word }
+        $close = @($said | Where-Object { [LambekDictionary]::Slip($_, $Word) })
+        if ($close.Count -eq 1) { $with = $close[0] }
     }
     if (-not $with -and $facts) {
         $route = Get-LambekRoute -Text $Text -Language $Language
