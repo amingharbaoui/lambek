@@ -113,6 +113,12 @@ function Invoke-LambekHostRequest {
                 # is still answered with tu
                 if (-not $state.Contains('Registers')) { $state.Registers = @{} }
                 $register = Get-LambekRegister -Text $params.text -Language $script:LanguageHint
+                # (a word the user said, not a piece of one: "mes bot tes" says bottes, not tes)
+                if ($register) {
+                    $others = @(@($script:LanguageHint, 'fr', 'en') | Where-Object { $_ -in (Get-LambekAvailableLanguage) } | Select-Object -Unique)
+                    $spaced = Repair-LambekSpacing -Text $params.text -Language $script:LanguageHint -Others $others -Changes ([System.Collections.Generic.List[object]]::new())
+                    if ($spaced -cne $params.text) { $register = Get-LambekRegister -Text $spaced -Language $script:LanguageHint }
+                }
                 if ($chat -and $register) { $state.Registers[$chat] = $register }
                 $script:ChatRegister = $register
                 if ($chat -and $state.Registers.ContainsKey($chat)) { $script:ChatRegister = $state.Registers[$chat] }

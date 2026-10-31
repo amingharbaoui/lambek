@@ -3,7 +3,7 @@
 .SYNOPSIS
     Measures how Lambek holds up when a sentence is written less well: the calibration sentences of bench/requests.json
     and bench/real.json, each one spoiled in several ways (a typo, no accents, capitals, politeness around it, a filler
-    word, no punctuation), and sent as the app sends them.
+    word, no punctuation, a space missed or added), and sent as the app sends them.
 .DESCRIPTION
     Two figures for each way of spoiling a sentence:
       Same        the spoiled sentence gets what the clean one got (the same status, the same actions, the same kind of
@@ -22,7 +22,7 @@ param(
     # At most this many sentences of each bench (the first ones), to keep a run short
     [int] $Limit = 0,
 
-    # Only these ways of spoiling a sentence (typo, accents, capitals, politeness, filler, punctuation)
+    # Only these ways of spoiling a sentence (typo, accents, capitals, politeness, filler, punctuation, spaces)
     [string[]] $Way = @(),
 
     # Also print each spoiled sentence understood otherwise than the clean one
@@ -114,7 +114,24 @@ $ways = [ordered]@{
         if ($bare -ceq $Text) { return $null }
         return $bare
     }
+    # A space missed between two words, or one typed inside a word (never in a path, a file name or an extension);
+    # drawn apart, so the other ways stay as they were
+    spaces      = {
+        param([string] $Text, [string] $Language)
+        $words = @([regex]::Matches($Text, '(?<![\\/.\w])\p{L}+(?![\\/.\w])'))
+        if ($spacing.Next(2) -eq 0) {
+            $pairs = @(0..([math]::Max(0, $words.Count - 2)) | Where-Object { $words.Count -ge 2 -and $words[$_ + 1].Index -eq $words[$_].Index + $words[$_].Length + 1 -and $Text[$words[$_].Index + $words[$_].Length] -eq ' ' })
+            if ($pairs.Count -eq 0) { return $null }
+            $first = $words[$pairs[$spacing.Next($pairs.Count)]]
+            return $Text.Remove($first.Index + $first.Length, 1)
+        }
+        $long = @($words | Where-Object { $_.Length -ge 5 })
+        if ($long.Count -eq 0) { return $null }
+        $word = $long[$spacing.Next($long.Count)]
+        return $Text.Insert($word.Index + 2 + $spacing.Next($word.Length - 3), ' ')
+    }
 }
+$spacing = [Random]::new($Seed + 1)
 
 # What Lambek does with a sentence, as the app asks it
 $ask = {

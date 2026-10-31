@@ -33,6 +33,10 @@ function Repair-LambekTyping {
     # (a word of another language is no slip: "combien" is not "combine" when the language was not told)
     $others = @(@($Language, 'fr', 'en') | Where-Object { $_ -in (Get-LambekAvailableLanguage) } | Select-Object -Unique)
 
+    # A space missed or typed in the wrong place, put back before each word is read
+    $Text = Repair-LambekSpacing -Text $Text -Language $Language -Others $others -Changes $changes
+    $none = [pscustomobject]@{ Text = $Text; Changes = $changes.ToArray() }
+
     # Where the text quotes something (a name to give, a phrase to find): each letter there
     $quoted = [System.Collections.Generic.HashSet[int]]::new()
     foreach ($span in [regex]::Matches($Text, '"[^"]*"|\u00AB[^\u00BB]*\u00BB|\u201C[^\u201D]*\u201D')) {
@@ -130,6 +134,184 @@ function Repair-LambekTyping {
     }
     if ($changes.Count -eq 0) { return $none }
     return [pscustomobject]@{ Text = $repaired; Changes = $changes.ToArray() }
+}
+
+function Test-LambekKnownWord {
+    # Whether a word in small letters is one Lambek or a language knows: a small word or a word of its packs or of talk,
+    # a frequent word of the language, a form of its dictionary; in any of the languages given
+    param([string] $Word, [string[]] $Languages)
+
+    $plain = ConvertTo-LambekNormalizedText -Text $Word
+    foreach ($other in $Languages) {
+        $known = Get-LambekLexicon -Language $other
+        if ($known.StopWords.Contains($plain) -or $known.Vocabulary.Contains($plain) -or $known.BaseForms.ContainsKey($plain) -or $known.TalkWords.Contains($plain)) { return $true }
+        if ($known.Negations -contains $plain -or $known.Exclusions -contains $plain) { return $true }
+        if ($known.Shorthand -and $known.Shorthand.Contains($plain)) { return $true }
+        $heardOften = Get-LambekFluency -Language $other
+        if ($heardOften -and $heardOften.Knows($Word)) { return $true }
+        $words = Get-LambekDictionary -Language $other
+        if ($words -and @($words.Lemmas($Word, $other)).Count -gt 0) { return $true }
+    }
+    return $false
+}
+
+function Repair-LambekSpacing {
+    # A space missed between two words ("doitetre": doit etre), typed inside a word ("fi chier": fichier), or typed one
+    # letter off ("d emettre": de mettre). Each way of putting the spaces back that leaves only words the language knows
+    # is a reading of the sentence; the likeliest reading of the whole sentence (the model of how the language sounds,
+    # a word it reads as its kind weighed by how often it is written) is taken when it is far likelier than the sentence
+    # as it was typed and than any other reading. The words come from what Lambek is spoken with, the frequent words of
+    # the language and its dictionary: no list is written for any language. A word joined by an apostrophe or a hyphen,
+    # a path, a file name, an extension, a word in capitals and what is quoted stay as they are; a word made of two
+    # words with a capital is put back only as a name Lambek knows
+    param([string] $Text, [string] $Language, [string[]] $Others, [System.Collections.Generic.List[object]] $Changes)
+
+    $model = Get-LambekFluency -Language $Language
+    $dictionary = Get-LambekDictionary -Language $Language
+    if (-not $model -or -not $dictionary) { return $Text }
+    $languages = $Others
+    $quoted = [System.Collections.Generic.HashSet[int]]::new()
+    foreach ($span in [regex]::Matches($Text, '"[^"]*"|\u00AB[^\u00BB]*\u00BB|\u201C[^\u201D]*\u201D')) {
+        for ($i = $span.Index; $i -lt $span.Index + $span.Length; $i++) { [void] $quoted.Add($i) }
+    }
+    $pattern = "(?<![\p{L}\p{N}_\\/:.'\u2019-])\p{L}+(?![\p{L}\p{N}_\\/:'\u2019-])(?!\.\p{L})"
+    $tokens = @([regex]::Matches($Text, $pattern) | Where-Object { -not $quoted.Contains($_.Index) -and $_.Value -cmatch '^\p{L}\p{Ll}*$' })
+    if ($tokens.Count -eq 0) { return $Text }
+    $facts = Get-LambekFactBase
+    $counted = Get-LambekWordCount -Language $Language
+    $seen = @{}
+    $knows = {
+        param([string] $Word)
+        if (-not $seen.ContainsKey($Word)) { $seen[$Word] = Test-LambekKnownWord -Word $Word -Languages $languages }
+        return $seen[$Word]
+    }
+    # (a piece of a reading: a word of this language; one letter alone only as a small word or a frequent word)
+    $piece = {
+        param([string] $Word)
+        if ($Word.Length -eq 1) { return $model.Knows($Word) -or (Get-LambekLexicon -Language $Language).StopWords.Contains($Word) }
+        return (Test-LambekKnownWord -Word $Word -Languages @($Language))
+    }
+    # (how likely a word of a reading is to be said to Lambek, as for a slip: the words it is spoken with and the
+    # frequent words of the language first, the other forms of its dictionary a hundred times less)
+    $lexicon = Get-LambekLexicon -Language $Language
+    $often = {
+        param([string] $Word)
+        $plain = ConvertTo-LambekNormalizedText -Text $Word
+        return $model.Knows($Word) -or $lexicon.StopWords.Contains($plain) -or $lexicon.Vocabulary.Contains($plain) -or $lexicon.TalkWords.Contains($plain) -or $lexicon.BaseForms.ContainsKey($plain)
+    }
+    $prior = { param([string] $Words) $sum = 0.0; foreach ($w in ($Words.ToLowerInvariant() -split ' ')) { if (-not (& $often $w)) { $sum -= 2.0 } }; $sum }
+    # (each way of cutting a run of letters into two words of the language)
+    $cuts = {
+        param([string] $Letters, [int] $Skip)
+        for ($at = 1; $at -lt $Letters.Length; $at++) {
+            if ($at -eq $Skip) { continue }
+            $left = $Letters.Substring(0, $at); $right = $Letters.Substring($at)
+            if ((& $piece $left.ToLowerInvariant()) -and (& $piece $right)) { "$left $right" }
+        }
+    }
+
+    # The places a space may be wrong, each with what it may be read as (the text as it was typed first)
+    $sites = [System.Collections.Generic.List[object]]::new()
+    for ($t = 0; $t -lt $tokens.Count; $t++) {
+        $here = $tokens[$t]
+        $lower = $here.Value.ToLowerInvariant()
+        $capital = $here.Value -cmatch '^\p{Lu}'
+        # A space typed inside a word, or one letter off: this word and the next, one space apart, one of them unknown
+        if ($t + 1 -lt $tokens.Count) {
+            $next = $tokens[$t + 1]
+            if ($next.Index -eq $here.Index + $here.Length + 1 -and $Text[$next.Index - 1] -eq ' ' -and $next.Value -cmatch '^\p{Ll}+$') {
+                # (two words both known may still be one cut in two, "fil es": then only that one word is a reading)
+                $both = (& $knows $lower) -and (& $knows $next.Value)
+                $letters = $here.Value + $next.Value
+                $readings = [System.Collections.Generic.List[string]]::new()
+                $whole = $letters.ToLowerInvariant()
+                if ($capital) {
+                    if ($facts -and @($facts.Find([LambekFacts]::Plain($whole)) | Where-Object { $_.Start -eq 0 -and $_.Length -eq 1 }).Count -gt 0) { $readings.Add($letters) }
+                }
+                else {
+                    # (two words both known are one only as a word Lambek is spoken with or the language says often)
+                    if ($(if ($both) { & $often $whole } else { & $piece $whole })) { $readings.Add($letters) }
+                    if (-not $both) { foreach ($cut in @(& $cuts $letters $here.Length)) { $readings.Add($cut) } }
+                }
+                if ($readings.Count -gt 0) {
+                    $spaced = $readings.Count
+                    $priors = [System.Collections.Generic.List[double]]::new()
+                    foreach ($r in $readings) { $priors.Add((& $prior $r)) }
+                    # (a word of the two one letter off is a reading too, the other as it was typed)
+                    foreach ($side in 0, 1) {
+                        $word = @($here.Value, $next.Value)[$side]
+                        if ($word.Length -lt 4 -or $word -cmatch '\p{Lu}' -or (& $knows $word)) { continue }
+                        foreach ($slip in @(Get-LambekSlipForm -Word $word -Language $Language -Lexicon (Get-LambekLexicon -Language $Language) -Dictionary $dictionary)) {
+                            $readings.Add($(if ($side -eq 0) { "$($slip.Form) $($next.Value)" } else { "$($here.Value) $($slip.Form)" }))
+                            $priors.Add($slip.Prior)
+                        }
+                    }
+                    $sites.Add([pscustomobject]@{ Start = $here.Index; Typed = $Text.Substring($here.Index, $next.Index + $next.Length - $here.Index); Readings = $readings.ToArray(); Priors = $priors.ToArray(); Spaced = $spaced })
+                    $t++
+                    continue
+                }
+            }
+        }
+        # A space missed: a word no language knows, two words of this one
+        if ($capital -or $lower.Length -lt 3 -or (& $knows $lower)) { continue }
+        $readings = @(& $cuts $here.Value 0)
+        if ($readings.Count -eq 0) { continue }
+        # (a word one letter off is a reading too, "suprime" is no "su prime": when it is the likeliest, the slip is
+        # read after, as any slip)
+        $slips = @(Get-LambekSlipForm -Word $lower -Language $Language -Lexicon (Get-LambekLexicon -Language $Language) -Dictionary $dictionary)
+        $sites.Add([pscustomobject]@{ Start = $here.Index; Typed = $here.Value; Readings = @($readings) + @($slips | ForEach-Object Form); Priors = @($readings | ForEach-Object { & $prior $_ }) + @($slips | ForEach-Object Prior); Spaced = $readings.Count })
+    }
+    # A name of several words written without its spaces ("TaylorSwift"): the name Lambek knows, words cut at each capital
+    if ($facts) {
+        foreach ($joined in [regex]::Matches($Text, $pattern)) {
+            if ($quoted.Contains($joined.Index) -or $joined.Value -cnotmatch '^\p{Lu}\p{Ll}+(?:\p{Lu}\p{Ll}+)+$') { continue }
+            $name = [regex]::Replace($joined.Value, '(?<=\p{Ll})(?=\p{Lu})', ' ')
+            $parts = @($name -split ' ').Count
+            if (@($facts.Find([LambekFacts]::Plain($name)) | Where-Object { $_.Start -eq 0 -and $_.Length -eq $parts }).Count -gt 0) {
+                $sites.Add([pscustomobject]@{ Start = $joined.Index; Typed = $joined.Value; Readings = @($name); Priors = @(0.0); Spaced = 1; Known = $true })
+            }
+        }
+        $sites = [System.Collections.Generic.List[object]] @($sites | Sort-Object Start)
+    }
+    if ($sites.Count -eq 0) { return $Text }
+
+    # Each place read in its sentence, the others as they were typed
+    $heard = { param([string] $Sentence) [regex]::Replace($Sentence, '(?<!\S)\S*(?:[\\/:]|\.\p{L})\S*', { param($m) 'X' + [string]::new('x', $m.Value.Length - 1) }) }
+    $weigh = {
+        param([string] $Words)
+        $sum = 0.0
+        foreach ($word in ($Words -split ' ')) {
+            $lower = $word.ToLowerInvariant()
+            if ($word -cmatch '^\p{Lu}' -or $model.Knows($lower)) { continue }
+            $sum += [LambekFluency]::KindShare
+            if ($counted) { $sum += [math]::Max(-4.0, [math]::Min(3.0, [math]::Log10(($counted.Counts.Of($lower) + 0.5) / $counted.Average))) }
+        }
+        return $sum
+    }
+    $repaired = $Text
+    for ($s = $sites.Count - 1; $s -ge 0; $s--) {
+        $site = $sites[$s]
+        if ($site.PSObject.Properties['Known']) {
+            $repaired = $repaired.Substring(0, $site.Start) + $site.Readings[0] + $repaired.Substring($site.Start + $site.Typed.Length)
+            $Changes.Insert(0, [pscustomobject]@{ From = $site.Typed; To = $site.Readings[0]; Sense = 'spelling' })
+            continue
+        }
+        $options = @(@($site.Typed) + @($site.Readings))
+        $weights = @(@(0.0) + @($site.Priors))
+        $scores = @(for ($o = 0; $o -lt $options.Count; $o++) {
+                $sentence = $Text.Substring(0, $site.Start) + $options[$o] + $Text.Substring($site.Start + $site.Typed.Length)
+                $model.Score((& $heard $sentence), $dictionary)[0] + (& $weigh $options[$o]) + $weights[$o]
+            })
+        $best = 0; $second = [double]::NegativeInfinity
+        for ($o = 1; $o -lt $scores.Count; $o++) { if ($scores[$o] -gt $scores[$best]) { $best = $o } }
+        for ($o = 0; $o -lt $scores.Count; $o++) { if ($o -ne $best -and $scores[$o] -gt $second) { $second = $scores[$o] } }
+        # (only a reading with the spaces put back is taken here: a word one letter off is read after, as any slip)
+        if ($best -eq 0 -or $best -gt $site.Spaced -or $scores[$best] - $second -lt $script:SlipMargin) { continue }
+        $with = $site.Readings[$best - 1]
+        $repaired = $repaired.Substring(0, $site.Start) + $with + $repaired.Substring($site.Start + $site.Typed.Length)
+        $Changes.Insert(0, [pscustomobject]@{ From = $site.Typed; To = $with; Sense = 'spelling' })
+    }
+    return $repaired
 }
 
 function Get-LambekWordCount {

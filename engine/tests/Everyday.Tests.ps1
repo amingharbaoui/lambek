@@ -76,6 +76,22 @@ Describe 'Repair-LambekTyping' {
         InModuleScope Lambek -Parameters @{ Text = $Text; Language = $Language } { param($Text, $Language) (Repair-LambekTyping -Text $Text -Language $Language).Text } | Should -BeExactly $Read
     }
 
+    It 'puts back a space missed or typed in the wrong place, when one reading is far likelier: <Text>' -ForEach @(
+        @{ Text = 'what is 100 dividedby 4?'; Language = 'en'; Read = 'what is 100 divided by 4?' }
+        @{ Text = 'gen erate a powershell function named Set-Config'; Language = 'en'; Read = 'generate a powershell function named Set-Config' }
+        @{ Text = 'cherche les fichi ers dans C:\Data'; Language = 'fr'; Read = 'cherche les fichiers dans C:\Data' }
+        @{ Text = 'quelle est la capitaledu Portugal ?'; Language = 'fr'; Read = 'quelle est la capitale du Portugal ?' }
+        @{ Text = 'quel age a TaylorSwift ?'; Language = 'fr'; Read = 'quel age a Taylor Swift ?' }
+    ) {
+        InModuleScope Lambek -Parameters @{ Text = $Text; Language = $Language } { param($Text, $Language) (Repair-LambekTyping -Text $Text -Language $Language).Text } | Should -BeExactly $Read
+    }
+
+    It 'joins two words it knows only into a word it is spoken with, and reads a word one letter off as a slip' {
+        InModuleScope Lambek { (Repair-LambekTyping -Text 'je sus super heureux' -Language fr).Text } | Should -BeExactly 'je sus super heureux'
+        InModuleScope Lambek { (Repair-LambekTyping -Text 'delet the .log files in C:\Temp' -Language en).Text } | Should -BeExactly 'delete the .log files in C:\Temp'
+        InModuleScope Lambek { (Repair-LambekTyping -Text 'lambek est un moteur' -Language fr).Changes.Count } | Should -Be 0
+    }
+
     It 'leaves it as it is when the readings stay about as likely ("met" or "mets")' {
         $text = 'metd le rapport.txt dans C:\B'
         InModuleScope Lambek -Parameters @{ Text = $text } { (Repair-LambekTyping -Text $Text -Language fr).Changes.Count } | Should -Be 0

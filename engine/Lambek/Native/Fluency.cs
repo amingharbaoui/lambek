@@ -31,7 +31,7 @@ public sealed class LambekFluency
 
     const int Bits = 16;
     // log10 of the share of its kind a word read as its kind has, when choosing among forms
-    const double KindShare = -3;
+    public const double KindShare = -3;
     const string Start = "<s>";
     const string End = "</s>";
     static readonly string[] Kinds = { "<Name>", "<Num>", "<Unk>", "<n>", "<a>", "<v>", "<r>", "<an>", "<nv>", "<av>", "<anv>", "<nr>", "<ar>", "<anr>", "<vr>", "<nvr>", "<avr>", "<anvr>" };

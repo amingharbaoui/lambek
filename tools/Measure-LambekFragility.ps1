@@ -152,6 +152,7 @@ $report = & (Get-Module Lambek) {
     }
     foreach ($key in @($near.Keys)) { $near[$key] = @($near[$key] | Sort-Object) }
     $random = [Random]::new($Seed)
+    $spacing = [Random]::new($Seed + 1)
     $slip = {
         param([string] $Word)
         $ways = @('drop', 'double', 'swap')
@@ -280,6 +281,26 @@ $report = & (Get-Module Lambek) {
             $tried.Add([pscustomobject]@{ Text = $text; Way = $changed.Way; Word = $word.Value; Bits = $cost; Same = $same; Unsafe = $unsafe; Got = $got.Class; Reply = $got.Reply })
             if ($Show -and -not $same) { Write-Host "  [$($case.Bench) $($case.Id)] $text -> $($got.Class) $($got.Reply) (clean: $($clean.Class) $($clean.Reply))" }
         }
+        # A space missed or typed inside: the word that carries the most joined to the word after it (or before it),
+        # and cut in two; drawn apart, so the slips above stay as they were
+        $spaced = [System.Collections.Generic.List[object]]::new()
+        if ($candidates.Count -gt 0) {
+            $word = $candidates[0]
+            $texts = [System.Collections.Generic.List[object]]::new()
+            $end = $word.Index + $word.Length
+            if ($last.Length -gt $end + 1 -and $last[$end] -eq ' ' -and [char]::IsLetter($last[$end + 1])) { $texts.Add([pscustomobject]@{ Way = 'join'; Text = $last.Remove($end, 1) }) }
+            elseif ($word.Index -ge 2 -and $last[$word.Index - 1] -eq ' ' -and [char]::IsLetter($last[$word.Index - 2])) { $texts.Add([pscustomobject]@{ Way = 'join'; Text = $last.Remove($word.Index - 1, 1) }) }
+            $texts.Add([pscustomobject]@{ Way = 'split'; Text = $last.Insert($word.Index + 2 + $spacing.Next($word.Length - 3), ' ') })
+            foreach ($try in $texts) {
+                $number++
+                $got = & $decide (@($before) + @($try.Text)) $case.Language "fragility-$number"
+                $outcome = & $judge $case.Expect $got
+                $same = $got.Class -eq $clean.Class -and ($got.Class -ne 'Said' -or $got.Reply -eq $clean.Reply -or ($cleanOutcome -eq 'Correct' -and $outcome -eq 'Correct'))
+                $unsafe = ($got.Class -like 'Act:*' -and $got.Class -ne $clean.Class) -or ($got.Class -eq 'Said' -and $cleanOutcome -eq 'Correct' -and $outcome -eq 'Wrong')
+                $spaced.Add([pscustomobject]@{ Text = $try.Text; Way = $try.Way; Word = $word.Value; Same = $same; Unsafe = $unsafe; Got = $got.Class; Reply = $got.Reply })
+                if ($Show -and -not $same) { Write-Host "  [$($case.Bench) $($case.Id) $($try.Way)] $($try.Text) -> $($got.Class) $($got.Reply) (clean: $($clean.Class) $($clean.Reply))" }
+            }
+        }
         # The word of another sort: an action, or the very answer the clean sentence got, means the word was not read
         $ignored = $null
         $swapped = & $foreign $last $case.Language $candidates
@@ -302,6 +323,7 @@ $report = & (Get-Module Lambek) {
                 Edge     = $(if ($changes.Count) { ($changes | Measure-Object -Property Bits -Minimum).Minimum } else { $null })
                 Stood    = $(if ($tried.Count -and -not $changes.Count) { ($tried | Measure-Object -Property Bits -Maximum).Maximum } else { $null })
                 Slips    = $tried.ToArray()
+                Spaces   = $spaced.ToArray()
                 Foreign  = $ignored
             })
     }
@@ -435,7 +457,14 @@ if ($weights.Count -gt 0) {
     }
 }
 
-$unsafe = @($all | ForEach-Object { $s = $_; @($s.Slips | Where-Object Unsafe | ForEach-Object { "$($s.Bench) $($s.Id): $($_.Text) -> $($_.Got) $($_.Reply)" }) })
+# A space missed or typed inside the word that carries the most
+$spaces = @($all | ForEach-Object { $_.Spaces })
+foreach ($way in 'join', 'split') {
+    $these = @($spaces | Where-Object Way -EQ $way)
+    Write-Host ("Spaces {0}: {1} sentences, {2} decided otherwise, {3} unsafe" -f $way, $these.Count, @($these | Where-Object { -not $_.Same }).Count, @($these | Where-Object Unsafe).Count)
+}
+
+$unsafe = @($all | ForEach-Object { $s = $_; @(@($s.Slips) + @($s.Spaces) | Where-Object Unsafe | ForEach-Object { "$($s.Bench) $($s.Id): $($_.Text) -> $($_.Got) $($_.Reply)" }) })
 foreach ($line in $unsafe) { Write-Host "  unsafe: $line" }
 # (a run where a slip made an action or another answer fails: build.ps1 stops on it)
 if ($unsafe.Count -gt 0) { exit 1 }
