@@ -74,7 +74,11 @@ function Repair-LambekTyping {
             }
             if ($capital) { return (Repair-LambekCapital -Word $word -Index $match.Index -Text $Text -Language $Language -Lexicon $lexicon -Changes $changes -Shift $shift) }
             $near = @($dictionary.Near($lower, $Language, 1))
-            if ($near.Count -eq 1) {
+            # (one form of the dictionary, and no word Lambek is spoken with or the language says often one slip away
+            # too: "whhat" is "what" before it is "wheat", which the sentence then decides)
+            $rival = @()
+            if ($near.Count -eq 1) { $rival = @(Get-LambekSlipForm -Word $lower -Language $Language -Lexicon $lexicon -Dictionary $dictionary | Where-Object { $_.Prior -eq 0.0 -and $_.Form -ne $near[0] }) }
+            if ($near.Count -eq 1 -and $rival.Count -eq 0) {
                 $changes.Add([pscustomobject]@{ From = $word; To = $near[0]; Sense = 'spelling' })
                 $shift.Value += $near[0].Length - $word.Length
                 return $near[0]
@@ -99,6 +103,18 @@ function Repair-LambekTyping {
             # (the word as it was typed is one of the readings: a word no dictionary has may still be meant, "parce qu'")
             $words = @($doubtful | ForEach-Object { , [string[]] @(@($_.Word.ToLowerInvariant()) + @($_.Forms | ForEach-Object Form)) })
             $priors = @($doubtful | ForEach-Object { , [double[]] @(@(0.0) + @($_.Forms | ForEach-Object Prior)) })
+            # A word the model reads as its kind ("a noun") is one of thousands of that kind: how often it is written
+            # tells which one ("fleuve" is written far more than "flue"), as a share of an average word of the texts
+            $counted = Get-LambekWordCount -Language $Language
+            if ($counted) {
+                for ($w = 0; $w -lt $words.Count; $w++) {
+                    for ($o = 0; $o -lt $words[$w].Count; $o++) {
+                        if ($model.Knows($words[$w][$o])) { continue }
+                        $share = [math]::Log10(($counted.Counts.Of($words[$w][$o]) + 0.5) / $counted.Average)
+                        $priors[$w][$o] += [math]::Max(-4.0, [math]::Min(3.0, $share))
+                    }
+                }
+            }
             # (a path, a file name or an extension is no sentence the model heard: each is read as a name, of the same
             # length so the words keep their place)
             $heard = [regex]::Replace($repaired, '(?<!\S)\S*(?:[\\/:]|\.\p{L})\S*', { param($m) 'X' + [string]::new('x', $m.Value.Length - 1) })
@@ -114,6 +130,27 @@ function Repair-LambekTyping {
     }
     if ($changes.Count -eq 0) { return $none }
     return [pscustomobject]@{ Text = $repaired; Changes = $changes.ToArray() }
+}
+
+function Get-LambekWordCount {
+    # How often each word is written in the texts Lambek read (Data/Speech/<language>.counts.gz, written by
+    # tools/Build-LambekWordCounts.ps1), and how often a word the language model reads as its kind is written on
+    # average; read once; nothing for a language without them
+    param([string] $Language)
+
+    if ($null -eq $script:WordCounts) { $script:WordCounts = @{} }
+    if (-not $script:WordCounts.ContainsKey($Language)) {
+        $found = $null
+        $path = Join-Path $PSScriptRoot "../Data/Speech/$Language.counts.gz"
+        $model = Get-LambekFluency -Language $Language
+        if ($model -and (Test-Path -LiteralPath $path -PathType Leaf)) {
+            $counts = [LambekWordCounts]::Load([IO.Path]::GetFullPath($path))
+            $average = [LambekWordCounts]::RareAverage($counts, $model)
+            if ($average -gt 0) { $found = [pscustomobject]@{ Counts = $counts; Average = $average } }
+        }
+        $script:WordCounts[$Language] = $found
+    }
+    return $script:WordCounts[$Language]
 }
 
 function Repair-LambekCapital {
@@ -188,8 +225,15 @@ function Get-LambekSlipForm {
     foreach ($known in @($Lexicon.StopWords) + @($Lexicon.Vocabulary) + @($Lexicon.TalkWords) + $frequent) {
         if ($known -match '^\p{L}+$' -and -not $forms.Contains($known) -and [LambekDictionary]::Slip($known, $Word)) { $forms[$known] = 0.0 }
     }
-    $near = @($Dictionary.Near($Word, $Language, 8))
-    if ($near.Count -gt 8) { $near = @() }
+    # (the forms of the dictionary most written in the texts Lambek read, when there are many: "pient" is one slip from
+    # "peint" among a dozen; too many and the slip says nothing)
+    $near = @($Dictionary.Near($Word, $Language, 64))
+    if ($near.Count -gt 64) { $near = @() }
+    $counted = Get-LambekWordCount -Language $Language
+    if ($near.Count -gt 8) {
+        if ($counted) { $near = @($near | Sort-Object @{ Expression = { $counted.Counts.Of($_) }; Descending = $true }, @{ Expression = { $_ }; Descending = $false } -Stable | Select-Object -First 8) }
+        else { $near = @() }
+    }
     foreach ($form in $near) {
         $plain = ConvertTo-LambekNormalizedText -Text $form
         if (-not $forms.Contains($form) -and -not $forms.Contains($plain)) { $forms[$form] = -2.0 }

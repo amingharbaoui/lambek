@@ -381,3 +381,112 @@ public class LambekSelfReader
         return words;
     }
 }
+
+// How often each word is written, counted in the plain texts Lambek reads (tools/Build-LambekWordCounts.ps1): what
+// makes "fleuve" a likelier reading of "fluve" than "flue", and "what" of "whhat" than "wheat". A word is kept only when
+// at least two sources write it, and twice at least: a slip in one text is no word ("teh"). Lower case, letters only,
+// so the same texts give the same counts on every machine
+public sealed class LambekWordCounts
+{
+    static readonly Regex Letters = new Regex(@"\p{L}+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    readonly Dictionary<string, long> counts = new Dictionary<string, long>(StringComparer.Ordinal);
+    readonly Dictionary<string, int> sources = new Dictionary<string, int>(StringComparer.Ordinal);
+    Dictionary<string, long> current = new Dictionary<string, long>(StringComparer.Ordinal);
+    public long Total;
+    public int Count { get { return counts.Count; } }
+
+    // The times a word was written (0 when never, or in one source only)
+    public long Of(string word)
+    {
+        long count;
+        return word != null && counts.TryGetValue(word.ToLowerInvariant(), out count) ? count : 0;
+    }
+
+    // One source, sentence after sentence: its words are counted apart, then added to the others
+    public void Add(IEnumerable<string> sentences)
+    {
+        current = new Dictionary<string, long>(StringComparer.Ordinal);
+        foreach (string sentence in sentences)
+        {
+            foreach (Match match in Letters.Matches(sentence.Normalize(NormalizationForm.FormC)))
+            {
+                string word = match.Value.ToLowerInvariant();
+                long count;
+                current.TryGetValue(word, out count);
+                current[word] = count + 1;
+            }
+        }
+        foreach (KeyValuePair<string, long> pair in current)
+        {
+            long count;
+            counts.TryGetValue(pair.Key, out count);
+            counts[pair.Key] = count + pair.Value;
+            int seen;
+            sources.TryGetValue(pair.Key, out seen);
+            sources[pair.Key] = seen + 1;
+        }
+        current = null;
+    }
+
+    // Only the words of several sources, written often enough
+    public void Keep(int leastSources, long leastCount)
+    {
+        foreach (string word in counts.Keys.ToList())
+        {
+            if (sources[word] < leastSources || counts[word] < leastCount) counts.Remove(word);
+        }
+        Total = counts.Values.Sum();
+        sources.Clear();
+    }
+
+    // The most written first, then in order of their letters: a file that is the same for the same texts
+    public void Save(string path)
+    {
+        using (FileStream file = File.Create(path))
+        using (GZipStream zip = new GZipStream(file, CompressionLevel.Optimal))
+        using (StreamWriter writer = new StreamWriter(zip, new UTF8Encoding(false)))
+        {
+            writer.NewLine = "\n";
+            writer.WriteLine("total\t" + Total.ToString(CultureInfo.InvariantCulture));
+            foreach (KeyValuePair<string, long> pair in counts.OrderByDescending(p => p.Value).ThenBy(p => p.Key, StringComparer.Ordinal))
+            {
+                writer.WriteLine(pair.Key + "\t" + pair.Value.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+    }
+
+    // How often a word the language model reads as its kind is written, on average: the word a kind's share is
+    // spread over when nothing else is known of it
+    public static double RareAverage(LambekWordCounts counts, LambekFluency model)
+    {
+        long sum = 0;
+        long words = 0;
+        foreach (KeyValuePair<string, long> pair in counts.counts)
+        {
+            if (model.Knows(pair.Key)) continue;
+            sum += pair.Value;
+            words++;
+        }
+        return words > 0 ? (double)sum / words : 0;
+    }
+
+    public static LambekWordCounts Load(string path)
+    {
+        LambekWordCounts made = new LambekWordCounts();
+        using (FileStream file = File.OpenRead(path))
+        using (GZipStream zip = new GZipStream(file, CompressionMode.Decompress))
+        using (StreamReader reader = new StreamReader(zip, new UTF8Encoding(false)))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                int tab = line.IndexOf('\t');
+                if (tab < 0) continue;
+                long value = long.Parse(line.Substring(tab + 1), CultureInfo.InvariantCulture);
+                if (line.StartsWith("total\t", StringComparison.Ordinal)) { made.Total = value; continue; }
+                made.counts[line.Substring(0, tab)] = value;
+            }
+        }
+        return made;
+    }
+}

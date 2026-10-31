@@ -134,6 +134,8 @@ $script:KnowledgeRules = $null
 # How each language sounds, the fusion of the satellites that choose how an answer is said, and the frame said last
 # in each conversation
 $script:Fluency = $null
+# How often each word is written in the texts Lambek read, to tell which word a slip was meant as
+$script:WordCounts = $null
 $script:SpeechFusion = $null
 $script:SpeechFrames = $null
 $script:SpeechReadings = $null
