@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 param(
     [ValidateSet('All', 'Build', 'Analyze', 'Test', 'Benchmark', 'Fingerprint')]
     [string] $Task = 'All',
@@ -26,7 +26,7 @@ if ($Task -eq 'All' -or $Task -eq 'Build') {
         $sdks = @(dotnet --list-sdks 2>$null | Where-Object { $_ -match '^\d+\.' })
     }
     if ($sdks.Count -eq 0) {
-        Write-Warning 'No .NET SDK is installed (winget install Microsoft.DotNet.SDK.8): the engine will compile its C# when it is first imported.'
+        Write-Warning 'No .NET SDK is installed (winget install Microsoft.DotNet.SDK.10): the engine will compile its C# when it is first imported.'
     }
     else {
         Write-Host "Building the C# with .NET SDK $(($sdks[-1] -split ' ')[0])..."
@@ -220,6 +220,13 @@ if ($Task -eq 'Benchmark') {
     Write-Host 'Contrast (calibration requests turned so that they must not act)'
     & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekContrast.ps1')
     if ($LASTEXITCODE -ne 0) { throw 'A request turned so that it must not act was ready to act.' }
+
+    # Fragility: every calibration sentence of every bench, one slip in the word that carries the most; how many bits of
+    # noise change a decision, and never an action or another answer made by a slip (tools/Measure-LambekFragility.ps1)
+    Write-Host ''
+    Write-Host 'Fragility (one slip in the word that carries the decision)'
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekFragility.ps1')
+    if ($LASTEXITCODE -ne 0) { throw 'A slip made an action or another answer.' }
 }
 
 # Fingerprint: what Lambek answers to every request of the benchmark, one line each, and the hash of them all.
