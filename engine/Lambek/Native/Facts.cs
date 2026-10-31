@@ -79,6 +79,8 @@ public sealed class LambekFacts
     readonly Dictionary<string, List<LambekThing>> pointing = new Dictionary<string, List<LambekThing>>(StringComparer.Ordinal);
     readonly Dictionary<string, List<LambekThing>> kinds = new Dictionary<string, List<LambekThing>>(StringComparer.Ordinal);
     int longest = 1;
+    // The names of one word, by their length, made when a name is first looked for one slip away
+    Dictionary<int, List<string>> single;
 
     public static LambekFacts Load(string path)
     {
@@ -227,6 +229,42 @@ public sealed class LambekFacts
                 else if (length == 1 && surnames.TryGetValue(name, out list)) { found.Add(new LambekNameMention { Start = start, Length = 1, Name = name, Things = list.ToArray(), Surname = true }); }
             }
         }
+        return found.ToArray();
+    }
+
+    // The names of one word one slip from a word (already plain): "frahce" is one slip from "france", "bressil" from
+    // "bresil". The better known first (the thing each names that the most pages tell of), then in order
+    public LambekNameMention[] Near(string plain)
+    {
+        if (string.IsNullOrEmpty(plain) || plain.IndexOf(' ') >= 0) { return new LambekNameMention[0]; }
+        if (single == null)
+        {
+            Dictionary<int, List<string>> made = new Dictionary<int, List<string>>();
+            foreach (string name in names.Keys)
+            {
+                if (name.IndexOf(' ') >= 0) { continue; }
+                List<string> list;
+                if (!made.TryGetValue(name.Length, out list)) { list = new List<string>(); made[name.Length] = list; }
+                list.Add(name);
+            }
+            foreach (List<string> list in made.Values) { list.Sort(string.CompareOrdinal); }
+            single = made;
+        }
+        List<LambekNameMention> found = new List<LambekNameMention>();
+        for (int length = plain.Length - 1; length <= plain.Length + 1; length++)
+        {
+            List<string> list;
+            if (!single.TryGetValue(length, out list)) { continue; }
+            foreach (string name in list)
+            {
+                if (LambekDictionary.OneEdit(name, 0, name.Length, plain)) { found.Add(new LambekNameMention { Start = 0, Length = 1, Name = name, Things = names[name].ToArray() }); }
+            }
+        }
+        found.Sort((a, b) =>
+        {
+            int known = b.Things[0].Links.CompareTo(a.Things[0].Links);
+            return known != 0 ? known : string.CompareOrdinal(a.Name, b.Name);
+        });
         return found.ToArray();
     }
 
