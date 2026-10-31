@@ -65,6 +65,12 @@ function Repair-LambekRequest {
     # a word of manner ("rapidement", "quickly") changes no file, a word an extension shortens ("zippes": .zip) names one
     foreach ($token in @(Get-LambekUnplacedToken -Reading $current)) {
         foreach ($sense in @(Get-LambekWordSense -Token $token -Language $current.Request.Language)) {
+            # (a word written with a capital and small letters is a name, no extension shortened: "quel age a Tarzanix ?"
+            # lists no .tar)
+            if ($sense.Sense -eq 'abbreviation') {
+                $written = [regex]::Match($Original, '(?<![\p{L}\p{N}])' + [regex]::Escape($token) + '(?![\p{L}\p{N}])', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+                if ($written.Success -and $written.Value -cmatch '^\p{Lu}\p{Ll}') { continue }
+            }
             $changed = Get-LambekCorrectedText -Text $current.Text -Word $token -With $sense.With
             if ($changed -ceq $current.Text) { continue }
             $reading = Test-LambekReading -Text $changed -Original $Original -Language $Language

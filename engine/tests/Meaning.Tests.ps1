@@ -131,6 +131,10 @@ Describe 'Exact meaning of a request' {
             ConvertTo-LambekAnswer -Plan $plan | Should -BeLike '*« zippes » : compris comme .zip.*'
         }
 
+        It 'never reads a name as an extension it would shorten' {
+            @((New-LambekPlan 'quel âge a Tarzanix ?').Steps | Where-Object { $_.Action }).Count | Should -Be 0
+        }
+
         It 'knows the kinds of the packs: <Text>' -ForEach @(
             @{ Text = 'supprime les fichiers temporaires dans C:\Temp'; Kind = 'temporary' }
             @{ Text = 'delete the backup files in C:\Temp'; Kind = 'backup' }
