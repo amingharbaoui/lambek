@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Learns the forms of the words of a language (lemma, part of speech, features) from annotated treebanks, for Lambek

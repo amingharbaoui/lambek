@@ -6,7 +6,7 @@
     The library goes to ../Lambek/bin with the hash of the sources it was built from.
   -->
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>Lambek.Native</AssemblyName>
     <RootNamespace />
     <OutputType>Library</OutputType>

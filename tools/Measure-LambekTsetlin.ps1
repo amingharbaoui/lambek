@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     The experiment of step 4.3: rules that can be read (a Tsetlin machine) against the perceptron of the forms models,

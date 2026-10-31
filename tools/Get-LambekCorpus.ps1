@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Downloads the plain texts Lambek reads to learn words on its own (tools/corpus.json), into a folder of their own.

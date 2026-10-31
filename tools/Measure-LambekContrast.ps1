@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Measures whether Lambek hears a change of meaning: the calibration requests of bench/requests.json that are ready to

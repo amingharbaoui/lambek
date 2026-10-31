@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Reads in Wikidata what Lambek knows of the world: countries, cities, people, books, films, paintings, albums,

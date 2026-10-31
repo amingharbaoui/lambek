@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 Set-StrictMode -Version Latest
 
 # Where Lambek keeps what it learns and logs: LAMBEK_DATA when set (tests, a portable copy), else the local app data

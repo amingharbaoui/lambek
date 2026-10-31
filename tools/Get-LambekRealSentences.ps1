@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Draws at random the real sentences of bench/real.json: what people asked a voice assistant (MASSIVE, French and

@@ -4,7 +4,7 @@
     Rules        = @{
         PSUseCompatibleSyntax = @{
             Enable         = $true
-            TargetVersions = @('7.4', '7.6')
+            TargetVersions = @('7.6')
         }
         PSPlaceOpenBrace      = @{
             Enable             = $true

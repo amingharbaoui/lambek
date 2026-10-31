@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Lambek learns words on its own by reading plain text (step 4.6 of the roadmap), and writes down only what is

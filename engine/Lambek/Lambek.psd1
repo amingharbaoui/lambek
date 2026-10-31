@@ -6,7 +6,7 @@
     CompanyName          = 'Amin Gharbaoui'
     Copyright            = '(c) 2026 Amin Gharbaoui'
     Description          = 'Deterministic intent compiler: plain language in, verified execution out.'
-    PowerShellVersion    = '7.4'
+    PowerShellVersion    = '7.6'
     CompatiblePSEditions = @('Core')
 
     FunctionsToExport    = @(

@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Learns how a language sounds (the shapes of its sentences) from free corpora, for Lambek to choose how it says things.

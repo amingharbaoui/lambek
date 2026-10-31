@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Proposes, for each action of the packs, the words WordNet and WOLF put next to its verbs, to review by hand.

@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Measures how Lambek holds up when a sentence is written less well: the calibration sentences of bench/requests.json

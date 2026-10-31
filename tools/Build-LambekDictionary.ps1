@@ -1,4 +1,4 @@
-#Requires -Version 7.4
+#Requires -Version 7.6
 <#
 .SYNOPSIS
     Compiles the free dictionaries into the packs Lambek reads: engine/Lambek/Data/Dictionaries/*.dict.gz
