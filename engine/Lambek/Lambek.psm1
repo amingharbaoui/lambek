@@ -138,6 +138,8 @@ $script:Fluency = $null
 $script:WordCounts = $null
 # The facts of the world read for the message being answered (the host says them with the answer)
 $script:WorldReads = $null
+# The letters each language writes, from its word counts (accents tell languages apart)
+$script:Alphabets = $null
 $script:SpeechFusion = $null
 $script:SpeechFrames = $null
 $script:SpeechReadings = $null

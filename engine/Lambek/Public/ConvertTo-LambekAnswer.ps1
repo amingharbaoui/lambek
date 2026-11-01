@@ -255,9 +255,9 @@ function ConvertTo-LambekAnswer {
                     $lines.Add((Format-LambekPlural -Template $answer.MatchesCount -Language $language -Values @($count)))
                 }
             }
-            # Nothing to change: no confirmation to ask for
+            # Nothing to change: no confirmation to ask for; a plan that only reads runs at once, so it asks for nothing
             if ($Simulation.ConfirmationCode -and ($count -gt 0 -or $mcpSteps.Count -gt 0)) { $lines.Add(($answer.Approval -f $Simulation.ConfirmationCode)) }
-            elseif ($count -gt 0 -or $mcpSteps.Count -gt 0) { $lines.Add($answer.ReadyToRun) }
+            elseif ($Simulation.Risk -ne 'low' -and ($count -gt 0 -or $mcpSteps.Count -gt 0)) { $lines.Add($answer.ReadyToRun) }
         }
         elseif ($Brief) {
             # A plan alone needs no words: its reading is in the status

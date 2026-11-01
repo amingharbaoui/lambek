@@ -3,11 +3,14 @@ function Get-LambekLanguage {
     param(
         [Parameter(Mandatory)]
         [AllowEmptyCollection()]
-        [string[]] $Tokens
+        [string[]] $Tokens,
+
+        # The text as it was typed, when there is one (its accents tell languages apart)
+        [string] $Text
     )
 
     # The frame language of the sentence: one clear winner, otherwise the language the chat is in, otherwise English
-    $scores = Get-LambekLanguageScore -Tokens $Tokens
+    $scores = Get-LambekLanguageScore -Tokens $Tokens -Text $Text
     $best = ($scores.Values | Measure-Object -Maximum).Maximum
     $winners = @($scores.Keys | Where-Object { $scores[$_] -eq $best })
     if ($best -gt 0 -and $winners.Count -eq 1) { return $winners[0] }
@@ -58,13 +61,16 @@ function Get-LambekLanguageScore {
     param(
         [Parameter(Mandatory)]
         [AllowEmptyCollection()]
-        [string[]] $Tokens
+        [string[]] $Tokens,
+
+        # The text as it was typed, with its accents: a letter a language does not write is evidence against it
+        [string] $Text
     )
 
     # Matrix Language Frame (Myers-Scotton): the small words of grammar (articles, prepositions, pronouns) come from the
     # language that frames the sentence, the content words may come from another. A small word counts two, any other
     # word of the language one; words every language shares count for none of them
-    $key = "languages`n" + ($Tokens -join "`n")
+    $key = "languages`n" + ($Tokens -join "`n") + "`n" + $Text
     $kept = $null
     if ($script:ReadCache.TryGetValue($key, [ref] $kept)) { return $kept }
     $lower = @($Tokens | ForEach-Object { $_.ToLowerInvariant() })
@@ -80,6 +86,30 @@ function Get-LambekLanguageScore {
             $weight = 1
             if ($lexicons[$language].StopWords.Contains($token) -or $lexicons[$language].GrammarWords.Contains($token)) { $weight = 2 }
             $scores[$language] += $weight
+        }
+    }
+    # A word written with a letter a language never writes ("a" with a grave accent is no English) counts two against
+    # it: the letters of each language come from the texts it was learned from (its word counts), none written here; a
+    # language without them is left as it is. Only a word some language knows is such evidence: a name or a word cut
+    # in two ("Les Miserab les") says nothing of the language of the sentence
+    if ($Text) {
+        $alphabets = @{}
+        foreach ($language in $languages) {
+            $counted = Get-LambekWordCount -Language $language
+            if ($counted) {
+                if ($null -eq $script:Alphabets) { $script:Alphabets = @{} }
+                if (-not $script:Alphabets.ContainsKey($language)) { $script:Alphabets[$language] = [System.Collections.Generic.HashSet[char]]::new([char[]] $counted.Counts.Alphabet(0.9999)) }
+                $alphabets[$language] = $script:Alphabets[$language]
+            }
+        }
+        $plain = $Text -replace '"[^"]*"|\u00AB[^\u00BB]*\u00BB|\u201C[^\u201D]*\u201D', ' '
+        $plain = $plain -replace '(?i)\b[a-z]:[\\/]\S*|\\\\\S+|(?<!\w)/\S+|https?://\S+', ' '
+        foreach ($word in [regex]::Matches($plain.Normalize([Text.NormalizationForm]::FormC).ToLowerInvariant(), '\p{L}+')) {
+            $bare = ConvertTo-LambekNormalizedText -Text $word.Value
+            if (-not @($languages | Where-Object { $lexicons[$_].Signals.Contains($bare) })) { continue }
+            foreach ($language in $alphabets.Keys) {
+                if (@($word.Value.ToCharArray() | Where-Object { -not $alphabets[$language].Contains($_) }).Count -gt 0) { $scores[$language] -= 2 }
+            }
         }
     }
     $script:ReadCache[$key] = $scores
@@ -141,7 +171,10 @@ function Get-LambekLanguageBelief {
 
         [Parameter(Mandatory)]
         [AllowEmptyCollection()]
-        [string[]] $Tokens
+        [string[]] $Tokens,
+
+        # The text as it was typed (its accents tell languages apart)
+        [string] $Text
     )
 
     # A hidden Markov model over the languages of a chat, filtered forward one turn at a time: the user mostly stays
@@ -164,7 +197,7 @@ function Get-LambekLanguageBelief {
             }
         }
     }
-    $scores = Get-LambekLanguageScore -Tokens $Tokens
+    $scores = Get-LambekLanguageScore -Tokens $Tokens -Text $Text
     $best = ($scores.Values | Measure-Object -Maximum).Maximum
     $posterior = @{}
     $total = 0.0

@@ -105,7 +105,7 @@ function Invoke-LambekHostRequest {
                 $previous = $null
                 if ($chat -and $state.Languages.ContainsKey($chat)) { $previous = $state.Languages[$chat] }
                 elseif ($script:LanguageHint) { $previous = @{ $script:LanguageHint = 1.0 } }
-                $languages = Get-LambekLanguageBelief -Belief $previous -Tokens $words
+                $languages = Get-LambekLanguageBelief -Belief $previous -Tokens $words -Text $params.text
                 $script:LanguageHint = Select-LambekLanguage -Belief $languages
                 if ($chat) { $state.Languages[$chat] = $languages }
 
@@ -191,7 +191,7 @@ function Invoke-LambekHostRequest {
                 }
 
                 # The language of the message (its frame, the chat's on a tie), so the app can keep the chat in it
-                $result.language = Get-LambekLanguage -Tokens $words
+                $result.language = Get-LambekLanguage -Tokens $words -Text $params.text
 
                 # Small talk: nothing to prove, the app shows no reading for it
                 $result.talk = $false
@@ -204,6 +204,20 @@ function Invoke-LambekHostRequest {
                 # The facts of the world read for it, as Lambek writes them in its logic ("wikidata(Q45, P36, Q597)"):
                 # the same question in another language reads the same ones, whatever the words of the answer
                 $result.read = @(@($script:WorldReads) | Where-Object { $_ } | Select-Object -Unique)
+                # And the things they are about, named in the language of the message, for the app to show where the
+                # answer comes from (each one can be looked up in Wikidata by its id). Only a thing the answer names is a
+                # source of it: a fact read on the way to "I did not understand" is the source of nothing said
+                $said = [string] $result['answer']
+                $base = $(if ($result.read.Count -gt 0 -and $said) { Get-LambekFactBase })
+                $result.sources = @(if ($base) {
+                        foreach ($id in @($result.read | ForEach-Object { [regex]::Matches($_, '\bQ\d+\b') | ForEach-Object Value } | Select-Object -Unique)) {
+                            $thing = $base.Thing($id)
+                            if ($thing) {
+                                $label = $thing.Label($result.language)
+                                if ($label -and $said.IndexOf($label, [StringComparison]::OrdinalIgnoreCase) -ge 0) { [ordered]@{ id = $id; label = $label } }
+                            }
+                        }
+                    })
             }
             'edit' {
                 $plan = Get-LambekHostPlan -State $state -Params $params

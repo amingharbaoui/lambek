@@ -470,6 +470,34 @@ public sealed class LambekWordCounts
         return words > 0 ? (double)sum / words : 0;
     }
 
+    // The letters the words of the language are written with: the most written first until they make the share given
+    // of all the letters written (a name of another script now and then is no letter of the language), in order
+    public string Alphabet(double share)
+    {
+        Dictionary<char, long> seen = new Dictionary<char, long>();
+        long all = 0;
+        foreach (KeyValuePair<string, long> pair in counts)
+        {
+            foreach (char c in pair.Key)
+            {
+                if (!char.IsLetter(c)) continue;
+                long n;
+                seen.TryGetValue(c, out n);
+                seen[c] = n + pair.Value;
+                all += pair.Value;
+            }
+        }
+        SortedSet<char> kept = new SortedSet<char>();
+        long sum = 0;
+        foreach (KeyValuePair<char, long> pair in seen.OrderByDescending(p => p.Value).ThenBy(p => p.Key))
+        {
+            if (all > 0 && sum >= share * all) break;
+            kept.Add(pair.Key);
+            sum += pair.Value;
+        }
+        return new string(kept.ToArray());
+    }
+
     public static LambekWordCounts Load(string path)
     {
         LambekWordCounts made = new LambekWordCounts();

@@ -340,6 +340,14 @@ Describe 'The language of a chat' {
             finally { $script:LanguageHint = $null }
         }
     }
+
+    It 'reads the language from the letters of the message when the words alone do not tell it' {
+        & (Get-Module Lambek) {
+            $words = @('marie', 'habite', 'a', 'lyon')
+            Get-LambekLanguage -Tokens $words -Text 'Marie habite à Lyon' | Should -Be 'fr'
+            Get-LambekLanguage -Tokens @('find', 'my', 'photos') -Text 'find my photos' | Should -Be 'en'
+        }
+    }
 }
 
 Describe 'Speaking of numbers' {

@@ -73,6 +73,16 @@ Describe 'Invoke-LambekPlan' {
             $simulation.ConfirmationCode | Should -BeNullOrEmpty
             { Approve-LambekPlan -Simulation $simulation -AuditPath $audit } | Should -Not -Throw
         }
+
+        It 'asks for nothing before a plan that only reads, and still asks before one that changes files' {
+            $list = New-LambekPlan "list the files in ""$source"""
+            $read = Invoke-LambekPlan -Plan $list -Simulate -AuditPath $audit
+            ConvertTo-LambekAnswer -Plan $list -Simulation $read | Should -Not -BeLike '*go ahead*'
+            $move = New-LambekPlan "move the .log files in ""$source"" to ""$archive"""
+            $change = Invoke-LambekPlan -Plan $move -Simulate -AuditPath $audit
+            $change.Risk | Should -Be 'medium'
+            ConvertTo-LambekAnswer -Plan $move -Simulation $change | Should -BeLike '*go ahead*'
+        }
     }
 
     Context 'Execution' {
