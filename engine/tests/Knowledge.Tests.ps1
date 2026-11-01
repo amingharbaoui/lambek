@@ -92,6 +92,40 @@ Describe 'Rules Lambek follows' {
         }
     }
 
+    It 'reads a path the way the system does: <Path> is under <Folder>' -ForEach @(
+        @{ Path = 'C:\Temp\..\Windows\System32'; Folder = 'C:\Windows' }
+        @{ Path = '\\?\C:\Windows\System32'; Folder = 'C:\Windows' }
+        @{ Path = 'C:\Windows.\System32'; Folder = 'C:\Windows' }
+        @{ Path = 'C:\\Windows\\\System32\.'; Folder = 'C:\Windows' }
+        @{ Path = '\\?\UNC\server\share\x'; Folder = '\\server\share' }
+    ) {
+        [LambekLogic]::Builtin('under', [string[]] @($Path, $Folder)) | Should -BeTrue
+        [LambekLogic]::Builtin('under', [string[]] @('C:\Temp\Windows', 'C:\Windows')) | Should -BeFalse
+    }
+
+    It 'follows a link to where it really leads, when it plans and again when it runs' {
+        $system = [Environment]::GetFolderPath('CommonApplicationData')
+        if (-not $system) { $system = [Environment]::GetFolderPath('Windows') }
+        $kind = $(if ($IsWindows) { 'Junction' } else { 'SymbolicLink' })
+        $link = Join-Path $TestDrive 'shortcut'
+        New-Item -ItemType $kind -Path $link -Target $system | Out-Null
+        (New-LambekPlan "delete the .tmp files in $link").Status | Should -Not -Be 'Ready'
+
+        # A folder planned on, then turned into a link before the plan runs
+        $work = Join-Path $TestDrive 'work'
+        New-Item -ItemType Directory -Path $work | Out-Null
+        Set-Content -LiteralPath (Join-Path $work 'a.tmp') -Value 'x'
+        $plan = New-LambekPlan "delete the .tmp files in $work"
+        $plan.Status | Should -Be 'Ready'
+        $simulation = Invoke-LambekPlan -Plan $plan -Simulate
+        $approval = Approve-LambekPlan -Simulation $simulation -Confirmation $simulation.ConfirmationCode
+        Remove-Item -LiteralPath $work -Recurse -Force
+        New-Item -ItemType $kind -Path $work -Target $system | Out-Null
+        $run = Invoke-LambekPlan -Plan $plan -Approval $approval
+        $run.Status | Should -Be 'Refused'
+        $run.Reason | Should -BeLike '*protected place*'
+    }
+
     It 'lets reading go anywhere' {
         $system = [Environment]::GetFolderPath('Windows')
         if (-not $system) { $system = '/etc' }

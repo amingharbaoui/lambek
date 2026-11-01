@@ -94,13 +94,32 @@ public class LambekLogic
         return term;
     }
 
-    // Paths: the same folder, or one inside the other, without regard to case or the last separator
+    // Paths: the same folder, or one inside the other, without regard to case or the last separator, and written the
+    // way the system reads it: "." and ".." walked ("C:\Temp\..\Windows" is C:\Windows), the prefixes of long paths and
+    // devices dropped ("\\?\C:\Windows" is C:\Windows), the dots and spaces that end a name dropped as Windows drops
+    // them ("C:\Windows.\System32" is C:\Windows\System32), separators repeated read once
     public static string Folder(string path)
     {
-        string clean = path.Replace('/', '\\').TrimEnd('\\');
-        if (Regex.IsMatch(clean, "^[A-Za-z]:$")) { clean += "\\"; }
-        if (clean == "") { clean = "\\"; }
-        return clean.ToLowerInvariant();
+        string clean = (path ?? "").Replace('/', '\\');
+        if (clean.StartsWith("\\\\?\\UNC\\", StringComparison.OrdinalIgnoreCase) || clean.StartsWith("\\\\.\\UNC\\", StringComparison.OrdinalIgnoreCase)) { clean = "\\\\" + clean.Substring(8); }
+        else if (clean.StartsWith("\\\\?\\", StringComparison.Ordinal) || clean.StartsWith("\\\\.\\", StringComparison.Ordinal)) { clean = clean.Substring(4); }
+        string root = "";
+        string rest = clean;
+        Match drive = Regex.Match(clean, "^[A-Za-z]:\\\\?");
+        if (drive.Success) { root = clean.Substring(0, 2) + "\\"; rest = clean.Substring(drive.Length); }
+        else if (clean.StartsWith("\\\\", StringComparison.Ordinal)) { root = "\\\\"; rest = clean.Substring(2); }
+        else if (clean.StartsWith("\\", StringComparison.Ordinal)) { root = "\\"; rest = clean.Substring(1); }
+        List<string> parts = new List<string>();
+        foreach (string raw in rest.Split('\\'))
+        {
+            if (raw == "" || raw == ".") continue;
+            if (raw == "..") { if (parts.Count > 0) parts.RemoveAt(parts.Count - 1); continue; }
+            string part = raw.TrimEnd('.', ' ');
+            if (part != "") parts.Add(part);
+        }
+        string joined = root + string.Join("\\", parts);
+        if (joined == "") { joined = "\\"; }
+        return joined.ToLowerInvariant();
     }
 
     static bool IsBuiltin(string name)

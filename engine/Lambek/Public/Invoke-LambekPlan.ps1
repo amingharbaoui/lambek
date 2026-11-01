@@ -76,6 +76,12 @@ function Invoke-LambekPlan {
                 if (-not (Test-LambekScript -Script $step.Script -AllowedCommand $definition.Pack.Commands).IsValid) {
                     $reason = "Step $($step.Step) no longer passes the safety check."
                 }
+                # The places it changes are read again where they really lead now (a link made since the plan, a rule
+                # added since): a protected place is never changed
+                $blocked = @(Test-LambekPolicy -Paths @($step.Writes | Where-Object { $_ }))
+                if ($blocked.Count -gt 0) {
+                    $reason = "Step $($step.Step) would change a protected place: $($blocked[0].Path) ($($blocked[0].Reason))."
+                }
             }
         }
 

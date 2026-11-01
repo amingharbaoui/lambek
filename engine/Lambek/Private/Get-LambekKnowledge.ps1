@@ -55,11 +55,41 @@ function Test-LambekPolicy {
         [string[]] $Paths
     )
 
-    # The paths a step changes that the rules forbid, with the reason
+    # The paths a step changes that the rules forbid, with the reason; a path is also read where it really leads, through
+    # every link on the way (a symbolic link, a junction: "C:\Temp\sys" may be C:\Windows)
     if ($Paths.Count -eq 0) { return @() }
-    $logic = Get-LambekKnowledge -Facts @{ changes = @($Paths | ForEach-Object { , @($_) }) }
+    $all = [System.Collections.Generic.List[string]]::new()
+    foreach ($path in $Paths) {
+        $all.Add($path)
+        $real = Get-LambekRealPath -Path $path
+        if ($real -and -not $all.Contains($real)) { $all.Add($real) }
+    }
+    $logic = Get-LambekKnowledge -Facts @{ changes = @($all | ForEach-Object { , @($_) }) }
     foreach ($row in $logic.Get('blocked')) {
         # The proof of the block, for "why?": the rule and the facts that gave it
         [pscustomobject]@{ Path = $row[0]; Reason = $row[1]; Proof = @($logic.Explain('blocked', [string[]] $row, 6)) }
     }
+}
+
+function Get-LambekRealPath {
+    # Where a full path of this system really leads: each folder on the way that is a link is followed to its final
+    # target; the part that does not exist yet is added as it is written. Nothing for a path of another system
+    param([string] $Path)
+
+    if (-not $Path -or -not [IO.Path]::IsPathFullyQualified($Path)) { return $null }
+    try { $full = [IO.Path]::GetFullPath($Path) } catch { return $null }
+    $root = [IO.Path]::GetPathRoot($full)
+    $current = $root
+    $parts = @($full.Substring($root.Length) -split '[\\/]' | Where-Object { $_ })
+    for ($i = 0; $i -lt $parts.Count; $i++) {
+        $next = Join-Path $current $parts[$i]
+        $item = Get-Item -LiteralPath $next -Force -ErrorAction SilentlyContinue
+        if (-not $item) { return (@($next) + @($parts | Select-Object -Skip ($i + 1)) -join [IO.Path]::DirectorySeparatorChar) }
+        if ($item.LinkTarget) {
+            $target = $item.ResolveLinkTarget($true)
+            if ($target) { $next = $target.FullName }
+        }
+        $current = $next
+    }
+    return $current
 }
