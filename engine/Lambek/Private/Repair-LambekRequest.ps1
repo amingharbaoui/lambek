@@ -70,6 +70,10 @@ function Repair-LambekRequest {
             if ($sense.Sense -eq 'abbreviation') {
                 $written = [regex]::Match($Original, '(?<![\p{L}\p{N}])' + [regex]::Escape($token) + '(?![\p{L}\p{N}])', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
                 if ($written.Success -and $written.Value -cmatch '^\p{Lu}\p{Ll}') { continue }
+                # (nor in a message the router of acts reads as no order, a question above all: an extension guessed
+                # must never make an action of "quel age a tarzanix ?")
+                $route = Get-LambekRoute -Text $Original -Language $current.Request.Language
+                if ($route -and $route.Act -and $route.Act -notin 'Order', 'Open') { continue }
             }
             $changed = Get-LambekCorrectedText -Text $current.Text -Word $token -With $sense.With
             if ($changed -ceq $current.Text) { continue }
