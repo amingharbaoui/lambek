@@ -18,18 +18,20 @@ jobs:
         shell: pwsh
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
 
+      # PSResourceGet, which comes with PowerShell 7.4 and later; newer runner images no longer register PSGallery
+      # for the older PowerShellGet
       - name: Install modules
         run: |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module Pester -MinimumVersion 5.5.0 -Force -SkipPublisherCheck
-          Install-Module PSScriptAnalyzer -Force
+          if (-not (Get-PSResourceRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSResourceRepository -PSGallery -Trusted }
+          Install-PSResource -Name Pester -Version '[5.5.0,)' -Repository PSGallery -TrustRepository -Scope CurrentUser -Quiet
+          Install-PSResource -Name PSScriptAnalyzer -Repository PSGallery -TrustRepository -Scope CurrentUser -Quiet
 
       - name: Analyze and test
         run: ./build.ps1
@@ -38,7 +40,7 @@ jobs:
         run: ./build.ps1 -Task Fingerprint -OutFile fingerprint.txt
 
       - name: Keep the fingerprint
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: fingerprint-${{ matrix.os }}
           path: fingerprint.txt
@@ -49,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get the fingerprints
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
 
       - name: Compare Windows and Ubuntu
         run: |
