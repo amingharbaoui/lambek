@@ -81,14 +81,24 @@ function Get-LambekRealPath {
     $root = [IO.Path]::GetPathRoot($full)
     $current = $root
     $parts = @($full.Substring($root.Length) -split '[\\/]' | Where-Object { $_ })
+    # Read with .NET, not the PowerShell provider: "D:\Backup" on a computer without a D: drive is a path that does
+    # not exist yet, not an error; a folder that cannot be read is left as it is written
     for ($i = 0; $i -lt $parts.Count; $i++) {
-        $next = Join-Path $current $parts[$i]
-        $item = Get-Item -LiteralPath $next -Force -ErrorAction SilentlyContinue
-        if (-not $item) { return (@($next) + @($parts | Select-Object -Skip ($i + 1)) -join [IO.Path]::DirectorySeparatorChar) }
-        if ($item.LinkTarget) {
-            $target = $item.ResolveLinkTarget($true)
-            if ($target) { $next = $target.FullName }
+        $next = [IO.Path]::Combine($current, $parts[$i])
+        $link = $null
+        $exists = $false
+        try {
+            $item = [IO.DirectoryInfo]::new($next)
+            if (-not $item.Exists) { $item = [IO.FileInfo]::new($next) }
+            $exists = $item.Exists
+            $link = $item.LinkTarget
+            if ($link) {
+                $target = $item.ResolveLinkTarget($true)
+                if ($target) { $next = $target.FullName }
+            }
         }
+        catch { $exists = $false }
+        if (-not $exists -and -not $link) { return (@($next) + @($parts | Select-Object -Skip ($i + 1)) -join [IO.Path]::DirectorySeparatorChar) }
         $current = $next
     }
     return $current

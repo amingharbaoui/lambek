@@ -108,22 +108,38 @@ Describe 'Rules Lambek follows' {
         if (-not $system) { $system = [Environment]::GetFolderPath('Windows') }
         $kind = $(if ($IsWindows) { 'Junction' } else { 'SymbolicLink' })
         $link = Join-Path $TestDrive 'shortcut'
-        New-Item -ItemType $kind -Path $link -Target $system | Out-Null
-        (New-LambekPlan "delete the .tmp files in $link").Status | Should -Not -Be 'Ready'
-
-        # A folder planned on, then turned into a link before the plan runs
         $work = Join-Path $TestDrive 'work'
-        New-Item -ItemType Directory -Path $work | Out-Null
-        Set-Content -LiteralPath (Join-Path $work 'a.tmp') -Value 'x'
-        $plan = New-LambekPlan "delete the .tmp files in $work"
-        $plan.Status | Should -Be 'Ready'
-        $simulation = Invoke-LambekPlan -Plan $plan -Simulate
-        $approval = Approve-LambekPlan -Simulation $simulation -Confirmation $simulation.ConfirmationCode
-        Remove-Item -LiteralPath $work -Recurse -Force
-        New-Item -ItemType $kind -Path $work -Target $system | Out-Null
-        $run = Invoke-LambekPlan -Plan $plan -Approval $approval
-        $run.Status | Should -Be 'Refused'
-        $run.Reason | Should -BeLike '*protected place*'
+        try {
+            New-Item -ItemType $kind -Path $link -Target $system | Out-Null
+            (New-LambekPlan "delete the .tmp files in $link").Status | Should -Not -Be 'Ready'
+
+            # A folder planned on, then turned into a link before the plan runs
+            New-Item -ItemType Directory -Path $work | Out-Null
+            Set-Content -LiteralPath (Join-Path $work 'a.tmp') -Value 'x'
+            $plan = New-LambekPlan "delete the .tmp files in $work"
+            $plan.Status | Should -Be 'Ready'
+            $simulation = Invoke-LambekPlan -Plan $plan -Simulate
+            $approval = Approve-LambekPlan -Simulation $simulation -Confirmation $simulation.ConfirmationCode
+            Remove-Item -LiteralPath $work -Recurse -Force
+            New-Item -ItemType $kind -Path $work -Target $system | Out-Null
+            $run = Invoke-LambekPlan -Plan $plan -Approval $approval
+            $run.Status | Should -Be 'Refused'
+            $run.Reason | Should -BeLike '*protected place*'
+        }
+        finally {
+            # Only the links go, never what they lead to: the test drive is then emptied without walking into a system
+            # folder (on Windows, ProgramData holds folders no one may list, like "Application Data")
+            foreach ($path in $link, $work) {
+                $item = [IO.DirectoryInfo]::new($path)
+                if ($item.Exists -and $item.LinkTarget) { $item.Delete() }
+            }
+        }
+    }
+
+    It 'reads a path on a drive this computer does not have as it is written' -Skip:(-not $IsWindows) {
+        $used = @([IO.DriveInfo]::GetDrives() | ForEach-Object { $_.Name.Substring(0, 1).ToUpperInvariant() })
+        $free = @([char[]] (68..90) | ForEach-Object { [string] $_ } | Where-Object { $_ -notin $used })[0]
+        & (Get-Module Lambek) { param($Path) Get-LambekRealPath -Path $Path } "$($free):\Backup\old" | Should -Be "$($free):\Backup\old"
     }
 
     It 'lets reading go anywhere' {
