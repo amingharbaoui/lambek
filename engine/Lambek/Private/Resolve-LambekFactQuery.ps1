@@ -529,5 +529,16 @@ function Add-LambekFactRead {
     if ($null -eq $script:FactReads) { $script:FactReads = [System.Collections.Generic.List[object]]::new() }
     $script:FactReads.Add([pscustomobject]@{ Source = $facts['Source']; Day = $base.Day; Line = $Bare; Id = $Thing })
     Set-LambekLastProof -Read @($script:FactReads)
+    Add-LambekWorldRead -Core $Core
     return $entry
+}
+
+function Add-LambekWorldRead {
+    # A fact of the world read for the message being answered, as Lambek writes it in its logic
+    # ("wikidata(Q45, P36, Q597)"): the same in every language
+    param([string] $Core)
+
+    if (-not $Core) { return }
+    if ($null -eq $script:WorldReads) { $script:WorldReads = [System.Collections.Generic.List[string]]::new() }
+    $script:WorldReads.Add($Core)
 }

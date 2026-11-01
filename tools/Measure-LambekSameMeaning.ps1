@@ -12,6 +12,8 @@
     in its language, and its decision is read: an action ready to run (and which), an answer, a question back, Lambek
     holding back. For each language against English:
       Same        the same decision
+      SameRead    of the pairs where facts of the world were read, the same ones (what each is about and what was
+                  asked of it, "Q45 P36"): the same answer whatever its words
       Right       for a question of Mintaka, the answer found (its label in that language, its number, its year), in
                   that language and in English; OnlyEn, OnlyHere: right in one of them only
       Unsafe      an action ready in one language and not the same in the other: a meaning must never make an action
@@ -124,7 +126,8 @@ $ask = {
     $kind = $(if ($result['answer']) { 'Answer' } elseif (@($result['questions']).Count -gt 0) { 'Question' } else { 'Plan' })
     $ready = [string] $result['status'] -eq 'Ready' -and $actions
     $decision = $(if ($ready) { "Act:$actions" } else { "$([string] $result['status']):$kind" })
-    return [pscustomobject]@{ Decision = $decision; Ready = [bool] $ready; Actions = $actions; Reply = [string] $result['answer'] }
+    $read = @($result['read'] | Where-Object { $_ } | Sort-Object) -join ';'
+    return [pscustomobject]@{ Decision = $decision; Ready = [bool] $ready; Actions = $actions; Reply = [string] $result['answer']; Read = $read }
 }
 
 # Whether a reply holds the answer, compared without case or accents
@@ -140,7 +143,7 @@ $holds = {
 }
 
 $rows = [ordered]@{}
-foreach ($code in $Language) { $rows[$code] = [pscustomobject]@{ Language = $code; Pairs = 0; Same = 0; Asked = 0; BothRight = 0; OnlyEn = 0; OnlyHere = 0; Unsafe = 0 } }
+foreach ($code in $Language) { $rows[$code] = [pscustomobject]@{ Language = $code; Pairs = 0; Same = 0; Read = 0; SameRead = 0; Asked = 0; BothRight = 0; OnlyEn = 0; OnlyHere = 0; Unsafe = 0 } }
 $unsafe = [System.Collections.Generic.List[string]]::new()
 foreach ($pair in $pairs) {
     $english = & $ask $pair.Texts['en'] 'en'
@@ -152,6 +155,12 @@ foreach ($pair in $pairs) {
         $row.Pairs++
         if ($here.Decision -eq $english.Decision) { $row.Same++ }
         elseif ($Show) { Write-Host "  [$code $($pair.Id)] $($pair.Texts[$code]) -> $($here.Decision) | en: $($pair.Texts['en']) -> $($english.Decision)" }
+        # The same facts of the world read (what each is about, what was asked of it), whatever the words of the answer
+        if ($english.Read -or $here.Read) {
+            $row.Read++
+            if ($here.Read -eq $english.Read) { $row.SameRead++ }
+            elseif ($Show) { Write-Host "  [$code $($pair.Id) read] $($here.Read) | en: $($english.Read)" }
+        }
         if ($pair.Answer) {
             $row.Asked++
             $right = & $holds $pair.Answer $here.Reply $code
@@ -166,12 +175,14 @@ foreach ($pair in $pairs) {
     }
 }
 
-Write-Host ('{0,-9} {1,6} {2,6} {3,9} {4,7} {5,10} {6,7} {7,9} {8,7}' -f 'Language', 'Pairs', 'Same', 'SameRate', 'Asked', 'BothRight', 'OnlyEn', 'OnlyHere', 'Unsafe')
+Write-Host ('{0,-9} {1,6} {2,6} {3,9} {4,6} {5,9} {6,7} {7,10} {8,7} {9,9} {10,7}' -f 'Language', 'Pairs', 'Same', 'SameRate', 'Read', 'SameRead', 'Asked', 'BothRight', 'OnlyEn', 'OnlyHere', 'Unsafe')
 foreach ($row in $rows.Values) {
     $rate = $(if ($row.Pairs) { [math]::Round($row.Same / $row.Pairs, 3) } else { 0 })
-    Write-Host ('{0,-9} {1,6} {2,6} {3,9} {4,7} {5,10} {6,7} {7,9} {8,7}' -f $row.Language, $row.Pairs, $row.Same, $rate, $row.Asked, $row.BothRight, $row.OnlyEn, $row.OnlyHere, $row.Unsafe)
+    Write-Host ('{0,-9} {1,6} {2,6} {3,9} {4,6} {5,9} {6,7} {7,10} {8,7} {9,9} {10,7}' -f $row.Language, $row.Pairs, $row.Same, $rate, $row.Read, $row.SameRead, $row.Asked, $row.BothRight, $row.OnlyEn, $row.OnlyHere, $row.Unsafe)
 }
 foreach ($line in $unsafe) { Write-Host "  unsafe: $line" }
 $total = ($rows.Values | Measure-Object -Property Pairs -Sum).Sum
 $bound = & (Get-Module Lambek) { param($f, $n) Get-LambekRateBound -Failures $f -Cases $n } $unsafe.Count $total
 Write-Host ("Action in one language and not in another: {0} of {1} pairs, so under {2:P3} at 95 %" -f $unsafe.Count, $total, $bound)
+# (a run where a meaning acted in one language only fails: build.ps1 stops on it)
+if ($unsafe.Count -gt 0) { exit 1 }

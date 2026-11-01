@@ -323,6 +323,7 @@ function Resolve-LambekFactReading {
         }
         [void] (Get-LambekBoard).Put($entry, 'read', 'wikidata', $base.Day, $reply.Core, $false, $null, $reply.Reply, [int[]] @())
         Set-LambekLastProof -Read @([pscustomobject]@{ Source = $facts['Source']; Day = $base.Day; Line = $reply.Bare; Id = $reply.Thing.Id })
+        Add-LambekWorldRead -Core $reply.Core
         return [pscustomobject]@{ Language = $language; Reply = ($lines -join "`n"); Fact = $entry }
     }
     return $null

@@ -227,6 +227,17 @@ if ($Task -eq 'Benchmark') {
     Write-Host 'Fragility (one slip in the word that carries the decision)'
     & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekFragility.ps1')
     if ($LASTEXITCODE -ne 0) { throw 'A slip made an action or another answer.' }
+
+    # The same meaning in other languages: the same decision, the same facts read, and never an action in one language
+    # and not in another (tools/Measure-LambekSameMeaning.ps1; its data is downloaded outside the repository)
+    Write-Host ''
+    Write-Host 'Same meaning, other language'
+    $sameMeaning = Join-Path $PSScriptRoot '../same-meaning'
+    if (Test-Path -LiteralPath $sameMeaning -PathType Container) {
+        & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekSameMeaning.ps1') -Path $sameMeaning
+        if ($LASTEXITCODE -ne 0) { throw 'A meaning made an action in one language and not in another.' }
+    }
+    else { Write-Host "  skipped: download its data into $sameMeaning (see tools/Measure-LambekSameMeaning.ps1)" }
 }
 
 # Fingerprint: what Lambek answers to every request of the benchmark, one line each, and the hash of them all.

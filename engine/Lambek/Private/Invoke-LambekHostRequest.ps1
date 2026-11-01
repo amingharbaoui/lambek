@@ -130,6 +130,8 @@ function Invoke-LambekHostRequest {
                 $script:Told = [System.Collections.Generic.List[object]]::new()
                 if ($chat) { $script:Told = $state.Told[$chat] }
 
+                # (what is read in Wikidata for this message only)
+                $script:WorldReads = $null
                 if ($context -and $state.Plans.Contains($context)) {
                     $followUp = Resolve-LambekFollowUp -Plan $state.Plans[$context] -Text $params.text -Step $selected
                     $kind = $followUp.Kind
@@ -198,6 +200,10 @@ function Invoke-LambekHostRequest {
                     # A definition or a calculation is words too, not a plan
                     if ($plan.PSObject.Properties['Reply'] -and $plan.Reply) { $result.talk = $true }
                 }
+
+                # The facts of the world read for it, as Lambek writes them in its logic ("wikidata(Q45, P36, Q597)"):
+                # the same question in another language reads the same ones, whatever the words of the answer
+                $result.read = @(@($script:WorldReads) | Where-Object { $_ } | Select-Object -Unique)
             }
             'edit' {
                 $plan = Get-LambekHostPlan -State $state -Params $params

@@ -136,6 +136,8 @@ $script:KnowledgeRules = $null
 $script:Fluency = $null
 # How often each word is written in the texts Lambek read, to tell which word a slip was meant as
 $script:WordCounts = $null
+# The facts of the world read for the message being answered (the host says them with the answer)
+$script:WorldReads = $null
 $script:SpeechFusion = $null
 $script:SpeechFrames = $null
 $script:SpeechReadings = $null
