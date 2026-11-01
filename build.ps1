@@ -228,6 +228,13 @@ if ($Task -eq 'Benchmark') {
     & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekFragility.ps1')
     if ($LASTEXITCODE -ne 0) { throw 'A slip made an action or another answer.' }
 
+    # Proofs: each answer that rests on things told, worked out again from the sentences its proof cites and nothing
+    # else; then without each one of them, and with the proof of another conversation (tools/Measure-LambekProof.ps1)
+    Write-Host ''
+    Write-Host 'Proofs (each answer worked out again from what its proof cites)'
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tools/Measure-LambekProof.ps1')
+    if ($LASTEXITCODE -ne 0) { throw 'A proof did not hold: not enough on its own, a premise not needed, or fit for another answer.' }
+
     # The same meaning in other languages: the same decision, the same facts read, and never an action in one language
     # and not in another (tools/Measure-LambekSameMeaning.ps1; its data is downloaded outside the repository)
     Write-Host ''

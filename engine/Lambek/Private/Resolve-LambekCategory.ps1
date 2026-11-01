@@ -582,6 +582,23 @@ function Resolve-LambekCategoryMessage {
         $about = @(@($known) + @($items) | Where-Object { $_.Item.Kind -in 'is', 'isnot' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who }).Count -gt 0
     }
     if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
+    # A message with no general rule is taken only when it is about what a rule told is about: "all dogs are animals"
+    # was told, "Rex is a dog" and "is Rex an animal?" are for it, "my cat is called Luna" and "do I take the bus?" are
+    # for the memory, which keeps what was told as it was said (and the rules told with "if")
+    if (-not $general -and -not $about) {
+        $ruled = [System.Collections.Generic.HashSet[string]]::new()
+        foreach ($entry in @($known | Where-Object { $_.Item.Kind -in $quantified })) {
+            foreach ($part in $entry.Item.Subject, $entry.Item.Predicate) { if ($part) { foreach ($atom in @($part.Atoms)) { [void] $ruled.Add("$atom") } } }
+        }
+        foreach ($entry in $items) {
+            $atoms = @(foreach ($part in $entry.Item.Subject, $entry.Item.Predicate) { if ($part) { $part.Atoms } })
+            # (what is known of the one it is about counts too: "Rex is a dog" told, "does Rex bark?" is about a dog)
+            if ($entry.Item.Individual) {
+                $atoms += @($known | Where-Object { $_.Item.Individual -and $_.Item.Individual.Key -eq $entry.Item.Individual.Key -and $_.Item.Predicate } | ForEach-Object { $_.Item.Predicate.Atoms })
+            }
+            if (@($atoms | Where-Object { $ruled.Contains("$_") }).Count -eq 0) { return $null }
+        }
+    }
 
     # What is told in the message is kept as told
     $facts = @(foreach ($entry in $items) { if (-not $entry.Item.Kind.StartsWith('ask')) { ConvertTo-LambekCategoryFact -Sentence $entry.Sentence -Item $entry.Item -Language $Language } })

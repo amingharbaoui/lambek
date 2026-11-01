@@ -142,6 +142,21 @@ Describe 'General rules told in words' {
             Ask 'est-ce que Minou est noir ?' | Should -BeLike "D'après ce qui m'a été dit*"
         }
 
+        It 'leaves to the memory what no rule told is about: <Told> / <Asked>' -ForEach @(
+            @{ Rule = 'all dogs are animals'; Told = 'my cat is called Luna'; Asked = 'what is my cat called?'; Answer = '*Luna*' }
+            @{ Rule = 'normalement, les oiseaux volent'; Told = 'ma soeur habite à Lyon'; Asked = 'où habite ma soeur ?'; Answer = '*Lyon*' }
+            @{ Rule = 'birds usually fly'; Told = 'if it rains, I take the bus', 'it rains'; Asked = 'do I take the bus?'; Answer = '*take the bus*' }
+        ) {
+            Tell $Rule
+            Tell $Told
+            Ask $Asked | Should -BeLike $Answer
+        }
+
+        It 'still takes what a rule told is about, with something else told between' {
+            Tell 'all dogs are animals', 'my cat is called Luna', 'Rex is a dog'
+            Ask 'is Rex an animal?' | Should -BeLike 'Yes, Rex is an animal*'
+        }
+
         It 'reads nothing as a rule that is not one: <Text>' -ForEach @(
             @{ Text = 'supprime les fichiers .log dans C:\Temp' }
             @{ Text = 'les fichiers sont dans C:\Temp' }
