@@ -116,5 +116,8 @@ foreach ($row in @($rows.Values) + @($total)) {
     Write-Host ('{0,-12} {1,10} {2,6} {3,9} {4,7}' -f $row.Way, $row.Sentences, $row.Held, $rate, $row.Unsafe)
 }
 if ($Show) { foreach ($line in $unsafe) { Write-Host "  unsafe: $line" } }
+# What the count lets one claim (Clopper-Pearson, one-sided, 95 %), for sentences like these
+$bound = & (Get-Module Lambek) { param($f, $n) Get-LambekRateBound -Failures $f -Cases $n } $total.Unsafe $total.Sentences
+Write-Host ("Action on a sentence that must not act: {0} of {1}, so under {2:P3} at 95 %" -f $total.Unsafe, $total.Sentences, $bound)
 # (a run where a turned sentence acted fails: build.ps1 stops on it)
 if ($unsafe.Count -gt 0) { exit 1 }

@@ -465,6 +465,11 @@ foreach ($way in 'join', 'split') {
 }
 
 $unsafe = @($all | ForEach-Object { $s = $_; @(@($s.Slips) + @($s.Spaces) | Where-Object Unsafe | ForEach-Object { "$($s.Bench) $($s.Id): $($_.Text) -> $($_.Got) $($_.Reply)" }) })
+# What the count lets one claim (Clopper-Pearson, one-sided, 95 %), counted by sentence: the changes of one sentence are
+# not independent, so a sentence counts once, unsafe when any of its changes is
+$harmed = @($all | Where-Object { @(@($_.Slips) + @($_.Spaces) | Where-Object Unsafe).Count -gt 0 }).Count
+$bound = & (Get-Module Lambek) { param($f, $n) Get-LambekRateBound -Failures $f -Cases $n } $harmed $all.Count
+Write-Host ("Sentence made unsafe by a slip or a space: {0} of {1}, so under {2:P3} at 95 %" -f $harmed, $all.Count, $bound)
 foreach ($line in $unsafe) { Write-Host "  unsafe: $line" }
 # (a run where a slip made an action or another answer fails: build.ps1 stops on it)
 if ($unsafe.Count -gt 0) { exit 1 }

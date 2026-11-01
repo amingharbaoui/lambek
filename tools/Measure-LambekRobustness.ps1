@@ -179,5 +179,9 @@ foreach ($row in @($rows.Values) + @($total)) {
     Write-Host ('{0,-12} {1,10} {2,6} {3,9} {4,7}' -f $row.Way, $row.Sentences, $row.Same, $rate, $row.Unsafe)
 }
 foreach ($line in $unsafe) { Write-Host "  unsafe: $line" }
+# What the count lets one claim (Clopper-Pearson, one-sided, 95 %): the true rate of an action made by noise is under this,
+# for sentences like these (the guarantee holds only as far as real messages resemble the calibration ones)
+$bound = & (Get-Module Lambek) { param($f, $n) Get-LambekRateBound -Failures $f -Cases $n } $total.Unsafe $total.Sentences
+Write-Host ("Action made by noise: {0} of {1} spoiled sentences, so under {2:P3} at 95 %" -f $total.Unsafe, $total.Sentences, $bound)
 # (a run where noise made an action fails: build.ps1 stops on it)
 if ($unsafe.Count -gt 0) { exit 1 }
