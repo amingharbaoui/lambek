@@ -74,6 +74,9 @@ function Repair-LambekRequest {
                 # must never make an action of "quel age a tarzanix ?")
                 $route = Get-LambekRoute -Text $Original -Language $current.Request.Language
                 if ($route -and $route.Act -and $route.Act -notin 'Order', 'Open') { continue }
+                # (and only where the sentence names a place: the first letters of a word are no file type without
+                # other sign of files, "ma liste de tarefas", "a reuniao as tres da tarde" in any language)
+                if (@($current.Request.Entities | Where-Object Type -EQ 'path').Count -eq 0) { continue }
             }
             $changed = Get-LambekCorrectedText -Text $current.Text -Word $token -With $sense.With
             if ($changed -ceq $current.Text) { continue }
