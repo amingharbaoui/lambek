@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Info, X } from "lucide-react";
+import { t } from "../i18n.js";
 
 const EVENT = "lambek-toast";
 
@@ -30,7 +31,7 @@ export default function Toast() {
         <div className="toast" key={toast.id}>
           <Info size={15} />
           <span>{toast.text}</span>
-          <button className="icon-button small" onClick={() => setToast(null)} aria-label="Dismiss">
+          <button className="icon-button small" onClick={() => setToast(null)} aria-label={t("Dismiss")}>
             <X size={13} />
           </button>
         </div>

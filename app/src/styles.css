@@ -8,24 +8,27 @@
   --space-6: 32px;
   --space-7: 48px;
 
-  --radius-s: 6px;
-  --radius-m: 10px;
-  --radius-l: 16px;
+  /* Corners: 4 for controls and chips, 8 for menus, dialogs and the composer, 18 for the messages of the user */
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-bubble: 18px;
 
-  /* Type scale: 11 for notes, 12 for secondary text, 13 for the interface, 16 to read and write in the chat, 26 for the greeting */
-  --text-xs: 11px;
+  /* Type scale: 12 for notes and captions, 14 for the interface, 16 to read and write in the chat and for proofs,
+     20 for subtitles, 26 for titles, 56 for the name; nothing under 12, so every script stays readable */
   --text-s: 12px;
-  --text-m: 13px;
+  --text-m: 14px;
   --text-read: 16px;
-  --text-l: 16px;
+  --text-lede: 20px;
   --text-xl: 26px;
+  --text-display: 56px;
 
   --index: 248px;
   --column: 720px;
 
+  /* Motion: 100 ms for a color, 150 ms for a menu or a step that opens; things arrive fast and settle */
   --fast: 100ms;
-  --normal: 180ms;
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --normal: 150ms;
+  --ease: cubic-bezier(0, 0, 0, 1);
 
   /* The system font of each desktop; STIX, a typeface made for mathematics, for the greeting */
   --font-ui: system-ui, sans-serif;
@@ -48,65 +51,76 @@
   --font-mono: "Ubuntu Mono", "DejaVu Sans Mono", "Noto Sans Mono", monospace;
 }
 
-/* Light */
+/* Light: graphite on grey paper ruled in squares; no tint anywhere, so the one blue, for proofs, links and focus,
+   is the one color that speaks */
 :root,
 [data-theme="light"] {
   color-scheme: light;
-  --bg: #fafaf9;
-  --panel: #f1f1ef;
+  --bg: #f5f5f5;
+  --panel: #ececec;
   --surface: #ffffff;
-  --bubble: #ececea;
-  --hover: rgba(0, 0, 0, 0.055);
-  --line: #e3e3e0;
-  --line-strong: #cdcdc9;
-  --text: #121314;
-  --text-2: #3f4145;
-  --muted: #6a6c71;
-  --accent: #5b5bd6;
+  --glass: rgba(236, 236, 236, 0.6);
+  --sheet: #f5f5f5;
+  --frost: rgba(255, 255, 255, 0.78);
+  --bubble: #e9e9e9;
+  --margin: rgba(0, 0, 0, 0.1);
+  --hover: rgba(0, 0, 0, 0.05);
+  --line: #e0e0e0;
+  --divider: rgba(0, 0, 0, 0.08);
+  --line-strong: #c8c8c8;
+  --text: #111111;
+  --text-2: #3a3a3a;
+  --muted: #646464;
+  --accent: #0066d6;
   --accent-ink: #ffffff;
-  --inverse: #121314;
+  --inverse: #111111;
   --inverse-ink: #ffffff;
-  --warn: #9a5b00;
-  --danger: #c0392b;
-  --focus-ring: #2a78d6;
-  --focus-glow: rgba(42, 120, 214, 0.22);
-  --composer-edge: rgba(0, 0, 0, 0.12);
-  --composer-edge-active: rgba(0, 0, 0, 0.2);
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.05);
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --warn: #8a5a00;
+  --danger: #b42318;
+  --focus-ring: #0a84ff;
+  --focus-glow: rgba(10, 132, 255, 0.2);
+  --composer-edge: #c8c8c8;
+  --composer-edge-active: #0a84ff;
+  --shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Dark: near black, a darker side panel, bright text */
+/* Dark: the same graphite at night */
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #161617;
-  --panel: #111112;
-  --surface: #1f1f21;
-  --bubble: #2a2a2d;
+  --bg: #161616;
+  --panel: #101010;
+  --surface: #1e1e1e;
+  --glass: rgba(16, 16, 16, 0.6);
+  --sheet: #161616;
+  --frost: rgba(30, 30, 30, 0.78);
+  --bubble: #262626;
+  --margin: rgba(255, 255, 255, 0.08);
   --hover: rgba(255, 255, 255, 0.07);
-  --line: #2a2a2d;
-  --line-strong: #3d3d42;
-  --text: #f4f4f5;
-  --text-2: #cfcfd3;
-  --muted: #909096;
-  --accent: #a4a7f5;
-  --accent-ink: #111112;
-  --inverse: #f4f4f5;
-  --inverse-ink: #111112;
-  --warn: #e8ac52;
+  --line: #2a2a2a;
+  --divider: rgba(255, 255, 255, 0.08);
+  --line-strong: #3d3d3d;
+  --text: #e8e8e8;
+  --text-2: #c4c4c4;
+  --muted: #9a9a9a;
+  --accent: #4da3ff;
+  --accent-ink: #111111;
+  --inverse: #e8e8e8;
+  --inverse-ink: #111111;
+  --warn: #e3b25a;
   --danger: #f2705f;
-  --focus-ring: #2a78d6;
-  --focus-glow: rgba(42, 120, 214, 0.3);
-  --composer-edge: rgba(255, 255, 255, 0.105);
-  --composer-edge-active: rgba(255, 255, 255, 0.2);
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+  --focus-ring: #4da3ff;
+  --focus-glow: rgba(77, 163, 255, 0.28);
+  --composer-edge: #3d3d3d;
+  --composer-edge-active: #4da3ff;
+  --shadow: none;
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
-/* Incognito: the colors of dark, a quieter accent, a black frame and a dashed composer */
+/* Incognito: the colors of dark, no blue at all */
 [data-theme="dark"][data-mode="incognito"] {
-  --accent: #e4e4e7;
-  --accent-ink: #161617;
+  --accent: #e8e8e8;
+  --accent-ink: #111111;
 }
 
 /* Base */
@@ -204,8 +218,7 @@ button:disabled {
 }
 
 code,
-pre,
-.mono {
+pre {
   font-family: var(--font-mono);
   font-size: 0.85em;
 }
@@ -242,7 +255,7 @@ pre,
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  background: var(--bg);
+  background-color: var(--bg);
   transition: margin var(--normal) var(--ease), border-radius var(--normal) var(--ease);
 }
 
@@ -251,14 +264,14 @@ pre,
 .app.with-sidebar .main {
   grid-row: 1 / 3;
   padding-top: 40px;
-  border-left: 1px solid var(--line);
+  border-inline-start: 1px solid var(--line);
 }
 
 /* Incognito keeps the chat as a sheet in its frame */
 .app.incognito .main {
   margin: 0 var(--space-2) var(--space-2) 0;
   border: 1px solid var(--line);
-  border-radius: var(--radius-l);
+  border-radius: var(--radius-m);
   box-shadow: var(--card-shadow);
 }
 
@@ -268,7 +281,7 @@ pre,
 
 .app.incognito .main {
   grid-column: 1;
-  margin-left: var(--space-2);
+  margin-inline-start: var(--space-2);
 }
 
 /* Incognito keeps a black frame in both themes; the chat follows the theme */
@@ -327,7 +340,7 @@ pre,
   border: 1px solid transparent;
   border-radius: var(--radius-s);
   background: transparent;
-  font-size: 15px;
+  font-size: var(--text-read);
   color: var(--text);
 }
 
@@ -358,7 +371,7 @@ pre,
   height: 0;
   padding: 0 var(--space-2);
   border: 1px solid transparent;
-  font-size: 15px;
+  font-size: var(--text-read);
   white-space: pre;
   overflow: hidden;
 }
@@ -492,6 +505,8 @@ pre,
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+  /* The margin line of the notebook */
+  box-shadow: inset -1px 0 0 var(--margin);
 }
 
 .sidebar-inner {
@@ -506,10 +521,10 @@ pre,
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   z-index: 45;
   width: var(--index);
-  border-right: 1px solid var(--line);
+  border-inline-end: 1px solid var(--line);
   background: var(--panel);
   box-shadow: var(--card-shadow);
   animation: slide-in var(--normal) var(--ease);
@@ -553,7 +568,7 @@ pre,
 .menu-list {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  inset-inline-start: 0;
   min-width: 160px;
   padding: var(--space-1);
   border: 1px solid var(--line);
@@ -565,7 +580,7 @@ pre,
 
 .menu-list.sub {
   top: calc(-1 * var(--space-1) - 1px);
-  left: calc(100% + var(--space-1));
+  inset-inline-start: calc(100% + var(--space-1));
   width: max-content;
   min-width: 200px;
 }
@@ -585,7 +600,7 @@ pre,
   border: 0;
   border-radius: var(--radius-s);
   background: transparent;
-  text-align: left;
+  text-align: start;
   font-size: var(--text-m);
   color: var(--text);
 }
@@ -632,7 +647,7 @@ pre,
 
 kbd {
   font-family: var(--font-ui);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   color: var(--muted);
 }
 
@@ -654,7 +669,7 @@ kbd {
   width: min(420px, 100% - 2 * var(--space-5));
   padding: var(--space-4) var(--space-5) var(--space-5);
   border: 1px solid var(--line);
-  border-radius: var(--radius-l);
+  border-radius: var(--radius-m);
   background: var(--surface);
   box-shadow: var(--card-shadow);
   font-size: var(--text-s);
@@ -684,14 +699,10 @@ kbd {
 .about .about-name {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 32px;
+  font-size: var(--text-xl);
   font-weight: 500;
   line-height: 1.2;
   color: var(--text);
-}
-
-.about .about-name i {
-  font-style: italic;
 }
 
 .about-version {
@@ -719,28 +730,23 @@ kbd {
   color: var(--text);
 }
 
-.sidebar-head {
-  display: flex;
-  align-items: center;
-  height: 36px;
-  margin-bottom: var(--space-2);
-}
-
 .nav-search {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  height: 30px;
+  height: 32px;
   margin-bottom: var(--space-2);
   padding: 0 10px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-s);
+  border: 0;
+  border-radius: var(--radius-m);
   background: var(--hover);
   color: var(--text-2);
 }
 
+/* No frame: a soft field, and the blue ring of the keyboard only while typing in it */
 .nav-search:focus-within {
-  border-color: var(--line-strong);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
 }
 
 .nav-search input {
@@ -772,7 +778,7 @@ kbd {
   border: 0;
   border-radius: var(--radius-s);
   background: transparent;
-  text-align: left;
+  text-align: start;
   font-size: var(--text-m);
   color: var(--text);
 }
@@ -801,9 +807,9 @@ kbd {
   padding: 10px 10px 2px;
   border: 0;
   background: none;
-  font-size: var(--text-xs);
-  font-weight: 500;
-  text-align: left;
+  font-size: var(--text-s);
+  font-weight: 600;
+  text-align: start;
   color: var(--muted);
 }
 
@@ -916,7 +922,7 @@ kbd {
 }
 
 .chat-card b {
-  font-weight: 500;
+  font-weight: 600;
   font-size: var(--text-m);
 }
 
@@ -938,10 +944,11 @@ kbd {
 }
 
 /* Account at the bottom of the sidebar */
+/* A line that darkens what is under it, so it stays a quiet line on the glass whatever the wallpaper */
 .sidebar-foot {
   position: relative;
   padding-top: var(--space-2);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--divider);
 }
 
 .account {
@@ -954,7 +961,7 @@ kbd {
   border: 0;
   border-radius: var(--radius-s);
   background: transparent;
-  text-align: left;
+  text-align: start;
 }
 
 .account:hover,
@@ -970,7 +977,7 @@ kbd {
   border-radius: 50%;
   background: var(--inverse);
   color: var(--inverse-ink);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   font-weight: 600;
 }
 
@@ -984,8 +991,8 @@ kbd {
 }
 
 .menu-row kbd {
-  margin-left: auto;
-  padding-left: var(--space-4);
+  margin-inline-start: auto;
+  padding-inline-start: var(--space-4);
 }
 
 .account-menu .menu-row > span:first-child {
@@ -1004,8 +1011,8 @@ kbd {
 .menu-list.account-menu {
   top: auto;
   bottom: calc(100% + 6px);
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
 }
 
 /* Tooltips on icon buttons: a small surface of the current theme, dark in dark, light in light */
@@ -1026,8 +1033,8 @@ kbd {
   background: var(--surface);
   box-shadow: var(--shadow);
   color: var(--text);
-  font-size: var(--text-xs);
-  font-weight: 500;
+  font-size: var(--text-s);
+  font-weight: 600;
   white-space: nowrap;
   transform: translateX(-50%);
   pointer-events: none;
@@ -1068,7 +1075,7 @@ kbd {
 }
 
 .update-source {
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
 }
 
 .icon-button {
@@ -1109,8 +1116,8 @@ kbd {
   padding: 0 var(--space-2);
   border-radius: var(--radius-s);
   background: var(--hover);
-  font-size: var(--text-xs);
-  font-weight: 500;
+  font-size: var(--text-s);
+  font-weight: 600;
   color: var(--text-2);
   white-space: nowrap;
 }
@@ -1137,23 +1144,37 @@ kbd {
   margin: 0 auto;
 }
 
-.greeting {
+/* Incognito: its words in the face and weight of the name, on one line */
+.wordmark.incognito-mark {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-3);
-  margin: 0 0 var(--space-5);
-  font-family: var(--font-display);
   font-size: var(--text-xl);
-  font-weight: 500;
   line-height: 1.2;
-  text-align: center;
+  white-space: nowrap;
 }
 
-.greeting .lambda {
-  font-family: var(--font-ui);
-  font-weight: 300;
-  color: var(--accent);
+/* The name, set in STIX, a typeface made for mathematics, and a sentence reduced to s under it */
+.mark {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+}
+
+.wordmark {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.mark-proof .proof {
+  font-size: var(--text-lede);
 }
 
 .greeting-icon {
@@ -1161,37 +1182,30 @@ kbd {
   color: var(--text-2);
 }
 
-.home-bar .spacer {
-  flex: 1;
-}
-
-.slogan {
-  flex: 1;
-  text-align: center;
-  font-size: var(--text-s);
-  color: var(--muted);
-}
 
 [data-mode="incognito"] .composer {
   border-style: dashed;
   box-shadow: none;
 }
 
+/* Under the composer, one line: the examples, the small line about mistakes, the connectors */
 .home-bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--space-2);
   margin-top: var(--space-2);
   padding: 0 var(--space-2);
 }
 
-
-.home-note {
-  margin: var(--space-4) 0 0;
-  text-align: center;
-  font-size: var(--text-s);
-  color: var(--muted);
+.home-bar > :last-child {
+  justify-self: end;
 }
+
+.home-bar .disclaimer {
+  margin: 0;
+}
+
 
 .notice {
   margin: var(--space-4) 0 0;
@@ -1226,7 +1240,7 @@ kbd {
 .popover {
   position: absolute;
   top: calc(100% + var(--space-1));
-  left: 0;
+  inset-inline-start: 0;
   z-index: 10;
   width: 380px;
   max-height: 360px;
@@ -1240,8 +1254,8 @@ kbd {
 }
 
 .popover.right {
-  left: auto;
-  right: 0;
+  inset-inline-start: auto;
+  inset-inline-end: 0;
 }
 
 @keyframes pop {
@@ -1253,8 +1267,8 @@ kbd {
 
 .popover-group {
   padding: var(--space-2) var(--space-2) var(--space-1);
-  font-size: var(--text-xs);
-  font-weight: 500;
+  font-size: var(--text-s);
+  font-weight: 600;
   color: var(--muted);
 }
 
@@ -1265,7 +1279,7 @@ kbd {
   border: 0;
   border-radius: var(--radius-s);
   background: transparent;
-  text-align: left;
+  text-align: start;
   font-size: var(--text-s);
   color: var(--text);
 }
@@ -1303,10 +1317,10 @@ kbd {
 
 .request .bubble {
   max-width: 100%;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: var(--text-read);
   line-height: 1.5;
-  border-radius: var(--radius-l);
+  border-radius: var(--radius-bubble);
   background: var(--bubble);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -1337,8 +1351,8 @@ kbd {
 }
 
 .request-actions time {
-  margin-right: var(--space-2);
-  font-size: var(--text-xs);
+  margin-inline-end: var(--space-2);
+  font-size: var(--text-s);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1410,14 +1424,14 @@ kbd {
   place-items: center;
   width: 22px;
   height: 26px;
-  margin-right: -6px;
+  margin-inline-end: -6px;
   color: var(--muted);
 }
 
 .edit-info[data-tip]:hover::after,
 .edit-info[data-tip]:focus-visible::after {
-  left: auto;
-  right: -60px;
+  inset-inline-start: auto;
+  inset-inline-end: -60px;
   transform: none;
 }
 
@@ -1429,7 +1443,7 @@ kbd {
   border-radius: var(--radius-s);
   font: inherit;
   font-size: var(--text-s);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .edit-cancel {
@@ -1460,7 +1474,7 @@ kbd {
   align-items: center;
   padding: 7px 12px;
   border: 1px solid var(--line-strong);
-  border-radius: 999px;
+  border-radius: var(--radius-s);
   background: var(--surface);
   box-shadow: var(--shadow);
   color: var(--text-2);
@@ -1500,6 +1514,7 @@ kbd {
 }
 
 .answer-text {
+  max-inline-size: 66ch;
   font-size: var(--text-read);
   line-height: 1.6;
 }
@@ -1511,7 +1526,7 @@ kbd {
 .answer-text ol,
 .answer-text ul {
   margin: 0 0 var(--space-2);
-  padding-left: var(--space-5);
+  padding-inline-start: var(--space-5);
 }
 
 .answer-text li::marker {
@@ -1547,7 +1562,7 @@ kbd {
 }
 
 .status-time {
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
@@ -1593,7 +1608,7 @@ kbd {
 .progress-value {
   min-width: 3ch;
   color: var(--muted);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1682,6 +1697,8 @@ kbd {
 
 /* Proof line: how Lambek read a step, typeset like the pregroup diagrams of Lambek's papers */
 .proof {
+  direction: ltr;
+  unicode-bidi: isolate;
   display: inline-flex;
   align-items: flex-start;
   gap: var(--space-3);
@@ -1718,7 +1735,7 @@ kbd {
 .proof-step {
   padding-top: 1px;
   font-family: var(--font-ui);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   font-style: normal;
   font-variant-numeric: tabular-nums;
 }
@@ -1905,7 +1922,7 @@ kbd {
   border-radius: var(--radius-s);
   background: none;
   color: var(--muted);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1948,7 +1965,7 @@ kbd {
   background: none;
   color: var(--muted);
   font: inherit;
-  text-align: left;
+  text-align: start;
 }
 
 .stage.more .stage-title:hover,
@@ -1988,7 +2005,7 @@ kbd {
   background: var(--panel);
   color: var(--text-2);
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   line-height: 1.55;
   white-space: pre;
   user-select: text;
@@ -2047,7 +2064,7 @@ kbd {
 
 .log .stage {
   color: var(--text-2);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .log .detail {
@@ -2056,17 +2073,6 @@ kbd {
 }
 
 /* Plan bar and buttons */
-.plan-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-
-.plan-bar .spacer {
-  flex: 1;
-}
 
 .button {
   display: inline-flex;
@@ -2078,7 +2084,7 @@ kbd {
   border-radius: var(--radius-s);
   background: var(--surface);
   font-size: var(--text-s);
-  font-weight: 500;
+  font-weight: 600;
   transition: background-color var(--fast) var(--ease), border-color var(--fast) var(--ease);
 }
 
@@ -2119,24 +2125,6 @@ kbd {
   color: var(--text);
 }
 
-.confirm-input {
-  width: 110px;
-  height: 32px;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-m);
-  background: var(--surface);
-  font-family: var(--font-mono);
-  font-size: var(--text-s);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  outline: 0;
-}
-
-.confirm-input:focus {
-  border-color: var(--danger);
-}
-
 /* Steps, code, tables */
 .steps {
   margin: 0 0 var(--space-3);
@@ -2146,22 +2134,6 @@ kbd {
   padding: var(--space-3) 0;
   border-top: 1px solid var(--line);
   font-size: var(--text-s);
-}
-
-.step-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-1);
-}
-
-.step-number {
-  color: var(--muted);
-}
-
-.step-action {
-  font-family: var(--font-mono);
-  font-weight: 500;
 }
 
 .facts {
@@ -2188,7 +2160,7 @@ kbd {
 .code-block .icon-button {
   position: absolute;
   top: var(--space-1);
-  right: var(--space-1);
+  inset-inline-end: var(--space-1);
 }
 
 pre.code {
@@ -2214,22 +2186,22 @@ pre.code {
 
 .affected ul {
   margin: var(--space-1) 0 0;
-  padding-left: var(--space-5);
+  padding-inline-start: var(--space-5);
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   line-height: 1.8;
   color: var(--muted);
 }
 
 th.number,
 td.number {
-  text-align: right;
+  text-align: end;
   font-variant-numeric: tabular-nums;
 }
 
 .table-note {
   margin: calc(-1 * var(--space-2)) 0 var(--space-3);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   color: var(--muted);
 }
 
@@ -2251,7 +2223,7 @@ th,
 td {
   padding: 6px var(--space-3);
   border-bottom: 1px solid var(--line);
-  text-align: left;
+  text-align: start;
   white-space: nowrap;
 }
 
@@ -2259,7 +2231,7 @@ th {
   position: sticky;
   top: 0;
   background: var(--panel);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-2);
 }
 
@@ -2286,7 +2258,7 @@ tr:last-child td {
 /* The composer: a quiet edge that only brightens a little under the pointer or while typing */
 .composer {
   border: 1px solid var(--composer-edge);
-  border-radius: var(--radius-l);
+  border-radius: var(--radius-m);
   background: var(--surface);
   box-shadow: var(--shadow);
   transition: border-color var(--fast) var(--ease);
@@ -2334,7 +2306,7 @@ tr:last-child td {
   padding: 0 var(--space-1) 0 var(--space-2);
   border-radius: var(--radius-s);
   background: var(--hover);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   color: var(--text-2);
 }
 
@@ -2380,11 +2352,36 @@ tr:last-child td {
   color: var(--muted);
 }
 
+/* Where an answer about the world comes from */
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--text-s);
+  color: var(--muted);
+}
+
+.sources .source {
+  padding: 1px var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.sources .source:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
 .send:disabled {
   background: var(--hover);
   color: var(--muted);
 }
-
 
 .files {
   display: flex;
@@ -2438,7 +2435,7 @@ tr:last-child td {
   padding: 1px var(--space-2);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-s);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   color: var(--muted);
   text-transform: uppercase;
 }
@@ -2447,7 +2444,7 @@ tr:last-child td {
 .file-remove {
   position: absolute;
   top: -7px;
-  right: -7px;
+  inset-inline-end: -7px;
   z-index: 1;
   display: grid;
   place-items: center;
@@ -2479,7 +2476,7 @@ tr:last-child td {
   justify-items: center;
   gap: var(--space-2);
   border: 2px dashed var(--line-strong);
-  border-radius: var(--radius-l);
+  border-radius: var(--radius-m);
   background: color-mix(in srgb, var(--bg) 90%, transparent);
   color: var(--text-2);
   pointer-events: none;
@@ -2511,7 +2508,7 @@ tr:last-child td {
 .node-label {
   padding: 1px 6px;
   border-radius: 4px;
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   line-height: 1.5;
   white-space: nowrap;
   color: var(--text-2);
@@ -2532,7 +2529,7 @@ tr:last-child td {
 .node-label.step i {
   font-style: normal;
   color: var(--muted);
-  margin-right: 4px;
+  margin-inline-end: 4px;
 }
 
 .node-label.parameter {
@@ -2552,7 +2549,7 @@ tr:last-child td {
 .graph-toolbar {
   position: absolute;
   top: var(--space-3);
-  left: var(--space-3);
+  inset-inline-start: var(--space-3);
   display: flex;
   gap: 2px;
   padding: 3px;
@@ -2564,10 +2561,10 @@ tr:last-child td {
 .graph-legend {
   position: absolute;
   top: var(--space-4);
-  right: var(--space-4);
+  inset-inline-end: var(--space-4);
   display: flex;
   gap: var(--space-3);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   color: var(--muted);
 }
 
@@ -2585,7 +2582,7 @@ tr:last-child td {
 
 .caption {
   position: absolute;
-  left: var(--space-3);
+  inset-inline-start: var(--space-3);
   bottom: var(--space-3);
   width: min(360px, 100% - 2 * var(--space-3));
   max-height: 40%;
@@ -2605,7 +2602,7 @@ tr:last-child td {
 .node-panel {
   position: absolute;
   top: var(--space-3);
-  right: var(--space-3);
+  inset-inline-end: var(--space-3);
   bottom: var(--space-3);
   width: 300px;
   overflow-y: auto;
@@ -2625,7 +2622,7 @@ tr:last-child td {
 }
 
 .node-panel .eyebrow {
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
   color: var(--muted);
 }
 
@@ -2698,13 +2695,13 @@ tr:last-child td {
 
 .tools h1 {
   margin: 0 0 var(--space-1);
-  font-size: 20px;
+  font-size: var(--text-lede);
   font-weight: 600;
 }
 
 .tools .lede {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--text-m);
   color: var(--text-2);
 }
 
@@ -2745,7 +2742,7 @@ tr:last-child td {
 
 .server h2 {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--text-read);
   font-weight: 600;
 }
 
@@ -2773,7 +2770,7 @@ tr:last-child td {
 }
 
 .empty-state {
-  font-size: 14px;
+  font-size: var(--text-m);
   color: var(--text-2);
 }
 
@@ -2803,6 +2800,20 @@ tr:last-child td {
 
 /* Windows high contrast: keep the edges that carry meaning */
 @media (forced-colors: active) {
+  .proof-arcs path,
+  .proof-arcs circle {
+    stroke: currentColor;
+  }
+
+  a,
+  .sources .source {
+    color: LinkText;
+  }
+
+  .composer:focus-within {
+    outline: 2px solid Highlight;
+  }
+
   .main,
   .composer,
   .menu-list,
@@ -2850,21 +2861,6 @@ tr:last-child td {
   font-size: var(--text-s);
 }
 
-.menu-group + .menu-group {
-  margin-top: var(--space-1);
-}
-
-.menu-label {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 6px var(--space-2) 2px;
-  color: var(--muted);
-  font-size: var(--text-xs);
-  font-weight: 500;
-}
-
 .server-dot {
   width: 6px;
   height: 6px;
@@ -2905,7 +2901,7 @@ tr:last-child td {
 
 .menu-connector small {
   color: var(--muted);
-  font-size: var(--text-xs);
+  font-size: var(--text-s);
 }
 
 /* In a chat: one slim row, the text and its send button; below it the + and a line of mathematics */
@@ -2923,6 +2919,7 @@ tr:last-child td {
 }
 
 .composer-foot {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -2931,25 +2928,37 @@ tr:last-child td {
   padding: 0 2px;
 }
 
-.composer-foot .icon-button {
-  width: 28px;
-  height: 28px;
+/* The small line under the composer */
+.disclaimer {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-s);
+  line-height: 1.4;
+  text-align: center;
 }
 
-.signature {
-  flex: 1;
-  margin-right: 34px;
-  padding-top: 3px;
-  overflow: hidden;
-  color: var(--muted);
-  font-size: var(--text-xs);
-  text-align: center;
-  text-overflow: ellipsis;
+.composer-foot .disclaimer {
+  position: absolute;
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
   white-space: nowrap;
 }
 
-.composer-foot .focus-chip + .signature {
-  margin-right: 0;
+.disclaimer a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 2px;
+}
+
+.disclaimer a:hover {
+  color: var(--text-2);
+  text-decoration-color: currentColor;
+}
+
+.composer-foot .icon-button {
+  width: 28px;
+  height: 28px;
 }
 
 /* Tooltips of the composer open upward: the window ends just below */
@@ -2963,8 +2972,8 @@ tr:last-child td {
 
 .composer .send[data-tip]:hover::after,
 .composer .send[data-tip]:focus-visible::after {
-  left: auto;
-  right: 0;
+  inset-inline-start: auto;
+  inset-inline-end: 0;
   transform: none;
 }
 
@@ -2989,8 +2998,8 @@ tr:last-child td {
 
 .answer-actions time {
   order: 9;
-  margin-left: var(--space-2);
-  font-size: var(--text-xs);
+  margin-inline-start: var(--space-2);
+  font-size: var(--text-s);
   font-variant-numeric: tabular-nums;
 }
 
@@ -3047,13 +3056,14 @@ tr:last-child td {
 }
 
 .tools pre.code {
-  font-size: 13px;
+  overflow-x: auto;
+  font-size: var(--text-m);
 }
 
 /* One short notification at the bottom right of the window */
 .toast-area {
   position: fixed;
-  right: var(--space-4);
+  inset-inline-end: var(--space-4);
   /* Above the composer and its footer, so it never sits beside the field */
   bottom: 128px;
   z-index: 90;
@@ -3083,4 +3093,92 @@ tr:last-child td {
 
 .toast span {
   flex: 1;
+}
+
+/* Frosted glass on what floats above the page: menus, cards, notices. What lies under them shows through, blurred,
+   so they read as on top without a heavy shadow. */
+.popover,
+.menu-list,
+.chat-card,
+.toast {
+  background: var(--frost);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+}
+
+/* Acrylic window on Windows: the desktop shows through the frame, the sidebar and the title bar; the page where
+   answers and proofs are read is opaque, so their contrast never depends on the wallpaper.
+   Windows itself turns the glass solid when the window is inactive, in battery saver, or with transparency off. */
+:root[data-acrylic],
+:root[data-acrylic] body,
+:root[data-acrylic] #root,
+:root[data-acrylic] .sidebar-inner {
+  background: transparent;
+}
+
+:root[data-acrylic] .app,
+:root[data-acrylic] .app.with-sidebar {
+  background: var(--glass);
+}
+
+/* Incognito keeps its dark frame on glass too, in both themes, so its light title and buttons stay readable */
+:root[data-acrylic] .app.incognito {
+  background: rgba(17, 17, 18, 0.75);
+}
+
+:root[data-acrylic] .main {
+  background-color: var(--sheet);
+}
+
+/* On glass the grey of secondary text would depend on the wallpaper: it takes the darker grey of the page */
+:root[data-acrylic] .sidebar,
+:root[data-acrylic] .titlebar {
+  --muted: var(--text-2);
+}
+
+/* Who asks for less transparency gets solid surfaces everywhere */
+@media (prefers-reduced-transparency: reduce) {
+  .popover,
+  .menu-list,
+  .chat-card,
+  .toast {
+    background: var(--surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  :root[data-acrylic] .app,
+  :root[data-acrylic] .app.with-sidebar {
+    background: var(--panel);
+  }
+
+  :root[data-acrylic] .app.incognito {
+    background: #111112;
+  }
+
+  :root[data-acrylic] .main {
+    background-color: var(--bg);
+  }
+}
+
+/* More contrast asked for: solid surfaces, stronger lines */
+@media (prefers-contrast: more) {
+  :root {
+    --line: var(--line-strong);
+    --muted: var(--text-2);
+    --glass: var(--panel);
+    --sheet: var(--bg);
+    --frost: var(--surface);
+  }
+}
+
+/* Scripts with tall letters or stacked marks need more room between lines */
+:is(:lang(th), :lang(lo), :lang(km), :lang(my), :lang(bo), :lang(hi), :lang(mr), :lang(ne), :lang(bn), :lang(ar), :lang(fa), :lang(ur), :lang(zh), :lang(ja), :lang(ko)) body {
+  line-height: 1.6;
+}
+
+/* The facts read about a source, one per line */
+.sources .source[data-tip]:hover::after,
+.sources .source[data-tip]:focus-visible::after {
+  white-space: pre;
 }

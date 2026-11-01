@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { chatMenuItems, chatName, PointMenu } from "./Sidebar.jsx";
+import { t } from "../i18n.js";
 
 // The name of the chat at the top left: a click renames it, the arrow opens its menu
 export default function ChatHeading({ chat, onUpdate, onRemove }) {
@@ -38,17 +39,17 @@ export default function ChatHeading({ chat, onUpdate, onRemove }) {
               if (event.key === "Escape") setRenaming(false);
             }}
             onBlur={() => save(draft)}
-            aria-label="Chat name"
+            aria-label={t("Chat name")}
           />
         </span>
       ) : (
-        <button className="chat-heading-name" onClick={rename} title="Rename">
+        <button className="chat-heading-name" onClick={rename} title={t("Rename")}>
           {name}
         </button>
       )}
       <button
         className={`chat-heading-more ${menu ? "open" : ""}`}
-        aria-label="Chat menu"
+        aria-label={t("Chat menu")}
         onClick={(event) => {
           const box = event.currentTarget.getBoundingClientRect();
           setMenu(menu ? null : { x: box.left, y: box.bottom + 6 });

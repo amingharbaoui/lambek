@@ -10,6 +10,7 @@ import { Line2 } from "three/addons/lines/Line2.js";
 import { LineGeometry } from "three/addons/lines/LineGeometry.js";
 import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 import { Crosshair, Pause, Play, Waypoints, X } from "lucide-react";
+import { parameterName, t } from "../i18n.js";
 
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 const EASE = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
@@ -56,7 +57,7 @@ function readColors() {
 
 function statusColor(step, colors) {
   if (!step.action) return colors.muted;
-  if (step.status === "Ready") return colors.accent;
+  if (step.status === "Ready") return colors.text;
   if (["Blocked", "Invalid", "Unsupported"].includes(step.status)) return colors.danger;
   return colors.warn;
 }
@@ -87,7 +88,7 @@ function layout(plan, title, showParameters) {
       const theta = GOLDEN_ANGLE * i + angle;
       const offset = new THREE.Vector3(Math.sin(phi) * Math.cos(theta), Math.cos(phi) * 0.8, Math.sin(phi) * Math.sin(theta)).multiplyScalar(8);
       const parameterId = `${id}-${name}`;
-      nodes.push({ id: parameterId, kind: "parameter", step, name, position: position.clone().add(offset), label: `${name} ${step.parameters[name]}` });
+      nodes.push({ id: parameterId, kind: "parameter", step, name, position: position.clone().add(offset), label: `${parameterName(name)} ${step.parameters[name]}` });
       links.push({ from: id, to: parameterId, kind: "parameter" });
     });
   });
@@ -441,21 +442,21 @@ export default function Graph3D({ plan, title, theme, selected, onSelect, onEdit
   const step = plan.steps.find((item) => item.step === selected);
 
   return (
-    <section className="graph" aria-label="Nodes">
+    <section className="graph" aria-label={t("Nodes")}>
       <div className="graph-canvas" ref={container} />
       <div className="graph-labels" ref={labels} />
 
       <div className="graph-toolbar">
-        <button className="icon-button" onClick={() => fit()} title="Fit" aria-label="Fit">
+        <button className="icon-button" onClick={() => fit()} title={t("Fit")} aria-label={t("Fit")}>
           <Crosshair size={16} />
         </button>
-        <button className={`icon-button ${showParameters ? "active" : ""}`} onClick={() => setShowParameters(!showParameters)} title="Parameters" aria-label="Parameters">
+        <button className={`icon-button ${showParameters ? "active" : ""}`} onClick={() => setShowParameters(!showParameters)} title={t("Parameters")} aria-label={t("Parameters")}>
           <Waypoints size={16} />
         </button>
-        <button className="icon-button" onClick={() => setRotate(!rotate)} title={rotate ? "Stop rotation" : "Rotate"} aria-label="Rotation">
+        <button className="icon-button" onClick={() => setRotate(!rotate)} title={rotate ? t("Stop rotation") : t("Rotate")} aria-label={t("Rotation")}>
           {rotate ? <Pause size={15} /> : <Play size={15} />}
         </button>
-        <button className="icon-button" onClick={onClose} title="Close (Esc)" aria-label="Close">
+        <button className="icon-button" onClick={onClose} title={t("Close (Esc)")} aria-label={t("Close")}>
           <X size={17} />
         </button>
       </div>
@@ -463,13 +464,13 @@ export default function Graph3D({ plan, title, theme, selected, onSelect, onEdit
       {!step && (
         <div className="graph-legend">
           <span>
-            <i style={{ background: "var(--accent)" }} /> ready
+            <i style={{ background: "var(--accent)" }} /> {t("ready")}
           </span>
           <span>
-            <i style={{ background: "var(--warn)" }} /> needs input
+            <i style={{ background: "var(--warn)" }} /> {t("needs input")}
           </span>
           <span>
-            <i style={{ background: "var(--danger)" }} /> blocked
+            <i style={{ background: "var(--danger)" }} /> {t("blocked")}
           </span>
         </div>
       )}
@@ -514,10 +515,10 @@ function NodePanel({ step, onEdit, onClose }) {
     <aside className="node-panel">
       <header>
         <div>
-          <span className="eyebrow">Step {step.step}</span>
+          <span className="eyebrow">{t("Step")} {step.step}</span>
           <h3>{step.action ?? "no action"}</h3>
         </div>
-        <button className="icon-button small" onClick={onClose} title="Close" aria-label="Close">
+        <button className="icon-button small" onClick={onClose} title={t("Close")} aria-label={t("Close")}>
           <X size={13} />
         </button>
       </header>
@@ -528,8 +529,8 @@ function NodePanel({ step, onEdit, onClose }) {
       {step.schema.map((item) => (
         <label key={item.name} className="node-field">
           <span>
-            {item.name}
-            {item.required && <em> · required</em>}
+            {parameterName(item.name)}
+            {item.required && <em> {t("Required")}</em>}
           </span>
           <div className="node-input">
             {item.kind === "choice" ? (
@@ -550,7 +551,7 @@ function NodePanel({ step, onEdit, onClose }) {
               />
             )}
             <button className="button" onClick={() => apply(item.name)} disabled={saving !== null || values[item.name] === initialValue(step, item)}>
-              {saving === item.name ? "…" : "Set"}
+              {saving === item.name ? "…" : t("Set")}
             </button>
           </div>
         </label>

@@ -1,4 +1,5 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
+import { t } from "./i18n.js";
 
 export const isDesktop = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 
@@ -47,7 +48,7 @@ export async function pickFiles(kind = "files") {
     kind === "folder"
       ? { multiple: false, directory: true }
       : kind === "documents"
-        ? { multiple: true, directory: false, filters: [{ name: "Documents", extensions: DOCUMENTS }] }
+        ? { multiple: true, directory: false, filters: [{ name: t("Documents"), extensions: DOCUMENTS }] }
         : { multiple: true, directory: false };
   const selected = await open(options);
   if (!selected) return [];
@@ -89,7 +90,7 @@ function isNewer(latest, current) {
 export async function checkForUpdates() {
   const response = await fetch(`https://api.github.com/repos/${REPOSITORY}/releases/latest`, { headers: { Accept: "application/vnd.github+json" } });
   if (response.status === 404) return { state: "none" };
-  if (!response.ok) throw new Error(`GitHub answered ${response.status}.`);
+  if (!response.ok) throw new Error(t("GitHub answered {0}.", response.status));
   const release = await response.json();
   const latest = String(release.tag_name ?? "").replace(/^v/i, "");
   return { state: isNewer(latest, appVersion) ? "newer" : "current", latest, url: release.html_url };

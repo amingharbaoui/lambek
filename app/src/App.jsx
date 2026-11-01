@@ -7,7 +7,7 @@ import WindowControls from "./components/WindowControls.jsx";
 import Dialog from "./components/Dialog.jsx";
 import { appVersion, checkForUpdates, closeWindow, engineStatus, lambek, onFileDrop, onProgress, openUrl, pickFiles, REPOSITORY, stopEngine, toAttachment, toggleFullscreen, withAttachments } from "./lambek.js";
 import useTheme from "./useTheme.js";
-import { keys as keyLabel, platform, PLATFORM_NAMES } from "./platform.js";
+import { keys as keyLabel, platform } from "./platform.js";
 import useChats from "./useChats.js";
 import { load, save } from "./storage.js";
 import Sidebar, { chatOrder } from "./components/Sidebar.jsx";
@@ -17,24 +17,25 @@ import Home from "./components/Home.jsx";
 import Composer from "./components/Composer.jsx";
 import Tools from "./components/Tools.jsx";
 import { Answer, Request } from "./components/Message.jsx";
+import { language as uiLanguage, t } from "./i18n.js";
 
 const loadGraph = () => import("./components/Graph3D.jsx");
 const Graph3D = lazy(loadGraph);
 
 const SHORTCUTS = [
-  ["Enter", "Send"],
-  ["Shift+Enter", "New line"],
-  ["Esc", "Stop, or back to the chat"],
-  ["Ctrl+N", "New chat"],
-  ["Ctrl+Shift+N", "Incognito"],
-  ["Ctrl+O", "Add files"],
-  ["Ctrl+B", "Sidebar"],
-  ["Ctrl+K", "Search chats"],
-  ["Ctrl+Tab", "Next chat"],
-  [platform === "mac" ? "Ctrl+[ / Ctrl+]" : "Alt+Left / Alt+Right", "Back, forward"],
-  ["Ctrl+G", "Nodes"],
-  ["Ctrl+= / Ctrl+-", "Zoom in, zoom out"],
-  [platform === "mac" ? "Control+Ctrl+F" : "F11", "Full screen"],
+  ["Enter", t("Send")],
+  ["Shift+Enter", t("New line")],
+  ["Esc", t("Stop, or back to the chat")],
+  ["Ctrl+N", t("New chat")],
+  ["Ctrl+Shift+N", t("Incognito")],
+  ["Ctrl+O", t("Add files")],
+  ["Ctrl+B", t("Sidebar")],
+  ["Ctrl+K", t("Search chats")],
+  ["Ctrl+Tab", t("Next chat")],
+  [platform === "mac" ? "Ctrl+[ / Ctrl+]" : "Alt+Left / Alt+Right", t("Back, forward")],
+  ["Ctrl+G", t("Nodes")],
+  ["Ctrl+= / Ctrl+-", t("Zoom in, zoom out")],
+  [platform === "mac" ? "Control+Ctrl+F" : "F11", t("Full screen")],
 ];
 
 const ZOOMS = [0.8, 0.9, 1, 1.1, 1.25, 1.5];
@@ -88,7 +89,7 @@ function editCommand(command) {
 // The name of a chat, from what its first plan does; the whole text, the screen cuts it where it must
 function summarize(plan) {
   const sentences = plan.sentences ?? [];
-  if (sentences.length === 0) return plan.steps?.find((step) => step.title)?.title ?? "New chat";
+  if (sentences.length === 0) return plan.steps?.find((step) => step.title)?.title ?? t("New chat");
   const text = sentences[0].replace(/\s+/g, " ").trim();
   const first = text.charAt(0).toUpperCase() + text.slice(1);
   return sentences.length > 1 ? `${first} + ${sentences.length - 1} more` : first;
@@ -101,13 +102,13 @@ function namesChat(message) {
 
 // What the status under a message says for each stage the engine reports
 const STAGE_WORDS = {
-  Split: () => "Reading your request",
-  Read: (step) => `Reading step ${step}`,
-  Match: (step) => `Matching step ${step} to an action`,
-  Check: (step) => `Checking step ${step}`,
-  Order: () => "Ordering the steps",
-  Simulate: (step) => `Simulating step ${step}`,
-  Run: (step) => `Running step ${step}`,
+  Split: () => t("Reading your request"),
+  Read: (step) => t("Reading step {0}", step),
+  Match: (step) => t("Matching step {0} to an action", step),
+  Check: (step) => t("Checking step {0}", step),
+  Order: () => t("Ordering the steps"),
+  Simulate: (step) => t("Simulating step {0}", step),
+  Run: (step) => t("Running step {0}", step),
 };
 
 function simulationDetail(simulation) {
@@ -156,7 +157,7 @@ export default function App() {
 
   // Engine, then what it can do
   const loadCategories = useCallback(() => {
-    lambek("categories", { language: "en" })
+    lambek("categories", { language: uiLanguage })
       .then(setCategories)
       .catch(() => setCategories([]));
   }, []);
@@ -397,7 +398,7 @@ export default function App() {
     if (!current) return;
     stopped.current.add(current.messageId);
     running.current = null;
-    const note = current.kind === "run" ? "Stopped. Steps that finished before the stop are in the audit log." : "Stopped.";
+    const note = current.kind === "run" ? t("Stopped. Finished steps are in the audit log.") : t("Stopped.");
     chats.updateMessage(current.chatId, current.messageId, (message) => ({ busy: null, note, reading: message.busy?.types ?? message.reading }));
     if (current.kind === "run") stopEngine().catch(() => {});
   }
@@ -437,22 +438,22 @@ export default function App() {
   async function proceed(chatId, messageId, plan) {
     if (plan.status !== "Ready" || plan.steps.every((step) => step.output === "code")) return;
     const onlyTools = plan.steps.every((step) => step.output === "mcp");
-    const simulation = await work(chatId, messageId, onlyTools ? "Preparing the call" : "Checking what will change", () => lambek("simulate", { id: plan.id }), (simulation, message, ms) => ({
+    const simulation = await work(chatId, messageId, onlyTools ? t("Preparing the call") : t("Checking what will change"), () => lambek("simulate", { id: plan.id }), (simulation, message, ms) => ({
       simulation,
       execution: null,
-      events: [{ stage: "Simulate", label: "Simulated", detail: simulationDetail(simulation), ms }],
+      events: [{ stage: "Simulate", label: t("Simulated"), detail: simulationDetail(simulation), ms }],
     }));
     if (simulation?.status === "Ready" && simulation.risk === "low") run(chatId, messageId, plan, simulation);
   }
 
   function run(chatId, messageId, plan, simulation, typedCode) {
     const servers = [...new Set(plan.steps.filter((step) => step.output === "mcp").map((step) => step.action.split(".")[0].replace(/^mcp-/, "")))];
-    const doing = servers.length > 0 && plan.steps.every((step) => step.output === "mcp") ? `Calling ${servers.join(", ")}` : "Running";
+    const doing = servers.length > 0 && plan.steps.every((step) => step.output === "mcp") ? t("Calling {0}", servers.join(", ")) : t("Running");
     const needsApproval = simulation.risk !== "low";
     return work(
       chatId,
       messageId,
-      needsApproval ? "Approving" : doing,
+      needsApproval ? t("Approving") : doing,
       async () => {
         if (needsApproval) {
           await lambek("approve", { id: plan.id, confirmation: typedCode ?? "" });
@@ -466,7 +467,7 @@ export default function App() {
         execution: keepRows(execution),
         events: [
           ...(needsApproval ? [{ stage: "Approve", detail: "approval bound to the plan hash and the files" }] : []),
-          { stage: "Run", label: execution.status === "Completed" ? "Ran" : "Stopped", detail: execution.reason ?? execution.status.toLowerCase(), ms },
+          { stage: "Run", label: execution.status === "Completed" ? t("Ran") : t("Stopped"), detail: execution.reason ?? execution.status.toLowerCase(), ms },
         ],
       }),
       "run",
@@ -486,7 +487,7 @@ export default function App() {
 
   async function compact(chatId, count, ids) {
     compacting.current = true;
-    const word = "Compacting our conversation so we can keep going";
+    const word = t("Summarizing the chat…");
     const { messageId } = chats.addMessage({ role: "lambek", request: "" }, chatId);
     chats.updateMessage(chatId, messageId, { busy: { word, percent: 0, progress: true } });
     for (let index = 0; index < ids.length; index += 4) {
@@ -494,7 +495,7 @@ export default function App() {
       chats.updateMessage(chatId, messageId, { busy: { word, percent: (Math.min(ids.length, index + 4) / ids.length) * 100, progress: true } });
       await new Promise((resolve) => setTimeout(resolve, 45));
     }
-    chats.updateMessage(chatId, messageId, { busy: null, note: "Earlier results were shortened to keep this chat fast." });
+    chats.updateMessage(chatId, messageId, { busy: null, note: t("Earlier results were shortened.") });
     chats.updateChat(chatId, { compactedUpTo: count });
     compacting.current = false;
   }
@@ -542,7 +543,7 @@ export default function App() {
 
     // Files without a message: what Lambek can read from them
     if (!typed && files.length > 0) {
-      const result = await work(chatId, messageId, "Reading the files", () => lambek("inspect", { paths: files.map((file) => file.path), language, incognito }), (result, _message, ms) => ({
+      const result = await work(chatId, messageId, t("Reading the files"), () => lambek("inspect", { paths: files.map((file) => file.path), language, incognito }), (result, _message, ms) => ({
         kind: "files",
         answer: result.answer,
         elapsed: ms,
@@ -551,7 +552,7 @@ export default function App() {
       return;
     }
 
-    const word = context ? "Reading your reply" : "Reading your request";
+    const word = context ? t("Reading your reply") : t("Reading your request");
     const result = await work(chatId, messageId, word, () => lambek("ask", { text: request, context, step, language, incognito, chat: chatId }), (result, _message, ms) => {
       // The plan keeps the words of the request that created it
       const title = result.kind === "new" ? request : (target?.title ?? target?.request);
@@ -567,7 +568,7 @@ export default function App() {
     if (result.kind === "run" && target) {
       const ready = pending?.id === target.id ? pending : null;
       if (ready?.simulation.risk === "high") {
-        const answer = result.language === "fr" ? `Tapez ${ready.simulation.confirmationCode} pour confirmer.` : `Type ${ready.simulation.confirmationCode} to confirm.`;
+        const answer = t("Type {0} to confirm.", ready.simulation.confirmationCode);
         chats.updateMessage(chatId, messageId, { answer });
       } else if (ready) {
         run(chatId, messageId, ready.plan, ready.simulation);
@@ -616,7 +617,7 @@ export default function App() {
       simulation: null,
       execution: null,
       kind: "edit",
-      events: [...(current.events ?? []), { stage: "Edit", label: "Updated", detail: `step ${step}: ${name} = ${value || "none"}`, ms }],
+      events: [...(current.events ?? []), { stage: "Edit", label: t("Updated"), detail: `step ${step}: ${name} = ${value || "none"}`, ms }],
     }));
   }
 
@@ -645,7 +646,7 @@ export default function App() {
       focusToken={focusToken}
       onClearFocus={() => setSelectedStep(null)}
       placeholder={
-        focus ? `Ask about step ${focus.step}, or change it…` : lastPlanMessage ? "Reply, change a value, or ask why…" : "Describe a task…"
+        focus ? t("Ask about step {0}, or change it…", focus.step) : lastPlanMessage ? t("Reply, change a value, or ask why…") : t("Ask a question or describe a task…")
       }
     />
   );
@@ -656,50 +657,50 @@ export default function App() {
 
   const menu = [
     {
-      label: "File",
+      label: t("File"),
       items: [
-        { label: "New chat", keys: "Ctrl+N", onSelect: newChat },
-        { label: incognito ? "Leave incognito" : "New incognito chat", keys: "Ctrl+Shift+N", onSelect: toggleIncognito },
+        { label: t("New chat"), keys: "Ctrl+N", onSelect: newChat },
+        { label: incognito ? t("Leave incognito") : t("New incognito chat"), keys: "Ctrl+Shift+N", onSelect: toggleIncognito },
         { separator: "exit" },
-        { label: { windows: "Exit", mac: "Quit Lambek", linux: "Quit" }[platform], keys: platform === "windows" ? "Alt+F4" : "Ctrl+Q", onSelect: () => closeWindow() },
+        { label: { windows: t("Exit"), mac: t("Quit Lambek"), linux: t("Quit") }[platform], keys: platform === "windows" ? "Alt+F4" : "Ctrl+Q", onSelect: () => closeWindow() },
       ],
     },
     {
       label: "Edit",
       items: [
-        { label: "Undo", keys: "Ctrl+Z", onSelect: () => editCommand("undo") },
-        { label: "Redo", keys: platform === "mac" ? "Ctrl+Shift+Z" : "Ctrl+Y", onSelect: () => editCommand("redo") },
+        { label: t("Undo"), keys: "Ctrl+Z", onSelect: () => editCommand("undo") },
+        { label: t("Redo"), keys: platform === "mac" ? "Ctrl+Shift+Z" : "Ctrl+Y", onSelect: () => editCommand("redo") },
         { separator: "clipboard" },
-        { label: "Cut", keys: "Ctrl+X", onSelect: () => editCommand("cut") },
-        { label: "Copy", keys: "Ctrl+C", onSelect: () => editCommand("copy") },
-        { label: "Paste", keys: "Ctrl+V", onSelect: () => editCommand("paste") },
-        { label: "Select all", keys: "Ctrl+A", onSelect: () => editCommand("selectAll") },
+        { label: t("Cut"), keys: "Ctrl+X", onSelect: () => editCommand("cut") },
+        { label: t("Copy"), keys: "Ctrl+C", onSelect: () => editCommand("copy") },
+        { label: t("Paste"), keys: "Ctrl+V", onSelect: () => editCommand("paste") },
+        { label: t("Select all"), keys: "Ctrl+A", onSelect: () => editCommand("selectAll") },
       ],
     },
     {
-      label: "View",
+      label: t("View"),
       items: [
-        { label: sidebarOpen ? "Hide sidebar" : "Show sidebar", keys: "Ctrl+B", onSelect: () => setSidebarOpen(!sidebarOpen) },
-        { label: "Nodes", keys: "Ctrl+G", disabled: !lastPlanMessage, onSelect: () => setView("graph") },
+        { label: sidebarOpen ? t("Hide sidebar") : t("Show sidebar"), keys: "Ctrl+B", onSelect: () => setSidebarOpen(!sidebarOpen) },
+        { label: t("Nodes"), keys: "Ctrl+G", disabled: !lastPlanMessage, onSelect: () => setView("graph") },
         { separator: "zoom" },
-        { label: "Zoom in", keys: "Ctrl+=", onSelect: () => zoomBy(1) },
-        { label: "Zoom out", keys: "Ctrl+-", onSelect: () => zoomBy(-1) },
-        { label: "Actual size", keys: "Ctrl+0", onSelect: () => setZoom(1) },
+        { label: t("Zoom in"), keys: "Ctrl+=", onSelect: () => zoomBy(1) },
+        { label: t("Zoom out"), keys: "Ctrl+-", onSelect: () => zoomBy(-1) },
+        { label: t("Actual size"), keys: "Ctrl+0", onSelect: () => setZoom(1) },
         { separator: "screen" },
-        { label: platform === "mac" ? "Enter full screen" : "Full screen", keys: platform === "mac" ? "Control+Ctrl+F" : "F11", onSelect: () => toggleFullscreen().catch(() => {}) },
+        { label: platform === "mac" ? t("Enter full screen") : t("Full screen"), keys: platform === "mac" ? "Control+Ctrl+F" : "F11", onSelect: () => toggleFullscreen().catch(() => {}) },
       ],
     },
     {
-      label: "Go",
+      label: t("Go"),
       items: [
-        { label: "Back", keys: platform === "mac" ? "Ctrl+[" : "Alt+Left", disabled: !canGo.back, onSelect: () => go(-1) },
-        { label: "Forward", keys: platform === "mac" ? "Ctrl+]" : "Alt+Right", disabled: !canGo.forward, onSelect: () => go(1) },
+        { label: t("Back"), keys: platform === "mac" ? "Ctrl+[" : "Alt+Left", disabled: !canGo.back, onSelect: () => go(-1) },
+        { label: t("Forward"), keys: platform === "mac" ? "Ctrl+]" : "Alt+Right", disabled: !canGo.forward, onSelect: () => go(1) },
         { separator: "history" },
-        { label: "Previous chat", keys: "Ctrl+Shift+Tab", disabled: chats.chats.length < 2, onSelect: () => goChat(-1) },
-        { label: "Next chat", keys: "Ctrl+Tab", disabled: chats.chats.length < 2, onSelect: () => goChat(1) },
+        { label: t("Previous chat"), keys: "Ctrl+Shift+Tab", disabled: chats.chats.length < 2, onSelect: () => goChat(-1) },
+        { label: t("Next chat"), keys: "Ctrl+Tab", disabled: chats.chats.length < 2, onSelect: () => goChat(1) },
         { separator: "search" },
         {
-          label: "Search chats",
+          label: t("Search chats"),
           keys: "Ctrl+K",
           onSelect: () => {
             setSidebarOpen(true);
@@ -709,11 +710,11 @@ export default function App() {
       ],
     },
     {
-      label: "Help",
+      label: t("Help"),
       items: [
-        { label: "Keyboard shortcuts", onSelect: () => setDialog("keys") },
-        { label: "Check for updates…", onSelect: findUpdates },
-        { label: "About Lambek", onSelect: () => setDialog("about") },
+        { label: t("Keyboard shortcuts"), onSelect: () => setDialog("keys") },
+        { label: t("Check for updates…"), onSelect: findUpdates },
+        { label: t("About Lambek"), onSelect: () => setDialog("about") },
       ],
     },
   ];
@@ -723,7 +724,7 @@ export default function App() {
       <header className="titlebar" data-tauri-drag-region>
         {incognito ? (
           <span className="incognito-title">
-            <GhostNodes size={16} /> Incognito
+            <GhostNodes size={16} /> {t("Incognito")}
           </span>
         ) : (
           <div className="titlebar-start" data-tauri-drag-region>
@@ -736,28 +737,28 @@ export default function App() {
               }}
               onMouseEnter={() => peekSidebar(true)}
               onMouseLeave={() => peekSidebar(false)}
-              data-tip={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+              data-tip={sidebarOpen ? t("Hide sidebar") : t("Show sidebar")}
               data-keys={keyLabel("Ctrl+B")}
-              aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+              aria-label={sidebarOpen ? t("Close sidebar") : t("Open sidebar")}
             >
               <PanelLeft size={16} />
             </button>
-            <button className="icon-button" onClick={() => go(-1)} disabled={!canGo.back} data-tip="Back" data-keys={BACK_KEYS} aria-label="Back">
+            <button className="icon-button" onClick={() => go(-1)} disabled={!canGo.back} data-tip={t("Back")} data-keys={BACK_KEYS} aria-label={t("Back")}>
               <ArrowLeft size={16} />
             </button>
-            <button className="icon-button" onClick={() => go(1)} disabled={!canGo.forward} data-tip="Forward" data-keys={FORWARD_KEYS} aria-label="Forward">
+            <button className="icon-button" onClick={() => go(1)} disabled={!canGo.forward} data-tip={t("Forward")} data-keys={FORWARD_KEYS} aria-label={t("Forward")}>
               <ArrowRight size={16} />
             </button>
           </div>
         )}
         <span className="titlebar-title" data-tauri-drag-region />
         {incognito ? (
-          <button className="icon-button" onClick={toggleIncognito} data-tip="Leave incognito" data-keys={keyLabel("Ctrl+Shift+N")} aria-label="Leave incognito">
+          <button className="icon-button" onClick={toggleIncognito} data-tip={t("Leave incognito")} data-keys={keyLabel("Ctrl+Shift+N")} aria-label={t("Leave incognito")}>
             <X size={16} />
           </button>
         ) : (
           isHome && (
-            <button className="icon-button" onClick={toggleIncognito} data-tip="Incognito" data-keys={keyLabel("Ctrl+Shift+N")} aria-label="Incognito">
+            <button className="icon-button" onClick={toggleIncognito} data-tip={t("Incognito")} data-keys={keyLabel("Ctrl+Shift+N")} aria-label={t("Incognito")}>
               <GhostNodes size={16} />
             </button>
           )
@@ -821,7 +822,6 @@ export default function App() {
         {view === "chat" &&
           (isHome ? (
             <Home
-              name={engine?.user}
               incognito={incognito}
               categories={categories}
               engineError={engine && !engine.ok ? engine.error : null}
@@ -859,7 +859,7 @@ export default function App() {
         {!isHome && view !== "tools" ? (
           <footer className="dock">
             {view === "chat" && busy && !following && (
-              <button className="working-pill" onClick={toBottom} aria-label={`${busyMessage?.busy.word ?? "Working"}. Show the latest message`}>
+              <button className="working-pill" onClick={toBottom} aria-label={t("{0}. Show the latest message", busyMessage?.busy.word ?? "Working")}>
                 <ReductionMark />
               </button>
             )}
@@ -871,48 +871,46 @@ export default function App() {
       </main>
 
       {dialog === "about" && (
-        <Dialog title="About Lambek" onClose={() => setDialog(null)}>
+        <Dialog title={t("About Lambek")} onClose={() => setDialog(null)}>
           <div className="about">
-            <h2 className="about-name">
-              Lambek <i>for</i> {PLATFORM_NAMES[platform]}
-            </h2>
+            <h2 className="about-name">Lambek</h2>
             <p className="about-version">
-              Version {appVersion} (engine {engine?.version ?? "not started"})
+              {t("Version {0} (engine {1})", appVersion, engine?.version ?? t("not started"))}
             </p>
             <button className="button about-button" onClick={() => setDialog("keys")}>
-              Help
+              {t("Keyboard shortcuts")}
             </button>
             <button className="button about-button" onClick={() => openUrl(`https://github.com/${REPOSITORY}/issues`)}>
-              Get support
+              {t("Report a problem")}
             </button>
           </div>
         </Dialog>
       )}
 
       {update && (
-        <Dialog title="Updates" onClose={() => setUpdate(null)}>
+        <Dialog title={t("Updates")} onClose={() => setUpdate(null)}>
           <div className="update">
-            {update.state === "checking" && <p>Checking GitHub for a newer version…</p>}
-            {update.state === "current" && <p>Lambek {appVersion} is up to date.</p>}
-            {update.state === "none" && <p>No release is published yet. You have Lambek {appVersion}.</p>}
-            {update.state === "error" && <p>Could not reach GitHub: {update.message}</p>}
+            {update.state === "checking" && <p>{t("Checking GitHub for a newer version…")}</p>}
+            {update.state === "current" && <p>Lambek {appVersion} {t("is up to date.")}</p>}
+            {update.state === "none" && <p>{t("No release is published yet. You have Lambek")} {appVersion}.</p>}
+            {update.state === "error" && <p>{t("Could not reach GitHub:")} {update.message}</p>}
             {update.state === "newer" && (
               <>
                 <p>
-                  Lambek {update.latest} is available. You have {appVersion}.
+                  Lambek {update.latest} {t("is available. You have")} {appVersion}.
                 </p>
                 <button className="button primary" onClick={() => openUrl(update.url)}>
-                  Open the download page
+                  {t("Open the download page")}
                 </button>
               </>
             )}
-            <p className="update-source">Source: github.com/{REPOSITORY}</p>
+            <p className="update-source">{t("Source: github.com/")}{REPOSITORY}</p>
           </div>
         </Dialog>
       )}
 
       {dialog === "keys" && (
-        <Dialog title="Keyboard shortcuts" onClose={() => setDialog(null)}>
+        <Dialog title={t("Keyboard shortcuts")} onClose={() => setDialog(null)}>
           <dl className="facts keys">
             {SHORTCUTS.map(([keys, action]) => (
               <Fragment key={keys}>
@@ -931,7 +929,7 @@ export default function App() {
       {dragging && (
         <div className="drop">
           <Upload size={18} />
-          <span>Drop files to add them</span>
+          <span>{t("Drop files here")}</span>
         </div>
       )}
     </div>

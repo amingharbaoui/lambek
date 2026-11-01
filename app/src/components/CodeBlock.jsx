@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { t } from "../i18n.js";
 
 // Code with a copy button
 export default function CodeBlock({ code }) {
@@ -17,7 +18,7 @@ export default function CodeBlock({ code }) {
 
   return (
     <div className="code-block">
-      <button className="icon-button small" onClick={copy} title="Copy" aria-label="Copy">
+      <button className="icon-button small" onClick={copy} title={t("Copy")} aria-label={t("Copy")}>
         {copied ? <Check size={13} /> : <Copy size={13} />}
       </button>
       <pre className="code">{code}</pre>

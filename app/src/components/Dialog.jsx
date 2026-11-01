@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
+import { t } from "../i18n.js";
 
 // A small window over the app: it takes the focus, closes with Escape or a click outside, and gives the focus back
 export default function Dialog({ title, onClose, children }) {
@@ -23,7 +24,7 @@ export default function Dialog({ title, onClose, children }) {
       <div className="dialog" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={box} onMouseDown={(event) => event.stopPropagation()}>
         <header>
           <h2>{title}</h2>
-          <button className="icon-button small" onClick={onClose} aria-label="Close">
+          <button className="icon-button small" onClick={onClose} aria-label={t("Close")}>
             <X size={14} />
           </button>
         </header>

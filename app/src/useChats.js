@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { load, save } from "./storage.js";
+import { t } from "./i18n.js";
 
 const KEY = "lambek.chats.v1";
 
@@ -9,7 +10,7 @@ function newId() {
 
 // Work that was running when the app closed is shown as stopped
 function settle(chat) {
-  return { ...chat, messages: chat.messages.map((message) => (message.busy ? { ...message, busy: null, error: "Stopped when the app closed." } : message)) };
+  return { ...chat, messages: chat.messages.map((message) => (message.busy ? { ...message, busy: null, error: t("Stopped when the app closed.") } : message)) };
 }
 
 function titleFrom(text) {
@@ -42,7 +43,7 @@ export default function useChats(incognito) {
     const entry = { ...message, id, at: Date.now() };
 
     if (!chatId) {
-      const first = message.text || message.attachments?.map((file) => file.name).join(", ") || "New chat";
+      const first = message.text || message.attachments?.map((file) => file.name).join(", ") || t("New chat");
       const chat = { id: newId(), title: titleFrom(first), createdAt: Date.now(), updatedAt: Date.now(), messages: [entry] };
       setChats((all) => [chat, ...all]);
       setCurrentId(chat.id);

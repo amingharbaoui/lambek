@@ -19,8 +19,11 @@
         "minHeight": 540,
         "center": true,
         "visible": false,
-        "backgroundColor": "#161617",
-        "decorations": false
+        "decorations": false,
+        "transparent": true,
+        "windowEffects": {
+          "effects": ["acrylic"]
+        }
       }
     ],
     "security": {

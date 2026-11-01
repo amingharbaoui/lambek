@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { parseTypes, placeImplied, reduce } from "../reduction.js";
+import { t } from "../i18n.js";
 
 const LETTER_MS = 34;
 
@@ -68,7 +69,7 @@ export default function ProofLine({ step, types, numbered, onOpen, onTyped, fail
   const label = [
     `Step ${step}: ${reading}`,
     reduced ? "reduces to s" : "does not reduce to s",
-    waits.length > 0 ? `${waits.join(", ")} left alone` : "",
+    waits.length > 0 ? t("{0} left alone", waits.join(", ")) : "",
     failed ?? "",
   ]
     .filter(Boolean)
@@ -85,7 +86,7 @@ export default function ProofLine({ step, types, numbered, onOpen, onTyped, fail
   const tone = failed ? "failed" : reduced ? "" : "open";
 
   return (
-    <button className={`proof ${tone} ${working || !done ? "working" : ""}`} onClick={onOpen} disabled={!onOpen || !done} aria-label={onOpen ? `${label}. Show the nodes.` : label} title={failed ?? undefined}>
+    <button className={`proof ${tone} ${working || !done ? "working" : ""}`} onClick={onOpen} disabled={!onOpen || !done} aria-label={onOpen ? t("{0}. Show the nodes.", label) : label} title={failed ?? undefined}>
       {numbered && <span className="proof-step">{step}</span>}
       <span className="proof-types" ref={row} aria-hidden="true">
         {cells.map(
@@ -94,7 +95,7 @@ export default function ProofLine({ step, types, numbered, onOpen, onTyped, fail
               <span
                 key={cell.index}
                 className={`type ${cell.index === kept ? "kept" : ""} ${loose.includes(cell.index) ? "loose" : ""} ${parsed[cell.index].implied ? "implied" : ""}`}
-                title={parsed[cell.index].implied ? "Supplied by the folder you named" : undefined}
+                title={parsed[cell.index].implied ? t("Supplied by the folder you named") : undefined}
               >
                 {cell.base}
                 {cell.marks && <sup>{cell.marks}</sup>}

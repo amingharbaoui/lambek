@@ -16,6 +16,7 @@
     "core:window:allow-close",
     "core:window:allow-set-fullscreen",
     "core:window:allow-is-fullscreen",
+    "core:window:allow-set-theme",
     "dialog:allow-open",
     {
       "identifier": "opener:allow-open-path",
@@ -32,7 +33,13 @@
       "identifier": "opener:allow-open-url",
       "allow": [
         {
+          "url": "https://github.com/amingharbaoui/lambek"
+        },
+        {
           "url": "https://github.com/amingharbaoui/lambek/*"
+        },
+        {
+          "url": "https://www.wikidata.org/wiki/*"
         }
       ]
     }

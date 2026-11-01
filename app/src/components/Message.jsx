@@ -5,11 +5,13 @@ import { CheckArc, CopySlot } from "./Icons.jsx";
 import { Working } from "./Status.jsx";
 import Reading from "./Reading.jsx";
 import PlanActions from "./PlanActions.jsx";
+import { language, t, typeset } from "../i18n.js";
+import { openUrl } from "../lambek.js";
 
 const REPLY = /(replied:|a répondu :)$/;
 
 // Plain text from the engine: numbered steps, bullets, and server replies
-function AnswerText({ text }) {
+function AnswerText({ text, said }) {
   const lines = text.split("\n");
   const blocks = [];
 
@@ -36,12 +38,12 @@ function AnswerText({ text }) {
   return (
     <div className="answer-text">
       {blocks.map((block, index) => {
-        if (block.kind === "ol") return <ol key={index}>{block.lines.map((item, i) => <li key={i}><span className="words">{item}</span></li>)}</ol>;
-        if (block.kind === "ul") return <ul key={index}>{block.lines.map((item, i) => <li key={i}><span className="words">{item}</span></li>)}</ul>;
+        if (block.kind === "ol") return <ol key={index}>{block.lines.map((item, i) => <li key={i}><span className="words">{typeset(item, said)}</span></li>)}</ol>;
+        if (block.kind === "ul") return <ul key={index}>{block.lines.map((item, i) => <li key={i}><span className="words">{typeset(item, said)}</span></li>)}</ul>;
         if (block.kind === "reply") return <div key={index} className="reply">{block.lines.join("\n")}</div>;
         return (
           <p key={index}>
-            <span className="words">{block.lines[0]}</span>
+            <span className="words">{typeset(block.lines[0], said)}</span>
           </p>
         );
       })}
@@ -49,15 +51,16 @@ function AnswerText({ text }) {
   );
 }
 
-// "Just now", "5 minutes ago", "3 hours ago", "Yesterday", then the date
+// "now", "5 minutes ago", "3 hours ago", "yesterday" in the reader's language, then the date
+const ago = new Intl.RelativeTimeFormat(language, { numeric: "auto" });
 function sentAgo(time, now) {
   const minutes = Math.floor((now - time) / 60000);
-  if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  if (minutes < 1) return ago.format(0, "second");
+  if (minutes < 60) return ago.format(-minutes, "minute");
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-  if (hours < 48) return "Yesterday";
-  return new Date(time).toLocaleDateString("en-US", { month: "short", day: "numeric", year: new Date(time).getFullYear() === new Date(now).getFullYear() ? undefined : "numeric" });
+  if (hours < 24) return ago.format(-hours, "hour");
+  if (hours < 48) return ago.format(-1, "day");
+  return new Date(time).toLocaleDateString(language, { month: "short", day: "numeric", year: new Date(time).getFullYear() === new Date(now).getFullYear() ? undefined : "numeric" });
 }
 
 // The time of every request moves on together, once a minute
@@ -72,7 +75,6 @@ function useNow() {
   return now;
 }
 
-// Edit in place: Enter sends the new words as a new request, Escape keeps the old ones
 // Edit in place, in the bubble itself: Enter sends the new words, Escape keeps the old ones
 function EditBox({ text, width, onSend, onCancel, busy }) {
   const [value, setValue] = useState(text);
@@ -109,18 +111,18 @@ function EditBox({ text, width, onSend, onCancel, busy }) {
               if (canSend) onSend(value.trim());
             }
           }}
-          aria-label="Edit request"
+          aria-label={t("Edit request")}
         />
       </div>
       <div className="edit-actions">
-        <span className="edit-info" data-tip="Sending replaces this message and starts again from here" aria-label="Sending replaces this message and starts again from here" tabIndex={0}>
+        <span className="edit-info" data-tip={t("Replaces this message and what follows")} aria-label={t("Replaces this message and what follows")} tabIndex={0}>
           <Info size={14} />
         </span>
         <button className="edit-cancel" onClick={onCancel}>
-          Cancel
+          {t("Cancel")}
         </button>
         <button className="edit-send" disabled={!canSend} onClick={() => onSend(value.trim())}>
-          Send
+          {t("Send")}
         </button>
       </div>
     </>
@@ -147,7 +149,7 @@ export function Request({ message, busy, onEdit }) {
   }
 
   const now = useNow();
-  const exact = new Date(message.at).toLocaleString("en-US", { dateStyle: "full", timeStyle: "short" });
+  const exact = new Date(message.at).toLocaleString(language, { dateStyle: "full", timeStyle: "short" });
 
   return (
     <div className={`request ${editing ? "is-editing" : ""}`}>
@@ -162,7 +164,7 @@ export function Request({ message, busy, onEdit }) {
                 <div key={file.path} className="file" title={file.path}>
                   {file.isFolder ? <Folder size={15} /> : <FileText size={15} />}
                   <span className="file-name">{file.name}</span>
-                  {(file.isFolder || file.extension) && <span className="file-type">{file.isFolder ? "folder" : file.extension}</span>}
+                  {(file.isFolder || file.extension) && <span className="file-type">{file.isFolder ? t("folder") : file.extension}</span>}
                 </div>
               ),
             )}
@@ -200,12 +202,12 @@ export function Request({ message, busy, onEdit }) {
                     setWidth(bubble.current ? bubble.current.offsetWidth + 24 : null);
                     setEditing(true);
                   }}
-                  data-tip="Edit"
-                  aria-label="Edit"
+                  data-tip={t("Edit")}
+                  aria-label={t("Edit")}
                 >
                   <TbEdit size={15} />
                 </button>
-                <button onClick={copy} data-tip={copied ? "Copied" : "Copy"} aria-label="Copy">
+                <button onClick={copy} data-tip={copied ? t("Copied") : t("Copy")} aria-label={t("Copy")}>
                   {copied ? <CheckArc size={15} /> : <CopySlot size={15} />}
                 </button>
               </>
@@ -235,6 +237,24 @@ function useCopy() {
   return [copied, copy];
 }
 
+// Where an answer about the world comes from: one chip for each thing of Wikidata it read; under the pointer or the
+// keyboard, the exact facts read about it, so checking takes no click; a click opens it in Wikidata
+function Sources({ sources, read }) {
+  return (
+    <p className="sources">
+      <span>{t("Read in Wikidata:")}</span>
+      {sources.map((source) => {
+        const facts = (read ?? []).filter((fact) => new RegExp(`\\b${source.id}\\b`).test(fact));
+        return (
+          <button key={source.id} className="source" onClick={() => openUrl(`https://www.wikidata.org/wiki/${source.id}`)} data-tip={facts.join("\n") || source.id} aria-label={`${source.label || source.id}: ${facts.join(", ") || source.id}`}>
+            {source.label || source.id}
+          </button>
+        );
+      })}
+    </p>
+  );
+}
+
 export function Answer({ message, onOpenStep, onRetry, canRetry }) {
   const now = useNow();
   const [copied, copy] = useCopy();
@@ -253,7 +273,8 @@ export function Answer({ message, onOpenStep, onRetry, canRetry }) {
 
   return (
     <div className="answer">
-      {text && <AnswerText text={text} />}
+      {text && <AnswerText text={text} said={plan?.language} />}
+      {!busy && plan?.sources?.length > 0 && <Sources sources={plan.sources} read={plan.read} />}
       {message.error && <p className="error">{message.error}</p>}
       {message.note && <p className="note">{message.note}</p>}
       {!busy && <PlanActions message={message} />}
@@ -268,16 +289,16 @@ export function Answer({ message, onOpenStep, onRetry, canRetry }) {
       {/* On hover: when it answered, then copy and retry */}
       {!busy && (
         <div className="answer-actions">
-          <time dateTime={new Date(message.at).toISOString()} title={new Date(message.at).toLocaleString("en-US", { dateStyle: "full", timeStyle: "short" })}>
+          <time dateTime={new Date(message.at).toISOString()} title={new Date(message.at).toLocaleString(language, { dateStyle: "full", timeStyle: "short" })}>
             {sentAgo(message.at, now)}
           </time>
           {copyText && (
-            <button onClick={() => copy(copyText)} data-tip={copied ? "Copied" : "Copy"} aria-label="Copy">
+            <button onClick={() => copy(copyText)} data-tip={copied ? t("Copied") : t("Copy")} aria-label={t("Copy")}>
               {copied ? <CheckArc size={15} /> : <CopySlot size={15} />}
             </button>
           )}
           {onRetry && (
-            <button onClick={onRetry} disabled={!canRetry} data-tip="Retry" aria-label="Retry">
+            <button onClick={onRetry} disabled={!canRetry} data-tip={t("Retry")} aria-label={t("Retry")}>
               <TbReload size={15} />
             </button>
           )}

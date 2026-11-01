@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronRight, Menu as MenuIcon } from "lucide-react";
 import { keys } from "../platform.js";
+import { t } from "../i18n.js";
 
 // The application menu: File, View, and Help, each with its own list
 export default function AppMenu({ sections }) {
@@ -33,7 +34,7 @@ export default function AppMenu({ sections }) {
   return (
     // Clicks in the menu keep the focus where it was, so Copy and Paste reach the text field
     <div className="app-menu" ref={box} onMouseDown={(event) => event.preventDefault()}>
-      <button className="icon-button" onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>
+      <button className="icon-button" onClick={() => setOpen(!open)} aria-label={t("Menu")} aria-expanded={open}>
         <MenuIcon size={16} />
       </button>
       {open && (

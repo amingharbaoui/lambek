@@ -1,9 +1,10 @@
 import CodeBlock from "./CodeBlock.jsx";
+import { language, t } from "../i18n.js";
 
 const SHOWN_ROWS = 89;
 
 // Column names and values as people read them, not as PowerShell names them
-const HEADERS = { FullName: "Path", Name: "Name", Length: "Size", LastWriteTime: "Modified", CreationTime: "Created" };
+const HEADERS = { FullName: t("Path"), Name: t("Name"), Length: t("Size"), LastWriteTime: t("Modified"), CreationTime: t("Created") };
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
 
 function readable(key, value) {
@@ -19,7 +20,7 @@ function readable(key, value) {
     return unit === 0 ? `${size} bytes` : `${size.toFixed(1)} ${units[unit]}`;
   }
   if (typeof value === "string" && ISO_DATE.test(value)) {
-    return new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+    return new Date(value).toLocaleString(language, { dateStyle: "medium", timeStyle: "short" });
   }
   return String(value);
 }
@@ -55,7 +56,7 @@ function ResultTable({ rows, total }) {
       </div>
       {count > SHOWN_ROWS && (
         <p className="table-note">
-          Showing {SHOWN_ROWS} of {count} rows.
+          {t("Showing")} {SHOWN_ROWS} {t("of")} {count} {t("rows.")}
         </p>
       )}
     </>

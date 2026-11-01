@@ -3,9 +3,8 @@ import { ArrowUp, CircleStop, FileText, Folder, X } from "lucide-react";
 import PlusMenu from "./PlusMenu.jsx";
 import { PiArrowElbowDownLeftBold } from "react-icons/pi";
 import { keys } from "../platform.js";
-
-// Under the composer of a chat: the one thing to keep in mind
-const NOTICE = "Lambek can misread requests.";
+import { t } from "../i18n.js";
+import { openUrl, REPOSITORY } from "../lambek.js";
 
 export default function Composer({ text, onText, busy, onStop, attachments, onAttach, onDetach, onSend, onInsert, onTools, focus, onClearFocus, placeholder, focusToken, compact = false }) {
   const field = useRef(null);
@@ -29,9 +28,9 @@ export default function Composer({ text, onText, busy, onStop, attachments, onAt
   }
 
   const focusChip = focus && (
-    <span className="focus-chip" title="Your next message is about this step">
-      step {focus.step} · {focus.action}
-      <button onClick={onClearFocus} aria-label="Clear step">
+    <span className="focus-chip" title={t("Your next message is about this step")}>
+      {t("step")} {focus.step} · {focus.action}
+      <button onClick={onClearFocus} aria-label={t("Clear step")}>
         <X size={11} />
       </button>
     </span>
@@ -39,11 +38,11 @@ export default function Composer({ text, onText, busy, onStop, attachments, onAt
 
   // Send: an arrow while empty; once there is something to send, the return that sends it
   const action = busy ? (
-    <button className="stop" onClick={onStop} data-tip="Stop" data-keys={keys("Esc")} aria-label="Stop">
+    <button className="stop" onClick={onStop} data-tip={t("Stop")} data-keys={keys("Esc")} aria-label={t("Stop")}>
       <CircleStop size={18} />
     </button>
   ) : (
-    <button className={`send ${compact ? "quiet" : ""}`} onClick={send} disabled={!canSend} data-tip="Send message" data-keys={keys("Enter")} aria-label="Send message">
+    <button className={`send ${compact ? "quiet" : ""}`} onClick={send} disabled={!canSend} data-tip={t("Send message")} data-keys={keys("Enter")} aria-label={t("Send message")}>
       {compact ? <PiArrowElbowDownLeftBold size={15} /> : <ArrowUp size={16} />}
     </button>
   );
@@ -54,7 +53,7 @@ export default function Composer({ text, onText, busy, onStop, attachments, onAt
       value={text}
       rows={1}
       placeholder={placeholder}
-      aria-label="Request"
+      aria-label={t("Request")}
       onChange={(event) => onText(event.target.value)}
       onKeyDown={(event) => {
         if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
@@ -81,7 +80,7 @@ export default function Composer({ text, onText, busy, onStop, attachments, onAt
                   <span className="file-type">{file.isFolder ? "folder" : file.extension}</span>
                 </>
               )}
-              <button className="file-remove" onClick={() => onDetach(file.path)} title="Remove" aria-label={`Remove ${file.name}`}>
+              <button className="file-remove" onClick={() => onDetach(file.path)} title={t("Remove")} aria-label={t("Remove {0}", file.name)}>
                 <X size={11} strokeWidth={2} />
               </button>
             </div>
@@ -111,15 +110,33 @@ export default function Composer({ text, onText, busy, onStop, attachments, onAt
 
   if (!compact) return box;
 
-  // In a chat: a slim composer, and below it the + and a line of mathematics
+  // In a chat: a slim composer, and below it the + and one small line
   return (
     <div className="composer-wrap">
       {box}
       <div className="composer-foot">
         <PlusMenu onAttach={onAttach} onInsert={onInsert} onTools={onTools} />
         {focusChip}
-        <span className="signature">{NOTICE}</span>
+        <Disclaimer />
       </div>
     </div>
+  );
+}
+
+// One small line under the composer: Lambek can be wrong, and where to read how it works
+export function Disclaimer() {
+  const page = `https://github.com/${REPOSITORY}`;
+  return (
+    <p className="disclaimer">
+      <a
+        href={page}
+        onClick={(event) => {
+          event.preventDefault();
+          openUrl(page);
+        }}
+      >
+        {t("Lambek can make mistakes. Check the proof.")}
+      </a>
+    </p>
   );
 }

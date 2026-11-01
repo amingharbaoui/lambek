@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronRight, FolderPlus, Paperclip, Plug, Plus, Settings2 } from "lucide-react";
 import { isDesktop, lambek, openPath, pickFiles } from "../lambek.js";
 import { keys } from "../platform.js";
+import { t } from "../i18n.js";
 
 const STATUS = { Connected: "on", Ready: "ready", Failed: "failed", Disabled: "off" };
 
@@ -68,7 +69,7 @@ export default function PlusMenu({ onAttach, onInsert, onTools }) {
 
   return (
     <div className="plus-menu" ref={box}>
-      <button className="icon-button" onClick={() => setOpen(!open)} aria-label="Add" aria-expanded={open} aria-haspopup="menu" data-tip={open ? undefined : "Add"}>
+      <button className="icon-button" onClick={() => setOpen(!open)} aria-label={t("Add")} aria-expanded={open} aria-haspopup="menu" data-tip={open ? undefined : t("Add")}>
         <Plus size={16} />
       </button>
 
@@ -76,37 +77,37 @@ export default function PlusMenu({ onAttach, onInsert, onTools }) {
         <div className="menu-list up" role="menu">
           <button className="menu-row" role="menuitem" disabled={!isDesktop} onClick={() => add("files")} onMouseEnter={() => setSub(false)}>
             <Paperclip size={15} />
-            <span>Add files or photos</span>
+            <span>{t("Add files or photos")}</span>
             <kbd>{keys("Ctrl+O")}</kbd>
           </button>
           <button className="menu-row" role="menuitem" disabled={!isDesktop} onClick={() => add("folder")} onMouseEnter={() => setSub(false)}>
             <FolderPlus size={15} />
-            <span>Add folder</span>
+            <span>{t("Add folder")}</span>
           </button>
           <hr />
           <div className="menu-entry" ref={entry} onMouseEnter={() => setSub(true)}>
             <button className={`menu-row ${sub ? "hover" : ""}`} role="menuitem" aria-haspopup="menu" aria-expanded={sub} onClick={() => setSub(!sub)}>
               <Plug size={15} />
-              <span>Connectors</span>
+              <span>{t("Connectors")}</span>
               <ChevronRight size={14} />
             </button>
 
             {sub && (
               <div className={`menu-list sub ${room.down ? "down" : "up"}`} role="menu" style={{ maxHeight: room.height }}>
-                {servers.length === 0 && <p className="menu-note">No connectors yet</p>}
+                {servers.length === 0 && <p className="menu-note">{t("No connectors yet")}</p>}
                 {servers.map((server) => (
                   <p key={server.name} className="menu-connector" title={server.error || server.status}>
                     <i className={`server-dot ${STATUS[server.status] ?? "off"}`} />
                     <span>{server.name}</span>
                     <small>
-                      {server.tools.length} tool{server.tools.length === 1 ? "" : "s"}
+                      {server.tools.length} {t("tool")}{server.tools.length === 1 ? "" : "s"}
                     </small>
                   </p>
                 ))}
                 <hr />
                 <button className="menu-row" role="menuitem" disabled={!isDesktop} onClick={addServer}>
                   <Plus size={15} />
-                  <span>Add a connector…</span>
+                  <span>{t("Add a connector…")}</span>
                 </button>
                 <button
                   className="menu-row"
@@ -117,7 +118,7 @@ export default function PlusMenu({ onAttach, onInsert, onTools }) {
                   }}
                 >
                   <Settings2 size={15} />
-                  <span>Manage connectors</span>
+                  <span>{t("Manage connectors")}</span>
                 </button>
               </div>
             )}

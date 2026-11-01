@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FileCog, RefreshCw } from "lucide-react";
 import { lambek, openPath } from "../lambek.js";
+import { t } from "../i18n.js";
 
 const RISK_TONES = { low: "", medium: "warn", high: "danger" };
 const STATUS_TEXT = { Connected: "running", Ready: "ready, starts on first use", Failed: "failed", Disabled: "disabled" };
@@ -45,18 +46,18 @@ export default function Tools({ onChanged }) {
   return (
     <section className="tools">
       <div className="tools-inner">
-        <h1>Connectors</h1>
-        <p className="lede">Local MCP servers. Each tool becomes an action: planned, simulated, and approved like any other.</p>
+        <h1>{t("Connectors")}</h1>
+        <p className="lede">{t("Local MCP servers. Each tool is checked like any other action.")}</p>
 
         <div className="tools-bar">
           <span className="path" title={data?.config}>
             {data?.config ?? "…"}
           </span>
           <button className="button ghost" onClick={openConfig}>
-            <FileCog size={14} /> Open config
+            <FileCog size={14} /> {t("Open config")}
           </button>
           <button className="button" onClick={() => load({ refresh: true })} disabled={busy}>
-            <RefreshCw size={14} className={busy ? "spin" : ""} /> Reload
+            <RefreshCw size={14} className={busy ? "spin" : ""} /> {t("Reload")}
           </button>
         </div>
 
@@ -64,7 +65,7 @@ export default function Tools({ onChanged }) {
 
         {data && data.servers.length === 0 && (
           <div className="empty-state">
-            No servers yet. Add them to the config in the format below, then reload:
+            {t("No servers yet. Add them to the config in the format below, then reload:")}
             <pre className="code">{EXAMPLE}</pre>
           </div>
         )}
@@ -86,7 +87,7 @@ export default function Tools({ onChanged }) {
             ))}
             {server.skipped.length > 0 && (
               <p className="skipped">
-                Not available: {server.skipped.map((item) => `${item.tool} (${item.reason})`).join(", ")}
+                {t("Not available:")} {server.skipped.map((item) => `${item.tool} (${item.reason})`).join(", ")}
               </p>
             )}
           </article>

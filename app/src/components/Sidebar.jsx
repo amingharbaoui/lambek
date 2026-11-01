@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, Ellipsis, Info, Keyboard, Link, Pencil, Pin, PinOff, Plug, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { notify } from "./Toast.jsx";
+import { chooseLanguage, chosen, LANGUAGES, language, t } from "../i18n.js";
 
 const DAY = 86400000;
 const SHOWN = 20;
@@ -24,45 +25,50 @@ export function chatLink(chat) {
 function copyLink(chat) {
   navigator.clipboard
     ?.writeText(chatLink(chat))
-    .then(() => notify("Link copied to clipboard."))
-    .catch(() => notify("The link could not be copied."));
+    .then(() => notify(t("Link copied to clipboard.")))
+    .catch(() => notify(t("The link could not be copied.")));
 }
 
 // The menu of a chat, the same from the sidebar and from the name above the conversation
 export function chatMenuItems(chat, { onUpdate, onRemove, onRename }) {
   return [
     {
-      label: chat.pinned ? "Unpin" : "Pin",
+      label: chat.pinned ? t("Unpin") : t("Pin"),
       key: "P",
       icon: chat.pinned ? <PinOff size={15} /> : <Pin size={15} />,
       onSelect: () => onUpdate(chat.id, { pinned: !chat.pinned }),
     },
-    { label: "Rename", key: "R", icon: <Pencil size={15} />, onSelect: onRename },
-    { label: "Copy link", key: "C", icon: <Link size={15} />, onSelect: () => copyLink(chat) },
+    { label: t("Rename"), key: "R", icon: <Pencil size={15} />, onSelect: onRename },
+    { label: t("Copy link"), key: "C", icon: <Link size={15} />, onSelect: () => copyLink(chat) },
     { separator: "delete" },
-    { label: "Delete", key: "D", icon: <Trash2 size={15} />, danger: true, onSelect: () => onRemove(chat.id) },
+    { label: t("Delete"), key: "D", icon: <Trash2 size={15} />, danger: true, onSelect: () => onRemove(chat.id) },
   ];
 }
 
+const THEMES = { system: "System theme", light: "Light theme", dark: "Dark theme" };
+
 function groupOf(chat) {
-  if (chat.pinned) return "Pinned";
+  if (chat.pinned) return t("Pinned");
   const today = new Date().setHours(0, 0, 0, 0);
-  if (chat.updatedAt >= today) return "Today";
-  if (chat.updatedAt >= today - DAY) return "Yesterday";
-  if (chat.updatedAt >= today - 6 * DAY) return new Date(chat.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  return "Older";
+  if (chat.updatedAt >= today) return t("Today");
+  if (chat.updatedAt >= today - DAY) return t("Yesterday");
+  if (chat.updatedAt >= today - 6 * DAY) return new Date(chat.updatedAt).toLocaleDateString(language, { month: "short", day: "numeric" });
+  return t("Older");
 }
 
-function plural(count, word) {
-  return `${count} ${word}${count === 1 ? "" : "s"}`;
+// "3 messages", "1 message" by the plural rules of the reader's language
+const plurals = new Intl.PluralRules(language);
+function plural(count, one, other) {
+  return t(plurals.select(count) === "one" ? one : other, count);
 }
 
-function ago(time) {
+// "5 min ago", "2 hr ago" in the reader's language, then the date
+const ago = new Intl.RelativeTimeFormat(language, { numeric: "auto", style: "short" });
+function sentAgo(time) {
   const minutes = Math.floor((Date.now() - time) / 60000);
-  if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes}m ago`;
-  if (minutes < 1440) return `${Math.floor(minutes / 60)}h ago`;
-  return new Date(time).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  if (minutes < 60) return ago.format(-minutes, "minute");
+  if (minutes < 1440) return ago.format(-Math.floor(minutes / 60), "hour");
+  return new Date(time).toLocaleDateString(language, { month: "short", day: "numeric", year: "numeric" });
 }
 
 // A small list at a point, closed by a click outside or Escape; letters run their item
@@ -142,7 +148,7 @@ function ChatItem({ chat, active, onOpen, onMenu, renaming, onRename }) {
           if (event.key === "Escape") onRename(null);
         }}
         onBlur={(event) => onRename(event.target.value)}
-        aria-label="Chat name"
+        aria-label={t("Chat name")}
       />
     );
   }
@@ -169,7 +175,7 @@ function ChatItem({ chat, active, onOpen, onMenu, renaming, onRename }) {
       <span className="chat-title">{name}</span>
       <button
         className="chat-more"
-        aria-label={`More for ${name}`}
+        aria-label={t("More for {0}", name)}
         onClick={(event) => {
           event.stopPropagation();
           hover(false);
@@ -182,8 +188,8 @@ function ChatItem({ chat, active, onOpen, onMenu, renaming, onRename }) {
       {card && (
         <div className="chat-card" style={{ left: card.x, top: card.y }}>
           <b>{name}</b>
-          <span>{ago(chat.updatedAt)}</span>
-          <span>{plural(chat.messages.filter((message) => message.role === "user").length, "message")}</span>
+          <span>{sentAgo(chat.updatedAt)}</span>
+          <span>{plural(chat.messages.filter((message) => message.role === "user").length, "{0} message", "{0} messages")}</span>
         </div>
       )}
     </div>
@@ -244,7 +250,7 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
   return (
     <aside
       className="sidebar"
-      aria-label="Sidebar"
+      aria-label={t("Sidebar")}
       onMouseEnter={() => {
         hovering.current = true;
         onEnter();
@@ -262,15 +268,15 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
       <div className="sidebar-inner">
         <label className="nav-search">
           <Search size={15} />
-          <input ref={searchRef} value={filter} onChange={(event) => setFilter(event.target.value)} placeholder="Search" aria-label="Search chats" />
+          <input ref={searchRef} value={filter} onChange={(event) => setFilter(event.target.value)} placeholder={t("Search")} aria-label={t("Search chats")} />
         </label>
 
         <nav className="sidebar-nav">
           <button className="nav-item" onClick={onNew}>
-            <Plus size={15} /> New chat
+            <Plus size={15} /> {t("New chat")}
           </button>
           <button className={`nav-item ${toolsActive ? "active" : ""}`} onClick={onTools}>
-            <Plug size={15} /> Connectors
+            <Plug size={15} /> {t("Connectors")}
           </button>
         </nav>
 
@@ -306,7 +312,7 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
           })}
           {!all && !filter && shown.length > SHOWN && (
             <button className="chat-group view-all" onClick={() => setAll(true)}>
-              View all
+              {t("View all")}
             </button>
           )}
         </div>
@@ -317,27 +323,34 @@ export default function Sidebar({ onEnter, onLeave, onNew, onTools, toolsActive,
               {["system", "light", "dark"].map((value) => (
                 <button key={value} className="menu-row" role="menuitemradio" aria-checked={account.theme === value} onClick={() => account.onTheme(value)}>
                   <span className="menu-check">{account.theme === value && <Check size={13} />}</span>
-                  <span>{`${value[0].toUpperCase()}${value.slice(1)} theme`}</span>
+                  <span>{t(THEMES[value])}</span>
+                </button>
+              ))}
+              <hr />
+              {["system", ...Object.keys(LANGUAGES)].map((value) => (
+                <button key={value} className="menu-row" role="menuitemradio" aria-checked={chosen === value} onClick={() => chosen !== value && chooseLanguage(value)}>
+                  <span className="menu-check">{chosen === value && <Check size={13} />}</span>
+                  <span lang={value === "system" ? undefined : value}>{value === "system" ? t("System language") : LANGUAGES[value]}</span>
                 </button>
               ))}
               <hr />
               <button className="menu-row" role="menuitem" onClick={() => (setAccountOpen(false), account.onShortcuts())}>
                 <Keyboard size={15} />
-                <span>Keyboard shortcuts</span>
+                <span>{t("Keyboard shortcuts")}</span>
               </button>
               <button className="menu-row" role="menuitem" onClick={() => (setAccountOpen(false), account.onUpdates())}>
                 <RefreshCw size={15} />
-                <span>Check for updates…</span>
+                <span>{t("Check for updates…")}</span>
               </button>
               <button className="menu-row" role="menuitem" onClick={() => (setAccountOpen(false), account.onAbout())}>
                 <Info size={15} />
-                <span>About Lambek</span>
+                <span>{t("About Lambek")}</span>
               </button>
             </div>
           )}
           <button className="account" onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen}>
             <span className="avatar">{initial}</span>
-            <span className="account-name">{account.name || "You"}</span>
+            <span className="account-name">{account.name || t("You")}</span>
             <ChevronDown size={13} />
           </button>
         </div>

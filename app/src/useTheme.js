@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { load, save } from "./storage.js";
+import { isDesktop } from "./lambek.js";
 
 const query = "(prefers-color-scheme: dark)";
 const ORDER = ["system", "light", "dark"];
@@ -16,8 +17,7 @@ export default function useTheme(incognito) {
     return () => media.removeEventListener("change", listener);
   }, []);
 
-  const chosen = preference === "system" ? (systemDark ? "dark" : "light") : preference;
-  const theme = chosen;
+  const theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
 
   useEffect(() => {
     const root = document.documentElement;
@@ -25,6 +25,15 @@ export default function useTheme(incognito) {
     if (incognito) root.dataset.mode = "incognito";
     else delete root.dataset.mode;
   }, [theme, incognito]);
+
+  // The glass of the window follows the chosen theme, so a light page is not laid on a dark blur. With "system" the
+  // window is given back to the system: pinning it would also pin what the page reads as the system theme
+  useEffect(() => {
+    if (!isDesktop) return;
+    import("@tauri-apps/api/window")
+      .then(({ getCurrentWindow }) => getCurrentWindow().setTheme(preference === "system" ? null : preference))
+      .catch(() => {});
+  }, [preference]);
 
   function choose(value) {
     setPreference(value);

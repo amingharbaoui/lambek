@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { isDesktop } from "../lambek.js";
 import { platform } from "../platform.js";
+import { t } from "../i18n.js";
 
 function currentWindow() {
   return import("@tauri-apps/api/window").then(({ getCurrentWindow }) => getCurrentWindow());
@@ -37,12 +38,12 @@ export default function WindowControls() {
 
   return (
     <div className="window-controls">
-      <button onClick={() => act("minimize")} title="Minimize" aria-label="Minimize">
+      <button onClick={() => act("minimize")} title={t("Minimize")} aria-label={t("Minimize")}>
         <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
           <path d="M0 5h10" />
         </svg>
       </button>
-      <button onClick={() => act("toggleMaximize")} title={maximized ? "Restore" : "Maximize"} aria-label={maximized ? "Restore" : "Maximize"}>
+      <button onClick={() => act("toggleMaximize")} title={maximized ? t("Restore") : t("Maximize")} aria-label={maximized ? t("Restore") : t("Maximize")}>
         {maximized ? (
           <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
             <path d="M2.5 2.5V.5h7v7h-2M.5 2.5h7v7h-7z" />
@@ -53,7 +54,7 @@ export default function WindowControls() {
           </svg>
         )}
       </button>
-      <button className="close" onClick={() => act("close")} title="Close" aria-label="Close">
+      <button className="close" onClick={() => act("close")} title={t("Close")} aria-label={t("Close")}>
         <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
           <path d="M.5.5l9 9M9.5.5l-9 9" />
         </svg>

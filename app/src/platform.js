@@ -8,8 +8,6 @@ function detect() {
 
 export const platform = detect();
 
-export const PLATFORM_NAMES = { windows: "Windows", mac: "macOS", linux: "Linux" };
-
 // "Ctrl+Shift+N" as each system writes it: ⇧⌘N on macOS, modifiers in the order ⌃⌥⇧⌘
 const MAC_KEYS = { Control: "⌃", Alt: "⌥", Shift: "⇧", Ctrl: "⌘", Enter: "↩", Esc: "⎋", Tab: "⇥" };
 const MAC_ORDER = ["⌃", "⌥", "⇧", "⌘"];
