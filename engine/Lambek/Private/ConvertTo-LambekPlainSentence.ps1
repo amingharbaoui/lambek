@@ -15,6 +15,32 @@ function ConvertTo-LambekPlainSentence {
     # "Combien Paul a de pommes ?" (only after "combien" and a name: "Combien a-t-il de pommes ?" keeps its subject)
     $Text = [regex]::Replace($Text, '(?<head>\b[Cc]ombien\s+(?:de\s+\p{L}+\s+)?\p{Lu}\p{L}*(?:\s+et\s+\p{Lu}\p{L}*)?\s+\p{L}+)(?:-t)?-(?:il|elle|ils|elles)\b', '${head}')
 
+    # "Paul est-il grand ?", "ma soeur habite-t-elle a Lyon ?": a question said with the verb before a pronoun that
+    # repeats the one named, said plain ("est-ce que Paul est grand ?"); only after a name or someone said with whose or
+    # which it is, never after a word that asks ("ou habite-t-il ?" is left as it was)
+    if ($Text -match '\p{L}-(?:t-)?\p{L}+(?:\s|[?!.]|$)') {
+        $language = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)
+        $dialogue = (Get-LambekLexicon -Language $language).Dialogue
+        $general = $(if ($dialogue) { $dialogue['General'] })
+        if ($general -and $general['Inverted'] -and @($general['Pronouns']).Count -gt 0) {
+            $pronouns = (@($general['Pronouns']) | Where-Object { $_ } | ForEach-Object { [regex]::Escape("$_") }) -join '|'
+            $inverted = [regex]::Match($Text, "^(?<subject>.+?)\s+(?<verb>\p{L}+)-(?:t-)?(?:$pronouns)(?<rest>(?:\s[^?!.]*)?)(?<mark>\s*[?!.]*\s*)$")
+            if ($inverted.Success) {
+                $subject = $inverted.Groups['subject'].Value.Trim()
+                $first = ConvertTo-LambekNormalizedText -Text (@($subject -split '\s+')[0] -replace "['\u2019].*$", '')
+                $asking = @(foreach ($key in 'What', 'WhatObject', 'WhatSubject', 'Where', 'Why', 'HowMany', 'Conditions', 'Unread') { @($general[$key]) | Where-Object { $_ } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" } })
+                $named = $subject -cmatch '^\p{Lu}' -and @(@($subject -split '\s+') | Where-Object { (ConvertTo-LambekNormalizedText -Text ($_ -replace "['\u2019].*$", '')) -in $asking }).Count -eq 0
+                $said = $first -in (@($general['Owners']) + @($general['Determiners']))
+                $dictionary = Get-LambekDictionary -Language $language
+                $verb = $inverted.Groups['verb'].Value
+                $isVerb = $dictionary -and @($dictionary.Lemmas((ConvertTo-LambekNormalizedText -Text $verb), $language) | Where-Object { $_.Pos -eq 'v' }).Count -gt 0
+                if (($named -or $said) -and $isVerb) {
+                    return "$($general['Inverted']) $subject $verb$($inverted.Groups['rest'].Value)$($inverted.Groups['mark'].Value)"
+                }
+            }
+        }
+    }
+
     $quick = '(?i)(?:(?<![\p{L}])en\s|[''\u2019]en\s|\s(?:quoi|o\u00f9)\s*[?!.]*\s*$)'
     if ($Text -notmatch $quick) { return $Text }
     $language = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)

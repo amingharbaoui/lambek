@@ -852,7 +852,7 @@
       "Speaker": [ "je", "j", "moi" ],
       "Addressee": [ "vous", "tu", "toi" ],
       "Articles": [ "un", "une", "des", "le", "la", "les", "l", "du" ],
-      "Definite": [ "le", "la", "l", "les" ],
+      "Definite": [ "le", "la", "l", "les", "ce", "cet", "cette" ],
       "Of": [ "de", "du", "des", "d" ],
       "ObjectArticles": [ "un", "une", "des", "le", "la", "les", "l", "du", "de", "d" ],
       "NotVerbs": [ "etre", "avoir", "faire" ],
@@ -1502,6 +1502,7 @@
         "plus"
       ],
       "Polar": [],
+      "Inverted": "est-ce que",
       "PolarMark": [
         "que",
         "qu"

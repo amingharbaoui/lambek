@@ -42,6 +42,11 @@ Describe 'Worlds imagined with et si' {
                 '- Tweety était un pingouin (imaginé)'
                 "Ce n'est qu'un monde imaginé : ce que vous m'avez dit ne change pas."
             ) -join "`n")
+        # (what it rests on is kept for the checker: what was told, and what is only imagined, apart)
+        $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+        $proof.Forms | Should -Be @('category(no|pingouin|v:voler)')
+        $proof.Assumed | Should -Be @('category(is|name:tweety|pingouin)')
+        $proof.Conclusion | Should -Be @('category(isnot|name:tweety|v:voler)')
     }
 
     It 'sets aside what contradicts what is imagined, and says it' {

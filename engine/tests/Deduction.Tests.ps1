@@ -220,6 +220,22 @@ Describe 'Reasoning on what was told' {
             InModuleScope Lambek { ConvertTo-LambekPlainSentence -Text 'ma soeur en a 2' } | Should -Be 'ma soeur en a 2'
         }
 
+        It 'reads a question with the verb before its pronoun as the plain one: <Text>' -ForEach @(
+            @{ Text = 'Paul est-il grand ?'; Plain = 'est-ce que Paul est grand ?' }
+            @{ Text = 'ma soeur habite-t-elle à Lyon ?'; Plain = 'est-ce que ma soeur habite à Lyon ?' }
+            @{ Text = 'Où habite-t-il ?'; Plain = 'Où habite-t-il ?' }
+            @{ Text = 'Pourquoi Paul est-il grand ?'; Plain = 'Pourquoi Paul est-il grand ?' }
+            @{ Text = 'lösche die .tmp-Dateien in C:\Temp'; Plain = 'lösche die .tmp-Dateien in C:\Temp' }
+        ) {
+            InModuleScope Lambek -Parameters @{ Text = $Text } { param($Text) ConvertTo-LambekPlainSentence -Text $Text } | Should -Be $Plain
+        }
+
+        It 'answers such a question from what was told, or says it was not told' {
+            Tell 'Paul est grand'
+            Ask 'Paul est-il grand ?' | Should -BeLike '*Paul est grand.*'
+            Ask 'Paul est-il riche ?' | Should -BeLike 'Je ne sais pas*'
+        }
+
         It 'reads the verb before the one who has: combien de chiens a ma voisine ?' {
             Tell 'ma voisine a trois chiens'
             Ask 'combien de chiens a ma voisine ?' | Should -Be (@('3 chiens.', '- Votre voisine a trois chiens.') -join "`n")

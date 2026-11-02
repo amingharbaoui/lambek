@@ -133,6 +133,14 @@ function Resolve-LambekImagineCategory {
                 if ($worldPremises[$i].Fact) { $lines.Add("- $(Format-LambekFact -Fact $worldPremises[$i].Fact -Language $Language -Register 'vous' -Bare)") }
                 else { $lines.Add("- $Supposed $($imagine['Mark'])") }
             }
+            # What the answer rests on: the things told it uses, and what is only imagined, kept apart (it was never told)
+            $used = @($support | Where-Object { $worldPremises[$_].Fact })
+            $lines.Add($imagine['Kept'])
+            Set-LambekLastProof -Facts @($used | ForEach-Object { $worldPremises[$_].Fact }) `
+                -Forms @($used | ForEach-Object { "category($(Get-LambekCategorySignature -Item $worldPremises[$_].Item))" }) `
+                -Assumed @($support | Where-Object { -not $worldPremises[$_].Fact } | ForEach-Object { "category($(Get-LambekCategorySignature -Item $worldPremises[$_].Item))" }) `
+                -Conclusion (Get-LambekCategoryConclusion -Item $question -Shape $(if ($state -eq 'yes') { 'is' } else { 'isnot' }))
+            return ($lines -join "`n")
         }
         $lines.Add($imagine['Kept'])
         Set-LambekLastProof

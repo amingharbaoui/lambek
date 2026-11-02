@@ -117,6 +117,31 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'Someone said with le, ce or this' {
+
+        It 'is of the kind its words name: <Question>' -ForEach @(
+            @{ Told = 'tous les cerisiers sont des arbres'; Question = 'le cerisier est-il un arbre ?'; First = 'Oui : le cerisier est un arbre.' }
+            @{ Told = 'all squares are rectangles', 'this shape is a square'; Question = 'is this shape a rectangle?'; First = 'Yes, this shape is a rectangle: this shape is a square and all squares are rectangles.' }
+        ) {
+            Tell $Told
+            @((Ask $Question) -split "`n")[0] | Should -Be $First
+        }
+
+        It 'keeps what the words say by themselves apart from what was told' {
+            Tell 'tous les cerisiers sont des arbres'
+            Ask 'le cerisier est-il un arbre ?' | Out-Null
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Forms | Should -Be @('category(all|cerisier|arbre)')
+            $proof.Assumed | Should -Be @('category(is|the:cerisier|cerisier)')
+        }
+
+        It 'assumes nothing when everything was told' {
+            Tell 'les oiseaux volent normalement', 'Tweety est un oiseau'
+            Ask 'Tweety vole-t-il ?' | Out-Null
+            @((& (Get-Module Lambek) { Get-LambekLastProof }).Assumed).Count | Should -Be 0
+        }
+    }
+
     Context 'Contradictions' {
 
         It 'says at once when what is told cannot be true with what was told, and keeps both' {

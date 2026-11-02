@@ -25,8 +25,8 @@
     the question: a proof that cites it, or that cites everything told, is caught by Needed. An answer about things told
     whose proof cites nothing is counted apart.
     Each sentence a proof cites is found as the sentence of the conversation that said it. Conversations about why
-    something holds ("pourquoi ?") are left out: their answer is the proof of the answer before. The test splits stay
-    unseen.
+    something holds ("pourquoi ?") are left out: their answer is the proof of the answer before; so are those that edit
+    a plan ("et dans C:\Data ?"), which reason about nothing. The test splits stay unseen.
 .EXAMPLE
     ./tools/Measure-LambekProof.ps1 -Show
     Also run at the end of ./build.ps1 -Task Benchmark, which stops when a proof does not hold.
@@ -113,6 +113,8 @@ $converse = {
         if ($proof -and $proof.PSObject.Properties['Forms'] -and @($proof.Forms).Count -gt 0) {
             $cores = $(if (@($proof.Forms).Count -eq $facts.Count) { @($proof.Forms) } else { @($facts | ForEach-Object { '' }) })
         }
+        # (what the answer only imagines is a premise of it too, never a sentence told)
+        if ($proof -and $proof.PSObject.Properties['Assumed']) { $cores = @($cores) + @($proof.Assumed | Where-Object { $_ }) }
         $concluded = @(if ($proof -and $proof.PSObject.Properties['Conclusion']) { @($proof.Conclusion) })
         [pscustomobject]@{ Answer = $answer; Facts = $facts.Count; Cited = @($cited); Lost = $lost; Cores = $cores; Conclusion = $concluded }
     } $Sentences $Language $Name
@@ -122,7 +124,9 @@ $same = { param($A, $B) (($A -replace '\s+', ' ').Trim()) -ceq (($B -replace '\s
 
 $data = Get-Content -LiteralPath (Join-Path $root 'bench/messages.json') -Raw | ConvertFrom-Json
 $cases = @($data.Cases | Where-Object {
-        $_.Split -eq 'calibration' -and $_.PSObject.Properties['Turns'] -and @($_.Turns).Count -ge 2 -and 'why' -notin @($_.Tags)
+        $_.Split -eq 'calibration' -and $_.PSObject.Properties['Turns'] -and @($_.Turns).Count -ge 2 -and 'why' -notin @($_.Tags) -and
+        # (a turn about the plan shown just before, "et dans C:\Data ?", is an edit of that plan: no reasoning to judge)
+        @($_.Turns | Where-Object { $_.PSObject.Properties['FollowUp'] -and $_.FollowUp }).Count -eq 0
     })
 if ($Limit -gt 0) { $cases = @($cases | Select-Object -First $Limit) }
 

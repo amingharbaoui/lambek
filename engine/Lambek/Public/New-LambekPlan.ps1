@@ -90,7 +90,7 @@ function New-LambekPlan {
                 }
                 # "et si Tweety etait un pingouin ?": a world imagined, where what would change is said; nothing told changes
                 $imagined = Resolve-LambekImagine -Text $Text
-                if ($imagined) { return ConvertTo-LambekReplyPlan -Text $Text -Language $imagined.Language -Reply $imagined.Reply -Spoken }
+                if ($imagined) { return ConvertTo-LambekReplyPlan -Text $Text -Language $imagined.Language -Reply (Confirm-LambekProof -Reply $imagined.Reply -Language $imagined.Language) -Spoken }
                 # "pourquoi la route est mouillee ?": what it follows from, else what may explain it, and how to tell
                 $why = Resolve-LambekWhy -Text $Text
                 if ($why) { return ConvertTo-LambekReplyPlan -Text $Text -Language $why.Language -Reply $why.Reply -Spoken }

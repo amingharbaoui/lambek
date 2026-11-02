@@ -149,12 +149,13 @@ function Set-LambekLastProof {
     # says, in the shape of the facts it rests on ("category(is|name:socrate|mortel)"), for a checker that works it out
     # again from them alone. Forms: the facts as the reasoning read them, when it read them in another shape than the
     # one they are held in: "Marie est une etudiante" held as a thing told, read as "category(is|name:marie|etudiant)")
-    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @(), [object[]] $Read = @(), [string[]] $Conclusion = @(), [string[]] $Forms = @())
+    # Assumed: what the answer supposes without it being told ("et si Tom etait un chat ?"), in the same shape as Forms
+    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @(), [object[]] $Read = @(), [string[]] $Conclusion = @(), [string[]] $Forms = @(), [string[]] $Assumed = @())
 
     if ($null -eq $script:LastProofs) { $script:LastProofs = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }
     $here = Get-LambekTold
     if (@($Facts).Count -eq 0 -and @($Said).Count -eq 0 -and @($Read).Count -eq 0) { [void] $script:LastProofs.Remove($here); return }
-    $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation; Said = @($Said); Read = @($Read); Conclusion = @($Conclusion); Forms = @($Forms) }
+    $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation; Said = @($Said); Read = @($Read); Conclusion = @($Conclusion); Forms = @($Forms); Assumed = @($Assumed | Where-Object { $_ }) }
 }
 
 function Format-LambekInline {

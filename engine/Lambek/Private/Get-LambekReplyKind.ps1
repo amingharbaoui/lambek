@@ -56,6 +56,8 @@ function Get-LambekReplyTemplate {
                     foreach ($form in @($forms | Select-Object -Unique)) {
                         # What is filled in is not known in advance: anything may stand there
                         $pattern = [regex]::Escape((ConvertTo-LambekBenchText -Text $form)) -replace '\\\{\d+(:[^}]*)?\}', '.*'
+                        # (a small word before what is filled in may lose its vowel to it: "si {1}" said "s'il neige")
+                        $pattern = $pattern -replace '(?<![\p{L}])(\p{L})([aeiouy])\\ \.\*', '$1(?:$2\ |'').*'
                         $templates.Add([pscustomobject]@{ Kind = $kind; Key = $path; Language = $file.BaseName; Pattern = [regex]::new("^$pattern", 'Singleline') })
                     }
                 }

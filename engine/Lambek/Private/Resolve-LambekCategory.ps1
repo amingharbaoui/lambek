@@ -335,6 +335,28 @@ function ConvertTo-LambekCategoryIndividual {
     return [pscustomobject]@{ Key = "the:$($key -join ' ')"; Written = $written }
 }
 
+function Get-LambekCategoryImplied {
+    param([object[]] $Items, [string] $Language)
+
+    # Someone said with "le", "ce" or whose it is ("le cerisier", "this shape", "ma soeur") is of the kind its words
+    # name: a sentence "is", read from those words alone. Names and the user are not
+    $data = (Get-LambekCategoryVocabulary -Language $Language).Data
+    $general = (Get-LambekLexicon -Language $Language).Dialogue['General']
+    $seen = [System.Collections.Generic.HashSet[string]]::new()
+    foreach ($item in $Items) {
+        $one = $item.Individual
+        if (-not $one -or -not "$($one.Key)".StartsWith('the:') -or -not $seen.Add("$($one.Key)")) { continue }
+        $tokens = @(Get-LambekCategoryToken -Text $one.Written)
+        if ($tokens.Count -lt 2 -or ($tokens[0] -notin @($data['Definite']) -and $tokens[0] -notin @($general['Owners']))) { continue }
+        $term = ConvertTo-LambekCategoryTerm -Text (@($tokens | Select-Object -Skip 1) -join ' ') -Language $Language -Bare
+        if (-not $term -or @($term.Atoms).Count -eq 0) { continue }
+        [pscustomobject]@{
+            Kind = 'is'; Quantifier = ''; Subject = $null; Individual = $one; Predicate = $term; Verb = $false; Member = $false; Default = $false
+            Written = [pscustomobject]@{ Subject = $one.Written; Predicate = ''; Object = '' }
+        }
+    }
+}
+
 function Get-LambekCategoryLemma {
     param([string] $Word, [string] $Language, [switch] $Verb)
 
@@ -617,9 +639,23 @@ function Resolve-LambekCategoryMessage {
     foreach ($entry in $known) { $premises.Add($entry) }
     $k = 0
     foreach ($entry in $items) { if (-not $entry.Item.Kind.StartsWith('ask')) { $premises.Add([pscustomobject]@{ Fact = $facts[$k]; Item = $entry.Item }); $k++ } }
+    # What the words say by themselves: "le cerisier" is a cerisier, "this shape" a shape. Never told, so never cited
+    # as told: a proof keeps it apart, as what the answer assumes
+    foreach ($implied in @(Get-LambekCategoryImplied -Items (@($premises | ForEach-Object { $_.Item }) + @($items | ForEach-Object { $_.Item })) -Language $Language)) {
+        $premises.Add([pscustomobject]@{ Fact = $null; Item = $implied })
+    }
     $atoms = @{}
     $statements = [LambekCategoryStatement[]] @($premises | ForEach-Object { ConvertTo-LambekCategoryStatement -Item $_.Item -Atoms $atoms })
-    $listed = { param([int[]] $indices) @(foreach ($i in $indices) { "- $(Format-LambekFact -Fact $premises[$i].Fact -Language $Language -Register 'vous' -Bare)" }) }
+    $listed = { param([int[]] $indices) @(foreach ($i in $indices) { if ($premises[$i].Fact) { "- $(Format-LambekFact -Fact $premises[$i].Fact -Language $Language -Register 'vous' -Bare)" } }) }
+    # What an answer rests on, for a "pourquoi ?" and the checker: the things told, as the reasoning read them, and
+    # what the words said by themselves apart
+    $proof = {
+        param([int[]] $indices, [string[]] $concluded)
+        $told = @($indices | Where-Object { $premises[$_].Fact })
+        Set-LambekLastProof -Facts @($told | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded `
+            -Forms @($told | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
+            -Assumed @($indices | Where-Object { -not $premises[$_].Fact } | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" })
+    }
     $lines = [System.Collections.Generic.List[string]]::new()
 
     $question = @($items | Where-Object { $_.Item.Kind.StartsWith('ask') })
@@ -654,7 +690,7 @@ function Resolve-LambekCategoryMessage {
         param([int[]] $indices)
         $lines.Add($data['Because'])
         foreach ($line in & $listed $indices) { $lines.Add($line) }
-        Set-LambekLastProof -Facts @($indices | ForEach-Object { $premises[$_].Fact }) -Forms @($indices | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" })
+        & $proof $indices @()
     }
 
     # "qui est noir ?": every one named that it follows of, each with what it rests on
@@ -713,7 +749,8 @@ function Resolve-LambekCategoryMessage {
             $concluded = $(if ($usual.PSObject.Properties['Shape'] -and $usual.Shape) { Get-LambekCategoryConclusion -Item $ask -Shape $usual.Shape -Usual } else { @() })
             # (rules that contradict each other conclude nothing: only what they rest on is kept)
             $forms = $(if ($usual.PSObject.Properties['Forms']) { $usual.Forms } else { @() })
-            Set-LambekLastProof -Facts $usual.Facts -Conclusion $concluded -Forms $forms
+            $assumed = $(if ($usual.PSObject.Properties['Assumed']) { $usual.Assumed } else { @() })
+            Set-LambekLastProof -Facts $usual.Facts -Conclusion $concluded -Forms $forms -Assumed $assumed
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
         }
     }
@@ -726,17 +763,17 @@ function Resolve-LambekCategoryMessage {
         $concluded = @(if ($shape) { Get-LambekCategoryConclusion -Item $ask -Shape $shape })
         # Said in a sentence of its own, read back by a second Lambek; else in lines, as told
         $spoken = $null
-        if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict $answer.ToLowerInvariant() -Conclusion $sentence -Premises @($support | ForEach-Object { $premises[$_] }) -Language $Language }
+        if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict $answer.ToLowerInvariant() -Conclusion $sentence -Premises @($support | Where-Object { $premises[$_].Fact } | ForEach-Object { $premises[$_] }) -Language $Language }
         if ($spoken) {
             $lines.Add($spoken.Text)
-            Set-LambekLastProof -Facts @($support | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded -Forms @($support | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" })
+            & $proof $support $concluded
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
         }
         if ($sentence) { $lines.Add(($data[$answer] -f $sentence)) }
         elseif ($answer -eq 'No' -and $ask.Kind -eq 'asksome') { $lines.Add($data['NoneThere']) }
         else { $lines.Add($data["$($answer)Short"]) }
         & $because $support
-        if ($concluded.Count -gt 0) { Set-LambekLastProof -Facts @($support | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded -Forms @($support | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) }
+        if ($concluded.Count -gt 0) { & $proof $support $concluded }
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
     }
 

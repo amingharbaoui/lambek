@@ -146,7 +146,7 @@ function Resolve-LambekCategoryUsual {
             })
         @([LambekCategories]::Smallest($list, $opposite))
     }
-    $listed = { param([int[]] $indices) @(foreach ($i in $indices) { "- $(Format-LambekFact -Fact $Premises[$i].Fact -Language $Language -Register 'vous' -Bare)" }) }
+    $listed = { param([int[]] $indices) @(foreach ($i in $indices) { if ($Premises[$i].Fact) { "- $(Format-LambekFact -Fact $Premises[$i].Fact -Language $Language -Register 'vous' -Bare)" } }) }
     $lines = [System.Collections.Generic.List[string]]::new()
 
     if ($kinds -contains 'yes' -and $kinds -contains 'no') {
@@ -158,7 +158,7 @@ function Resolve-LambekCategoryUsual {
         $shown = Get-LambekProblemShown -Holder ([pscustomobject]@{ Key = $(if ($one -eq 'speaker') { 'speaker' } else { "other:$one" }); Written = $who.Written }) -Language $Language
         $lines.Add(($data['Conflict'] -f $shown))
         foreach ($line in & $listed ([int[]] @($used))) { $lines.Add($line) }
-        return [pscustomobject]@{ Lines = $lines.ToArray(); Facts = @($used | ForEach-Object { $Premises[$_].Fact }) }
+        return [pscustomobject]@{ Lines = $lines.ToArray(); Facts = @($used | Where-Object { $Premises[$_].Fact } | ForEach-Object { $Premises[$_].Fact }) }
     }
     if ($kinds.Count -ne 1 -or $kinds[0] -eq 'unknown') { return $null }
 
@@ -167,7 +167,7 @@ function Resolve-LambekCategoryUsual {
     $sentence = Get-LambekCategorySentence -Item $Ask -Shape $(if ($result -eq 'yes') { 'is' } else { 'isnot' }) -Language $Language
     # Said in a sentence of its own, read back by a second Lambek; else in lines
     $spoken = $null
-    if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict "usual$result" -Conclusion $sentence -Premises @($support | ForEach-Object { $Premises[$_] }) -Language $Language }
+    if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict "usual$result" -Conclusion $sentence -Premises @($support | Where-Object { $Premises[$_].Fact } | ForEach-Object { $Premises[$_] }) -Language $Language }
     if ($spoken) { $lines.Add($spoken.Text) }
     else {
         $lines.Add(($data[$(if ($result -eq 'yes') { 'NormallyYes' } else { 'NormallyNo' })] -f $sentence))
@@ -186,5 +186,11 @@ function Resolve-LambekCategoryUsual {
     }
     $lines.Add(($data['Exception'] -f $built))
     # (what is supposed is said as such: "normalement oui" is "usual:is", "normalement non" is "usual:isnot")
-    return [pscustomobject]@{ Lines = $lines.ToArray(); Facts = @($support | ForEach-Object { $Premises[$_].Fact }); Forms = @($support | ForEach-Object { "category($(Get-LambekCategorySignature -Item $Premises[$_].Item))" }); Shape = $(if ($result -eq 'yes') { 'is' } else { 'isnot' }) }
+    # (what the words said by themselves, "le cerisier" a cerisier, is kept apart: it was never told)
+    $told = @($support | Where-Object { $Premises[$_].Fact })
+    return [pscustomobject]@{
+        Lines = $lines.ToArray(); Facts = @($told | ForEach-Object { $Premises[$_].Fact }); Shape = $(if ($result -eq 'yes') { 'is' } else { 'isnot' })
+        Forms = @($told | ForEach-Object { "category($(Get-LambekCategorySignature -Item $Premises[$_].Item))" })
+        Assumed = @($support | Where-Object { -not $Premises[$_].Fact } | ForEach-Object { "category($(Get-LambekCategorySignature -Item $Premises[$_].Item))" })
+    }
 }

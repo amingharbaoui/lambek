@@ -789,7 +789,7 @@
       "Speaker": [ "i", "me" ],
       "Addressee": [ "you" ],
       "Articles": [ "a", "an", "the" ],
-      "Definite": [ "the" ],
+      "Definite": [ "the", "this", "that" ],
       "Of": [ "of" ],
       "ObjectArticles": [ "a", "an", "the", "some", "any" ],
       "NotVerbs": [ "be", "have", "do" ],

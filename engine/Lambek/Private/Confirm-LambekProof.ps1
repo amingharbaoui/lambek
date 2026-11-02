@@ -23,6 +23,8 @@ function Confirm-LambekProof {
         $premises = @($facts | ForEach-Object { Get-LambekFactCore -Fact $_ })
         # (the facts as the reasoning read them, when it read them in another shape than the one they are held in)
         if (@($proof.Forms).Count -gt 0) { $premises = @(if (@($proof.Forms).Count -eq $facts.Count) { @($proof.Forms) } else { '' }) }
+        # (what is only imagined counts as a premise of this answer, never as a thing told)
+        if ($proof.PSObject.Properties['Assumed']) { $premises = @($premises) + @($proof.Assumed | Where-Object { $_ }) }
         if ($premises.Count -gt 0 -and @($premises | Where-Object { -not $_ }).Count -eq 0) {
             $refused = (Test-LambekProof -Premises ([string[]] $premises) -Conclusions ([string[]] $conclusions)).Holds -eq $false
         }
