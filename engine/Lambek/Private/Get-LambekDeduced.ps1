@@ -130,13 +130,16 @@ function Get-LambekLastProof {
 
 function Set-LambekLastProof {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Keeps a value in memory only.')]
-    # (Read: what was read, not told, with where it was read and the day: a fact of Wikidata)
-    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @(), [object[]] $Read = @())
+    # (Read: what was read, not told, with where it was read and the day: a fact of Wikidata. Conclusion: what the answer
+    # says, in the shape of the facts it rests on ("category(is|name:socrate|mortel)"), for a checker that works it out
+    # again from them alone. Forms: the facts as the reasoning read them, when it read them in another shape than the
+    # one they are held in: "Marie est une etudiante" held as a thing told, read as "category(is|name:marie|etudiant)")
+    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @(), [object[]] $Read = @(), [string[]] $Conclusion = @(), [string[]] $Forms = @())
 
     if ($null -eq $script:LastProofs) { $script:LastProofs = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }
     $here = Get-LambekTold
     if (@($Facts).Count -eq 0 -and @($Said).Count -eq 0 -and @($Read).Count -eq 0) { [void] $script:LastProofs.Remove($here); return }
-    $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation; Said = @($Said); Read = @($Read) }
+    $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation; Said = @($Said); Read = @($Read); Conclusion = @($Conclusion); Forms = @($Forms) }
 }
 
 function Format-LambekInline {

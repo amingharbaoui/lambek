@@ -185,5 +185,6 @@ function Resolve-LambekCategoryUsual {
         $built = $turned
     }
     $lines.Add(($data['Exception'] -f $built))
-    return [pscustomobject]@{ Lines = $lines.ToArray(); Facts = @($support | ForEach-Object { $Premises[$_].Fact }) }
+    # (what is supposed is said as such: "normalement oui" is "usual:is", "normalement non" is "usual:isnot")
+    return [pscustomobject]@{ Lines = $lines.ToArray(); Facts = @($support | ForEach-Object { $Premises[$_].Fact }); Forms = @($support | ForEach-Object { "category($(Get-LambekCategorySignature -Item $Premises[$_].Item))" }); Shape = $(if ($result -eq 'yes') { 'is' } else { 'isnot' }) }
 }

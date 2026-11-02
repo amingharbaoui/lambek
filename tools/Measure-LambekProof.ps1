@@ -13,6 +13,10 @@
                   that the answer does not need gives the same answer here
       Swapped     the sentences of another conversation's proof, then this question: this answer must not come back.
                   A proof that would fit any question is caught here
+      Checked     the facts the proof cites and what the answer concludes, in the shape Lambek holds them, given to a
+                  checker that shares no code with Lambek (tools/Test-LambekProof.ps1): the conclusion must follow
+                  from them by its few rules, and each one must be needed. What it does not know how to check is
+                  counted apart
     Each conversation is also said with one sentence of another conversation told first, which has nothing to do with
     the question: a proof that cites it, or that cites everything told, is caught by Needed. An answer about things told
     whose proof cites nothing is counted apart.
@@ -40,6 +44,7 @@ $env:LAMBEK_DATA = Join-Path ([IO.Path]::GetTempPath()) "lambek-proof-$PID"
 Import-Module (Join-Path $root 'engine/Lambek/Lambek.psd1') -Force
 Import-LambekPack -Path (Join-Path $root 'dsl/files') | Out-Null
 Import-LambekPack -Path (Join-Path $root 'dsl/code') | Out-Null
+. (Join-Path $PSScriptRoot 'Test-LambekProof.ps1')
 
 # One conversation, alone: the sentences said in turn, then what the last answer was and what its proof cites. For each
 # fact the proof cites, the sentence that told it: the one whose new facts hold it, else the one that says it word for
@@ -79,7 +84,15 @@ $converse = {
             if ($at -lt 0 -and $text) { for ($i = 0; $i -lt $Sentences.Count - 1 -and $at -lt 0; $i++) { if (" $(& $plain $Sentences[$i]) " -like "* $text *") { $at = $i } } }
             if ($at -ge 0) { [void] $cited.Add($at) } else { $lost++ }
         }
-        [pscustomobject]@{ Answer = $answer; Facts = $facts.Count; Cited = @($cited); Lost = $lost }
+        # (the facts and the conclusion in the shape they are held in, for the checker)
+        $cores = @($facts | ForEach-Object { if ($_.PSObject.Properties['Core'] -and $_.Core) { "$($_.Core)" } else { '' } })
+        # (as the reasoning read them, when it read them in another shape than the one they are held in)
+        # (a proof that gives readings for some of its facts and not others cannot be checked: it is said)
+        if ($proof -and $proof.PSObject.Properties['Forms'] -and @($proof.Forms).Count -gt 0) {
+            $cores = $(if (@($proof.Forms).Count -eq $facts.Count) { @($proof.Forms) } else { @($facts | ForEach-Object { '' }) })
+        }
+        $concluded = @(if ($proof -and $proof.PSObject.Properties['Conclusion']) { @($proof.Conclusion) })
+        [pscustomobject]@{ Answer = $answer; Facts = $facts.Count; Cited = @($cited); Lost = $lost; Cores = $cores; Conclusion = $concluded }
     } $Sentences $Language $Name
 }
 
@@ -113,10 +126,12 @@ for ($c = 0; $c -lt $cases.Count; $c++) {
     $proved.Add([pscustomobject]@{
             Id = $case.Id; Language = $case.Language; Sentences = $sentences; Question = $sentences[-1]
             Answer = $first.Answer; Cited = $first.Cited; Lost = $first.Lost; Aside = [int] ($aside -and 0 -in $first.Cited)
+            Cores = $first.Cores; Conclusion = $first.Conclusion
         })
 }
 
 $rows = [System.Collections.Generic.List[object]]::new()
+$unchecked = [System.Collections.Generic.List[string]]::new()
 $failed = [System.Collections.Generic.List[string]]::new()
 foreach ($case in $proved) {
     $premises = @($case.Cited | ForEach-Object { $case.Sentences[$_] })
@@ -151,16 +166,29 @@ foreach ($case in $proved) {
         else { $failed.Add("[$($case.Id) swapped] with the proof of $($other.Id) ($($theirs -join ' / ')) the answer is the same: $($case.Answer -replace "`n", ' / ')") }
     }
 
+    # Checked: by a checker of its own, from the facts as they are held
+    $checked = 'unchecked'
+    $unneededHere = 0
+    if (@($case.Cores | Where-Object { -not $_ }).Count -eq 0) {
+        $check = Test-LambekProof -Premises ([string[]] $case.Cores) -Conclusions ([string[]] $case.Conclusion) -Each
+        if ($check.Holds -eq $true) { $checked = 'holds'; $unneededHere = $check.Unneeded.Count }
+        elseif ($check.Holds -eq $false) { $checked = 'refused'; $failed.Add("[$($case.Id) checked] $($check.Reason) from $($case.Cores -join ' ; ')") }
+        else { $unchecked.Add("[$($case.Id)] $($check.Reason)") }
+        foreach ($premise in $check.Unneeded) { $failed.Add("[$($case.Id) checked] not needed by the checker: $premise") }
+    }
+    else { $unchecked.Add("[$($case.Id)] a fact cited has no shape the checker reads") }
+
     $rows.Add([pscustomobject]@{
-            Id = $case.Id; Cited = $premises.Count; Lost = $case.Lost; Aside = $case.Aside; Enough = [int] $enough
+            Id = $case.Id; Cited = $premises.Count; Lost = $case.Lost; Aside = $case.Aside; Checked = $checked; Unneeded = $unneededHere; Enough = [int] $enough
             Needed = $needed; Swapped = $swapped; Tried = $tried
         })
 }
 
-$rows | Format-Table Id, Cited, Lost, Aside, Enough, Needed, Swapped, Tried -AutoSize | Out-String -Width 200 | Write-Host
+$rows | Format-Table Id, Cited, Lost, Aside, Checked, Unneeded, Enough, Needed, Swapped, Tried -AutoSize | Out-String -Width 200 | Write-Host
 if ($Show) {
     $failed | ForEach-Object { Write-Host "  $_" }
     $unproved | ForEach-Object { Write-Host "  [no proof] $_" }
+    $unchecked | ForEach-Object { Write-Host "  [not checked] $_" }
 }
 
 $total = [pscustomobject]@{
@@ -174,6 +202,10 @@ $total = [pscustomobject]@{
 }
 $bound = { param($f, $n) & (Get-Module Lambek) { param($f, $n) Get-LambekRateBound -Failures $f -Cases $n } $f $n }
 Write-Host ("Answers with a proof: {0} of {1} conversations; facts cited without the sentence that told them: {2}; sentence told aside and cited: {3}" -f $total.Proofs, $cases.Count, $total.Lost, ($rows | Measure-Object Aside -Sum).Sum)
+$holds = @($rows | Where-Object Checked -EQ 'holds').Count
+$refused = @($rows | Where-Object Checked -EQ 'refused').Count
+Write-Host ("Checked by a checker of its own: {0} hold, {1} refused, {2} it cannot check; premises it finds not needed: {3}" -f $holds, $refused, $unchecked.Count, ($rows | Measure-Object Unneeded -Sum).Sum)
+Write-Host ("Proof refused by the checker: {0} of {1}, so under {2:P3} at 95 %" -f $refused, ($holds + $refused), (& $bound $refused ($holds + $refused)))
 Write-Host ("Proof not enough on its own: {0} of {1}, so under {2:P3} at 95 %" -f ($total.Proofs - $total.Enough), $total.Proofs, (& $bound ($total.Proofs - $total.Enough) $total.Proofs))
 Write-Host ("Premise cited and not needed: {0} of {1}, so under {2:P3} at 95 %" -f ($total.Cited - $total.Needed), $total.Cited, (& $bound ($total.Cited - $total.Needed) $total.Cited))
 Write-Host ("Answer given by another conversation's proof: {0} of {1}, so under {2:P3} at 95 %" -f ($total.Tried - $total.Swapped), $total.Tried, (& $bound ($total.Tried - $total.Swapped) $total.Tried))

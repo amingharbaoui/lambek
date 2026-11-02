@@ -380,6 +380,17 @@ function Get-LambekCategorySignature {
     return "$usual$($Item.Kind)|$who|$($Item.Predicate.Atoms -join '+')"
 }
 
+function Get-LambekCategoryConclusion {
+    param([pscustomobject] $Item, [string] $Shape, [switch] $Usual)
+
+    # What an answer says, in the shape of a thing told: "Socrate est-il mortel ?" answered yes is
+    # "category(is|name:socrate|mortel)", answered "normalement oui" is "category(usual:is|name:tweety|v:voler)"
+    $said = $Item.PSObject.Copy()
+    $said.Kind = $Shape
+    $said | Add-Member -NotePropertyName Default -NotePropertyValue ([bool] $Usual) -Force
+    return "category($(Get-LambekCategorySignature -Item $said))"
+}
+
 function Get-LambekCategoryKnown {
     param([string] $Language, [switch] $Shape)
 
@@ -643,7 +654,7 @@ function Resolve-LambekCategoryMessage {
         param([int[]] $indices)
         $lines.Add($data['Because'])
         foreach ($line in & $listed $indices) { $lines.Add($line) }
-        Set-LambekLastProof -Facts @($indices | ForEach-Object { $premises[$_].Fact })
+        Set-LambekLastProof -Facts @($indices | ForEach-Object { $premises[$_].Fact }) -Forms @($indices | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" })
     }
 
     # "qui est noir ?": every one named that it follows of, each with what it rests on
@@ -699,7 +710,10 @@ function Resolve-LambekCategoryMessage {
         $usual = Resolve-LambekCategoryUsual -Ask $ask -Premises $premises.ToArray() -Statements $statements -Atoms $atoms -Language $Language
         if ($usual) {
             foreach ($line in $usual.Lines) { $lines.Add($line) }
-            Set-LambekLastProof -Facts $usual.Facts
+            $concluded = $(if ($usual.PSObject.Properties['Shape'] -and $usual.Shape) { Get-LambekCategoryConclusion -Item $ask -Shape $usual.Shape -Usual } else { @() })
+            # (rules that contradict each other conclude nothing: only what they rest on is kept)
+            $forms = $(if ($usual.PSObject.Properties['Forms']) { $usual.Forms } else { @() })
+            Set-LambekLastProof -Facts $usual.Facts -Conclusion $concluded -Forms $forms
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
         }
     }
@@ -709,18 +723,20 @@ function Resolve-LambekCategoryMessage {
         $sentence = $null
         if ($shape) { $sentence = Get-LambekCategorySentence -Item $ask -Shape $shape -Language $Language }
         $support = [int[]] $(if ($null -ne $yes) { $yes } else { $no })
+        $concluded = @(if ($shape) { Get-LambekCategoryConclusion -Item $ask -Shape $shape })
         # Said in a sentence of its own, read back by a second Lambek; else in lines, as told
         $spoken = $null
         if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict $answer.ToLowerInvariant() -Conclusion $sentence -Premises @($support | ForEach-Object { $premises[$_] }) -Language $Language }
         if ($spoken) {
             $lines.Add($spoken.Text)
-            Set-LambekLastProof -Facts @($support | ForEach-Object { $premises[$_].Fact })
+            Set-LambekLastProof -Facts @($support | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded -Forms @($support | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" })
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
         }
         if ($sentence) { $lines.Add(($data[$answer] -f $sentence)) }
         elseif ($answer -eq 'No' -and $ask.Kind -eq 'asksome') { $lines.Add($data['NoneThere']) }
         else { $lines.Add($data["$($answer)Short"]) }
         & $because $support
+        if ($concluded.Count -gt 0) { Set-LambekLastProof -Facts @($support | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded -Forms @($support | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) }
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
     }
 

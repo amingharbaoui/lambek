@@ -35,6 +35,14 @@ Describe 'General rules told in words' {
             Ask 'Minou est-il noir ?' | Should -Be "Oui, Minou est noir : c'est un chat de votre soeur et tous les chats de votre soeur sont noirs."
         }
 
+        It 'keeps what the answer says and what it rests on in the shape a checker reads' {
+            Tell 'tous les hommes sont mortels', 'Socrate est un homme'
+            Ask 'Socrate est-il mortel ?' | Out-Null
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('category(is|name:socrate|mortel)')
+            $proof.Forms | Should -Be @('category(all|homme|mortel)', 'category(is|name:socrate|homme)')
+        }
+
         It 'answers pourquoi with the same' {
             Tell 'tous les chats de ma soeur sont noirs', 'Minou est un chat de ma soeur', 'Minou est-elle noire ?'
             Ask 'pourquoi ?' | Should -Be (@(
