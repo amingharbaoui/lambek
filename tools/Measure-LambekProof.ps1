@@ -17,6 +17,10 @@
                   checker that shares no code with Lambek (tools/Test-LambekProof.ps1): the conclusion must follow
                   from them by its few rules, and each one must be needed. What it does not know how to check is
                   counted apart
+      Lean        the same, written as a theorem (tools/ConvertTo-LambekLean.ps1) and given to Lean, a prover of its
+                  own with a small kernel that checks every proof it finds: Lean must prove the conclusion from the
+                  premises, and must not prove its opposite from them (premises that prove both prove anything). Run
+                  only when Lean is installed (-Lean, or lean on the path)
     Each conversation is also said with one sentence of another conversation told first, which has nothing to do with
     the question: a proof that cites it, or that cites everything told, is caught by Needed. An answer about things told
     whose proof cites nothing is counted apart.
@@ -35,7 +39,10 @@ param(
     [int] $Swaps = 3,
 
     # Also print each answer that did not hold
-    [switch] $Show
+    [switch] $Show,
+
+    # The lean program that judges each proof again; by default the one on the path, and no Lean judge without it
+    [string] $Lean = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -45,6 +52,21 @@ Import-Module (Join-Path $root 'engine/Lambek/Lambek.psd1') -Force
 Import-LambekPack -Path (Join-Path $root 'dsl/files') | Out-Null
 Import-LambekPack -Path (Join-Path $root 'dsl/code') | Out-Null
 . (Join-Path $PSScriptRoot 'Test-LambekProof.ps1')
+. (Join-Path $PSScriptRoot 'ConvertTo-LambekLean.ps1')
+if (-not $Lean) { $Lean = (Get-Command -Name lean -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1).Source }
+$leanFolder = $null
+if ($Lean) {
+    $leanFolder = Join-Path ([IO.Path]::GetTempPath()) "lambek-lean-$PID"
+    New-Item -Path $leanFolder -ItemType Directory -Force | Out-Null
+}
+# Whether Lean proves one theorem, alone in its file: what Lean says when it does not
+$prove = {
+    param([string] $Text, [string] $Name)
+    $file = Join-Path $leanFolder "$Name.lean"
+    Set-Content -LiteralPath $file -Value $Text -Encoding utf8NoBOM
+    $said = & $Lean $file 2>&1 | Out-String
+    [pscustomobject]@{ Proved = $LASTEXITCODE -eq 0; Said = $said.Trim() }
+}
 
 # One conversation, alone: the sentences said in turn, then what the last answer was and what its proof cites. For each
 # fact the proof cites, the sentence that told it: the one whose new facts hold it, else the one that says it word for
@@ -132,6 +154,7 @@ for ($c = 0; $c -lt $cases.Count; $c++) {
 
 $rows = [System.Collections.Generic.List[object]]::new()
 $unchecked = [System.Collections.Generic.List[string]]::new()
+$unlean = [System.Collections.Generic.List[string]]::new()
 $failed = [System.Collections.Generic.List[string]]::new()
 foreach ($case in $proved) {
     $premises = @($case.Cited | ForEach-Object { $case.Sentences[$_] })
@@ -178,17 +201,32 @@ foreach ($case in $proved) {
     }
     else { $unchecked.Add("[$($case.Id)] a fact cited has no shape the checker reads") }
 
+    # Lean: proves the conclusion from the premises, and not its opposite
+    $judged = ''
+    if ($Lean -and @($case.Cores | Where-Object { -not $_ }).Count -eq 0) {
+        $theorem = ConvertTo-LambekLean -Name $case.Id -Premises ([string[]] $case.Cores) -Conclusions ([string[]] $case.Conclusion)
+        if (-not $theorem.Theorem) { $judged = 'unwritten'; $unlean.Add("[$($case.Id)] $($theorem.Reason)") }
+        else {
+            $proof = & $prove $theorem.Theorem "proof_$($case.Id)"
+            $opposite = & $prove $theorem.Opposite "opposite_$($case.Id)"
+            if (-not $proof.Proved) { $judged = 'unproved'; $failed.Add("[$($case.Id) lean] not proved: $($proof.Said -replace "`n", ' / ')") }
+            elseif ($opposite.Proved) { $judged = 'both'; $failed.Add("[$($case.Id) lean] the premises prove the opposite too: $($case.Cores -join ' ; ')") }
+            else { $judged = 'proved' }
+        }
+    }
+
     $rows.Add([pscustomobject]@{
-            Id = $case.Id; Cited = $premises.Count; Lost = $case.Lost; Aside = $case.Aside; Checked = $checked; Unneeded = $unneededHere; Enough = [int] $enough
+            Id = $case.Id; Cited = $premises.Count; Lost = $case.Lost; Aside = $case.Aside; Checked = $checked; Lean = $judged; Unneeded = $unneededHere; Enough = [int] $enough
             Needed = $needed; Swapped = $swapped; Tried = $tried
         })
 }
 
-$rows | Format-Table Id, Cited, Lost, Aside, Checked, Unneeded, Enough, Needed, Swapped, Tried -AutoSize | Out-String -Width 200 | Write-Host
+$rows | Format-Table Id, Cited, Lost, Aside, Checked, Lean, Unneeded, Enough, Needed, Swapped, Tried -AutoSize | Out-String -Width 200 | Write-Host
 if ($Show) {
     $failed | ForEach-Object { Write-Host "  $_" }
     $unproved | ForEach-Object { Write-Host "  [no proof] $_" }
     $unchecked | ForEach-Object { Write-Host "  [not checked] $_" }
+    $unlean | ForEach-Object { Write-Host "  [not written for Lean] $_" }
 }
 
 $total = [pscustomobject]@{
@@ -205,6 +243,14 @@ Write-Host ("Answers with a proof: {0} of {1} conversations; facts cited without
 $holds = @($rows | Where-Object Checked -EQ 'holds').Count
 $refused = @($rows | Where-Object Checked -EQ 'refused').Count
 Write-Host ("Checked by a checker of its own: {0} hold, {1} refused, {2} it cannot check; premises it finds not needed: {3}" -f $holds, $refused, $unchecked.Count, ($rows | Measure-Object Unneeded -Sum).Sum)
+if ($Lean) {
+    $proved = @($rows | Where-Object Lean -EQ 'proved').Count
+    $judgedCount = @($rows | Where-Object { $_.Lean -in 'proved', 'unproved', 'both' }).Count
+    Write-Host ("Judged by {0}: {1} proved, {2} not proved, {3} whose premises prove the opposite too, {4} not written" -f ((& $Lean --version | Select-Object -First 1) -replace ',.*$', ')'), $proved, @($rows | Where-Object Lean -EQ 'unproved').Count, @($rows | Where-Object Lean -EQ 'both').Count, $unlean.Count)
+    Write-Host ("Proof Lean does not prove: {0} of {1}, so under {2:P3} at 95 %" -f ($judgedCount - $proved), $judgedCount, (& $bound ($judgedCount - $proved) $judgedCount))
+    Remove-Item -LiteralPath $leanFolder -Recurse -Force -ErrorAction SilentlyContinue
+}
+else { Write-Host 'Judged by Lean: no, Lean is not installed (-Lean, or lean on the path)' }
 Write-Host ("Proof refused by the checker: {0} of {1}, so under {2:P3} at 95 %" -f $refused, ($holds + $refused), (& $bound $refused ($holds + $refused)))
 Write-Host ("Proof not enough on its own: {0} of {1}, so under {2:P3} at 95 %" -f ($total.Proofs - $total.Enough), $total.Proofs, (& $bound ($total.Proofs - $total.Enough) $total.Proofs))
 Write-Host ("Premise cited and not needed: {0} of {1}, so under {2:P3} at 95 %" -f ($total.Cited - $total.Needed), $total.Cited, (& $bound ($total.Cited - $total.Needed) $total.Cited))

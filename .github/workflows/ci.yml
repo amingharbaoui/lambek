@@ -45,6 +45,26 @@ jobs:
           name: fingerprint-${{ matrix.os }}
           path: fingerprint.txt
 
+  proofs:
+    name: Proofs judged by Lean
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # Lean, a prover that shares nothing with Lambek, at a fixed version so that its verdicts do not move
+      - name: Install Lean
+        shell: bash
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain leanprover/lean4:v4.35.0
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Judge the proofs
+        run: ./tools/Measure-LambekProof.ps1 -Show
+
   same:
     name: Same answers on every system
     needs: test
