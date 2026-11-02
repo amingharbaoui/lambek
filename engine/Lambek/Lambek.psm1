@@ -62,6 +62,8 @@ foreach ($file in $privateFiles + $publicFiles) {
 foreach ($file in $privateFiles + $publicFiles) {
     . $file.FullName
 }
+# The checker of proofs, apart: it shares no code with the engine, which only calls it
+. "$PSScriptRoot/Checker/Test-LambekProof.ps1"
 
 # Module state
 $script:Packs = [ordered]@{}

@@ -391,7 +391,7 @@ function Get-LambekToldAnswer {
         foreach ($item in @(Get-LambekProofLeaf -Fact $answer.Fact) + @($answer.Because)) { if (-not $used.Contains($item)) { $used.Add($item) } }
     }
     # (and what it says: each thing answered, in the shape it is held in, "habiter(agent(...), place(lyon))|")
-    $said = @(@($found) + @($older) + @($deduced) | ForEach-Object { if ($_.Fact.PSObject.Properties['Core'] -and $_.Fact.Core) { "$($_.Fact.Core)" } })
+    $said = @(@($found) + @($older) + @($deduced) | ForEach-Object { Get-LambekFactCore -Fact $_.Fact } | Where-Object { $_ })
     Set-LambekLastProof -Facts $used.ToArray() -Conclusion $said
     return "$($lines -join "`n")$doubt"
 }

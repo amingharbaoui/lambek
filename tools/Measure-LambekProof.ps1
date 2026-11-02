@@ -14,7 +14,7 @@
       Swapped     the sentences of another conversation's proof, then this question: this answer must not come back.
                   A proof that would fit any question is caught here
       Checked     the facts the proof cites and what the answer concludes, in the shape Lambek holds them, given to a
-                  checker that shares no code with Lambek (tools/Test-LambekProof.ps1): the conclusion must follow
+                  checker that shares no code with Lambek (engine/Lambek/Checker/Test-LambekProof.ps1): the conclusion must follow
                   from them by its few rules, and each one must be needed. What it does not know how to check is
                   counted apart
       Lean        the same, written as a theorem (tools/ConvertTo-LambekLean.ps1) and given to Lean, a prover of its
@@ -51,7 +51,7 @@ $env:LAMBEK_DATA = Join-Path ([IO.Path]::GetTempPath()) "lambek-proof-$PID"
 Import-Module (Join-Path $root 'engine/Lambek/Lambek.psd1') -Force
 Import-LambekPack -Path (Join-Path $root 'dsl/files') | Out-Null
 Import-LambekPack -Path (Join-Path $root 'dsl/code') | Out-Null
-. (Join-Path $PSScriptRoot 'Test-LambekProof.ps1')
+. (Join-Path $root 'engine/Lambek/Checker/Test-LambekProof.ps1')
 . (Join-Path $PSScriptRoot 'ConvertTo-LambekLean.ps1')
 if (-not $Lean) { $Lean = (Get-Command -Name lean -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1).Source }
 $leanFolder = $null
@@ -107,7 +107,7 @@ $converse = {
             if ($at -ge 0) { [void] $cited.Add($at) } else { $lost++ }
         }
         # (the facts and the conclusion in the shape they are held in, for the checker)
-        $cores = @($facts | ForEach-Object { if ($_.PSObject.Properties['Core'] -and $_.Core) { "$($_.Core)" } else { '' } })
+        $cores = @($facts | ForEach-Object { Get-LambekFactCore -Fact $_ })
         # (as the reasoning read them, when it read them in another shape than the one they are held in)
         # (a proof that gives readings for some of its facts and not others cannot be checked: it is said)
         if ($proof -and $proof.PSObject.Properties['Forms'] -and @($proof.Forms).Count -gt 0) {

@@ -87,6 +87,7 @@ function ConvertTo-LambekAnswer {
                 # A question about what was told is answered from the conversation, and only from it
                 if ($told -and $told.PSObject.Properties['Asked'] -and $told.Asked -and $said -and $said.Say['Recalled']) {
                     $reply = Get-LambekToldAnswer -Asked $told.Asked -Language $language -Register $Register
+                    $reply = Confirm-LambekProof -Reply $reply -Language $language
                 }
             }
             if (-not $reply -and $Plan.PSObject.Properties['Suggestion'] -and $Plan.Suggestion) { $reply = $answer.DidYouMean -f $Plan.Suggestion }
@@ -255,9 +256,11 @@ function ConvertTo-LambekAnswer {
                     $lines.Add((Format-LambekPlural -Template $answer.MatchesCount -Language $language -Values @($count)))
                 }
             }
-            # Nothing to change: no confirmation to ask for; a plan that only reads runs at once, so it asks for nothing
+            # Nothing to change: no confirmation to ask for; a plan that only reads, or only adds what is not there yet,
+            # runs at once, so it asks for nothing
+            $asks = $(if ($Simulation.PSObject.Properties['Asks']) { $Simulation.Asks } else { $Simulation.Risk -ne 'low' })
             if ($Simulation.ConfirmationCode -and ($count -gt 0 -or $mcpSteps.Count -gt 0)) { $lines.Add(($answer.Approval -f $Simulation.ConfirmationCode)) }
-            elseif ($Simulation.Risk -ne 'low' -and ($count -gt 0 -or $mcpSteps.Count -gt 0)) { $lines.Add($answer.ReadyToRun) }
+            elseif ($asks -and ($count -gt 0 -or $mcpSteps.Count -gt 0)) { $lines.Add($answer.ReadyToRun) }
         }
         elseif ($Brief) {
             # A plan alone needs no words: its reading is in the status

@@ -10,6 +10,8 @@ function Get-LambekSimulation {
     $results = [System.Collections.Generic.List[object]]::new()
     $fingerprint = [System.Collections.Generic.List[string]]::new()
     $status = 'Ready'
+    # Whether the plan waits for a yes: a change does, unless all it does is add what is not there yet
+    $adds = $true
 
     foreach ($number in $Plan.Order) {
         $step = $Plan.Steps[$number - 1]
@@ -50,6 +52,7 @@ function Get-LambekSimulation {
                 $status = 'Failed'
             }
             elseif ($run.Items.Count -gt 0) {
+                if ($step.Risk -ne 'low' -and -not (Test-LambekAdditive -Step $step -Items @($run.Items))) { $adds = $false }
                 $summary = Get-LambekItemSummary -Items @($run.Items)
                 foreach ($item in $run.Items) {
                     $affected += [string] $item.FullName
@@ -70,6 +73,7 @@ function Get-LambekSimulation {
             }
         }
 
+        if ($step.Risk -ne 'low' -and $step.Output -ne 'command') { $adds = $false }
         if (-not $message) {
             $message = "$($step.Action) would affect $($affected.Count) item(s)."
         }
@@ -103,6 +107,7 @@ function Get-LambekSimulation {
         PlanHash         = $Plan.PlanHash
         StateHash        = $stateHash
         ConfirmationCode = $confirmationCode
+        Asks             = $Plan.Risk -ne 'low' -and -not ($Plan.Risk -eq 'medium' -and $adds)
         Steps            = $results.ToArray()
     }
 }

@@ -244,6 +244,7 @@ function Invoke-LambekHostRequest {
                     id               = $params.id
                     status           = $simulation.Status
                     risk             = $simulation.Risk
+                    asks             = $simulation.Asks
                     confirmationCode = $simulation.ConfirmationCode
                     answer           = ConvertTo-LambekAnswer -Plan $plan -Simulation $simulation -Brief
                     steps            = @($simulation.Steps | ForEach-Object {

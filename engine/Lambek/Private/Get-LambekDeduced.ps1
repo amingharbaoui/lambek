@@ -120,6 +120,21 @@ function Get-LambekProofLeaf {
     return @($leaves.ToArray() | Sort-Object -Stable { $entry = $board.Entry($_); if ($entry) { $entry.Id } else { [int]::MaxValue } })
 }
 
+function Get-LambekFactCore {
+    param([object] $Fact)
+
+    # A thing told in the shape a checker reads it: as it is held, "pleuvoir(agent("il"))|", and inside not(...) when it
+    # was told in the negative ("il ne pleut pas"); '' for a fact with no such shape
+    if (-not $Fact -or -not $Fact.PSObject.Properties['Core'] -or -not $Fact.Core) { return '' }
+    $core = "$($Fact.Core)"
+    if ($Fact.PSObject.Properties['Negated'] -and $Fact.Negated) {
+        $bar = $core.LastIndexOf('|')
+        if ($bar -ge 0 -and $core.Substring($bar).IndexOfAny([char[]] '()') -lt 0) { return "not($($core.Substring(0, $bar)))$($core.Substring($bar))" }
+        return "not($core)"
+    }
+    return $core
+}
+
 function Get-LambekLastProof {
     # What the last answer of this conversation rested on, for "pourquoi ?" (each chat has its own conversation)
     if ($null -eq $script:LastProofs) { $script:LastProofs = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }

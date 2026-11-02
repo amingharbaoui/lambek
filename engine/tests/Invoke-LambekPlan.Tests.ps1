@@ -83,6 +83,27 @@ Describe 'Invoke-LambekPlan' {
             $change.Risk | Should -Be 'medium'
             ConvertTo-LambekAnswer -Plan $move -Simulation $change | Should -BeLike '*go ahead*'
         }
+
+        It 'runs a copy that writes over nothing without asking, and asks before one that would' {
+            $copy = New-LambekPlan "copy the .log files in ""$source"" to ""$archive"""
+            New-Item -Path $archive -ItemType Directory -Force | Out-Null
+            $new = Invoke-LambekPlan -Plan $copy -Simulate -AuditPath $audit
+            $new.Risk | Should -Be 'medium'
+            $new.Asks | Should -BeFalse
+            ConvertTo-LambekAnswer -Plan $copy -Simulation $new | Should -Not -BeLike '*go ahead*'
+
+            Set-Content -Path (Join-Path $archive 'a.log') -Value 'older'
+            $over = Invoke-LambekPlan -Plan $copy -Simulate -AuditPath $audit
+            $over.Asks | Should -BeTrue
+            ConvertTo-LambekAnswer -Plan $copy -Simulation $over | Should -BeLike '*go ahead*'
+        }
+
+        It 'still asks before a move or a deletion, which take something away' {
+            $move = New-LambekPlan "move the .log files in ""$source"" to ""$archive"""
+            New-Item -Path $archive -ItemType Directory -Force | Out-Null
+            (Invoke-LambekPlan -Plan $move -Simulate -AuditPath $audit).Asks | Should -BeTrue
+            (Invoke-LambekPlan -Plan $plan -Simulate -AuditPath $audit).Asks | Should -BeTrue
+        }
     }
 
     Context 'Execution' {

@@ -4,23 +4,28 @@
     A checker of proofs that shares no code with Lambek: from the facts a proof cites, in the shape Lambek keeps them,
     it works out again whether what the answer says follows, with a handful of rules written here and nothing else.
 .DESCRIPTION
-    Dot-source this file, then call Test-LambekProof with the facts a proof cites and what the answer concludes.
+    The module loads this file on its own and calls it before an answer is said; it calls nothing of the engine, so a
+    fault in the engine's reasoning is not repeated here. Dot-source it to use it alone (the benches and its tests do).
+    Call Test-LambekProof with the facts a proof cites and what the answer concludes.
     It knows three kinds of facts:
       category(all|chat|animal)        every cat is an animal ("no", and "usual:all"/"usual:no" for what holds
       category(no|poisson|mammifere)   "normalement"); a kind of several words is written chat+soeur
-      category(is|name:tom|chat)       Tom is a cat ("isnot": Tom is not)
+      category(is|name:tom|chat)       Tom is a cat ("isnot": Tom is not; "does"/"doesnot" for a verb, v:voler)
       if(cond(X), then(Y))|            a rule told with if: when X was told, Y follows
       X|                               a thing told, as it is held (what follows the last bar is its day)
     and what an answer may conclude: one of those facts, or "usual:is"/"usual:isnot" about someone, for what is only
     supposed. The rules it uses:
       - one is every kind its kinds are in (Tom is a cat, every cat is an animal: Tom is an animal)
       - one is not what no one of its kinds is (Nemo is a fish, no fish is a mammal: Nemo is not a mammal)
+      - one is not of a kind when being of it too would make it what it is not (every cat is black, I am not black: I
+        am not a cat)
       - every one of a kind is what a wider kind is (every cat is a mammal, every mammal is an animal)
       - what holds normalement is supposed of one when nothing told and no rule about a narrower kind says otherwise
       - modus ponens on the rules told with if
     A conclusion it cannot work out is refused; "some" and "not every" are not checked (it says so).
+    Test-LambekCalculation works out again a sum an answer shows ("2 + 3 = 5").
 .EXAMPLE
-    . ./tools/Test-LambekProof.ps1
+    . ./engine/Lambek/Checker/Test-LambekProof.ps1
     Test-LambekProof -Premises 'category(all|homme|mortel)', 'category(is|name:socrate|homme)' -Conclusions 'category(is|name:socrate|mortel)'
 #>
 
@@ -62,6 +67,8 @@ function ConvertFrom-LambekProofFact {
         $kind = $category.Groups['kind'].Value
         $usual = $kind.StartsWith('usual:')
         if ($usual) { $kind = $kind.Substring(6) }
+        # (what one does is said like what one is: its verb is among its kinds, "v:voler")
+        $kind = @{ does = 'is'; doesnot = 'isnot' }[$kind] ?? $kind
         $set = { param($s) [string[]] @($s -split '\+' | Where-Object { $_ }) }
         return [pscustomobject]@{ Shape = 'category'; Kind = $kind; Usual = $usual; Who = $category.Groups['who'].Value; Atoms = (& $set $category.Groups['what'].Value); Subject = (& $set $category.Groups['who'].Value) }
     }
@@ -118,13 +125,18 @@ function Test-LambekProofOnce {
         [pscustomobject]@{ Is = $pos; IsNot = $neg }
     }
     $isNotAll = { param($state, [string[]] $atoms) @($state.IsNot | Where-Object { & $subset $_ ([System.Collections.Generic.HashSet[string]]::new([string[]] $atoms)) }).Count -gt 0 }
-
-    $individual = {
-        param([string] $who)
-        $is = @($kinds | Where-Object { -not $_.Usual -and $_.Kind -eq 'is' -and $_.Who -eq $who } | ForEach-Object { $_.Atoms })
-        $isNot = @($kinds | Where-Object { -not $_.Usual -and $_.Kind -eq 'isnot' -and $_.Who -eq $who } | ForEach-Object { , $_.Atoms })
-        & $close $is $isNot
+    # One is not all of these kinds when being them too would make it what it is not (every cat is black, I am not
+    # black: I am not a cat)
+    $refuted = {
+        param([string[]] $is, [object[]] $isNot, [string[]] $atoms)
+        $state = & $close ([string[]] @(@($is) + @($atoms) | Where-Object { $_ })) $isNot
+        @($state.IsNot | Where-Object { & $subset $_ $state.Is }).Count -gt 0
     }
+
+    # (what was told one is, and the sets of kinds told it is not all of; each given back whole, as one array)
+    $toldIs = { param([string] $who) , [string[]] @($kinds | Where-Object { -not $_.Usual -and $_.Kind -eq 'is' -and $_.Who -eq $who } | ForEach-Object { $_.Atoms }) }
+    $toldNot = { param([string] $who) , [object[]] @($kinds | Where-Object { -not $_.Usual -and $_.Kind -eq 'isnot' -and $_.Who -eq $who } | ForEach-Object { , $_.Atoms }) }
+    $individual = { param([string] $who) & $close (& $toldIs $who) (& $toldNot $who) }
 
     # What is supposed of one: each rule that holds normalement and starts from what it is, unless what it says is
     # already known false, or a rule about a narrower kind it also starts from says otherwise
@@ -167,16 +179,48 @@ function Test-LambekProofOnce {
             { $_ -in 'is', 'isnot' } {
                 $state = & $individual $said.Who
                 if ($said.Usual) { $state = & $suppose $state }
-                $holds = $(if ($said.Kind -eq 'is') { & $subset $said.Atoms $state.Is } else { & $isNotAll $state $said.Atoms })
+                $holds = $(if ($said.Kind -eq 'is') { & $subset $said.Atoms $state.Is } else { (& $isNotAll $state $said.Atoms) -or (& $refuted (& $toldIs $said.Who) (& $toldNot $said.Who) $said.Atoms) })
             }
             { $_ -in 'all', 'no' } {
                 # Every one of the kind: what one that is only of that kind is
                 $state = & $close $said.Subject @()
-                $holds = $(if ($said.Kind -eq 'all') { & $subset $said.Atoms $state.Is } else { & $isNotAll $state $said.Atoms })
+                $holds = $(if ($said.Kind -eq 'all') { & $subset $said.Atoms $state.Is } else { (& $isNotAll $state $said.Atoms) -or (& $refuted $said.Subject @() $said.Atoms) })
             }
             default { return [pscustomobject]@{ Holds = $null; Reason = "not checked: $conclusion" } }
         }
         if (-not $holds) { return [pscustomobject]@{ Holds = $false; Reason = "does not follow: $conclusion" } }
     }
     return [pscustomobject]@{ Holds = $true; Reason = '' }
+}
+
+function Test-LambekCalculation {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)] [string] $Text)
+
+    # A sum as an answer shows it, "2 + 3 = 5" or "2,5 + 1 = 3,5": $true when it is right, $false when it is not, $null
+    # for what is not a sum of numbers
+    $sides = $Text -split '='
+    if ($sides.Count -ne 2) { return $null }
+    $number = {
+        param([string] $part)
+        # (spaces group the thousands; a comma alone is the decimal mark)
+        $digits = ($part -replace '[\s\u00A0\u202F]', '')
+        if ($digits -notmatch '^-?\d+([.,]\d+)?$') { return $null }
+        [decimal]::Parse(($digits -replace ',', '.'), [Globalization.CultureInfo]::InvariantCulture)
+    }
+    $parts = @($sides[0] -split '\+')
+    $total = & $number $sides[1]
+    if ($null -eq $total -or $parts.Count -lt 2) { return $null }
+    $sum = [decimal] 0
+    $places = [regex]::Match($sides[1], '[.,](\d+)').Groups[1].Length
+    foreach ($part in $parts) {
+        $term = & $number $part
+        if ($null -eq $term) { return $null }
+        $sum += $term
+        $places = [math]::Max($places, [regex]::Match($part, '[.,](\d+)').Groups[1].Length)
+    }
+    # (numbers shown rounded are each off by at most half their last place)
+    $slack = [decimal] 0.5 * [decimal] [math]::Pow(10, -$places) * ($parts.Count + 1)
+    if ($places -eq 0) { $slack = 0 }
+    return [math]::Abs($sum - $total) -le $slack
 }

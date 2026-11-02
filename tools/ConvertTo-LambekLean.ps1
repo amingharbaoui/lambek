@@ -4,7 +4,7 @@
     Writes the proof of an answer as a theorem of Lean, so that Lean, which shares nothing with Lambek, can judge it.
 .DESCRIPTION
     Dot-source this file, then call ConvertTo-LambekLean with a name, the facts a proof cites and what the answer
-    concludes, in the shape Lambek keeps them (the shapes of tools/Test-LambekProof.ps1). It gives back two theorems
+    concludes, in the shape Lambek keeps them (the shapes of engine/Lambek/Checker/Test-LambekProof.ps1). It gives back two theorems
     for Lean 4, with no library:
       Theorem   the premises as hypotheses, the conclusion as the goal: Lean must prove it
       Opposite  the same premises, the opposite of the conclusion as the goal: Lean must not prove it (premises that
@@ -54,6 +54,8 @@ function ConvertTo-LambekLean {
             $kind = $match.Groups['kind'].Value
             $usual = $kind.StartsWith('usual:')
             if ($usual) { $kind = $kind.Substring(6) }
+            # (what one does is written like what one is: its verb is a kind, v:voler)
+            $kind = @{ does = 'is'; doesnot = 'isnot' }[$kind] ?? $kind
             return [pscustomobject]@{
                 Shape = 'category'; Kind = $kind; Usual = $usual; Who = $match.Groups['who'].Value
                 Subject = [string[]] @($match.Groups['who'].Value -split '\+' | Where-Object { $_ })

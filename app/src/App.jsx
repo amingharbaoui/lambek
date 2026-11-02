@@ -116,6 +116,9 @@ function simulationDetail(simulation) {
   return `${simulation.status.toLowerCase()}, ${count} item(s)${simulation.confirmationCode ? `, code ${simulation.confirmationCode}` : ""}`;
 }
 
+// Whether a simulated plan waits for a yes: changes do, unless all they do is add what is not there yet
+const asks = (simulation) => simulation.asks ?? simulation.risk !== "low";
+
 export default function App() {
   const [incognito, setIncognito] = useState(false);
   const theme = useTheme(incognito);
@@ -434,7 +437,7 @@ export default function App() {
     }
   }
 
-  // A ready plan goes on by itself: read-only work runs, changes wait for a yes or a code in the chat
+  // A ready plan goes on by itself: reading and adding run, other changes wait for a yes or a code in the chat
   async function proceed(chatId, messageId, plan) {
     if (plan.status !== "Ready" || plan.steps.every((step) => step.output === "code")) return;
     const onlyTools = plan.steps.every((step) => step.output === "mcp");
@@ -443,7 +446,7 @@ export default function App() {
       execution: null,
       events: [{ stage: "Simulate", label: t("Simulated"), detail: simulationDetail(simulation), ms }],
     }));
-    if (simulation?.status === "Ready" && simulation.risk === "low") run(chatId, messageId, plan, simulation);
+    if (simulation?.status === "Ready" && !asks(simulation)) run(chatId, messageId, plan, simulation);
   }
 
   function run(chatId, messageId, plan, simulation, typedCode) {
@@ -503,7 +506,7 @@ export default function App() {
   // The last plan that waits for a yes or a code
   const waiting = useMemo(() => {
     const message = [...messages].reverse().find((item) => item.role === "lambek" && !item.busy && (item.plan || item.answer));
-    if (!message?.simulation || message.execution || message.simulation.status !== "Ready" || message.simulation.risk === "low") return null;
+    if (!message?.simulation || message.execution || message.simulation.status !== "Ready" || !asks(message.simulation)) return null;
     // Nothing would change: there is nothing to confirm
     const changes = message.simulation.steps.some((step) => step.count > 0) || message.plan.steps.some((step) => step.output === "mcp");
     if (!changes) return null;

@@ -1372,7 +1372,8 @@
       "Why": "Because you told me:",
       "WhyRead": "I read it in {0} (data read {1}):",
       "WhyCalculated": "And the calculation: {0}.",
-      "WhyNothing": "Why what? I did not answer anything from what you told me just before."
+      "WhyNothing": "Why what? I did not answer anything from what you told me just before.",
+      "Unproved": "I don't know: I cannot prove it from what you told me."
     }
   },
   "Answer": {

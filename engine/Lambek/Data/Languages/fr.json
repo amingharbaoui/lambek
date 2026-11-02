@@ -1633,7 +1633,8 @@
       "Why": "Parce que vous m'avez dit :",
       "WhyRead": "Je l'ai lu dans {0} (données lues {1}) :",
       "WhyCalculated": "Et le calcul : {0}.",
-      "WhyNothing": "Pourquoi quoi ? Je n'ai rien répondu à partir de ce que vous m'avez dit juste avant."
+      "WhyNothing": "Pourquoi quoi ? Je n'ai rien répondu à partir de ce que vous m'avez dit juste avant.",
+      "Unproved": "Je ne sais pas : je ne peux pas le prouver avec ce que vous m'avez dit."
     }
   },
   "Answer": {

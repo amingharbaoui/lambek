@@ -85,7 +85,8 @@ function New-LambekPlan {
                 $category = Resolve-LambekCategory -Text $Text
                 if ($category) {
                     if (@($category.Facts).Count -gt 0) { Add-LambekTold -Plan ([pscustomobject]@{ Steps = @($category.Facts | ForEach-Object { [pscustomobject]@{ Statement = $_ } }) }) }
-                    return ConvertTo-LambekReplyPlan -Text $Text -Language $category.Language -Reply $category.Reply -Spoken
+                    $reply = Confirm-LambekProof -Reply $category.Reply -Language $category.Language
+                    return ConvertTo-LambekReplyPlan -Text $Text -Language $category.Language -Reply $reply -Spoken
                 }
                 # "et si Tweety etait un pingouin ?": a world imagined, where what would change is said; nothing told changes
                 $imagined = Resolve-LambekImagine -Text $Text
