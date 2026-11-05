@@ -250,7 +250,7 @@ Write-Host ("Checked by a checker of its own: {0} hold, {1} refused, {2} it cann
 if ($Lean) {
     $proved = @($rows | Where-Object Lean -EQ 'proved').Count
     $judgedCount = @($rows | Where-Object { $_.Lean -in 'proved', 'unproved', 'both' }).Count
-    Write-Host ("Judged by {0}: {1} proved, {2} not proved, {3} whose premises prove the opposite too, {4} not written" -f ((& $Lean --version | Select-Object -First 1) -replace ',.*$', ')'), $proved, @($rows | Where-Object Lean -EQ 'unproved').Count, @($rows | Where-Object Lean -EQ 'both').Count, $unlean.Count)
+    Write-Host ("Judged by {0}: {1} proved, {2} not proved, {3} whose premises prove the opposite too, {4} not written" -f ((@(& $Lean --version)[0]) -replace ',.*$', ')'), $proved, @($rows | Where-Object Lean -EQ 'unproved').Count, @($rows | Where-Object Lean -EQ 'both').Count, $unlean.Count)
     Write-Host ("Proof Lean does not prove: {0} of {1}, so under {2:P3} at 95 %" -f ($judgedCount - $proved), $judgedCount, (& $bound ($judgedCount - $proved) $judgedCount))
     Remove-Item -LiteralPath $leanFolder -Recurse -Force -ErrorAction SilentlyContinue
 }
@@ -261,4 +261,6 @@ Write-Host ("Premise cited and not needed: {0} of {1}, so under {2:P3} at 95 %" 
 Write-Host ("Answer given by another conversation's proof: {0} of {1}, so under {2:P3} at 95 %" -f ($total.Tried - $total.Swapped), $total.Tried, (& $bound ($total.Tried - $total.Swapped) $total.Tried))
 # (a proof not enough on its own, a premise cited and not needed, or an answer another proof gives fails the run:
 # build.ps1 stops on it)
+# (and only that: the exit code of the last program run, Lean refusing an opposite as it should, says nothing)
 if ($failed.Count -gt 0) { exit 1 }
+exit 0
