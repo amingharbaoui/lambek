@@ -172,6 +172,18 @@ function Resolve-LambekFact {
     $asked = $Text.Trim().EndsWith('?')
     $first = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)
     $languages = @(@($first) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $first }) | Where-Object { (Get-LambekLexicon -Language $_).Facts })
+    # Only a question is looked up: a question mark, a word that asks ("qui", "how many"), or a way of asking that
+    # opens it ("dis-moi", "tell me"). An order or a thing told is no question about the world, and is not looked up
+    if (-not $asked) {
+        $asking = $false
+        foreach ($language in $languages) {
+            $facts = (Get-LambekLexicon -Language $language).Facts
+            $questions = @($facts['Questions'].Values | ForEach-Object { @($_) } | Where-Object { $_ })
+            $openers = @($facts['Openers'] | Where-Object { $_ })
+            if (@(Find-LambekFactSpan -Words $all -Phrases $questions).Count -gt 0 -or @(Find-LambekFactSpan -Words $all -Phrases $openers -Before 1).Count -gt 0) { $asking = $true; break }
+        }
+        if (-not $asking) { return $null }
+    }
     $read = Resolve-LambekFactReading -Plain $plain -Asked $asked -Languages $languages
     if ($read) { return $read }
     return Resolve-LambekFactQuery -Plain $plain -Asked $asked -Languages $languages

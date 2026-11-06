@@ -199,6 +199,28 @@ Describe 'What Lambek knows of the world' {
         InModuleScope Lambek { Resolve-LambekFact -Text 'la capitale de la France est Lyon' } | Should -BeNullOrEmpty
     }
 
+    It 'does not look up what is no question: <Text>' -ForEach @(
+        @{ Text = 'supprime les fichiers .tmp dans C:\Temp' }
+        @{ Text = 'copy the report to the archive folder' }
+        @{ Text = 'tous les chats sont des animaux' }
+    ) {
+        Mock -ModuleName Lambek Resolve-LambekFactReading { $null }
+        Mock -ModuleName Lambek Resolve-LambekFactQuery { $null }
+        InModuleScope Lambek -Parameters @{ Text = $Text } { param($Text) Resolve-LambekFact -Text $Text } | Should -BeNullOrEmpty
+        Should -Invoke -ModuleName Lambek Resolve-LambekFactReading -Times 0 -Exactly
+        Should -Invoke -ModuleName Lambek Resolve-LambekFactQuery -Times 0 -Exactly
+    }
+
+    It 'looks up a question asked without a question mark: <Text>' -ForEach @(
+        @{ Text = 'quelle est la capitale de la France' }
+        @{ Text = 'tell me the capital of France' }
+    ) {
+        Mock -ModuleName Lambek Resolve-LambekFactReading { $null }
+        Mock -ModuleName Lambek Resolve-LambekFactQuery { $null }
+        InModuleScope Lambek -Parameters @{ Text = $Text } { param($Text) Resolve-LambekFact -Text $Text } | Out-Null
+        Should -Invoke -ModuleName Lambek Resolve-LambekFactReading -Times 1 -Exactly
+    }
+
     It 'puts what it read on the board, as read, with its source and the day of the data' {
         Ask 'quelle est la capitale de la France ?' | Out-Null
         $entry = InModuleScope Lambek { @((Get-LambekBoard).Entries() | Where-Object Source -EQ 'wikidata')[-1] }
