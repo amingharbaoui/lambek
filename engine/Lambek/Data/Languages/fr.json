@@ -2383,6 +2383,19 @@
       "dis",
       "dites"
     ],
+    "Asking": [
+      "dis moi",
+      "dites moi",
+      "sais tu",
+      "savez vous",
+      "est ce que tu sais",
+      "est ce que vous savez",
+      "peux tu me dire",
+      "pouvez vous me dire",
+      "je voudrais savoir",
+      "j aimerais savoir",
+      "je veux savoir"
+    ],
     "Closers": [
       "stp",
       "svp",
@@ -2675,6 +2688,18 @@
         "l",
         "les"
       ],
+      "Holds": {
+        "P161": "{value} a joué dans {subject}",
+        "P162": "{subject} a été produit par {value}",
+        "P57": "{subject} a été réalisé par {value}",
+        "P19": "{subject} est né{e} à {value}",
+        "P20": "{subject} est mort{e} à {value}",
+        "P50": "{subject} a été écrit par {value}",
+        "P170": "{subject} a été peint par {value}",
+        "P175": "{subject} est un album de {value}",
+        "P178": "{subject} a été développé par {value}",
+        "P179": "{subject} fait partie de {value}"
+      },
       "Of": [
         "de la",
         "de l",

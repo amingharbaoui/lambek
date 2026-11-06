@@ -43,6 +43,23 @@ BeforeAll {
         "F`tQ142`tP35`tQ3052772`t", "F`tQ90`tP6`tQ100`t", "K`tQ100`tvalue`t0", "L`tQ100`tfr`tEmmanuel Grégoire", "L`tQ100`ten`tEmmanuel Grégoire"
         "K`tQ30`tcountry`t300", "L`tQ30`tfr`tÉtats-Unis", "L`tQ30`ten`tUnited States", "A`tQ30`ten`tthe United States", "F`tQ30`tP36`tQ61`t"
         "K`tQ61`tcity`t200", "L`tQ61`tfr`tWashington", "L`tQ61`ten`tWashington, D.C.", "F`tQ61`tP17`tQ30`t"
+        # (two albums called Folklore, known almost as well: only the one they belong to tells them apart)
+        "K`tQ26876`tperson`t200", "L`tQ26876`tfr`tTaylor Swift", "L`tQ26876`ten`tTaylor Swift", "F`tQ26876`tP21`tQ6581072`t"
+        "K`tQ97620733`talbum`t41", "L`tQ97620733`tfr`tFolklore", "L`tQ97620733`ten`tFolklore", "F`tQ97620733`tP175`tQ26876`t", "F`tQ97620733`tP577`t2020-07-24`t11"
+        "K`tQ845703`talbum`t21", "L`tQ845703`tfr`tFolklore", "L`tQ845703`ten`tFolklore", "F`tQ845703`tP175`tQ80424`t", "F`tQ845703`tP577`t2003-11-25`t11"
+        "K`tQ80424`tvalue`t0", "L`tQ80424`tfr`tNelly Furtado", "L`tQ80424`ten`tNelly Furtado"
+        "K`tQ64596218`talbum`t39", "L`tQ64596218`tfr`tLover", "L`tQ64596218`ten`tLover", "F`tQ64596218`tP175`tQ26876`t", "F`tQ64596218`tP577`t2019-08-23`t11"
+        # (films, the actors in them and where they were born; two places called Orange)
+        "K`tQ329131`tfilm`t54", "L`tQ329131`tfr`tJerry Maguire", "L`tQ329131`ten`tJerry Maguire", "F`tQ329131`tP161`tQ37079`t", "F`tQ329131`tP161`tQ188375`t"
+        "K`tQ37079`tperson`t126", "L`tQ37079`tfr`tTom Cruise", "L`tQ37079`ten`tTom Cruise", "F`tQ37079`tP21`tQ6581097`t", "F`tQ37079`tP19`tQ128069`t"
+        "K`tQ188375`tperson`t80", "L`tQ188375`tfr`tRenée Zellweger", "L`tQ188375`ten`tRenée Zellweger", "F`tQ188375`tP21`tQ6581072`t", "F`tQ188375`tP19`tQ1506999`t"
+        "K`tQ128069`tvalue`t0", "L`tQ128069`tfr`tSyracuse", "L`tQ128069`ten`tSyracuse"
+        "K`tQ1506999`tvalue`t0", "L`tQ1506999`tfr`tKaty", "L`tQ1506999`ten`tKaty"
+        "K`tQ189505`tfilm`t72", "L`tQ189505`tfr`tLes Dents de la mer", "L`tQ189505`ten`tJaws", "F`tQ189505`tP161`tQ216569`t", "F`tQ189505`tP161`tQ181799`t"
+        "K`tQ216569`tperson`t55", "L`tQ216569`tfr`tRoy Scheider", "L`tQ216569`ten`tRoy Scheider", "F`tQ216569`tP21`tQ6581097`t", "F`tQ216569`tP19`tQ1087121`t"
+        "K`tQ181799`tperson`t60", "L`tQ181799`tfr`tRichard Dreyfuss", "L`tQ181799`ten`tRichard Dreyfuss", "F`tQ181799`tP21`tQ6581097`t", "F`tQ181799`tP19`tQ1506999`t"
+        "K`tQ1087121`tvalue`t0", "L`tQ1087121`tfr`tOrange", "L`tQ1087121`ten`tOrange"
+        "K`tQ491350`tcity`t62", "L`tQ491350`tfr`tOrange", "L`tQ491350`ten`tOrange", "F`tQ491350`tP17`tQ30`t"
     )
     $path = Join-Path $TestDrive 'world.facts.gz'
     $file = [IO.File]::Create($path)
@@ -219,6 +236,51 @@ Describe 'What Lambek knows of the world' {
         Mock -ModuleName Lambek Resolve-LambekFactQuery { $null }
         InModuleScope Lambek -Parameters @{ Text = $Text } { param($Text) Resolve-LambekFact -Text $Text } | Out-Null
         Should -Invoke -ModuleName Lambek Resolve-LambekFactReading -Times 1 -Exactly
+    }
+
+    It 'takes a way of asking for a question: <Text>' -ForEach @(
+        @{ Text = 'dis-moi la capitale de la France'; Said = "La capitale de la France est Paris, d'après Wikidata." }
+        @{ Text = 'salut, dis-moi la capitale de la France'; Said = "La capitale de la France est Paris, d'après Wikidata." }
+        @{ Text = 'tell me the capital of France'; Said = 'The capital of France is Paris, according to Wikidata.' }
+    ) {
+        Ask $Text | Should -Be $Said
+    }
+
+    It 'tells two things of the same name apart by the one they belong to: <Text>' -ForEach @(
+        @{ Text = "L'album Folklore de Taylor Swift est-il sorti avant ou après son album Lover ?"; Said = "Après : l'album Folklore est sorti le 24 juillet 2020 ; l'album Lover est sorti le 23 août 2019, d'après Wikidata." }
+        @{ Text = 'Was Folklore by Taylor Swift released before or after her album Lover?'; Said = 'After: the album Folklore was released on July 24, 2020; the album Lover was released on August 23, 2019, according to Wikidata.' }
+        @{ Text = "quand est sorti l'album Folklore de Taylor Swift ?"; Said = "L'album Folklore est sorti le 24 juillet 2020, d'après Wikidata." }
+        @{ Text = 'quand est sorti le Folklore de Nelly Furtado ?'; Said = "L'album Folklore est sorti le 25 novembre 2003, d'après Wikidata." }
+    ) {
+        Ask $Text | Should -Be $Said
+    }
+
+    It 'says nothing of a name shared by two things known almost as well' {
+        InModuleScope Lambek { Resolve-LambekFact -Text 'quand est sorti Folklore ?' } | Should -BeNullOrEmpty
+    }
+
+    It 'says the fact that told the two apart when asked why' {
+        Ask "quand est sorti l'album Folklore de Taylor Swift ?" | Out-Null
+        $why = Ask 'pourquoi ?'
+        $why | Should -BeLike '*Folklore est un album de Taylor Swift.*'
+        $why | Should -BeLike '*sorti le 24 juillet 2020*'
+    }
+
+    It 'finds what every condition holds for, each fact said: <Text>' -ForEach @(
+        @{ Text = 'Which actor starred in Jerry Maguire and was born in Syracuse?'; Said = 'Tom Cruise: Tom Cruise starred in Jerry Maguire; Tom Cruise was born in Syracuse, according to Wikidata.' }
+        # (Orange: the one an actor of the film was born in)
+        @{ Text = 'Quel acteur a joué dans Les Dents de la mer et est né à Orange ?'; Said = "Roy Scheider : Roy Scheider a joué dans Les Dents de la mer ; Roy Scheider est né à Orange, d'après Wikidata." }
+        @{ Text = 'who was born in Katy and starred in the movie Jaws?'; Said = 'Richard Dreyfuss: Richard Dreyfuss was born in Katy; Richard Dreyfuss starred in Jaws, according to Wikidata.' }
+    ) {
+        Ask $Text | Should -Be $Said
+    }
+
+    It 'says nothing when no thing holds every condition, or a word is not read: <Text>' -ForEach @(
+        @{ Text = 'Which actor starred in Jerry Maguire and was born in Orange?' }
+        @{ Text = 'Which actor starred in Jerry Maguire and was born in Syracuse, NY?' }
+        @{ Text = 'Which famous actor starred in Jerry Maguire and was born in Syracuse?' }
+    ) {
+        InModuleScope Lambek -Parameters @{ Text = $Text } { param($Text) Resolve-LambekFact -Text $Text } | Should -BeNullOrEmpty
     }
 
     It 'puts what it read on the board, as read, with its source and the day of the data' {

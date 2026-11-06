@@ -2018,6 +2018,16 @@
       "please tell me",
       "remind me"
     ],
+    "Asking": [
+      "tell me",
+      "can you tell me",
+      "could you tell me",
+      "do you know",
+      "i want to know",
+      "i would like to know",
+      "i d like to know",
+      "please tell me"
+    ],
     "Closers": [
       "please",
       "exactly",
@@ -2225,6 +2235,21 @@
       "Determiners": [
         "the"
       ],
+      "By": [
+        "by"
+      ],
+      "Holds": {
+        "P161": "{value} starred in {subject}",
+        "P162": "{subject} was produced by {value}",
+        "P57": "{subject} was directed by {value}",
+        "P19": "{subject} was born in {value}",
+        "P20": "{subject} died in {value}",
+        "P50": "{subject} was written by {value}",
+        "P170": "{subject} was painted by {value}",
+        "P175": "{subject} is an album by {value}",
+        "P178": "{subject} was developed by {value}",
+        "P179": "{subject} is part of {value}"
+      },
       "Of": [
         "of"
       ],

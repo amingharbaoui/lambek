@@ -165,16 +165,26 @@ function Resolve-LambekFact {
     $first = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)
     $languages = @(@($first) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $first }) | Where-Object { (Get-LambekLexicon -Language $_).Facts })
     # Only a question is looked up: a question mark, a word that asks ("qui", "how many"), or a way of asking that
-    # opens it ("dis-moi", "tell me"). An order or a thing told is no question about the world, and is not looked up
+    # opens it ("dis-moi", "tell me"). An order or a thing told is no question about the world, and is not looked up.
+    # A way of asking asks as a question mark does: "dis-moi la capitale de la France" (Facts.Asking, among the
+    # openers, after a greeting: "salut, dis-moi...")
     if (-not $asked) {
         $asking = $false
         foreach ($language in $languages) {
             $facts = (Get-LambekLexicon -Language $language).Facts
+            $from = 0
+            foreach ($pass in 1..2) {
+                $open = @(Find-LambekFactSpan -Words $all -Phrases @($facts['Openers']) -From $from -Before ($from + 1))
+                if ($open.Count -eq 0) { break }
+                $said = $all[$from..($from + $open[0].Length - 1)] -join ' '
+                if ($facts.Contains('Asking') -and $said -in @($facts['Asking'])) { $asked = $true }
+                $from += $open[0].Length
+            }
+            if ($asked) { break }
             $questions = @($facts['Questions'].Values | ForEach-Object { @($_) } | Where-Object { $_ })
-            $openers = @($facts['Openers'] | Where-Object { $_ })
-            if (@(Find-LambekFactSpan -Words $all -Phrases $questions).Count -gt 0 -or @(Find-LambekFactSpan -Words $all -Phrases $openers -Before 1).Count -gt 0) { $asking = $true; break }
+            if (@(Find-LambekFactSpan -Words $all -Phrases $questions).Count -gt 0) { $asking = $true; break }
         }
-        if (-not $asking) { return $null }
+        if (-not $asked -and -not $asking) { return $null }
     }
     $read = Resolve-LambekFactReading -Plain $plain -Asked $asked -Languages $languages
     if ($read) { return $read }
@@ -226,13 +236,16 @@ function Resolve-LambekFactReading {
         }
         if (-not $question -and -not $asked) { continue }
         $fillers = [System.Collections.Generic.HashSet[string]]::new([string[]] @($facts['Fillers']), [StringComparer]::Ordinal)
+        # (a name made sure by the one it belongs to: "l'album Folklore de Taylor Swift")
+        $named = $mentions
+        if (-not $Pin -and $facts.Contains('Query')) { $named = @(@(Get-LambekFactOwned -Mentions $mentions -Words $all -Facts $facts -Language $language) + $mentions) }
 
         $candidates = [System.Collections.Generic.List[object]]::new()
         foreach ($relation in @($facts['Relations'])) {
             $inverse = $relation.Contains('Inverse') -and $relation['Inverse']
             $cues = @(Find-LambekFactSpan -Words $words -Phrases @($relation['Cues']))
             foreach ($cue in @($cues | Select-Object -First 1)) {
-                foreach ($mention in $mentions) {
+                foreach ($mention in $named) {
                     $start = $mention.Start - $from
                     if ($start -lt 0 -or $start + $mention.Length -gt $words.Count) { continue }
                     # (the name is not the word of the fact, nor the question word)
@@ -268,7 +281,7 @@ function Resolve-LambekFactReading {
                     if ($left.Count -gt 0 -and -not $inverse -and $kind -in $null, 'yesno') {
                         # Yes or no: "Paris est-elle la capitale de la France ?", the rest is the value asked about (not
                         # after "quand" or "ou": "quand est mort le peintre de la Joconde ?" asks no yes or no)
-                        $other = @($mentions | Where-Object {
+                        $other = @($named | Where-Object {
                                 $_.Start - $from -le $left[0] -and $_.Start - $from + $_.Length -gt $left[-1] -and -not $_.Surname -and
                                 ($_.Start - $from + $_.Length -le $start -or $_.Start - $from -ge $start + $mention.Length)
                             } | Sort-Object Length -Descending | Select-Object -First 1)
@@ -325,8 +338,24 @@ function Resolve-LambekFactReading {
             Text = $reply.Reply; Form = $reply.Reply; Language = $language; Core = $reply.Core; Told = $base.Day
             Source = 'wikidata'; Thing = $reply.Thing.Id; Property = $reply.Candidate.Relation['Property']
         }
+        $reads = @()
+        $mention = $reply.Candidate.Mention
+        if ($mention.PSObject.Properties['Owner'] -and $mention.Owner) {
+            # (the fact that made the name sure is read too, and said when asked why)
+            $owner = [pscustomobject]@{ Relation = $mention.Relation; Mention = [pscustomobject]@{ Name = $mention.Name; Length = $mention.Length; Surname = $false }; Start = $reply.Candidate.Start; Things = @($mention.Things); Object = $null; Inverse = $false }
+            $ownerSaid = Get-LambekFactReply -Candidate $owner -Base $base -Facts $facts -Language $language -Words $words
+            if (-not $ownerSaid) { return $null }
+            $ownerEntry = [pscustomobject]@{
+                Text = $ownerSaid.Reply; Form = $ownerSaid.Reply; Language = $language; Core = $ownerSaid.Core; Told = $base.Day
+                Source = 'wikidata'; Thing = $ownerSaid.Thing.Id; Property = $mention.Relation['Property']
+            }
+            [void] (Get-LambekBoard).Put($ownerEntry, 'read', 'wikidata', $base.Day, $ownerSaid.Core, $false, $null, $ownerSaid.Reply, [int[]] @())
+            Add-LambekWorldRead -Core $ownerSaid.Core
+            $reads += [pscustomobject]@{ Source = $facts['Source']; Day = $base.Day; Line = $ownerSaid.Bare; Id = $ownerSaid.Thing.Id }
+        }
         [void] (Get-LambekBoard).Put($entry, 'read', 'wikidata', $base.Day, $reply.Core, $false, $null, $reply.Reply, [int[]] @())
-        Set-LambekLastProof -Read @([pscustomobject]@{ Source = $facts['Source']; Day = $base.Day; Line = $reply.Bare; Id = $reply.Thing.Id })
+        $reads += [pscustomobject]@{ Source = $facts['Source']; Day = $base.Day; Line = $reply.Bare; Id = $reply.Thing.Id }
+        Set-LambekLastProof -Read $reads
         Add-LambekWorldRead -Core $reply.Core
         return [pscustomobject]@{ Language = $language; Reply = ($lines -join "`n"); Fact = $entry }
     }

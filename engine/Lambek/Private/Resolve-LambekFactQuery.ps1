@@ -30,6 +30,8 @@ function Resolve-LambekFactQuery {
         if ($counted) { return $counted }
         $compared = Resolve-LambekFactCompare -Words $words -Asked $Asked -Language $language -Facts $facts
         if ($compared) { return $compared }
+        $both = Resolve-LambekFactBoth -Words $words -Language $language -Facts $facts
+        if ($both) { return $both }
 
         # A thing named by what it is, somewhere in the question
         for ($at = 0; $at -lt $words.Count; $at++) {
@@ -100,6 +102,81 @@ function Select-LambekFactThing {
     if ($Mention.Surname -and $things[0].Links -lt 50) { return $null }
     if ($things.Count -gt 1 -and $things[0].Links -lt $ratio * $things[1].Links) { return $null }
     return $things[0]
+}
+
+function Get-LambekFactOwned {
+    # A name made sure by the one it belongs to: "l'album Folklore de Taylor Swift" (two albums are called Folklore:
+    # the one whose artist is Taylor Swift), and after it "son album Lover" (the one named before, said with a
+    # possessive of the third person, as the treebanks tag it: Poss=Yes, Person[psor]=3). Only by a fact the language
+    # can say (Facts.Relations), which is read too. One thing for that name, or the name is not made sure
+    param([object[]] $Mentions, [string[]] $Words, [hashtable] $Facts, [string] $Language)
+
+    $query = $Facts['Query']
+    $links = @(@($query['Of']) + @($(if ($query.Contains('By')) { $query['By'] })) | Where-Object { $_ })
+    $relations = @($Facts['Relations'] | Where-Object { -not ($_.Contains('Inverse') -and $_['Inverse']) -and "$($_['Property'])" -match '^P\d+$' })
+    $model = Get-LambekFormModel -Language $Language
+    $owned = [System.Collections.Generic.List[object]]::new()
+    $owners = [System.Collections.Generic.List[object]]::new()
+    # (the thing of the name that points at the owner by a fact said in the language; one such thing, one owner)
+    $pair = {
+        param([object[]] $Things, [object[]] $Of)
+        $ids = @($Of | ForEach-Object Id)
+        $found = @(foreach ($thing in $Things) {
+                foreach ($relation in $relations) {
+                    if (@(@($relation['Subject']) | Where-Object { $thing.Is($_) }).Count -eq 0) { continue }
+                    foreach ($fact in @($thing.Values("$($relation['Property'])"))) {
+                        if ($fact.Value -in $ids) { [pscustomobject]@{ Thing = $thing; Owner = @($Of | Where-Object Id -EQ $fact.Value)[0]; Relation = $relation } }
+                    }
+                }
+            })
+        if (@($found | ForEach-Object { "$($_.Thing.Id) $($_.Owner.Id)" } | Sort-Object -Unique).Count -ne 1) { return }
+        $found[0]
+    }
+    foreach ($mention in @($Mentions | Where-Object { -not $_.Surname } | Sort-Object Start, { - $_.Length })) {
+        $end = $mention.Start + $mention.Length
+        $start = $mention.Start
+        $found = $null
+        $link = @(Find-LambekFactSpan -Words $Words -Phrases $links -From $end -Before ($end + 1))
+        if ($link.Count -gt 0) {
+            $after = $end + $link[0].Length
+            $other = @($Mentions | Where-Object { $_.Start -eq $after -and -not $_.Surname } | Sort-Object Length -Descending | Select-Object -First 1)
+            if ($other.Count -gt 0) {
+                $found = & $pair $mention.Things $other[0].Things
+                if ($found) { $end = $after + $other[0].Length; $owners.Add($found.Owner) }
+            }
+        }
+        if (-not $found -and $owners.Count -gt 0 -and $model) {
+            # (the possessive, right before the name or before the kind of thing it names: "son album Lover")
+            $kinds = @($mention.Things | ForEach-Object { @($_.Kinds) } | Sort-Object -Unique | ForEach-Object { @($Facts['Kinds'][$_]) } | Where-Object { $_ })
+            $at = $mention.Start - 1
+            if ($at -ge 1 -and $Words[$at] -in $kinds) { $at-- }
+            $tags = $null
+            if ($at -ge 0 -and $model.Tags.TryGetValue($Words[$at], [ref] $tags) -and
+                @($tags | Where-Object { $_ -match '(^|\|)Poss=Yes(\||$)' -and $_ -match '(^|\|)Person(\[psor\])?=3(\||$)' }).Count -gt 0 -and
+                @($owners | ForEach-Object Id | Sort-Object -Unique).Count -eq 1) {
+                $found = & $pair $mention.Things @($owners[0])
+                if ($found) { $start = $at }
+            }
+        }
+        if (-not $found) { continue }
+        $owned.Add([pscustomobject]@{
+                Start = $start; Length = $end - $start; Name = ($Words[$start..($end - 1)] -join ' '); Things = [LambekThing[]] @($found.Thing)
+                Surname = $false; Owner = $found.Owner; Relation = $found.Relation
+            })
+    }
+    return $owned.ToArray()
+}
+
+function Add-LambekFactOwner {
+    # The fact that made a name sure ("Folklore est un album de Taylor Swift"), read as the others are
+    param([object] $Mention, [string] $Language, [hashtable] $Facts, [string[]] $Words)
+
+    if (-not $Mention.PSObject.Properties['Owner'] -or -not $Mention.Owner) { return $true }
+    $candidate = [pscustomobject]@{ Relation = $Mention.Relation; Mention = [pscustomobject]@{ Name = $Mention.Name; Length = $Mention.Length; Surname = $false }; Start = $Mention.Start; Things = @($Mention.Things); Object = $null; Inverse = $false }
+    $said = Get-LambekFactReply -Candidate $candidate -Base (Get-LambekFactBase) -Facts $Facts -Language $Language -Words $Words
+    if (-not $said) { return $false }
+    $null = Add-LambekFactRead -Text $said.Reply -Language $Language -Core $said.Core -Thing @($Mention.Things)[0].Id -Property "$($Mention.Relation['Property'])" -Bare $said.Bare
+    return $true
 }
 
 function Read-LambekFactName {
@@ -383,6 +460,8 @@ function Resolve-LambekFactCompare {
     if ($chosen.Count -eq 0) { return $null }
 
     $mentions = @($base.Find(($Words -join ' ')))
+    # (a name made sure by the one it belongs to: "l'album Folklore de Taylor Swift", "son album Lover")
+    $mentions = @(@(Get-LambekFactOwned -Mentions $mentions -Words $Words -Facts $Facts -Language $Language) + $mentions)
     foreach ($relation in $chosen) {
         $marks = [bool[]] $read.Clone()
         foreach ($cue in @(Find-LambekFactSpan -Words $Words -Phrases @($relation['Cues']))) {
@@ -426,6 +505,7 @@ function Resolve-LambekFactCompare {
         if ($null -eq $order -or $order -eq 0) { return $null }
         $lines = @()
         foreach ($name in $names) {
+            if (-not (Add-LambekFactOwner -Mention $name.Mention -Language $Language -Facts $Facts -Words $Words)) { return $null }
             $mention = [pscustomobject]@{ Name = $name.Mention.Name; Length = $name.Mention.Length; Surname = $false }
             $candidate = [pscustomobject]@{ Relation = $relation; Mention = $mention; Start = $name.Mention.Start; Things = @($name.Thing); Object = $null; Inverse = $false }
             $said = Get-LambekFactReply -Candidate $candidate -Base $base -Facts $Facts -Language $Language -Words $Words
@@ -450,6 +530,130 @@ function Resolve-LambekFactCompare {
         return [pscustomobject]@{ Language = $Language; Reply = $reply; Fact = $fact }
     }
     return $null
+}
+
+function Resolve-LambekFactBoth {
+    # The things every condition holds for, each condition a fact read: "which actor starred in Jerry Maguire and was
+    # born in Syracuse?", "quel film a ete produit par Adam Sandler et realise par Dennis Dugan ?". A condition is the
+    # words of one fact and one name; the things it keeps are those that fact links to that name, either way (the actors
+    # of a film, the films of a director). Every word is read; one to three things kept by every condition, each said
+    # with the facts that hold for it (Query.Holds); else nothing is said. What Wikidata lacks is not known: the things
+    # said hold, others may hold too
+    param([string[]] $Words, [string] $Language, [hashtable] $Facts)
+
+    $query = $Facts['Query']
+    if (-not $query.Contains('Holds')) { return $null }
+    $holds = $query['Holds']
+    $base = Get-LambekFactBase
+    $small = @(@($Facts['Fillers']) + @($query['Determiners']) + @($(if ($query.Contains('By')) { $query['By'] })) | Where-Object { $_ })
+    $fillers = [System.Collections.Generic.HashSet[string]]::new([string[]] $small, [StringComparer]::Ordinal)
+
+    # The question word first: "which", "quel", "qui"
+    $question = @(Find-LambekFactSpan -Words $Words -Phrases @(@($Facts['Questions']['what']) + @($Facts['Questions']['who'])) -Before 1)
+    if ($question.Count -eq 0) { return $null }
+    $mentions = @($base.Find(($Words -join ' ')))
+    $mentions = @(@(Get-LambekFactOwned -Mentions $mentions -Words $Words -Facts $Facts -Language $Language) + $mentions)
+    # The conditions, apart where "and" is said, not inside a name ("Jack and Jill")
+    $ands = @(Find-LambekFactSpan -Words $Words -Phrases @($Facts['And']) | Where-Object {
+            $at = $_.Start
+            @($mentions | Where-Object { $_.Start -lt $at -and $at -lt $_.Start + $_.Length }).Count -eq 0
+        })
+    if ($ands.Count -eq 0) { return $null }
+    $read = [bool[]]::new($Words.Count)
+    foreach ($span in @($question) + @($ands)) { for ($k = $span.Start; $k -lt $span.Start + $span.Length; $k++) { $read[$k] = $true } }
+    $segments = [System.Collections.Generic.List[object]]::new()
+    $from = $question[0].Length
+    foreach ($and in $ands) { $segments.Add(@($from, $and.Start)); $from = $and.Start + $and.Length }
+    $segments.Add(@($from, $Words.Count))
+
+    $relations = @($Facts['Relations'] | Where-Object { $holds.Contains("$($_['Property'])") })
+    $conditions = [System.Collections.Generic.List[object]]::new()
+    $cueWords = [System.Collections.Generic.List[string]]::new()
+    foreach ($segment in $segments) {
+        $first = $segment[0]
+        $last = $segment[1]
+        if ($last -le $first) { return $null }
+        $readings = [System.Collections.Generic.List[object]]::new()
+        foreach ($relation in $relations) {
+            $property = "$($relation['Property'])"
+            foreach ($cue in @(Find-LambekFactSpan -Words $Words -Phrases @($relation['Cues']) -From $first -To $last)) {
+                $inside = @($mentions | Where-Object {
+                        $_.Start -ge $first -and $_.Start + $_.Length -le $last -and -not $_.Surname -and
+                        -not ($_.Start -lt $cue.Start + $cue.Length -and $cue.Start -lt $_.Start + $_.Length) -and
+                        -not ($_.Length -eq 1 -and $fillers.Contains($_.Name))
+                    } | Sort-Object { - $_.Length }, Start | Select-Object -First 1)
+                if ($inside.Count -eq 0) { continue }
+                $mention = $inside[0]
+                # (either way: the values of the fact of the thing named, or the things whose fact is that thing)
+                $kept = [ordered]@{}
+                foreach ($thing in @($mention.Things)) {
+                    foreach ($fact in @($thing.Values($property))) {
+                        $value = $base.Thing($fact.Value)
+                        if ($value -and $value.Labels.Count -gt 0 -and -not $kept.Contains($value.Id)) { $kept[$value.Id] = [pscustomobject]@{ Thing = $value; Subject = $thing; Value = $value } }
+                    }
+                    foreach ($subject in @($base.Having($property, $thing.Id))) {
+                        if ($subject.Labels.Count -gt 0 -and -not $kept.Contains($subject.Id)) { $kept[$subject.Id] = [pscustomobject]@{ Thing = $subject; Subject = $subject; Value = $thing } }
+                    }
+                }
+                if ($kept.Count -eq 0) { continue }
+                $readings.Add([pscustomobject]@{ Property = $property; Cue = $cue; Mention = $mention; Kept = $kept; Relation = $relation })
+            }
+        }
+        if ($readings.Count -eq 0) { return $null }
+        # (one fact for the condition: the longest name, then the longest words of the fact)
+        $longest = ($readings | Measure-Object -Property { $_.Mention.Length } -Maximum).Maximum
+        $best = @($readings | Where-Object { $_.Mention.Length -eq $longest })
+        $cueLongest = ($best | Measure-Object -Property { $_.Cue.Length } -Maximum).Maximum
+        $best = @($best | Where-Object { $_.Cue.Length -eq $cueLongest })
+        if (@($best | ForEach-Object Property | Sort-Object -Unique).Count -ne 1) { return $null }
+        $condition = $best[0]
+        foreach ($span in @($condition.Cue, $condition.Mention)) { for ($k = $span.Start; $k -lt $span.Start + $span.Length; $k++) { $read[$k] = $true } }
+        foreach ($same in @($relations | Where-Object { "$($_['Property'])" -eq $condition.Property })) { foreach ($phrase in @($same['Cues'])) { $cueWords.Add("$phrase") } }
+        $conditions.Add($condition)
+    }
+
+    # The kind of the things asked, right after the question word ("which movie", "quel film"); or the words of one of
+    # the facts ("which actor" starred in it); the kinds of the things named ("the movie Jaws")
+    $kind = $null
+    $at = $question[0].Length
+    foreach ($name in @($Facts['Kinds'].Keys | Sort-Object)) {
+        foreach ($span in @(Find-LambekFactSpan -Words $Words -Phrases @($Facts['Kinds'][$name]))) {
+            if ($read[$span.Start]) { continue }
+            if ($span.Start -eq $at) { $kind = $name }
+            for ($k = $span.Start; $k -lt $span.Start + $span.Length; $k++) { $read[$k] = $true }
+        }
+    }
+    foreach ($span in @(Find-LambekFactSpan -Words $Words -Phrases @($cueWords) -From $at -Before ($at + 1))) {
+        if (-not $read[$span.Start]) { for ($k = $span.Start; $k -lt $span.Start + $span.Length; $k++) { $read[$k] = $true } }
+    }
+    $left = @(for ($k = 0; $k -lt $Words.Count; $k++) { if (-not $read[$k] -and -not $fillers.Contains($Words[$k])) { $k } })
+    if ($left.Count -gt 0) { return $null }
+
+    # The things every condition keeps, of the kind asked
+    $ids = @($conditions[0].Kept.Keys)
+    foreach ($condition in @($conditions | Select-Object -Skip 1)) { $ids = @($ids | Where-Object { $condition.Kept.Contains($_) }) }
+    if ($kind) { $ids = @($ids | Where-Object { $conditions[0].Kept[$_].Thing.Is($kind) }) }
+    if ($ids.Count -eq 0 -or $ids.Count -gt 3) { return $null }
+
+    $heads = @()
+    $lines = @()
+    foreach ($id in $ids) {
+        $heads += $conditions[0].Kept[$id].Thing.Label($Language)
+        foreach ($condition in $conditions) {
+            $fact = $condition.Kept[$id]
+            $female = @($fact.Subject.Values('P21') | Where-Object { $_.Value -in 'Q6581072', 'Q1052281' }).Count -gt 0
+            $fill = @{ subject = $fact.Subject.Label($Language); value = $fact.Value.Label($Language); e = $(if ($female) { 'e' } else { '' }) }
+            if (-not $fill.subject -or -not $fill.value) { return $null }
+            $line = [regex]::Replace("$($holds[$condition.Property])", '\{(\w+)\}', { param($m) "$($fill[$m.Groups[1].Value])" })
+            $core = "wikidata($($fact.Subject.Id), $($condition.Property), $($fact.Value.Id))"
+            $entry = Add-LambekFactRead -Text ($line + $Facts['According'] + '.') -Language $Language -Core $core -Thing $fact.Subject.Id -Property $condition.Property -Bare "$line."
+            $lines += $line
+        }
+    }
+    $head = Join-LambekFactList -Items $heads -And $Facts['And']
+    $reply = "$head : $($lines -join ' ; ')$($Facts['According'])."
+    if ($Language -ne 'fr') { $reply = "${head}: $($lines -join '; ')$($Facts['According'])." }
+    return [pscustomobject]@{ Language = $Language; Reply = $reply; Fact = $entry }
 }
 
 function Compare-LambekFactDate {
