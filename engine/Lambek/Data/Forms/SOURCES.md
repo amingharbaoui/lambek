@@ -72,3 +72,27 @@ What the notebooks hold and what they gave, measured when they were written (bef
 
 No figure fell. The texts are read again with `tools/Learn-LambekWords.ps1` (French: 22 minutes, English: 19, on a
 cloud machine of two cores); a text that changed since gives another notebook, measured the same way.
+
+## Words of logic and copulas (step 3)
+
+`fr.logic` and `en.logic` are the words of logic of each language, the words that say of how many things a sentence
+is (`all`: "tous", "chaque"; `some`: "certains"; `no`: "aucun"), and its copulas, the verbs that only join ("être",
+"be"), made by `tools/Learn-LambekLogicWords.ps1`. Nothing is written by hand: the reader of general rules
+(`Read-LambekCategoryTagged`) reads a sentence by the tags of its words and these words only, the same in every language.
+
+- The copulas are the lemmas the treebanks of the language tag with the relation `cop` (UD French-GSD, UD English-EWT,
+  release 2.18, train files).
+- For English, the words of logic are those UD English-EWT tags `PronType=Tot`, `PronType=Ind` or `PronType=Neg`.
+- For another language, they are learned from sentences translated from and to English: both sides are read by the
+  forms models, and a word the treebanks of the language saw as a determiner or a pronoun takes a kind when it is met
+  in at least 20 pairs with that kind on the English side, and with it in most of the pairs it is met in (sentences of
+  at most 12 words). Counts only, in integers.
+
+| Pairs | Licence | Pairs read |
+| --- | --- | --- |
+| [Tatoeba](https://tatoeba.org), release v2023-04-12 of [OPUS](https://opus.nlpl.eu/Tatoeba.php), English-French | [CC BY 2.0 FR](https://creativecommons.org/licenses/by/2.0/fr/) | 275 413 |
+
+The sentences of Tatoeba are by its contributors (see https://tatoeba.org/eng/terms_of_use); the pairs are not kept
+here, only the words learned from them, with the counts they were learned with and the SHA-256 of the files read, in
+the first line of each file. As in the treebanks, the English side anchors what a word means: "another" and "such" are
+tagged PronType=Ind in English-EWT, so "autre" and "telle" are learned as words of `some`.

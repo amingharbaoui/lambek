@@ -128,6 +128,7 @@ $script:ProblemStores = $null
 $script:ProblemTrigger = $null
 # The shapes of general rules in each language, the base forms of their words, and the sentences told read as them
 $script:CategoryWords = $null
+$script:LogicWords = $null
 $script:CategoryLemmas = $null
 $script:CategoryReadings = $null
 # The question Lambek asked in each conversation when it could not conclude, waiting for its answer

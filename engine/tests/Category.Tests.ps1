@@ -449,4 +449,62 @@ Describe 'General rules told in words' {
             $wrong | Should -BeNullOrEmpty
         }
     }
+
+    Context 'Read by the tags of the words' {
+
+        It 'reasons with what is had, in French and in English: <Question>' -ForEach @(
+            @{ Told = 'tous les appareils ont un capteur', 'mon téléphone est un appareil'; Question = 'mon téléphone a-t-il un capteur ?'; Said = 'Oui : votre téléphone a un capteur.*' }
+            @{ Told = 'tous les oiseaux ont des plumes', 'le moineau est un oiseau'; Question = 'est-ce que le moineau a des plumes ?'; Said = 'Oui : *moineau a des plumes.*' }
+            @{ Told = 'all devices have a sensor', 'my phone is a device'; Question = 'does my phone have a sensor?'; Said = 'Yes: your phone does have a sensor.*' }
+        ) {
+            Tell $Told
+            Ask $Question | Should -BeLike $Said
+        }
+
+        It 'reads a sentence as its tags and its words of logic say: <Sentence>' -ForEach @(
+            @{ Language = 'fr'; Sentence = 'tous les chats boivent du lait'; Question = $false; Kind = 'all'; Predicate = 'v:boire>lait' }
+            @{ Language = 'fr'; Sentence = 'chaque chat est un animal'; Question = $false; Kind = 'all'; Predicate = 'animal' }
+            @{ Language = 'fr'; Sentence = "aucun chien n'aime les chats"; Question = $false; Kind = 'no'; Predicate = 'v:aimer>chat' }
+            @{ Language = 'fr'; Sentence = 'les oiseaux ne volent pas'; Question = $false; Kind = 'no'; Predicate = 'v:voler' }
+            @{ Language = 'fr'; Sentence = 'Tom a un chat'; Question = $false; Kind = 'does'; Predicate = 'v:avoir>chat' }
+            @{ Language = 'fr'; Sentence = 'suis-je mortel'; Question = $true; Kind = 'askis'; Predicate = 'mortel' }
+            @{ Language = 'fr'; Sentence = 'est-ce que Minou est noir'; Question = $true; Kind = 'askis'; Predicate = 'noir' }
+            @{ Language = 'en'; Sentence = 'Socrates is a man'; Question = $false; Kind = 'is'; Predicate = 'man' }
+            @{ Language = 'en'; Sentence = 'no fish is a mammal'; Question = $false; Kind = 'no'; Predicate = 'mammal' }
+        ) {
+            $read = InModuleScope Lambek -Parameters $_ { param($Language, $Sentence, $Question) Read-LambekCategoryTagged -Sentence $Sentence -Language $Language -Question:$Question }
+            $read.Kind | Should -Be $Kind
+            @($read.Predicate.Atoms) -join '+' | Should -Be $Predicate
+        }
+
+        It 'leaves to the rest what is no sentence, or asks which or how many: <Sentence>' -ForEach @(
+            @{ Language = 'fr'; Sentence = 'raconte-moi une blague'; Question = $false }
+            @{ Language = 'fr'; Sentence = "combien de pays sont membres de l'Union européenne"; Question = $true }
+            @{ Language = 'en'; Sentence = 'Plan hash'; Question = $false }
+            @{ Language = 'en'; Sentence = 'what is the capital of France'; Question = $true }
+        ) {
+            InModuleScope Lambek -Parameters $_ { param($Language, $Sentence, $Question) Read-LambekCategoryTagged -Sentence $Sentence -Language $Language -Question:$Question } | Should -BeNullOrEmpty
+        }
+
+        It 'has its words of logic and its copula learned, not written' {
+            $logic = InModuleScope Lambek { Get-LambekLogicWord -Language fr }
+            $logic.Kinds['tous'] | Should -Be 'all'
+            $logic.Kinds['chaque'] | Should -Be 'all'
+            $logic.Kinds['aucun'] | Should -Be 'no'
+            $logic.Kinds['certains'] | Should -Be 'some'
+            $logic.Copulas | Should -Contain 'être'
+            (InModuleScope Lambek { Get-LambekLogicWord -Language en }).Copulas | Should -Contain 'be'
+        }
+
+        It 'learns a word of logic from sentences translated from English' {
+            $words = InModuleScope Lambek {
+                $english = @(1..4 | ForEach-Object { 'all cats are black', 'some dogs are white', 'the birds sing', 'the cats sleep' })
+                $french = @(1..4 | ForEach-Object { 'tous les chats sont noirs', 'certains chiens sont blancs', 'les oiseaux chantent', 'les chats dorment' })
+                [LambekLogicWords]::Learn((Get-LambekFormModel -Language en), (Get-LambekFormModel -Language fr), [string[]] $english, [string[]] $french, 3, 12)
+            }
+            @($words | Where-Object Word -EQ 'tous').Kind | Should -Be 'all'
+            @($words | Where-Object Word -EQ 'certains').Kind | Should -Be 'some'
+            @($words | Where-Object Word -EQ 'les') | Should -BeNullOrEmpty
+        }
+    }
 }

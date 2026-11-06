@@ -149,6 +149,12 @@ function Read-LambekCategorySentence {
     }
     if ($Imagined) { $lists += , @($words.Wondered) }
     $lists += , @($words.Questions)
+    # Read first by the tags of its words and the words of logic learned, the same in every language that has them
+    # ("tous les appareils ont un capteur", "mon telephone a-t-il un capteur"); then by the patterns of the language
+    if (-not $Listener -and -not $Imagined) {
+        $tagged = Read-LambekCategoryTagged -Sentence $Sentence -Language $Language -Question:$Question -Shape:$Shape
+        if ($tagged) { return $tagged }
+    }
     foreach ($list in $lists) {
         foreach ($rule in $list) {
             $match = $rule.Regex.Match($Sentence)
@@ -235,7 +241,8 @@ function Read-LambekCategoryPart {
         $item.Written.Predicate = $Values['p'].Trim()
     }
     elseif ($Values.ContainsKey('v')) {
-        $lemma = Get-LambekCategoryLemma -Word (ConvertTo-LambekNormalizedText -Text $Values['v']) -Language $Language -Verb
+        # (the lemma the forms model read the verb with in its sentence, when the sentence was read by its tags)
+        $lemma = $(if ($Values.ContainsKey('lemma')) { ConvertTo-LambekNormalizedText -Text $Values['lemma'] } else { Get-LambekCategoryLemma -Word (ConvertTo-LambekNormalizedText -Text $Values['v']) -Language $Language -Verb })
         if (-not $lemma) { return $null }
         # "aiment le lait": the verb and what it is done to are one thing said ("aimer le lait"), whatever the article
         $atom = "v:$lemma"
