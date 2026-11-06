@@ -26,7 +26,8 @@
       https://raw.githubusercontent.com/UniversalDependencies/UD_French-Rhapsodie/r2.18/fr_rhapsodie-ud-dev.conllu
       https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.18/en_ewt-ud-train.conllu
       https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.18/en_ewt-ud-dev.conllu
-    Their SHA-256 are checked when they are given with these names.
+    Their SHA-256 are checked when they are given with these names. For German, Spanish, Dutch, Portuguese and Italian,
+    the treebanks named in engine/Lambek/Data/Forms/SOURCES.md, from the same release, at the same addresses.
 .EXAMPLE
     ./tools/Build-LambekForms.ps1 -Language fr -Path (Get-ChildItem ./ud/fr_*-ud-train.conllu, ./ud/fr_*-ud-dev.conllu) -OutFile ./engine/Lambek/Data/Forms/fr.forms.gz
 #>
@@ -70,7 +71,24 @@ $files = foreach ($item in $Path) {
 }
 
 $sentences = [System.Collections.Generic.List[LambekTreebankWord[]]]::new()
-foreach ($file in $files) { $sentences.AddRange([LambekTreebank]::Read($file)) }
+foreach ($file in $files) {
+    $read = [LambekTreebank]::Read($file)
+    # A treebank that hides its words ("_", to be put back from elsewhere) or leaves out their lemmas or their features
+    # would teach "_" for a word and no features for any: it is never learned from
+    $count = 0; $form = 0; $lemma = 0; $feats = 0
+    foreach ($sentence in $read) {
+        foreach ($word in $sentence) {
+            $count++
+            if ($word.Form -ceq '_') { $form++ }
+            if ($word.Lemma -ceq '_') { $lemma++ }
+            if ($word.Feats -ceq '_') { $feats++ }
+        }
+    }
+    foreach ($missing in @(@('words', $form), @('lemmas', $lemma), @('features', $feats))) {
+        if ($count -gt 0 -and $missing[1] -gt 0.9 * $count) { throw "$(Split-Path -Path $file -Leaf) leaves out the $($missing[0]) of $($missing[1]) of its $count words: it cannot be learned from." }
+    }
+    $sentences.AddRange($read)
+}
 $words = 0
 foreach ($sentence in $sentences) { $words += $sentence.Length }
 Write-Host "$($files.Count) file(s), $($sentences.Count) sentences, $words words."

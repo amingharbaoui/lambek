@@ -120,6 +120,28 @@ Describe 'The forms model read from its file' {
         (Get-FileHash -LiteralPath $again).Hash | Should -Be (Get-FileHash -LiteralPath $first).Hash
     }
 
+    It 'is read back when its words end with emoji, never cut in two' {
+        $tiny = Join-Path $TestDrive 'emoji.conllu'
+        $smile = [char]::ConvertFromUtf32(0x1F600)
+        $grin = [char]::ConvertFromUtf32(0x1F603)
+        $lines = @(
+            "1`ttop$smile`ttop$smile`tSYM`t_`t_`t0`troot`t_`t_"
+            ''
+            "1`ttop$grin`ttop$grin`tNOUN`t_`t_`t0`troot`t_`t_"
+            ''
+            "1`ttip$smile`ttip$smile`tINTJ`t_`t_`t0`troot`t_`t_"
+            ''
+        )
+        [IO.File]::WriteAllText($tiny, ($lines -join "`n") + "`n", [Text.UTF8Encoding]::new($false))
+        $model = [LambekForms]::new()
+        $model.Passes = 2
+        $model.LearnTokens([string[]] @($tiny))
+        $model.Train([LambekTreebank]::Read($tiny), $null)
+        $path = Join-Path $TestDrive 'emoji.forms.gz'
+        $model.Save($path)
+        { [LambekForms]::Load($path) } | Should -Not -Throw
+    }
+
     It 'reads a verb seen only as a noun with the lemma of the verb: <Text>' -ForEach @(
         @{ Text = 'je bois un café'; Form = 'bois'; Lemma = 'boire' }
         @{ Text = 'quand je suis fatigué, je bois un café'; Form = 'bois'; Lemma = 'boire' }

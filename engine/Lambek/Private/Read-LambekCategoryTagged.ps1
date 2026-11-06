@@ -40,7 +40,8 @@ function Read-LambekCategoryTagged {
     $logic = Get-LambekLogicWord -Language $Language
     if (-not $model -or -not $logic) { return $null }
     $isCopula = { param($r) "$($readings[$r].Lemma)".ToLowerInvariant() -in $logic.Copulas }
-    $words = @($Sentence -split ' ' | Where-Object { $_ })
+    # (the marks that open or close the sentence are no words of it: the inverted mark that opens a question in Spanish)
+    $words = @(($Sentence.Trim() -replace '^\p{P}+', '' -replace '\p{P}+$', '') -split ' ' | Where-Object { $_ })
     $inverted = $false
     # (asked as the language asks before the sentence, its last vowel elided before a vowel: "est-ce que", "est-ce
     # qu'il")

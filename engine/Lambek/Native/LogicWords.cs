@@ -18,7 +18,7 @@ public sealed class LambekLogicWord
 // kind: the treebank of English tags "all", "every", "each" PronType=Tot, "some" PronType=Ind, "no" PronType=Neg, and
 // its model reads them so in context. A word of the other language is of that kind when its treebank saw it as a
 // determiner or a pronoun, and it is met in at least `least` pairs with that kind on the English side, and with it in
-// most of the pairs it is met in.
+// most of the pairs it is met in. Under a negation the English side says none for some: "I do not see anyone" is "no one".
 // Counts only, in integers, every sentence in the order given: the same sentences give the same words on every machine
 public static class LambekLogicWords
 {
@@ -49,9 +49,13 @@ public static class LambekLogicWords
             LambekFormReading[] second = other.ReadText(otherSide[i] ?? "");
             if (second.Length == 0 || second.Length > longest) continue;
             HashSet<string> found = new HashSet<string>(StringComparer.Ordinal);
+            bool denied = first.Any(word => ("|" + (word.Feats ?? "") + "|").Contains("|Polarity=Neg|"));
             foreach (LambekFormReading word in first)
             {
                 string kind = KindOf(word.Upos, word.Feats);
+                // Not at least one is none: "I don't have anything" says what "non ho niente" says, and "not a",
+                // what "kein" says ("a bee is not a bird": "eine Biene ist kein Vogel")
+                if (denied && (kind == "some" || (word.Upos == "DET" && ("|" + (word.Feats ?? "") + "|").Contains("|Definite=Ind|")))) kind = "no";
                 if (kind != null) found.Add(kind);
             }
             // (a word once a sentence, as written; one the treebank saw as a determiner or a pronoun, and anything else)

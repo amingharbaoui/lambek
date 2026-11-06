@@ -557,8 +557,8 @@ public class LambekForms
     {
         string lower = form.ToLowerInvariant();
         List<string> features = new List<string>(16);
-        for (int n = 1; n <= 4; n++) if (lower.Length >= n) features.Add("s" + n + "=" + lower.Substring(lower.Length - n));
-        for (int n = 1; n <= 3; n++) if (lower.Length >= n) features.Add("p" + n + "=" + lower.Substring(0, n));
+        for (int n = 1; n <= 4; n++) if (lower.Length >= n) features.Add("s" + n + "=" + Suffix(lower, n));
+        for (int n = 1; n <= 3; n++) if (lower.Length >= n) features.Add("p" + n + "=" + Prefix(lower, n));
         if (form.Length > 0 && char.IsUpper(form[0])) features.Add("cap");
         if (form.Length > 1 && form.All(char.IsUpper)) features.Add("allcap");
         if (form.Any(char.IsDigit)) features.Add("digit");
@@ -1274,8 +1274,22 @@ public class LambekForms
         return shape.ToString();
     }
 
-    static string Suffix(string word, int length) { return word.Length > length ? word.Substring(word.Length - length) : word; }
-    static string Prefix(string word, int length) { return word.Length > length ? word.Substring(0, length) : word; }
+    // The ends of a word never cut a character in two (an emoji is two chars): two halves would be written alike
+    static string Suffix(string word, int length)
+    {
+        if (word.Length <= length) return word;
+        int start = word.Length - length;
+        if (char.IsLowSurrogate(word[start]) && char.IsHighSurrogate(word[start - 1])) start--;
+        return word.Substring(start);
+    }
+
+    static string Prefix(string word, int length)
+    {
+        if (word.Length <= length) return word;
+        int end = length;
+        if (char.IsHighSurrogate(word[end - 1]) && char.IsLowSurrogate(word[end])) end++;
+        return word.Substring(0, end);
+    }
 
     // What the tagger sees of word i: the word, its ends, its shape, its neighbours, and the tags said before it
     public static List<string> TagFeatures(string[] forms, int i, string previous, string beforePrevious)

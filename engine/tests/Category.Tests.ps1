@@ -506,5 +506,28 @@ Describe 'General rules told in words' {
             @($words | Where-Object Word -EQ 'certains').Kind | Should -Be 'some'
             @($words | Where-Object Word -EQ 'les') | Should -BeNullOrEmpty
         }
+
+        It 'learns that some under a negation is none' {
+            $words = InModuleScope Lambek {
+                $english = @(1..4 | ForEach-Object { 'I do not see anyone', 'the birds sing' })
+                $french = @(1..4 | ForEach-Object { 'je ne vois personne', 'les oiseaux chantent' })
+                [LambekLogicWords]::Learn((Get-LambekFormModel -Language en), (Get-LambekFormModel -Language fr), [string[]] $english, [string[]] $french, 3, 12)
+            }
+            @($words | Where-Object Word -EQ 'personne').Kind | Should -Be 'no'
+        }
+
+        It 'has the words of logic and the copula of <Language> learned: <All>, <None>, <Some>, <Copula>' -ForEach @(
+            @{ Language = 'de'; All = 'jeder'; None = 'kein'; Some = 'etwas'; Copula = 'sein' }
+            @{ Language = 'es'; All = 'cada'; None = 'nada'; Some = 'algo'; Copula = 'ser' }
+            @{ Language = 'nl'; All = 'elke'; None = 'geen'; Some = 'iemand'; Copula = 'zijn' }
+            @{ Language = 'pt'; All = 'cada'; None = 'nada'; Some = 'alguém'; Copula = 'ser' }
+            @{ Language = 'it'; All = 'ogni'; None = 'niente'; Some = 'qualcosa'; Copula = 'essere' }
+        ) {
+            $logic = InModuleScope Lambek -Parameters $_ { param($Language) Get-LambekLogicWord -Language $Language }
+            $logic.Kinds[$All] | Should -Be 'all'
+            $logic.Kinds[$None] | Should -Be 'no'
+            $logic.Kinds[$Some] | Should -Be 'some'
+            $logic.Copulas | Should -Contain $Copula
+        }
     }
 }
