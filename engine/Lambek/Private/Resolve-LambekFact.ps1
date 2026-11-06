@@ -16,17 +16,9 @@ function Find-LambekFactSpan {
 
     if ($To -lt 0) { $To = $Words.Count }
     if ($Before -lt 0) { $Before = $To }
-    $found = [System.Collections.Generic.List[object]]::new()
-    $split = @($Phrases | Where-Object { $_ } | ForEach-Object { , @("$_" -split ' ') } | Sort-Object { - $_.Count })
-    for ($i = $From; $i -lt [math]::Min($To, $Before); $i++) {
-        foreach ($phrase in $split) {
-            if ($i + $phrase.Count -gt $To) { continue }
-            $same = $true
-            for ($k = 0; $k -lt $phrase.Count; $k++) { if ($Words[$i + $k] -ne $phrase[$k]) { $same = $false; break } }
-            if ($same) { $found.Add([pscustomobject]@{ Start = $i; Length = $phrase.Count }); break }
-        }
-    }
-    return $found.ToArray()
+    # (the phrases as words said with spaces: a phrase given as its words is said with them)
+    $said = [string[]] @(foreach ($phrase in $Phrases) { if ($phrase) { "$phrase" } })
+    return [LambekFacts]::Spans($Words, $said, $From, $To, $Before)
 }
 
 function Get-LambekFactGender {

@@ -66,6 +66,13 @@ public sealed class LambekNameMention
     public bool Surname;
 }
 
+// Where a phrase was found among the words of a sentence: the place it starts at, how many words it has
+public sealed class LambekSpan
+{
+    public int Start;
+    public int Length;
+}
+
 public sealed class LambekFacts
 {
     public string Source = "";
@@ -212,6 +219,79 @@ public sealed class LambekFacts
     {
         List<LambekThing> list;
         return kinds.TryGetValue(kind, out list) ? list.ToArray() : new LambekThing[0];
+    }
+
+    // Whether a thing is in a place by one of the paths of facts, each path its properties in order, said with spaces:
+    // "P17" (its country), "P17 P30" (the continent of its country). "P17!": every value of that property is the
+    // place (a river of France flows in France only)
+    public bool Within(LambekThing thing, LambekThing scope, string[] paths)
+    {
+        if (thing == null || scope == null || paths == null) { return false; }
+        foreach (string path in paths)
+        {
+            if (string.IsNullOrEmpty(path)) { continue; }
+            List<LambekThing> here = new List<LambekThing> { thing };
+            foreach (string step in path.Split(' '))
+            {
+                string property = step.TrimEnd('!');
+                if (step.EndsWith("!", StringComparison.Ordinal))
+                {
+                    bool every = true;
+                    int count = 0;
+                    foreach (LambekThing item in here)
+                    {
+                        foreach (LambekFact fact in item.Values(property))
+                        {
+                            count++;
+                            if (!string.Equals(fact.Value, scope.Id, StringComparison.OrdinalIgnoreCase)) { every = false; }
+                        }
+                    }
+                    if (count == 0 || !every) { here = new List<LambekThing>(); break; }
+                }
+                List<LambekThing> next = new List<LambekThing>();
+                foreach (LambekThing item in here)
+                {
+                    foreach (LambekFact fact in item.Values(property))
+                    {
+                        if (string.Equals(fact.Value, scope.Id, StringComparison.OrdinalIgnoreCase)) { next.Add(scope); continue; }
+                        LambekThing value = Thing(fact.Value);
+                        if (value != null) { next.Add(value); }
+                    }
+                }
+                here = next;
+            }
+            foreach (LambekThing item in here) { if (string.Equals(item.Id, scope.Id, StringComparison.OrdinalIgnoreCase)) { return true; } }
+        }
+        return false;
+    }
+
+    // Where one of the phrases is among the words, from a place on: at each place, the longest phrase there (before:
+    // the places a phrase may start at end there; to: where every phrase must end). Words are compared without case
+    public static LambekSpan[] Spans(string[] words, string[] phrases, int from, int to, int before)
+    {
+        List<LambekSpan> found = new List<LambekSpan>();
+        if (words == null || phrases == null) { return found.ToArray(); }
+        List<string[]> split = new List<string[]>();
+        foreach (string phrase in phrases) { if (!string.IsNullOrEmpty(phrase)) { split.Add(phrase.Split(' ')); } }
+        split.Sort((a, b) => b.Length.CompareTo(a.Length));
+        int end = Math.Min(to, before);
+        for (int i = Math.Max(from, 0); i < end; i++)
+        {
+            int longest = 0;
+            foreach (string[] parts in split)
+            {
+                if (parts.Length <= longest) { break; }
+                if (i + parts.Length > to || i + parts.Length > words.Length) { continue; }
+                bool same = true;
+                for (int k = 0; k < parts.Length; k++)
+                {
+                    if (!string.Equals(words[i + k], parts[k], StringComparison.InvariantCultureIgnoreCase)) { same = false; break; }
+                }
+                if (same) { longest = parts.Length; }
+            }
+            if (longest > 0) { found.Add(new LambekSpan { Start = i, Length = longest }); }
+        }
+        return found.ToArray();
     }
 
     // Every name in the words of a sentence (already plain), at every place, the longest first at each place

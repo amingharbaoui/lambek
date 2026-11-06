@@ -242,8 +242,9 @@ function Get-LambekFactMost {
     $kept = [System.Collections.Generic.List[object]]::new()
     # (in the world: on the Earth, a mountain or a river in a country, Query.WorldNeeds: Olympus Mons is on Mars)
     $needs = $(if (-not $scope -and $query.Contains('WorldNeeds') -and $query['WorldNeeds'].Contains($Kind)) { "$($query['WorldNeeds'][$Kind])" })
+    $within = [string[]] @(foreach ($path in @($query['Within'][$Kind])) { @($path) -join ' ' })
     foreach ($thing in $base.OfKind($Kind)) {
-        if ($scope -and -not (Test-LambekFactWithin -Thing $thing -Scope $scope -Paths @($query['Within'][$Kind]))) { continue }
+        if ($scope -and -not $base.Within($thing, $scope, $within)) { continue }
         if ($needs -and @($thing.Values($needs)).Count -eq 0) { continue }
         $values = @($thing.Values($property))
         if ($values.Count -eq 0) { continue }
@@ -293,36 +294,6 @@ function Get-LambekFactMost {
     $core = "wikidata($($Entry['Order']), $property, $Kind, $(if ($scope) { $scope.Id } else { 'world' }), $($best.Thing.Id))"
     $fact = Add-LambekFactRead -Text ($sentence + $Facts['According'] + '.') -Language $Language -Core $core -Thing $best.Thing.Id -Property $property -Bare "$sentence."
     return [pscustomobject]@{ Thing = $best.Thing; End = $end; Line = ($sentence + $Facts['According'] + '.'); Fact = $fact }
-}
-
-function Test-LambekFactWithin {
-    # Whether a thing is in a place by one of the paths of facts: P17 (its country), or P17 then P30 (the continent of
-    # its country)
-    param([LambekThing] $Thing, [LambekThing] $Scope, [object[]] $Paths)
-
-    $base = Get-LambekFactBase
-    foreach ($path in $Paths) {
-        $here = @($Thing)
-        foreach ($step in @($path)) {
-            # ("P17!": every value is that place, a river of France flows in France only)
-            $property = "$step".TrimEnd('!')
-            if ("$step".EndsWith('!')) {
-                $all = @($here | ForEach-Object { @($_.Values($property)) })
-                if ($all.Count -eq 0 -or @($all | Where-Object { $_.Value -ne $Scope.Id }).Count -gt 0) { $here = @(); break }
-            }
-            $next = [System.Collections.Generic.List[object]]::new()
-            foreach ($item in $here) {
-                foreach ($fact in @($item.Values("$property"))) {
-                    if ($fact.Value -eq $Scope.Id) { $next.Add($Scope); continue }
-                    $value = $base.Thing($fact.Value)
-                    if ($value) { $next.Add($value) }
-                }
-            }
-            $here = @($next)
-        }
-        if (@($here | Where-Object { $_.Id -eq $Scope.Id }).Count -gt 0) { return $true }
-    }
-    return $false
 }
 
 function Resolve-LambekFactCount {
