@@ -1,4 +1,4 @@
-# lambek-logic-1	Tatoeba v2023-04-12, OPUS (CC BY 2.0 FR), 79548 pairs, least 20, longest 12; Tatoeba.en-nl.en a466e049c295d2f09cbda5d113c46aece2a640070702d6c29a7bbe93b3be77c9; Tatoeba.en-nl.nl 578f7c4b16e57fa75faee84142c0529f7d718b435892d60a7261f1741a3c8736; copulas of nl_alpino-ud-train.conllu d6612a025ae77a8f58494458b987be6f39fdcaa40c94b5e2a5522e50c4166cfb, nl_lassysmall-ud-train.conllu 9557908d3122566408eb0910aafd389b1701f57dc25335be54985faa9b866775
+# lambek-logic-1	Tatoeba v2023-04-12, OPUS (CC BY 2.0 FR), 79548 pairs, least 20, longest 12; Tatoeba.en-nl.en a466e049c295d2f09cbda5d113c46aece2a640070702d6c29a7bbe93b3be77c9; Tatoeba.en-nl.nl 578f7c4b16e57fa75faee84142c0529f7d718b435892d60a7261f1741a3c8736; copulas and the article of a negation of nl_alpino-ud-train.conllu d6612a025ae77a8f58494458b987be6f39fdcaa40c94b5e2a5522e50c4166cfb, nl_lassysmall-ud-train.conllu 9557908d3122566408eb0910aafd389b1701f57dc25335be54985faa9b866775
 all	alle	208	227
 all	allebei	38	74
 all	allen	25	35

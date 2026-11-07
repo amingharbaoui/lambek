@@ -135,6 +135,80 @@ public static class LambekLogicWords
             .Select(p => new LambekLogicWord { Kind = "copula", Word = p.Key, Together = p.Value, Seen = total }).ToList();
     }
 
+    // The article a negation puts before what is done to ("n'a pas de poils"): among the indefinite articles of objects
+    // (DET, Definite=Ind, its word the obj of the clause), the one at least 4 times more often after a word tagged
+    // Polarity=Neg than in sentences with none, seen there at least `least` times; and the first letters before which
+    // it is written cut ("d'oiseaux"), those more often after its cut form than after it. Nothing for a language whose
+    // negation keeps its articles ("does not have a tail")
+    public static List<LambekLogicWord> Negated(IEnumerable<string> paths, int least)
+    {
+        Dictionary<string, int> denied = new Dictionary<string, int>(StringComparer.Ordinal);
+        Dictionary<string, int> plain = new Dictionary<string, int>(StringComparer.Ordinal);
+        int deniedTotal = 0, plainTotal = 0;
+        List<string[][]> sentences = new List<string[][]>();
+        foreach (string path in paths)
+        {
+            List<string[]> words = new List<string[]>();
+            foreach (string line in File.ReadLines(path).Concat(new[] { "" }))
+            {
+                if (line.Length == 0)
+                {
+                    if (words.Count > 0) sentences.Add(words.ToArray());
+                    words = new List<string[]>();
+                    continue;
+                }
+                if (line[0] == '#') continue;
+                string[] fields = line.Split('\t');
+                if (fields.Length < 10 || fields[0].Contains("-") || fields[0].Contains(".")) continue;
+                words.Add(fields);
+            }
+        }
+        // (a cut form is said as the word it is cut from: "d'" is "de")
+        Func<string[], string> full = w => w[1].EndsWith("'", StringComparison.Ordinal) || w[1].EndsWith("’", StringComparison.Ordinal) ? w[2].ToLowerInvariant() : w[1].ToLowerInvariant();
+        foreach (string[][] sentence in sentences)
+        {
+            Dictionary<string, string> relation = sentence.ToDictionary(w => w[0], w => w[7], StringComparer.Ordinal);
+            int negation = Array.FindIndex(sentence, w => ("|" + w[5] + "|").Contains("|Polarity=Neg|"));
+            for (int i = 0; i < sentence.Length; i++)
+            {
+                string[] w = sentence[i];
+                string head;
+                if (w[3] != "DET" || !("|" + w[5] + "|").Contains("|Definite=Ind|") || !relation.TryGetValue(w[6], out head) || head != "obj") continue;
+                if (negation < 0) { int n; plain.TryGetValue(full(w), out n); plain[full(w)] = n + 1; plainTotal++; }
+                else if (i > negation) { int n; denied.TryGetValue(full(w), out n); denied[full(w)] = n + 1; deniedTotal++; }
+            }
+        }
+        List<LambekLogicWord> found = new List<LambekLogicWord>();
+        if (deniedTotal == 0 || plainTotal == 0) return found;
+        KeyValuePair<string, int> best = denied.Where(p => p.Value >= least)
+            .Where(p => { int n; plain.TryGetValue(p.Key, out n); return (long) p.Value * plainTotal >= 4L * n * deniedTotal; })
+            .OrderByDescending(p => p.Value).ThenBy(p => p.Key, StringComparer.Ordinal).FirstOrDefault();
+        if (best.Key == null) return found;
+        found.Add(new LambekLogicWord { Kind = "negated", Word = best.Key, Together = best.Value, Seen = deniedTotal });
+        Dictionary<string, int> cut = new Dictionary<string, int>(StringComparer.Ordinal);
+        Dictionary<string, int> whole = new Dictionary<string, int>(StringComparer.Ordinal);
+        Dictionary<string, string> cutForm = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (string[][] sentence in sentences)
+        {
+            for (int i = 0; i + 1 < sentence.Length; i++)
+            {
+                string form = sentence[i][1].ToLowerInvariant();
+                string next = sentence[i + 1][1].ToLowerInvariant();
+                if (next.Length == 0 || !char.IsLetter(next[0])) continue;
+                string first = next.Substring(0, 1);
+                bool isCut = (form.EndsWith("'", StringComparison.Ordinal) || form.EndsWith("’", StringComparison.Ordinal)) && sentence[i][2].ToLowerInvariant() == best.Key;
+                if (isCut) { int n; cut.TryGetValue(first, out n); cut[first] = n + 1; cutForm[first] = form.Substring(0, form.Length - 1) + "'"; }
+                else if (form == best.Key) { int n; whole.TryGetValue(first, out n); whole[first] = n + 1; }
+            }
+        }
+        foreach (KeyValuePair<string, int> pair in cut.OrderBy(p => p.Key, StringComparer.Ordinal))
+        {
+            int n; whole.TryGetValue(pair.Key, out n);
+            if (pair.Value >= 2 && pair.Value > n) found.Add(new LambekLogicWord { Kind = "elided", Word = cutForm[pair.Key] + " " + pair.Key, Together = pair.Value, Seen = pair.Value + n });
+        }
+        return found;
+    }
+
     public static void Write(string path, string source, IEnumerable<LambekLogicWord> words)
     {
         using (StreamWriter writer = new StreamWriter(path, false, new System.Text.UTF8Encoding(false)))

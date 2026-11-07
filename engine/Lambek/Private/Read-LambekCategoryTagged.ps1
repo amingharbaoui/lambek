@@ -1,7 +1,8 @@
 function Get-LambekLogicWord {
     # The words of logic of a language, learned (tools/Learn-LambekLogicWords.ps1, Data/Forms/<language>.logic): what
     # each says of how many things ("all", "some", "no"), a word learned with two kinds saying neither; and its copulas,
-    # the verbs that only join ("etre", "be"). Nothing when the language has none
+    # the verbs that only join ("etre", "be"); the article a negation puts before what is done to, and the first letters
+    # before which it is cut ("pas de poils", "pas d'ailes"). Nothing when the language has none
     param([string] $Language)
 
     if ($null -eq $script:LogicWords) { $script:LogicWords = @{} }
@@ -12,13 +13,17 @@ function Get-LambekLogicWord {
         $words = [System.Collections.Generic.Dictionary[string, string]]::new([StringComparer]::Ordinal)
         $twice = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
         $copulas = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+        $negated = $null
+        $elided = [System.Collections.Generic.Dictionary[string, string]]::new([StringComparer]::Ordinal)
         foreach ($word in [LambekLogicWords]::Read([IO.Path]::GetFullPath($path))) {
             if ($word.Kind -eq 'copula') { [void] $copulas.Add($word.Word); continue }
+            if ($word.Kind -eq 'negated') { $negated = $word.Word; continue }
+            if ($word.Kind -eq 'elided') { $cut = $word.Word -split ' ', 2; $elided[$cut[1]] = $cut[0]; continue }
             if ($words.ContainsKey($word.Word) -and $words[$word.Word] -ne $word.Kind) { [void] $twice.Add($word.Word) }
             $words[$word.Word] = $word.Kind
         }
         foreach ($word in $twice) { [void] $words.Remove($word) }
-        if ($copulas.Count -gt 0) { $found = [pscustomobject]@{ Kinds = $words; Copulas = $copulas } }
+        if ($copulas.Count -gt 0) { $found = [pscustomobject]@{ Kinds = $words; Copulas = $copulas; Negated = $negated; Elided = $elided } }
     }
     $script:LogicWords[$Language] = $found
     return $found

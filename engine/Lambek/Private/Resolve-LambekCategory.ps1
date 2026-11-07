@@ -572,7 +572,10 @@ function Get-LambekCategorySentence {
     $template = $null
     foreach ($candidate in $candidates) { if ($sentences.Contains($candidate)) { $template = $sentences[$candidate]; break } }
     if (-not $template) { return $null }
-    $built = $template -f $who, $Item.Written.Predicate, $Item.Written.Object
+    $object = "$($Item.Written.Object)"
+    # (what is not done to takes the article the language puts after a negation, learned: "n'a pas de poils")
+    if ($Item.Verb -and $key -match 'not' -and $object.Trim()) { $object = ConvertTo-LambekNegatedObject -Object $object -Language $Language }
+    $built = $template -f $who, $Item.Written.Predicate, $object
     foreach ($rule in @($data['Elide'])) { $built = [regex]::Replace($built, $rule[0], $rule[1]) }
     if ($Plain) { return $built }
     $turned = ConvertTo-LambekOtherSide -Text $built -Language $Language -Register 'vous'
@@ -581,6 +584,28 @@ function Get-LambekCategorySentence {
     # (a sentence made with a small word first says it small; a name keeps its capital)
     if ($built -cmatch '^\p{Ll}') { $turned = $turned.Substring(0, 1).ToLowerInvariant() + $turned.Substring(1) }
     return $turned
+}
+
+function ConvertTo-LambekNegatedObject {
+    # What is done to, after a negation: its indefinite article (DET, Definite=Ind) becomes the one the language was seen
+    # to put after a negation, cut before the letters it was seen cut before ("des poils": "de poils", "des ailes":
+    # "d'ailes"). As it was when the language learned none ("does not have a tail")
+    param([string] $Object, [string] $Language)
+
+    $logic = Get-LambekLogicWord -Language $Language
+    $model = Get-LambekFormModel -Language $Language
+    if (-not $logic -or -not $logic.Negated -or -not $model) { return $Object }
+    $found = [regex]::Match($Object, '^(?<space>\s*)(?<article>\S+)\s+(?<rest>\S.*)$')
+    if (-not $found.Success) { return $Object }
+    # (the words as they are written: "des" read whole, not cut as "de les")
+    $words = @($model.Read([string[]] @("$($found.Groups['article'].Value) $($found.Groups['rest'].Value)" -split '\s+')))
+    if ($words.Count -lt 2) { return $Object }
+    $first = $words[0]
+    if ($first.Upos -ne 'DET' -or "|$($first.Feats)|" -notlike '*|Definite=Ind|*') { return $Object }
+    $rest = $found.Groups['rest'].Value
+    $letter = $rest.Substring(0, 1).ToLowerInvariant()
+    if ($logic.Elided.ContainsKey($letter)) { return $found.Groups['space'].Value + $logic.Elided[$letter] + $rest }
+    return $found.Groups['space'].Value + $logic.Negated + ' ' + $rest
 }
 
 function Resolve-LambekCategoryMessage {

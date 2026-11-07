@@ -461,6 +461,29 @@ Describe 'General rules told in words' {
             Ask $Question | Should -BeLike $Said
         }
 
+        It 'says what is not done to with the article a negation takes, learned: <Question>' -ForEach @(
+            @{ Told = "les poissons n'ont pas de poils", 'Nemo est un poisson'; Question = 'Nemo a-t-il des poils ?'; Said = "Non : Nemo n'a pas de poils.*" }
+            @{ Told = "aucun poisson n'a d'ailes", 'Nemo est un poisson'; Question = 'Nemo a-t-il des ailes ?'; Said = "Non : Nemo n'a pas d'ailes.*" }
+            @{ Told = 'aucun chien ne mange une salade', 'Rex est un chien'; Question = 'Rex mange-t-il une salade ?'; Said = 'Non, Rex ne mange pas de salade*' }
+            @{ Told = "les chats n'aiment pas les légumes", 'Tom est un chat'; Question = 'Tom aime-t-il les légumes ?'; Said = "Non, Tom n'aime pas les légumes*" }
+            @{ Told = 'fish do not have fur', 'Nemo is a fish'; Question = 'does Nemo have fur?'; Said = 'No: Nemo does not have fur.*' }
+        ) {
+            Tell $Told
+            Ask $Question | Should -BeLike $Said
+        }
+
+        It 'learns the article of a negation from the treebanks, and none where a negation keeps its article' {
+            $tiny = Join-Path $TestDrive 'negated.conllu'
+            $denied = "1`tTom`tTom`tPROPN`t_`t_`t3`tnsubj`t_`t_`n2`tne`tne`tADV`t_`tPolarity=Neg`t3`tadvmod`t_`t_`n3`tmange`tmanger`tVERB`t_`t_`t0`troot`t_`t_`n4`tpas`tpas`tADV`t_`tPolarity=Neg`t3`tadvmod`t_`t_`n5`tde`tun`tDET`t_`tDefinite=Ind|PronType=Art`t6`tdet`t_`t_`n6`tpomme`tpomme`tNOUN`t_`t_`t3`tobj`t_`t_`n"
+            $plain = "1`tTom`tTom`tPROPN`t_`t_`t2`tnsubj`t_`t_`n2`tmange`tmanger`tVERB`t_`t_`t0`troot`t_`t_`n3`tune`tun`tDET`t_`tDefinite=Ind|PronType=Art`t4`tdet`t_`t_`n4`tpomme`tpomme`tNOUN`t_`t_`t2`tobj`t_`t_`n"
+            [IO.File]::WriteAllText($tiny, ((@(1..5 | ForEach-Object { $denied }) + @(1..5 | ForEach-Object { $plain })) -join "`n") + "`n", [Text.UTF8Encoding]::new($false))
+            $found = @([LambekLogicWords]::Negated([string[]] @($tiny), 3))
+            @($found | Where-Object Kind -EQ 'negated').Word | Should -Be 'de'
+            $kept = Join-Path $TestDrive 'kept.conllu'
+            [IO.File]::WriteAllText($kept, (@(1..10 | ForEach-Object { $plain }) -join "`n") + "`n", [Text.UTF8Encoding]::new($false))
+            @([LambekLogicWords]::Negated([string[]] @($kept), 3)) | Should -BeNullOrEmpty
+        }
+
         It 'reads a sentence as its tags and its words of logic say: <Sentence>' -ForEach @(
             @{ Language = 'fr'; Sentence = 'tous les chats boivent du lait'; Question = $false; Kind = 'all'; Predicate = 'v:boire>lait' }
             @{ Language = 'fr'; Sentence = 'chaque chat est un animal'; Question = $false; Kind = 'all'; Predicate = 'animal' }

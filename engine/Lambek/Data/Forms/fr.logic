@@ -1,4 +1,4 @@
-# lambek-logic-1	Tatoeba v2023-04-12, OPUS (CC BY 2.0 FR), 275413 pairs, least 20, longest 12; Tatoeba.en-fr.en 73e910b0ce6002794e1a8af0d7f8f8718cb0dde0640ab9b352da0505b8436221; Tatoeba.en-fr.fr 3f0fec2a914be851e6748a9106a8fb066ec9f8831597bce8496ad705f3b0950f; copulas of fr_gsd-ud-train.conllu 4b9a87b1b7e6e7003219df1d3ccca87ffaca0f00a6055b12b1857df5373589d2
+# lambek-logic-1	Tatoeba v2023-04-12, OPUS (CC BY 2.0 FR), 275413 pairs, least 20, longest 12; Tatoeba.en-fr.en 73e910b0ce6002794e1a8af0d7f8f8718cb0dde0640ab9b352da0505b8436221; Tatoeba.en-fr.fr 3f0fec2a914be851e6748a9106a8fb066ec9f8831597bce8496ad705f3b0950f; copulas and the article of a negation of fr_gsd-ud-train.conllu 4b9a87b1b7e6e7003219df1d3ccca87ffaca0f00a6055b12b1857df5373589d2
 all	chacun	126	137
 all	chaque	486	518
 all	tous	1883	2421
@@ -16,3 +16,16 @@ some	quelqu'un	933	1041
 some	quelque	1678	2096
 some	quiconque	169	271
 copula	être	4922	4922
+negated	de	72	252
+elided	d' a	1378	1405
+elided	d' e	584	597
+elided	d' i	325	334
+elided	d' o	363	371
+elided	d' u	1125	1131
+elided	d' y	20	38
+elided	d' à	5	6
+elided	d' â	6	6
+elided	d' é	301	302
+elided	d' ê	70	71
+elided	d' î	3	3
+elided	d' œ	13	13

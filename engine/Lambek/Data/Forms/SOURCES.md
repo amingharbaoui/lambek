@@ -114,6 +114,10 @@ is (`all`: "tous", "chaque"; `some`: "certains"; `no`: "aucun"), and its copulas
 
 - The copulas are the lemmas the treebanks of the language tag with the relation `cop`, those of at least a tenth of
   them all (the train files of the treebanks of its forms model; UD French-GSD for French).
+- The article of a negation, from the same treebanks: among the indefinite articles of objects, the one at least four
+  times more often after a word tagged `Polarity=Neg` than in sentences with none ("n'a pas de poils"), and the first
+  letters before which it is cut ("pas d'ailes"). French learns "de" (72 of 252 objects after a negation); the other
+  languages learn none, their negation keeps its article ("does not have a tail").
 - For English, the words of logic are those UD English-EWT tags `PronType=Tot`, `PronType=Ind` or `PronType=Neg`.
 - For another language, they are learned from sentences translated from and to English: both sides are read by the
   forms models, and a word the treebanks of the language saw as a determiner or a pronoun takes a kind when it is met

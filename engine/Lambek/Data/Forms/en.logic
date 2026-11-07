@@ -1,4 +1,4 @@
-# lambek-logic-1	UD English-EWT 2.18 (CC BY-SA 4.0), as its annotators tagged the words; copulas of en_ewt-ud-train.conllu d68e06122a702464c613076523d56740f047e5bbe89dd90ec32737e04d952143
+# lambek-logic-1	UD English-EWT 2.18 (CC BY-SA 4.0), as its annotators tagged the words; copulas and the article of a negation of en_ewt-ud-train.conllu d68e06122a702464c613076523d56740f047e5bbe89dd90ec32737e04d952143
 all	all	0	0
 all	both	0	0
 all	each	0	0

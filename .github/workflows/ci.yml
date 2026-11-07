@@ -40,7 +40,7 @@ jobs:
         run: ./build.ps1 -Task Fingerprint -OutFile fingerprint.txt
 
       - name: Keep the fingerprint
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: fingerprint-${{ matrix.os }}
           path: fingerprint.txt
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get the fingerprints
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
 
       - name: Compare Windows and Ubuntu
         run: |

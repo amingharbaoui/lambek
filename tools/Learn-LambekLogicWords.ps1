@@ -26,7 +26,8 @@ param(
     [string] $English,
     [string] $Other,
 
-    # Treebanks of the language (CoNLL-U), for its copulas: the lemmas they tag with the relation cop
+    # Treebanks of the language (CoNLL-U), for its copulas, the lemmas they tag with the relation cop, and for the
+    # article a negation puts before what is done to ("n'a pas de poils")
     [Parameter(Mandatory)]
     [string[]] $Treebank,
 
@@ -65,7 +66,8 @@ else {
 }
 $treebanks = @($Treebank | ForEach-Object { (Resolve-Path -LiteralPath $_).Path })
 $copulas = [LambekLogicWords]::Copulas([string[]] $treebanks)
-$words = [LambekLogicWord[]] @(@($words) + @($copulas))
-$source += "; copulas of $(@($treebanks | ForEach-Object { "$(Split-Path $_ -Leaf) $((Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant())" }) -join ', ')"
+$negated = [LambekLogicWords]::Negated([string[]] $treebanks, $Least)
+$words = [LambekLogicWord[]] @(@($words) + @($copulas) + @($negated))
+$source += "; copulas and the article of a negation of $(@($treebanks | ForEach-Object { "$(Split-Path $_ -Leaf) $((Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant())" }) -join ', ')"
 [LambekLogicWords]::Write($out, $source, $words)
 foreach ($group in @($words | Group-Object Kind)) { Write-Host ("  {0,-5} {1}" -f $group.Name, (@($group.Group | Sort-Object { - $_.Together } | ForEach-Object { "$($_.Word) ($($_.Together)/$($_.Seen))" }) -join ', ')) }

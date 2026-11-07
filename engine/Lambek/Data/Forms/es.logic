@@ -1,4 +1,4 @@
-# lambek-logic-1	Tatoeba v2023-04-12, OPUS (CC BY 2.0 FR), 222073 pairs, least 20, longest 12; Tatoeba.en-es.en 057e90e975e19a67697b65d5dbf68019ea3c64d0a20f419442de9d5914d850cd; Tatoeba.en-es.es 71405a382f673da83ee847cda6ec3d0dec51aaca335bcfee85deffd99fd38757; copulas of es_ancora-ud-train.conllu 47b6fc49d6ed48a016e7fa5ad9f5c7ecf3ec21e9db005df3ea14d10f07c6deb6, es_gsd-ud-train.conllu 9e527de0e45dca4a8ef00105a3ebd102da941964b35f01916a6baa6288130f7b
+# lambek-logic-1	Tatoeba v2023-04-12, OPUS (CC BY 2.0 FR), 222073 pairs, least 20, longest 12; Tatoeba.en-es.en 057e90e975e19a67697b65d5dbf68019ea3c64d0a20f419442de9d5914d850cd; Tatoeba.en-es.es 71405a382f673da83ee847cda6ec3d0dec51aaca335bcfee85deffd99fd38757; copulas and the article of a negation of es_ancora-ud-train.conllu 47b6fc49d6ed48a016e7fa5ad9f5c7ecf3ec21e9db005df3ea14d10f07c6deb6, es_gsd-ud-train.conllu 9e527de0e45dca4a8ef00105a3ebd102da941964b35f01916a6baa6288130f7b
 all	ambas	29	45
 all	ambos	86	153
 all	cada	529	632
