@@ -59,6 +59,43 @@ Tried and set aside (step 4.5): reading the tags of a whole sentence at once, by
 readings kept), instead of word after word. The perceptron learned word after word, and the beam read a little worse
 (French GSD, all tags: 95.07 % word after word, 95.06 % and 95.01 % with the beam; English EWT: 93.16 %, 92.99 %).
 
+## Italian sentences confirmed by English
+
+The Italian treebanks free to learn from are small (66 944 words). The tagger of Italian is also taught 9 604 of the
+Italian sentences of Tatoeba translated from English (the English-Italian pairs listed under "Words of logic and
+copulas", CC BY 2.0 FR): 66 942 words, as many as the treebanks have. They are chosen by
+`tools/Build-LambekForms.ps1 -English -Translated` (`Native/Projection.cs`), never by hand:
+
+- the model of the treebanks alone, with the Italian lexicon, reads the Italian side, and the English model the English
+  side; their words are aligned by IBM Model 1 both ways (`Native/Aligner.cs`; Brown et al. 1993), a link kept where
+  each word is the other's best;
+- the part of speech of an English word is believed of the word it is aligned with as often as the words the treebanks
+  saw with one part of speech carry it over right, learned on the same pairs: PUNCT 100 %, DET 98 %, ADP 95 %, NOUN
+  90 %, VERB 86 %, PRON 78 %, ADJ 75 %, AUX 69 %, PROPN 43 %, INTJ 17 %, SCONJ 11 %, PART 0 %;
+- a sentence is kept when every word carried over by a part of speech believed 60 % of the time agrees with the model,
+  or, believed 90 % of the time, is set right by a tag the treebanks or the lexicon give the word; when every word the
+  treebanks never met is carried over, or read as the lexicon reads it; and when it has one such word (Yarowsky & Ngai
+  2001, Das & Petrov 2011, Tackstrom et al. 2013): 96 756 of 483 415 pairs, the first of them taught, in the order of
+  the file;
+- they teach the tags of words in context only, after the treebanks in each pass: the words known, their lemmas and
+  their rules of form are the treebanks'.
+
+How many to teach was measured on the dev files of ISDT and VIT (CC BY-NC-SA, read to measure only, never learned from):
+all tags 87.64 % → 88.22 % and 84.18 % → 84.88 %. 30 000 sentences and all of them read worse than 10 000 (the short
+sentences of Tatoeba then weigh more than the treebanks), and sentences chosen for their new words read no better. On
+the test files:
+
+| Test file | Part of speech | All tags | Lemma |
+| --- | --- | --- | --- |
+| MarkIT | 94.07 % → 94.09 % | 87.16 % → 86.47 % | 86.79 % → 86.83 % |
+| ParlaMint | 95.52 % → 95.62 % | 89.71 % → 90.60 % | 97.21 % → 97.21 % |
+| TWITTIRO | 92.14 % → 92.47 % | 88.00 % → 88.31 % | 92.51 % → 92.27 % |
+| PUD | 91.77 % → 91.80 % | 56.69 % → 56.45 % | 95.04 % → 94.97 % |
+| VALICO | 91.94 % → 92.39 % | 86.47 % → 87.01 % | 85.92 % → 86.04 % |
+
+The features of MarkIT fall (90.03 % → 89.27 %): its words are mostly those of the treebanks, and the sentences of
+Tatoeba draw the tagger to their own.
+
 ## Words learned from plain text (step 4.6)
 
 `fr.learned.gz` and `en.learned.gz` are the notebooks of the words Lambek learned on its own, made by

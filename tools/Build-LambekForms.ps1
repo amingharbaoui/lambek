@@ -28,6 +28,18 @@
       https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.18/en_ewt-ud-dev.conllu
     Their SHA-256 are checked when they are given with these names. For German, Spanish, Dutch, Portuguese and Italian,
     the treebanks named in engine/Lambek/Data/Forms/SOURCES.md, from the same release, at the same addresses.
+
+    A language whose treebanks are small can be given its sentences translated from English (-English and
+    -Translated, Tatoeba): the model learned from the treebanks reads them, with the lexicon of the language, and the
+    model of English its English side; the words are aligned (IBM Model 1, both ways) and the part of speech of each
+    English word is carried over to the word it is aligned with, as far as the words the treebanks know carry over to
+    their own (LambekProjection). The sentences where every word carried over agrees with the reading of the model, or
+    is set right by what the treebanks or the lexicon say of it, and that have a word the treebanks never met, are
+    taught to the tagger after the treebanks, as many words of them as the treebanks have (more, and the short
+    sentences of Tatoeba weigh more than the treebanks: measured on the Italian dev files of ISDT and VIT). They teach
+    the tags of words in context only: the words known, their lemmas and their rules of form are the treebanks'.
+.EXAMPLE
+    ./tools/Build-LambekForms.ps1 -Language it -Path (Get-ChildItem ./ud/it_*-ud-train.conllu, ./ud/it_*-ud-dev.conllu) -English ./tatoeba/Tatoeba.en-it.en -Translated ./tatoeba/Tatoeba.en-it.it -OutFile ./engine/Lambek/Data/Forms/it.forms.gz
 .EXAMPLE
     ./tools/Build-LambekForms.ps1 -Language fr -Path (Get-ChildItem ./ud/fr_*-ud-train.conllu, ./ud/fr_*-ud-dev.conllu) -OutFile ./engine/Lambek/Data/Forms/fr.forms.gz
 #>
@@ -43,7 +55,21 @@ param(
     [string] $OutFile,
 
     # Passes over the treebanks: 10 on the dev files of French and English, more changed nothing
-    [int] $Passes = 10
+    [int] $Passes = 10,
+
+    # The sentences of the language translated from English, one a line, and their English, line for line (Tatoeba,
+    # Moses format): read and aligned to teach the tagger more sentences
+    [string] $English,
+
+    [string] $Translated,
+
+    # A part of speech carried over is believed as far as the known words carry it over right: `Trust` of the time to
+    # set a word right, `Doubt` of the time to refuse a sentence, when met at least `Least` times
+    [double] $Trust = 0.9,
+
+    [double] $Doubt = 0.6,
+
+    [int] $Least = 100
 )
 
 $ErrorActionPreference = 'Stop'
@@ -111,7 +137,40 @@ $model.Language = $Language
 $model.Passes = $Passes
 $model.LearnTokens([string[]] $files)
 $clock = [Diagnostics.Stopwatch]::StartNew()
-$model.Train($sentences, [Action[int]] { param($pass) Write-Host "  pass $pass of $Passes ($([math]::Round($clock.Elapsed.TotalSeconds))s)" })
+$projected = [System.Collections.Generic.List[LambekTreebankWord[]]]::new()
+if ($English -or $Translated) {
+    if (-not ($English -and $Translated)) { throw 'The translated sentences need both sides: -English and -Translated.' }
+    # The model of the treebanks alone, with the lexicon of the language, reads the translated side
+    $reader = [LambekForms]::new()
+    $reader.Language = $Language
+    $reader.Passes = $Passes
+    $reader.LearnTokens([string[]] $files)
+    $reader.Train($sentences, [Action[int]] { param($pass) Write-Host "  pass $pass of $Passes, treebanks alone ($([math]::Round($clock.Elapsed.TotalSeconds))s)" })
+    # (saved and loaded again, with what Lambek learned of the language besides, as the engine reads it)
+    $first = Join-Path ([IO.Path]::GetTempPath()) "lambek-forms-$PID.forms.gz"
+    $reader.Save($first)
+    $reader = [LambekForms]::Load($first)
+    Remove-Item -LiteralPath $first -Force
+    $data = Join-Path $PSScriptRoot '../engine/Lambek/Data/Forms'
+    $learned = Join-Path $data "$Language.learned.gz"
+    if (Test-Path -LiteralPath $learned -PathType Leaf) { $reader.AddLearned([LambekSelfReader]::Load((Resolve-Path -LiteralPath $learned).Path)) }
+    $lexicon = Join-Path $data "$Language.lexicon.gz"
+    if (Test-Path -LiteralPath $lexicon -PathType Leaf) { $reader.Lexicon = [LambekLexicon]::Load((Resolve-Path -LiteralPath $lexicon).Path) }
+    $englishModel = & (Get-Module Lambek) { Get-LambekFormModel -Language en }
+    $result = [LambekProjection]::Project($englishModel, $reader, [IO.File]::ReadAllLines((Resolve-Path -LiteralPath $English).Path), [IO.File]::ReadAllLines((Resolve-Path -LiteralPath $Translated).Path), 12, 5, $Trust, $Doubt, $Least)
+    Write-Host "$($result.Pairs) pairs aligned; carried over right: $(@($result.Trust.GetEnumerator() | ForEach-Object { '{0} {1:P0}' -f $_.Key, $_.Value }) -join ', ')"
+    $taken = 0
+    foreach ($sentence in $result.Sentences) {
+        if ($taken + $sentence.Length -gt $words) { break }
+        $taken += $sentence.Length
+        $projected.Add($sentence)
+    }
+    Write-Host "$($result.Sentences.Count) sentences kept ($($result.Refused) refused, $($result.Unsure) unsure, $($result.Known) of known words only), $($projected.Count) taught ($taken words)."
+    $reader = $null
+    [GC]::Collect()
+    $clock.Restart()
+}
+$model.Train($sentences, $projected, [Action[int]] { param($pass) Write-Host "  pass $pass of $Passes ($([math]::Round($clock.Elapsed.TotalSeconds))s)" })
 Write-Host "Learned in $([math]::Round($clock.Elapsed.TotalSeconds))s: $($model.Tagger.Classes.Count) tags, $($model.Lemmatiser.Classes.Count) rules, $($model.Tagger.WeightCount + $model.Lemmatiser.WeightCount) weights; $($model.Contractions.Count) contractions."
 
 $full = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutFile)

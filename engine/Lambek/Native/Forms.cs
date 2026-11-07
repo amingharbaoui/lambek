@@ -1405,7 +1405,12 @@ public class LambekForms
 
     // Learns from the sentences, in their order, Passes times: the tagger reads each sentence left to right with its
     // own guesses as the tags before (as it will when reading), the lemmatiser with the true tags
-    public void Train(List<LambekTreebankWord[]> sentences, Action<int> progress)
+    public void Train(List<LambekTreebankWord[]> sentences, Action<int> progress) { Train(sentences, null, progress); }
+
+    // The same, the tagger also taught by `projected` sentences, read by the model and confirmed by their English
+    // translations (LambekProjection): they teach the tags of words in context only, after the treebanks in each pass;
+    // what is known of the words (their tags, lemmas and paradigms) and the rules of form are what the treebanks say
+    public void Train(List<LambekTreebankWord[]> sentences, List<LambekTreebankWord[]> projected, Action<int> progress)
     {
         foreach (LambekTreebankWord[] sentence in sentences)
         {
@@ -1433,6 +1438,21 @@ public class LambekForms
                     int ruleClass = Lemmatiser.ClassOf(rule, true);
                     string form = sentence[i].Form;
                     Lemmatiser.Learn(LemmaFeatures(form, sentence[i].Tag), ruleClass, c => LambekFormRule.Apply(Lemmatiser.Classes[c], form) != null);
+                }
+            }
+            if (projected != null)
+            {
+                foreach (LambekTreebankWord[] sentence in projected)
+                {
+                    string[] forms = sentence.Select(word => word.Form).ToArray();
+                    string previous = "<s>", beforePrevious = "<s>";
+                    for (int i = 0; i < sentence.Length; i++)
+                    {
+                        int truth = Tagger.ClassOf(sentence[i].Tag, true);
+                        int guess = Tagger.Learn(TagFeatures(forms, i, previous, beforePrevious), truth, null);
+                        beforePrevious = previous;
+                        previous = guess >= 0 ? Tagger.Classes[guess] : sentence[i].Tag;
+                    }
                 }
             }
             if (progress != null) progress(pass + 1);
