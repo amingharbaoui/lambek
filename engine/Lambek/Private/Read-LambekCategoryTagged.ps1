@@ -130,7 +130,7 @@ function Read-LambekCategoryTagged {
         $capital = $form.Length -gt 0 -and [char]::IsUpper($form[0])
         if (-not $known -and $capital -and ($r -gt 0 -or $upos[$r] -in 'VERB', 'AUX', 'X')) { $upos[$r] = 'PROPN' }
         elseif (-not $known -and $upos[$r] -notin 'NOUN', 'ADJ', 'PROPN') { return $null }
-        if ("|$($readings[$r].Feats)|".Contains('|PronType=Int|')) { return $null }
+        if ("|$($readings[$r].Feats)|" -match '\|PronType=(?:[A-Za-z]+,)*Int(?:,[A-Za-z]+)*\|') { return $null }
     }
     $has = { param($r, $feature) "|$($readings[$r].Feats)|".Contains("|$feature|") }
     $negative = [bool[]]::new($readings.Count)
@@ -169,6 +169,9 @@ function Read-LambekCategoryTagged {
     $verbal = @(for ($r = $first; $r -lt $readings.Count; $r++) { if ($upos[$r] -in 'AUX', 'VERB') { $r } })
     if ($verbal.Count -eq 0) { return $null }
     $front = $verbal[0] -eq $first -and ($upos[$first] -eq 'AUX' -or ($Question -and $verbal.Count -gt 1))
+    # (in a question, the verb alone first, the one after it: "bellt Rex", "ladra Rex")
+    $alone = $Question -and -not $front -and $verbal.Count -eq 1 -and $verbal[0] -eq $first -and $upos[$first] -eq 'VERB'
+    if ($alone) { $front = $true }
     if ($front) { $asking = $true }
 
     # Of how many: a word of logic first, then its article if any ("tous les"); a plural with none, of all
@@ -196,6 +199,7 @@ function Read-LambekCategoryTagged {
         # (asked first: the copula is followed by the one and what it is, where the one ends is cut below; any other
         # verb that asks, by the one and the verb: "does my phone have a sensor")
         if (& $isCopula $first) { $copula = $first }
+        elseif ($alone) { $main = $first }
         else {
             $after = @($verbal | Where-Object { $_ -gt $from -and $upos[$_] -eq 'VERB' })
             if ($after.Count -eq 0) { return $null }
@@ -251,8 +255,28 @@ function Read-LambekCategoryTagged {
     $cuts = [System.Collections.Generic.List[hashtable]]::new()
     $values = @{}
     if ($quantifier) { $values['q'] = $quantifier }
+    # (the lemma each word was read with in its sentence, for a word the dictionary does not know out of it: "caes"
+    # without its accent, "animais" a verb alone and a noun here)
+    $lemmas = @{}
+    foreach ($reading in $readings) {
+        if ("$($reading.Upos)" -notin 'NOUN', 'ADJ', 'PROPN' -or -not $reading.Lemma) { continue }
+        $lemmas[(ConvertTo-LambekNormalizedText -Text "$($reading.Form)")] = ConvertTo-LambekNormalizedText -Text "$($reading.Lemma)"
+    }
+    $values['lemmas'] = $lemmas
     $name = $(if ($individual) { 'n' } else { 's' })
-    if ($null -ne $main) {
+    if ($alone) {
+        # (where the one ends and what is done to begins is not said; the first cut that reads, from the left)
+        $values['v'] = "$($readings[$main].Form)"
+        $values['lemma'] = "$($readings[$main].Lemma)"
+        for ($j = $from + 1; $j -le $readings.Count; $j++) {
+            $cut = $values.Clone()
+            $cut[$name] = & $text $from $j
+            $object = & $text $j $readings.Count
+            if ($object) { $cut['o'] = $object }
+            if ($cut[$name]) { $cuts.Add($cut) }
+        }
+    }
+    elseif ($null -ne $main) {
         $values['v'] = "$($readings[$main].Form)"
         $values['lemma'] = "$($readings[$main].Lemma)"
         $object = & $text ($main + 1) $readings.Count

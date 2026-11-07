@@ -69,8 +69,10 @@ Describe 'What the router lets Lambek say' {
         Get-TestAnswer 'envoie un mail à Paul' | Should -BeLike 'Ça, je ne peux pas le faire*'
     }
 
-    It 'says in their language what it reads only in French and English' {
-        Get-TestAnswer 'Was ist die Hauptstadt von Spanien?' | Should -BeLike 'Ich verstehe, dass Sie mir etwas sagen oder fragen*'
+    # (German now remembers and reasons with a dialogue learned: what it cannot read yet, a question about the world,
+    # it says it did not understand, and it never says it reasons only in French and English)
+    It 'says in their language that it did not understand what it reads only in French and English' {
+        Get-TestAnswer 'Was ist die Hauptstadt von Spanien?' | Should -BeLike 'Das habe ich nicht verstanden*'
     }
 
     It 'leaves the readers the last word when they read something' {

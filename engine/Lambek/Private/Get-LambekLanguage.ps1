@@ -6,7 +6,11 @@ function Get-LambekLanguage {
         [string[]] $Tokens,
 
         # The text as it was typed, when there is one (its accents tell languages apart)
-        [string] $Text
+        [string] $Text,
+
+        # A tie told apart by the words the forms of each language hold (for the readers of general rules; the router
+        # was measured without it)
+        [switch] $Forms
     )
 
     # The frame language of the sentence: one clear winner, otherwise the language the chat is in, otherwise English
@@ -23,6 +27,23 @@ function Get-LambekLanguage {
         if ($last.PSObject.Properties['Language']) { $chat = "$($last.Language)" }
     }
     if ($best -gt 0 -and $chat -and $chat -in $winners) { return $chat }
+    # A tie: the language whose forms, learned from its treebanks, hold the most words of the sentence ("Rex es un
+    # perro": "perro" is a word of Spanish, not of French)
+    if ($Forms -and $best -gt 0 -and $winners.Count -gt 1) {
+        # (as typed when the text is given, with its accents; else its words)
+        $written = @($(if ($Text) { "$Text" -split '[^\p{L}]+' } else { $Tokens }) | Where-Object { $_ } | ForEach-Object { $_.ToLowerInvariant() })
+        $held = @{}
+        foreach ($winner in $winners) {
+            $model = Get-LambekFormModel -Language $winner
+            if (-not $model) { break }
+            $held[$winner] = @($written | Where-Object { $model.Knows($_) }).Count
+        }
+        if ($written.Count -gt 0 -and $held.Count -eq $winners.Count) {
+            $most = ($held.Values | Measure-Object -Maximum).Maximum
+            $first = @($winners | Where-Object { $held[$_] -eq $most })
+            if ($first.Count -eq 1) { return $first[0] }
+        }
+    }
     # A tie: the language of the first word only one of them has (the verb that opens a command carries its frame)
     if ($best -gt 0) {
         foreach ($token in $Tokens) {

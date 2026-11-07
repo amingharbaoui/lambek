@@ -139,3 +139,24 @@ The sentences of Tatoeba are by its contributors (see https://tatoeba.org/eng/te
 here, only the words learned from them, with the counts they were learned with and the SHA-256 of the files read, in
 the first line of each file. As in the treebanks, the English side anchors what a word means: "another" and "such" are
 tagged PronType=Ind in English-EWT, so "autre" and "telle" are learned as words of `some`.
+
+## The dialogues learned (`<language>.dialogue.json`)
+
+German, Spanish, Dutch, Portuguese and Italian have no dialogue written for them: Lambek learned the one it reasons
+with (`tools/Learn-LambekDialogue.ps1`, Native/DialogueWords.cs), nothing in it written by hand.
+
+- The small words, from the tags of the forms model of the language (the articles are the words most often tagged DET
+  with PronType=Art, the speaker the pronouns tagged Person=1 and Number=Sing...), kept only when said at least 100
+  times in the sentences of the language in Tatoeba, so that a word of another language quoted in its treebanks ("the"
+  in German) is not one of them. Where a language does not tag the number of its pronouns (Dutch), the speaker is the
+  pronoun of the first person met more with "I" or "me" than with "we" or "us" in the translated sentences.
+- The word that says whose ("von", "de", "van", "di"): the preposition met the most often where English says "of".
+- What it answers: the sentences Tatoeba gives for "Yes.", "No.", "I don't know." and "I understand." ("Ja.", "Nein.",
+  "Ich weiß nicht.", "Ich verstehe."); among several, the one whose rarest word the language says the most, then the
+  one it says most often. Short answers, with what they rest on after them: a sentence not in the translated
+  sentences is not said.
+- How it says that one is of a kind: the form of the copula found after a name where English says "<name> is a ...".
+
+From the same pairs of Tatoeba (release v2023-04-12 of OPUS, CC BY 2.0 FR) and the same treebanks as the forms models
+and the words of logic above. What the dialogue of French or English says that these cannot say yet (the times, the
+counts, "pourquoi", what is imagined) is not said in these languages.

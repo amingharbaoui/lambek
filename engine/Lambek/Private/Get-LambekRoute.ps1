@@ -13,7 +13,8 @@ function Get-LambekSmallWord {
     if ($Language -in (Get-LambekAvailableLanguage)) {
         $lexicon = Get-LambekLexicon -Language $Language
         $lists = @(@($lexicon.StopWords), @($lexicon.Interrogatives), @($lexicon.Negations))
-        if ($lexicon.Dialogue) {
+        # (the words of a dialogue learned are not the router's: it was measured without them)
+        if ($lexicon.Dialogue -and -not $lexicon.Dialogue['Learned']) {
             foreach ($name in 'Speakers', 'Addressee', 'Asked', 'Others', 'Articles', 'Determiners') { $lists += , @($lexicon.Dialogue[$name]) }
         }
         foreach ($list in $lists) {

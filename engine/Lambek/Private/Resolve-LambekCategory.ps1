@@ -25,7 +25,7 @@ function Resolve-LambekCategory {
             if ($result) { return $result }
         }
     }
-    $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)
+    $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Forms
     $languages = @($detected) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $detected } | Sort-Object)
     foreach ($language in $languages) {
         $words = Get-LambekCategoryVocabulary -Language $language
@@ -99,7 +99,8 @@ function Split-LambekCategorySentence {
         $original = $part.Trim()
         if (-not $original) { continue }
         $question = $original -match '\?\s*$'
-        $plain = ($original -replace '[.!?;]+\s*$', '').Trim()
+        # (a mark that opens a sentence is no word of it: the inverted one of Spanish; an apostrophe is a letter's)
+        $plain = (($original -replace '[.!?;]+\s*$', '') -replace "^[\p{Po}-['\u2019]]+", '').Trim()
         if ($lead.Count -gt 0) { $plain = [regex]::Replace($plain, "(?i)^(?:$($lead -join '|'))\s*,?\s+", '') }
         # (a comma only marks a pause: "normalement, les oiseaux volent")
         $plain = (($plain -replace ',', ' ') -replace '\s+', ' ').Trim()
@@ -226,17 +227,17 @@ function Read-LambekCategoryPart {
     }
     if ($Values.ContainsKey('q')) { $item.Quantifier = ConvertTo-LambekNormalizedText -Text $Values['q'] }
     if ($Values.ContainsKey('s')) {
-        $item.Subject = ConvertTo-LambekCategoryTerm -Text $Values['s'] -Language $Language -Bare
+        $item.Subject = ConvertTo-LambekCategoryTerm -Text $Values['s'] -Language $Language -Bare -Lemmas $Values['lemmas']
         if (-not $item.Subject) { return $null }
         $item.Written.Subject = $Values['s'].Trim()
     }
     if ($Values.ContainsKey('n')) {
-        $item.Individual = ConvertTo-LambekCategoryIndividual -Text $Values['n'] -Language $Language -Listener:$Listener
+        $item.Individual = ConvertTo-LambekCategoryIndividual -Text $Values['n'] -Language $Language -Listener:$Listener -Lemmas $Values['lemmas']
         if (-not $item.Individual) { return $null }
         $item.Written.Subject = $Values['n'].Trim()
     }
     if ($Values.ContainsKey('p')) {
-        $item.Predicate = ConvertTo-LambekCategoryTerm -Text $Values['p'] -Language $Language
+        $item.Predicate = ConvertTo-LambekCategoryTerm -Text $Values['p'] -Language $Language -Lemmas $Values['lemmas']
         if (-not $item.Predicate) { return $null }
         $item.Written.Predicate = $Values['p'].Trim()
     }
@@ -247,7 +248,7 @@ function Read-LambekCategoryPart {
         # "aiment le lait": the verb and what it is done to are one thing said ("aimer le lait"), whatever the article
         $atom = "v:$lemma"
         if ($Values.ContainsKey('o') -and $Values['o']) {
-            $object = ConvertTo-LambekCategoryTerm -Text $Values['o'] -Language $Language -Object
+            $object = ConvertTo-LambekCategoryTerm -Text $Values['o'] -Language $Language -Object -Lemmas $Values['lemmas']
             if (-not $object) { return $null }
             $atom += ">$($object.Atoms -join '+')"
             $item.Written.Object = " $($Values['o'].Trim())"
@@ -276,7 +277,10 @@ function ConvertTo-LambekCategoryTerm {
         [switch] $Bare,
 
         # What a verb is done to ("le lait", "de lait" after "ne... pas")
-        [switch] $Object
+        [switch] $Object,
+
+        # The lemmas the words were read with in their sentence, for a word the dictionary does not know out of it
+        [hashtable] $Lemmas
     )
 
     # A kind of things, as the properties it puts together: "un chat noir de ma soeur" is chat, noir and "de ma soeur".
@@ -301,6 +305,7 @@ function ConvertTo-LambekCategoryTerm {
     foreach ($token in $head) {
         if ($lexicon.StopWords.Contains($token)) { return $null }
         $lemma = Get-LambekCategoryLemma -Word $token -Language $Language
+        if (-not $lemma -and $Lemmas -and $Lemmas.ContainsKey($token)) { $lemma = $Lemmas[$token] }
         if (-not $lemma) { return $null }
         [void] $atoms.Add($lemma)
     }
@@ -317,7 +322,7 @@ function ConvertTo-LambekCategoryTerm {
 }
 
 function ConvertTo-LambekCategoryIndividual {
-    param([string] $Text, [string] $Language, [switch] $Listener)
+    param([string] $Text, [string] $Language, [switch] $Listener, [hashtable] $Lemmas)
 
     # The one a sentence is about: the user ("je"; "vous" when Lambek says it), a name ("Minou", "Jean Dupont"),
     # or someone said with whose or which it is ("ma soeur", "le chat"). A pronoun, or something said with "un", is none
@@ -337,7 +342,7 @@ function ConvertTo-LambekCategoryIndividual {
     }
     if ($tokens.Count -lt 2 -or $tokens.Count -gt 4) { return $null }
     if ($tokens[0] -notin @($general['Owners']) -and $tokens[0] -notin @($data['Definite'])) { return $null }
-    foreach ($token in @($tokens | Select-Object -Skip 1)) { if (-not (Get-LambekCategoryLemma -Word $token -Language $Language)) { return $null } }
+    foreach ($token in @($tokens | Select-Object -Skip 1)) { if (-not (Get-LambekCategoryLemma -Word $token -Language $Language) -and -not ($Lemmas -and $Lemmas.ContainsKey($token))) { return $null } }
     $key = @(foreach ($token in $tokens) { if ($token -in @($general['Owners'])) { '@' } elseif ($token -notin @($data['Definite'])) { $token } })
     return [pscustomobject]@{ Key = "the:$($key -join ' ')"; Written = $written }
 }
@@ -626,6 +631,9 @@ function Resolve-LambekCategoryMessage {
     $general = @($shapes | Where-Object { $_ -in $quantified }).Count -gt 0
     # (one question whether someone is something may be answered from what was told of that one alone: "Tom est-il un chat ?")
     $individual = $asks.Count -eq 1 -and $asks[0] -eq 'askis'
+    # A language whose dialogue is learned has no memory of its own yet: what is told of someone is kept here, for the
+    # rules told after it ("Rex ist ein Hund", then "jeder Hund ist ein Tier")
+    if ((Get-LambekLexicon -Language $Language).Dialogue['Learned']) { $individual = $true }
     if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
 
     # Each sentence read, with the dictionary: every one must read, or nothing is taken
@@ -646,6 +654,8 @@ function Resolve-LambekCategoryMessage {
         $who = $asked[0].Item.Individual.Key
         $about = @(@($known) + @($items) | Where-Object { $_.Item.Kind -in 'is', 'isnot' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who }).Count -gt 0
     }
+    # (in a dialogue learned, about anything told before or now: a question alone, with nothing told, is not one)
+    if ((Get-LambekLexicon -Language $Language).Dialogue['Learned'] -and (@($known).Count -gt 0 -or @($items | Where-Object { -not $_.Item.Kind.StartsWith('ask') }).Count -gt 0)) { $about = $true }
     if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
     # A message with no general rule is taken only when it is about what a rule told is about: "all dogs are animals"
     # was told, "Rex is a dog" and "is Rex an animal?" are for it, "my cat is called Luna" and "do I take the bus?" are
@@ -720,7 +730,8 @@ function Resolve-LambekCategoryMessage {
     }
     $because = {
         param([int[]] $indices)
-        $lines.Add($data['Because'])
+        # (a language that has learned no words for it lists what it rests on alone)
+        if ($data['Because']) { $lines.Add($data['Because']) }
         foreach ($line in & $listed $indices) { $lines.Add($line) }
         & $proof $indices @()
     }

@@ -17,6 +17,12 @@ function Get-LambekLexicon {
     }
 
     $data = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json -AsHashtable
+    # A language with no dialogue written for it talks with the one Lambek learned (tools/Learn-LambekDialogue.ps1)
+    $learnedDialogue = Join-Path $PSScriptRoot "../Data/Forms/$Language.dialogue.json"
+    if (-not $data.ContainsKey('Dialogue') -and (Test-Path -LiteralPath $learnedDialogue -PathType Leaf)) {
+        $data['Dialogue'] = (Get-Content -LiteralPath $learnedDialogue -Raw | ConvertFrom-Json -AsHashtable)['Dialogue']
+        $data['Dialogue']['Learned'] = $true
+    }
     foreach ($key in 'StopWords', 'BaseForms', 'SentenceQuestion', 'AmbiguityQuestion', 'RephraseQuestion',
         'Negations', 'Exclusions', 'NegationQuestion', 'ExclusionQuestion', 'UnusedQuestion', 'GuessQuestion', 'GuessOpenQuestion', 'Protected', 'Answer', 'FollowUp') {
         if (-not $data.ContainsKey($key)) {
@@ -105,7 +111,8 @@ function Get-LambekLexicon {
     # The small words of the general reading (pronouns, negations, "because", "why"...) frame a sentence about
     # anything as much as the small words of an order do: "je n'aime pas le cafe" is French by "ne" and "pas"
     $grammar = [System.Collections.Generic.HashSet[string]]::new()
-    if ($data.ContainsKey('Dialogue') -and $data.Dialogue -and $data.Dialogue.ContainsKey('General')) {
+    # (not those of a dialogue learned: the languages were measured told apart without them)
+    if ($data.ContainsKey('Dialogue') -and $data.Dialogue -and $data.Dialogue.ContainsKey('General') -and -not $data.Dialogue['Learned']) {
         $general = $data.Dialogue.General
         foreach ($key in 'Owners', 'Unread', 'Speakers', 'Addressee', 'Pronouns', 'Determiners', 'Prepositions', 'Auxiliaries', 'Verbs', 'Where', 'What', 'Negations', 'Polar', 'PolarMark', 'WhatObject', 'WhatSubject', 'Conjunctions', 'Causes', 'Why') {
             if (-not $general.ContainsKey($key)) { continue }
