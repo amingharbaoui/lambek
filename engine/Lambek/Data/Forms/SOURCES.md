@@ -160,3 +160,32 @@ with (`tools/Learn-LambekDialogue.ps1`, Native/DialogueWords.cs), nothing in it 
 From the same pairs of Tatoeba (release v2023-04-12 of OPUS, CC BY 2.0 FR) and the same treebanks as the forms models
 and the words of logic above. What the dialogue of French or English says that these cannot say yet (the times, the
 counts, "pourquoi", what is imagined) is not said in these languages.
+
+## The lexicons (`<language>.lexicon.gz`)
+
+The words of each language as Wiktionary says them, to read the words its treebanks never met ("abbaia" is
+"abbaiare", "frisst" is "fressen", "pesce" a noun): `tools/Learn-LambekLexicon.ps1`, Native/Lexicon.cs. Nothing in
+them is written by hand.
+
+| Source | Licence | Words read |
+| --- | --- | --- |
+| [Wiktionary](https://en.wiktionary.org), English edition, dump of 1 October 2026, as [Wiktextract](https://github.com/tatuylonen/wiktextract) reads it ([kaikki.org](https://kaikki.org/dictionary/rawdata.html), Tatu Ylonen, "Wiktextract: Wiktionary as Machine-Readable Structured Data", LREC 2022) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) and GFDL | French 929 177, English 1 784 859, German 2 074 714, Spanish 2 564 888, Dutch 539 773, Portuguese 1 050 719, Italian 1 610 372 |
+
+- How the names of Wiktionary turn into the tags of the treebanks is learned once for every language, from the words
+  Wiktionary and the treebanks of the forms models both have: a part of speech of Wiktionary is the UPOS most of its
+  words are tagged with ("noun" NOUN, "verb" VERB, "name" PROPN...); a tag is the one feature that tells its words apart
+  the most, met with nine in ten of them and at most half as often without it, learned from the forms Wiktionary gives
+  one reading of ("plural" Number=Plur, "first-person" Person=1, "future" Tense=Fut...); a tag that is no feature is kept
+  when most of its words are the forms of the lemma it gives them ("form-of"), and a word with any other tag is left
+  out ("diminutive": another word).
+- A word is kept when its language is seen written so in its sentences of Tatoeba (above): French 33 243 forms, English
+  26 585, German 38 061, Spanish 30 668, Dutch 15 251, Portuguese 32 003, Italian 31 307.
+- When the forms model reads a word as one of the parts of speech the lexicon gives it, the word takes the lemma the
+  lexicon gives it if the treebanks never met it: a word they met keeps its lemma unless that lemma is a guess they
+  never met; a word they never met keeps a lemma its rule of form found among theirs, and takes the lexicon's in place of
+  one guessed from another verb. A word they never met, read as none of the lexicon's parts of speech, takes the
+  lexicon's reading nearest to the tagger's.
+- Measured on the test files of the treebanks and PUD: the lemma rises on every file of the seven languages (Italian
+  +0.4 to +0.8 points, the words never seen +2.8 to +4.5; German +0.2 to +0.6, the words never seen +1.2 to +3.3).
+
+As derived from Wiktionary, the lexicons are shared under CC BY-SA 4.0, with credit to the authors of Wiktionary.

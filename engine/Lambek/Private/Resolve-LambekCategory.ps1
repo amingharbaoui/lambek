@@ -26,7 +26,12 @@ function Resolve-LambekCategory {
         }
     }
     $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Forms
-    $languages = @($detected) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $detected } | Sort-Object)
+    # (the languages general rules were told in come first, after the one the message reads as when rules were told
+    # in it: "Rex abbaia?" after "tutti i cani abbaiano" is Italian, whatever its few words alone say)
+    $told = @(Get-LambekAvailableLanguage | Sort-Object | Where-Object { $_ -ne $detected -and @(Get-LambekCategoryKnown -Language $_ -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot' }).Count -gt 0 })
+    $own = @(Get-LambekCategoryKnown -Language $detected -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot' }).Count -gt 0
+    $languages = $(if ($own -or $told.Count -eq 0) { @($detected) + $told } else { $told + @($detected) })
+    $languages = @($languages) + @(Get-LambekAvailableLanguage | Where-Object { $_ -notin $languages } | Sort-Object)
     foreach ($language in $languages) {
         $words = Get-LambekCategoryVocabulary -Language $language
         if (-not $words) { continue }

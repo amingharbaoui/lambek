@@ -31,7 +31,9 @@ function Repair-LambekTyping {
     $shorthand = $lexicon.Shorthand
     $dictionary = Get-LambekDictionary -Language $Language
     # (a word of another language is no slip: "combien" is not "combine" when the language was not told)
-    $others = @(@($Language, 'fr', 'en') | Where-Object { $_ -in (Get-LambekAvailableLanguage) } | Select-Object -Unique)
+    # (nor one of a language something was told in here: "ladra" after "todos los perros ladran")
+    $spoken = @(if ($script:Told) { foreach ($said in $script:Told) { if ($said.PSObject.Properties['Language'] -and $said.Language) { "$($said.Language)" } } })
+    $others = @(@($Language, 'fr', 'en') + $spoken | Where-Object { $_ -in (Get-LambekAvailableLanguage) } | Select-Object -Unique)
 
     # A space missed or typed in the wrong place, put back before each word is read
     $Text = Repair-LambekSpacing -Text $Text -Language $Language -Others $others -Changes $changes
@@ -75,6 +77,9 @@ function Repair-LambekTyping {
                 if ($heardOften -and $heardOften.Knows($lower)) { return $word }
                 $words = Get-LambekDictionary -Language $other
                 if ($words -and @($words.Lemmas($lower, $other)).Count -gt 0) { return $word }
+                # (nor a word of the dictionary the language learned its words from: "ladra" of "ladrar")
+                $forms = Get-LambekFormModel -Language $other
+                if ($forms -and $forms.Lexicon -and $forms.Lexicon.Forms.ContainsKey($lower)) { return $word }
             }
             if ($capital) { return (Repair-LambekCapital -Word $word -Index $match.Index -Text $Text -Language $Language -Lexicon $lexicon -Changes $changes -Shift $shift) }
             $near = @($dictionary.Near($lower, $Language, 1))
@@ -92,6 +97,9 @@ function Repair-LambekTyping {
             foreach ($other in @(Get-LambekAvailableLanguage)) {
                 $words = Get-LambekDictionary -Language $other
                 if ($words -and @($words.Lemmas($lower, $other)).Count -gt 0) { return $word }
+                # (nor a word of the dictionary the language learned its words from: "ladra" of "ladrar")
+                $forms = Get-LambekFormModel -Language $other
+                if ($forms -and $forms.Lexicon -and $forms.Lexicon.Forms.ContainsKey($lower)) { return $word }
             }
             $forms = @(Get-LambekSlipForm -Word $lower -Language $Language -Lexicon $lexicon -Dictionary $dictionary)
             if ($forms.Count -ge 2 -or ($forms.Count -eq 1 -and $near.Count -eq 0)) {
@@ -138,7 +146,7 @@ function Repair-LambekTyping {
 
 function Test-LambekKnownWord {
     # Whether a word in small letters is one Lambek or a language knows: a small word or a word of its packs or of talk,
-    # a frequent word of the language, a form of its dictionary; in any of the languages given
+    # a frequent word of the language, a form of its dictionaries; in any of the languages given
     param([string] $Word, [string[]] $Languages)
 
     $plain = ConvertTo-LambekNormalizedText -Text $Word
@@ -151,6 +159,8 @@ function Test-LambekKnownWord {
         if ($heardOften -and $heardOften.Knows($Word)) { return $true }
         $words = Get-LambekDictionary -Language $other
         if ($words -and @($words.Lemmas($Word, $other)).Count -gt 0) { return $true }
+        $forms = Get-LambekFormModel -Language $other
+        if ($forms -and $forms.Lexicon -and $forms.Lexicon.Forms.ContainsKey($Word.ToLowerInvariant())) { return $true }
     }
     return $false
 }

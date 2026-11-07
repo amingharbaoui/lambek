@@ -15,6 +15,9 @@ function Get-LambekFormModel {
         # What Lambek learned on its own from plain text (tools/Learn-LambekWords.ps1), when it was written down
         $learned = Join-Path $PSScriptRoot "../Data/Forms/$Language.learned.gz"
         if (Test-Path -LiteralPath $learned -PathType Leaf) { $model.AddLearned([LambekSelfReader]::Load([IO.Path]::GetFullPath($learned))) }
+        # The words of the language as a dictionary says them (tools/Learn-LambekLexicon.ps1), when there is one
+        $lexicon = Join-Path $PSScriptRoot "../Data/Forms/$Language.lexicon.gz"
+        if (Test-Path -LiteralPath $lexicon -PathType Leaf) { $model.Lexicon = [LambekLexicon]::Load([IO.Path]::GetFullPath($lexicon)) }
     }
     $script:FormModels[$Language] = $model
     return $model

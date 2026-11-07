@@ -395,6 +395,75 @@ public class LambekForms
     // ("lives": a verb or the plural of "life"), and the grammar of the sentence then chooses
     public readonly SortedDictionary<string, string[]> Tags = new SortedDictionary<string, string[]>(StringComparer.Ordinal);
 
+    // The words of the language as a dictionary says them (Data/Forms/<language>.lexicon.gz): the readings a form may
+    // have, its lemma for each
+    public LambekLexicon Lexicon;
+
+    // A word read as the dictionary allows: read as one of its parts of speech, it takes the lemma the dictionary
+    // gives for it ("come" read a verb is "comer", not "comar" guessed by its ends); a word never seen in the treebanks,
+    // read as none of them, is read as the dictionary's reading nearest to the tagger's ("pesce" is a noun, not a
+    // verb), the tagger's kept second. A word written in lower case is no name
+    void FromLexicon(LambekFormReading reading, string form)
+    {
+        LambekLexiconEntry[] entries;
+        if (!Lexicon.TryGet(form, out entries)) return;
+        bool lower = form.Length > 0 && !char.IsUpper(form[0]);
+        Func<LambekLexiconEntry, int> agreement = entry =>
+        {
+            if (entry.Feats == "_" || string.IsNullOrEmpty(reading.Feats)) return 0;
+            HashSet<string> mine = new HashSet<string>(reading.Feats.Split('|'), StringComparer.Ordinal);
+            return entry.Feats.Split('|').Count(f => mine.Contains(f));
+        };
+        LambekLexiconEntry[] same = entries.Where(e => e.Upos == reading.Upos).ToArray();
+        if (same.Length > 0)
+        {
+            if (same.Any(e => string.Equals(e.Lemma, reading.Lemma, StringComparison.OrdinalIgnoreCase))) return;
+            // (a word the treebanks met keeps the lemma it was read with, as they name lemmas, unless that lemma is a
+            // guess they never met and the dictionary gives one they did: "comar" for "come", where "comer" is one)
+            if (Knows(form))
+            {
+                if (TreebankLemma(reading.Upos, reading.Lemma)) return;
+                same = same.Where(e => TreebankLemma(e.Upos, e.Lemma)).ToArray();
+                if (same.Length == 0) return;
+            }
+            // (a word never met keeps a lemma its rule of form found among those the treebanks met, "mangee" is
+            // "manger" as they name it; one guessed from another verb, "abbaia" as "abbandonare", is the dictionary's)
+            else if (!reading.Analogous && TreebankLemma(reading.Upos, reading.Lemma)) return;
+            LambekLexiconEntry best = same.OrderByDescending(agreement).First();
+            reading.Lemma = best.Lemma;
+            reading.Analogous = false;
+            return;
+        }
+        if (Knows(form)) return;
+        LambekLexiconEntry[] allowed = entries.Where(e => !lower || e.Upos != "PROPN").ToArray();
+        if (allowed.Length == 0) return;
+        LambekLexiconEntry chosen = allowed.OrderByDescending(agreement).First();
+        reading.Alternative = reading.Upos + "|" + reading.Feats;
+        reading.Upos = chosen.Upos;
+        reading.Feats = chosen.Feats;
+        reading.Lemma = chosen.Lemma;
+        reading.Analogous = false;
+        reading.Doubt = false;
+    }
+
+    // Whether the treebanks met a lemma with a part of speech (their paradigms say it)
+    HashSet<string> treebankLemmas;
+    bool TreebankLemma(string upos, string lemma)
+    {
+        if (treebankLemmas == null)
+        {
+            HashSet<string> lemmas = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string key in Paradigms.Keys)
+            {
+                string[] parts = key.Split('\t');
+                if (parts.Length >= 2) lemmas.Add(parts[0] + "\t" + parts[1]);
+            }
+            treebankLemmas = lemmas;
+        }
+        if (string.IsNullOrEmpty(lemma)) return false;
+        return treebankLemmas.Contains((upos == "AUX" ? "VERB" : upos) + "\t" + lemma.ToLowerInvariant());
+    }
+
     // The lemma of a form read with a tag
     public string LemmaFor(string form, string tag)
     {
@@ -1443,6 +1512,7 @@ public class LambekForms
                     readings[i].Doubt = other != readings[i].Upos;
                 }
             }
+            if (Lexicon != null) FromLexicon(readings[i], form);
         }
         return readings;
     }

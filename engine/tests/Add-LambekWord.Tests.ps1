@@ -29,8 +29,9 @@ Describe 'Type of an unknown word' {
         $plan.Questions[0] | Should -Not -BeLike '*delete*'
     }
 
+    # (two words no language has: "blarg" is read as "blare", a word of English, since English has a lexicon)
     It 'solves nothing with two unknown words' {
-        (New-LambekPlan 'zorp blarg the .tmp files in C:\Temp').Steps[0].Guess | Should -BeNullOrEmpty
+        (New-LambekPlan 'xqzv wplkr the .tmp files in C:\Temp').Steps[0].Guess | Should -BeNullOrEmpty
     }
 
     It 'never lets a folder stand for files an unknown word names' {

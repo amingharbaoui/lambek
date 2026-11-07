@@ -118,7 +118,7 @@ function Read-LambekCategoryTagged {
     }
     if ($at -ne $readings.Count) { return $null }
     # Only a sentence of the language: every word that makes the sentence (a verb, a determiner, a preposition, a
-    # pronoun...) is one its treebanks or its texts had ("est" is no English word), what is spoken of may be new; a word
+    # pronoun...) is one its treebanks, its texts or its dictionary had ("est" is no English word), what is spoken of may be new; a word
     # never seen written with a capital is a name, whatever the tagger guessed ("Socrates"), but the first word of the
     # sentence, which any word may be, only when it was guessed a verb ("Penguins do not fly"). And no word that asks
     # which or how many ("quel", "combien", "what"): those are questions of another kind
@@ -126,7 +126,8 @@ function Read-LambekCategoryTagged {
     for ($r = 0; $r -lt $readings.Count; $r++) {
         $form = "$($readings[$r].Form)"
         $upos[$r] = "$($readings[$r].Upos)"
-        $known = $model.Knows($form.ToLowerInvariant()) -or $model.Learned.ContainsKey($form.ToLowerInvariant())
+        # (a word the dictionary of the language has is one of its words too: "abbaiano", "fressen")
+        $known = $model.Knows($form.ToLowerInvariant()) -or $model.Learned.ContainsKey($form.ToLowerInvariant()) -or ($model.Lexicon -and $model.Lexicon.Forms.ContainsKey($form.ToLowerInvariant()))
         $capital = $form.Length -gt 0 -and [char]::IsUpper($form[0])
         if (-not $known -and $capital -and ($r -gt 0 -or $upos[$r] -in 'VERB', 'AUX', 'X')) { $upos[$r] = 'PROPN' }
         elseif (-not $known -and $upos[$r] -notin 'NOUN', 'ADJ', 'PROPN') { return $null }
@@ -167,6 +168,21 @@ function Read-LambekCategoryTagged {
     # (an AUX first asks: "does it fly", "is Tom a cat"; in a question, so does a VERB first when another follows: "do
     # all cats drink milk")
     $verbal = @(for ($r = $first; $r -lt $readings.Count; $r++) { if ($upos[$r] -in 'AUX', 'VERB') { $r } })
+    # (a question with no verb read: its first word is the verb when the dictionary gives it as one, "ladra" of
+    # "ladra Rex", read a noun by the tagger at the start of a sentence)
+    if ($verbal.Count -eq 0 -and $Question -and $model.Lexicon) {
+        $entries = $null
+        if ($model.Lexicon.TryGet("$($readings[$first].Form)", [ref] $entries)) {
+            $verb = @($entries | Where-Object Upos -EQ 'VERB' | Select-Object -First 1)
+            if ($verb.Count -gt 0) {
+                $upos[$first] = 'VERB'
+                $readings[$first].Upos = 'VERB'
+                $readings[$first].Lemma = $verb[0].Lemma
+                $readings[$first].Feats = $verb[0].Feats
+                $verbal = @($first)
+            }
+        }
+    }
     if ($verbal.Count -eq 0) { return $null }
     $front = $verbal[0] -eq $first -and ($upos[$first] -eq 'AUX' -or ($Question -and $verbal.Count -gt 1))
     # (in a question, the verb alone first, the one after it: "bellt Rex", "ladra Rex")
