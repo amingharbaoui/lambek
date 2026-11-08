@@ -37,6 +37,12 @@ Describe 'Spelling correction' {
         $request = ConvertTo-LambekRequest 'quel âge a le président de la France ?'
         @($request.Corrections | Where-Object From -EQ 'france').Count | Should -Be 0
     }
+
+    It 'does not take a word its treebanks write for a slip of one they write less ("mora" is not "mova")' {
+        $request = ConvertTo-LambekRequest 'a minha mãe mora no Porto' -Language pt
+        @($request.Corrections | Where-Object From -EQ 'mora').Count | Should -Be 0
+        $request.Words | Should -Not -Contain 'mover'
+    }
 }
 
 Describe 'Correction chosen by the grammar' {

@@ -25,9 +25,15 @@ function Get-LambekSpellingCandidate {
     $words = [System.Collections.Generic.HashSet[string]]::new($lexicon.Vocabulary)
     foreach ($name in (Get-LambekKnownFolder).Keys) { if ($name -notmatch '\s') { [void] $words.Add($name) } }
 
+    # A word the treebanks of the language write is a slip only for a word they write more often ("mora", "lives", is
+    # no slip of "mova", "move": the treebanks of Portuguese write it, and "mova" less)
+    $written = Get-LambekWrittenWord -Language $Language
+    $often = $(if ($written) { $written.Counts.Count([LambekForms]::Bare($Token)) } else { 0 })
+
     $neighbors = Get-LambekKeyNeighbor
     $found = foreach ($word in $words) {
         if ($word -notmatch '^\p{L}+$' -or [math]::Abs($word.Length - $Token.Length) -gt [math]::Ceiling($limit)) { continue }
+        if ($often -gt 0 -and $written.Counts.Count([LambekForms]::Bare($word)) -le $often) { continue }
         $cost = [LambekMeasure]::KeyDistance($Token, $word, $neighbors)
         if ($cost -gt 0 -and $cost -le $limit) {
             [pscustomobject]@{ Word = $word; Cost = $cost }
