@@ -93,6 +93,10 @@ Describe 'The words of a language as Wiktionary says them' {
             @{ Language = 'pt'; Told = 'nenhum gato late', 'Kiki é um gato'; Question = 'Kiki late?'; Said = 'Não.*' }
             # (a name told before is a name, whatever the tagger guessed)
             @{ Language = 'pt'; Told = 'todos os cães latem', 'Rex é um cão'; Question = 'Rex late?'; Said = 'Sim. Rex late.*' }
+            # (what says not as each treebank tags it: "kein", "geen" after the verb, "non")
+            @{ Language = 'de'; Told = @('Pip ist kein Vogel'); Question = 'ist Pip ein Vogel?'; Said = 'Nein.*' }
+            @{ Language = 'nl'; Told = @('Pip is geen vogel'); Question = 'is Pip een vogel?'; Said = 'Nee.*' }
+            @{ Language = 'it'; Told = @('Pip non è un uccello'); Question = 'Pip è un uccello?'; Said = 'No.*' }
         ) {
             # (sent as the app sends them, in the language the user speaks, each conversation a chat of its own)
             $answer = InModuleScope Lambek -Parameters @{ Sentences = @($Told) + @($Question); Language = $Language; Audit = (Join-Path $TestDrive 'audit.jsonl'); Chat = "lexicon-$Question" } {

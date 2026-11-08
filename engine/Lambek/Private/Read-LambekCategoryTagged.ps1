@@ -155,7 +155,13 @@ function Read-LambekCategoryTagged {
     }
     $has = { param($r, $feature) "|$($readings[$r].Feats)|".Contains("|$feature|") }
     $negative = [bool[]]::new($readings.Count)
-    for ($r = 0; $r -lt $readings.Count; $r++) { $negative[$r] = & $has $r 'Polarity=Neg' }
+    # (what says not, as each treebank tags it: "no", "nao" with Polarity=Neg; "non", and "kein", "geen" after the verb,
+    # with PronType=Neg; first, "kein", "nessun" say how many: none)
+    $verbSeen = $false
+    for ($r = 0; $r -lt $readings.Count; $r++) {
+        $negative[$r] = (& $has $r 'Polarity=Neg') -or ((& $has $r 'PronType=Neg') -and ("$($readings[$r].Upos)" -in 'ADV', 'PART' -or $verbSeen))
+        if ("$($readings[$r].Upos)" -in 'AUX', 'VERB') { $verbSeen = $true }
+    }
     # (the text of readings from one to another, as written when whole words, else as read: "i" of "i'm")
     $text = {
         param([int] $From, [int] $To)
