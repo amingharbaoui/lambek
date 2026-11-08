@@ -221,9 +221,16 @@ them is written by hand.
 - A word is kept when its language is seen written so in its sentences of Tatoeba (above): French 33 243 forms, English
   26 585, German 38 061, Spanish 30 668, Dutch 15 251, Portuguese 32 003, Italian 31 307.
 - When the forms model reads a word as one of the parts of speech the lexicon gives it, the word takes the lemma the
-  lexicon gives it if the treebanks never met it: a word they met keeps its lemma unless that lemma is a guess they
-  never met; a word they never met keeps a lemma its rule of form found among theirs, and takes the lexicon's in place of
-  one guessed from another verb. A word they never met, read as none of the lexicon's parts of speech, takes the
+  lexicon gives it if the treebanks never met it: a word they met keeps its lemma unless they met that very word more
+  often with a lemma the lexicon gives ("come" with "comer" more than with "comar"), or that lemma is a guess they
+  never met; a word they never met keeps a lemma its rule of form found among theirs, unless the lexicon gives one they
+  met more often ("comen" is "comer", met in a dozen forms, not "comir", a lemma a treebank was once tagged with), and
+  takes the lexicon's in place of one guessed from another verb. Measured on the same test files, the lemma moves by
+  0.05 points at most, and the reasoning in seven languages (`bench/reasoning.json`) rises.
+- In a conversation, a word the lexicon gives more than one lemma is read with the one told before ("come" is the
+  "comer" of "comen"), a name told before is a name, whatever the tagger guessed ("Rex"), and a sentence with no verb
+  read takes as its verb the one word only the lexicon gives as one, if the treebanks never saw that word as something
+  else ("blaffen" of "alle honden blaffen", "late" of "nenhum gato late"). A word they never met, read as none of the lexicon's parts of speech, takes the
   lexicon's reading nearest to the tagger's.
 - Measured on the test files of the treebanks and PUD: the lemma rises on every file of the seven languages (Italian
   +0.4 to +0.8 points, the words never seen +2.8 to +4.5; German +0.2 to +0.6, the words never seen +1.2 to +3.3).

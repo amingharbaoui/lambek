@@ -63,6 +63,11 @@ Describe 'The words of a language as Wiktionary says them' {
         $readings[2].Lemma | Should -Be 'manger'
     }
 
+    It 'takes the lemma the treebanks met more often, where the tagger guessed one they met seldom' {
+        $readings = InModuleScope Lambek { @((Get-LambekFormModel -Language es).ReadText('todos los gatos comen pescado')) }
+        $readings[3].Lemma | Should -Be 'comer'
+    }
+
     Context 'Reasoning with the words learned' {
 
         BeforeEach {
@@ -76,6 +81,32 @@ Describe 'The words of a language as Wiktionary says them' {
         ) {
             Tell $Told
             Ask $Question | Should -BeLike $Said
+        }
+
+        It 'reads a sentence with what was said before it: <Question>' -ForEach @(
+            # (the same verb in the rule and in the question, "comen" and "come" both "comer")
+            @{ Language = 'es'; Told = 'todos los gatos comen pescado', 'Kiki es un gato'; Question = '¿come Kiki pescado?'; Said = 'Sí. Kiki come pescado.*' }
+            # (a plural and its singular, the same lemma: "gatos" and "gato")
+            @{ Language = 'pt'; Told = 'todas as rosas são flores', 'todas as flores são plantas', 'Lia é uma rosa'; Question = 'Lia é uma planta?'; Said = 'Sim.*' }
+            # (a sentence with no verb read, one word the dictionary gives as one: "blaffen", "late")
+            @{ Language = 'nl'; Told = 'alle honden blaffen', 'Bello is een hond'; Question = 'blaft Bello?'; Said = 'Ja. Bello blaft.*' }
+            @{ Language = 'pt'; Told = 'nenhum gato late', 'Kiki é um gato'; Question = 'Kiki late?'; Said = 'Não.*' }
+            # (a name told before is a name, whatever the tagger guessed)
+            @{ Language = 'pt'; Told = 'todos os cães latem', 'Rex é um cão'; Question = 'Rex late?'; Said = 'Sim. Rex late.*' }
+        ) {
+            # (sent as the app sends them, in the language the user speaks, each conversation a chat of its own)
+            $answer = InModuleScope Lambek -Parameters @{ Sentences = @($Told) + @($Question); Language = $Language; Audit = (Join-Path $TestDrive 'audit.jsonl'); Chat = "lexicon-$Question" } {
+                param($Sentences, $Language, $Audit, $Chat)
+                $id = 0
+                $said = $null
+                foreach ($sentence in $Sentences) {
+                    $id++
+                    $line = ConvertTo-Json -InputObject ([ordered]@{ id = $id; method = 'ask'; params = [ordered]@{ text = $sentence; chat = $Chat; incognito = $true; language = $Language } }) -Compress -Depth 5
+                    $said = (Invoke-LambekHostRequest -Line $line -AuditPath $Audit | ConvertFrom-Json).result.answer
+                }
+                $said
+            }
+            $answer | Should -BeLike $Said
         }
     }
 }

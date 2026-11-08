@@ -122,10 +122,30 @@ function Read-LambekCategoryTagged {
     # never seen written with a capital is a name, whatever the tagger guessed ("Socrates"), but the first word of the
     # sentence, which any word may be, only when it was guessed a verb ("Penguins do not fly"). And no word that asks
     # which or how many ("quel", "combien", "what"): those are questions of another kind
+    # (the names told in the conversation: "Rex" told as one is a name when it comes back, whatever the tagger guessed)
+    # (and the words told: a word the dictionary gives more than one lemma is read with the one told, "come" is the
+    # "comer" of "comen" told before, not "comar")
+    $names = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $said = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($thing in @($script:Told)) {
+        if (-not $thing -or -not $thing.PSObject.Properties['Core']) { continue }
+        foreach ($match in [regex]::Matches("$($thing.Core)", 'name:([\p{L}-]+)(?=[|+)])')) { [void] $names.Add($match.Groups[1].Value) }
+        foreach ($match in [regex]::Matches("$($thing.Core)", '(?<=[|+>]|\|v:)[\p{L}-]+(?=[|+>)])')) { [void] $said.Add($match.Value) }
+    }
+    if ($said.Count -gt 0 -and $model.Lexicon) {
+        foreach ($reading in $readings) {
+            $entries = $null
+            if (-not $reading.Lemma -or -not $model.Lexicon.TryGet("$($reading.Form)", [ref] $entries)) { continue }
+            if ($said.Contains((ConvertTo-LambekNormalizedText -Text "$($reading.Lemma)"))) { continue }
+            $told = @($entries | Where-Object { $_.Upos -eq $reading.Upos -and $said.Contains((ConvertTo-LambekNormalizedText -Text "$($_.Lemma)")) } | ForEach-Object Lemma | Select-Object -Unique)
+            if ($told.Count -eq 1) { $reading.Lemma = $told[0] }
+        }
+    }
     $upos = [string[]]::new($readings.Count)
     for ($r = 0; $r -lt $readings.Count; $r++) {
         $form = "$($readings[$r].Form)"
         $upos[$r] = "$($readings[$r].Upos)"
+        if ($form.Length -gt 0 -and [char]::IsUpper($form[0]) -and $names.Contains((ConvertTo-LambekNormalizedText -Text $form))) { $upos[$r] = 'PROPN'; $readings[$r].Upos = 'PROPN' }
         # (a word the dictionary of the language has is one of its words too: "abbaiano", "fressen")
         $known = $model.Knows($form.ToLowerInvariant()) -or $model.Learned.ContainsKey($form.ToLowerInvariant()) -or ($model.Lexicon -and $model.Lexicon.Forms.ContainsKey($form.ToLowerInvariant()))
         $capital = $form.Length -gt 0 -and [char]::IsUpper($form[0])
@@ -170,17 +190,31 @@ function Read-LambekCategoryTagged {
     $verbal = @(for ($r = $first; $r -lt $readings.Count; $r++) { if ($upos[$r] -in 'AUX', 'VERB') { $r } })
     # (a question with no verb read: its first word is the verb when the dictionary gives it as one, "ladra" of
     # "ladra Rex", read a noun by the tagger at the start of a sentence)
-    if ($verbal.Count -eq 0 -and $Question -and $model.Lexicon) {
-        $entries = $null
-        if ($model.Lexicon.TryGet("$($readings[$first].Form)", [ref] $entries)) {
+    # (and any sentence with no verb read and one word only the dictionary gives as a verb: that word, "blaffen" of
+    # "alle honden blaffen", "late" of "Rex late?", read as nouns)
+    if ($verbal.Count -eq 0 -and $model.Lexicon) {
+        $verbs = [ordered]@{}
+        for ($r = $first; $r -lt $readings.Count; $r++) {
+            if ($negative[$r] -or $upos[$r] -eq 'PROPN') { continue }
+            $entries = $null
+            if (-not $model.Lexicon.TryGet("$($readings[$r].Form)", [ref] $entries)) { continue }
+            # (but no word the treebanks saw only as something else: "gato" of "nenhum gato late" is the noun they saw)
+            $seen = $null
+            if ($model.Tags.TryGetValue("$($readings[$r].Form)".ToLowerInvariant(), [ref] $seen) -and @($seen).Count -gt 0 -and
+                @($seen | Where-Object { $_ -like 'VERB|*' -or $_ -like 'AUX|*' }).Count -eq 0) { continue }
             $verb = @($entries | Where-Object Upos -EQ 'VERB' | Select-Object -First 1)
-            if ($verb.Count -gt 0) {
-                $upos[$first] = 'VERB'
-                $readings[$first].Upos = 'VERB'
-                $readings[$first].Lemma = $verb[0].Lemma
-                $readings[$first].Feats = $verb[0].Feats
-                $verbal = @($first)
-            }
+            if ($verb.Count -gt 0) { $verbs[[string] $r] = $verb[0] }
+        }
+        $at = -1
+        if ($Question -and $verbs.Contains([string] $first)) { $at = $first }
+        elseif ($verbs.Count -eq 1) { $at = [int] @($verbs.Keys)[0] }
+        if ($at -ge 0) {
+            $verb = $verbs[[string] $at]
+            $upos[$at] = 'VERB'
+            $readings[$at].Upos = 'VERB'
+            $readings[$at].Lemma = $verb.Lemma
+            $readings[$at].Feats = $verb.Feats
+            $verbal = @($at)
         }
     }
     if ($verbal.Count -eq 0) { return $null }

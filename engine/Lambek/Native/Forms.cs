@@ -418,17 +418,33 @@ public class LambekForms
         if (same.Length > 0)
         {
             if (same.Any(e => string.Equals(e.Lemma, reading.Lemma, StringComparison.OrdinalIgnoreCase))) return;
-            // (a word the treebanks met keeps the lemma it was read with, as they name lemmas, unless that lemma is a
-            // guess they never met and the dictionary gives one they did: "comar" for "come", where "comer" is one)
             if (Knows(form))
             {
-                if (TreebankLemma(reading.Upos, reading.Lemma)) return;
-                same = same.Where(e => TreebankLemma(e.Upos, e.Lemma)).ToArray();
-                if (same.Length == 0) return;
+                // (a word the treebanks met: by how often they met this very word with each lemma, "come" with "comer"
+                // more than with "comar", "het" with "het" more than with "de"; else it keeps the lemma it was read
+                // with, as they name lemmas, unless that lemma is one they never met and the dictionary gives one they did)
+                string written = form.ToLowerInvariant();
+                int seen = FormLemmaCount(reading.Upos, reading.Lemma, written);
+                LambekLexiconEntry[] oftener = same.Where(e => FormLemmaCount(e.Upos, e.Lemma, written) > seen).ToArray();
+                if (oftener.Length == 0)
+                {
+                    if (TreebankLemma(reading.Upos, reading.Lemma)) return;
+                    oftener = same.Where(e => TreebankLemma(e.Upos, e.Lemma)).ToArray();
+                    if (oftener.Length == 0) return;
+                }
+                same = oftener;
             }
-            // (a word never met keeps a lemma its rule of form found among those the treebanks met, "mangee" is
-            // "manger" as they name it; one guessed from another verb, "abbaia" as "abbandonare", is the dictionary's)
-            else if (!reading.Analogous && TreebankLemma(reading.Upos, reading.Lemma)) return;
+            else
+            {
+                // (a word never met keeps a lemma its rule of form found among those the treebanks met, "mangee" is
+                // "manger" as they name it, unless the dictionary gives one they met more often, "comen" is "comer",
+                // met in a dozen forms, not "comir", a guess a treebank was once tagged with; one guessed from another
+                // verb, "abbaia" as "abbandonare", is the dictionary's)
+                int mine = LemmaWeight(reading.Upos, reading.Lemma);
+                LambekLexiconEntry[] heavier = same.Where(e => LemmaWeight(e.Upos, e.Lemma) > mine).ToArray();
+                if (heavier.Length > 0) same = heavier;
+                else if (!reading.Analogous && mine > 0) return;
+            }
             LambekLexiconEntry best = same.OrderByDescending(agreement).First();
             reading.Lemma = best.Lemma;
             reading.Analogous = false;
@@ -446,22 +462,55 @@ public class LambekForms
         reading.Doubt = false;
     }
 
-    // Whether the treebanks met a lemma with a part of speech (their paradigms say it)
-    HashSet<string> treebankLemmas;
-    bool TreebankLemma(string upos, string lemma)
+    // Whether the treebanks met a lemma with a part of speech (their paradigms say it), and how often
+    Dictionary<string, int> lemmaWeights;
+    bool TreebankLemma(string upos, string lemma) { return LemmaWeight(upos, lemma) > 0; }
+
+    // How often the treebanks met a form with a lemma and a part of speech
+    Dictionary<string, int> formLemmaCounts;
+    int FormLemmaCount(string upos, string lemma, string form)
     {
-        if (treebankLemmas == null)
+        if (formLemmaCounts == null)
         {
-            HashSet<string> lemmas = new HashSet<string>(StringComparer.Ordinal);
-            foreach (string key in Paradigms.Keys)
+            Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in Paradigms)
             {
-                string[] parts = key.Split('\t');
-                if (parts.Length >= 2) lemmas.Add(parts[0] + "\t" + parts[1]);
+                string[] parts = paradigm.Key.Split('\t');
+                if (parts.Length < 2) continue;
+                foreach (KeyValuePair<string, int> seen in paradigm.Value)
+                {
+                    string key = parts[0] + "\t" + parts[1] + "\t" + seen.Key.ToLowerInvariant();
+                    int n;
+                    counts.TryGetValue(key, out n);
+                    counts[key] = n + seen.Value;
+                }
             }
-            treebankLemmas = lemmas;
+            formLemmaCounts = counts;
         }
-        if (string.IsNullOrEmpty(lemma)) return false;
-        return treebankLemmas.Contains((upos == "AUX" ? "VERB" : upos) + "\t" + lemma.ToLowerInvariant());
+        if (string.IsNullOrEmpty(lemma)) return 0;
+        int count;
+        return formLemmaCounts.TryGetValue((upos == "AUX" ? "VERB" : upos) + "\t" + lemma.ToLowerInvariant() + "\t" + form, out count) ? count : 0;
+    }
+
+    int LemmaWeight(string upos, string lemma)
+    {
+        if (lemmaWeights == null)
+        {
+            Dictionary<string, int> weights = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in Paradigms)
+            {
+                string[] parts = paradigm.Key.Split('\t');
+                if (parts.Length < 2) continue;
+                string key = parts[0] + "\t" + parts[1];
+                int n;
+                weights.TryGetValue(key, out n);
+                weights[key] = n + paradigm.Value.Values.Sum();
+            }
+            lemmaWeights = weights;
+        }
+        if (string.IsNullOrEmpty(lemma)) return 0;
+        int weight;
+        return lemmaWeights.TryGetValue((upos == "AUX" ? "VERB" : upos) + "\t" + lemma.ToLowerInvariant(), out weight) ? weight : 0;
     }
 
     // The lemma of a form read with a tag

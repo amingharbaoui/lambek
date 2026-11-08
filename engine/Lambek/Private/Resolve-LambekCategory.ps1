@@ -307,9 +307,14 @@ function ConvertTo-LambekCategoryTerm {
     if ($of -gt 0) { $head = @($tokens[0..($of - 1)]); $complement = @($tokens | Select-Object -Skip ($of + 1)) }
     if ($head.Count -gt 4) { return $null }
     $atoms = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
+    # (a language whose dialogue Lambek learned reads every sentence by its tags: each word is the lemma its forms model
+    # read it with, the same in a rule and in a question, before any dictionary's; "gatos" is "gato" as "gato" is)
+    $learned = [bool] $lexicon.Dialogue['Learned']
     foreach ($token in $head) {
         if ($lexicon.StopWords.Contains($token)) { return $null }
-        $lemma = Get-LambekCategoryLemma -Word $token -Language $Language
+        $lemma = $null
+        if ($learned -and $Lemmas -and $Lemmas.ContainsKey($token)) { $lemma = $Lemmas[$token] }
+        if (-not $lemma) { $lemma = Get-LambekCategoryLemma -Word $token -Language $Language }
         if (-not $lemma -and $Lemmas -and $Lemmas.ContainsKey($token)) { $lemma = $Lemmas[$token] }
         if (-not $lemma) { return $null }
         [void] $atoms.Add($lemma)
@@ -438,6 +443,8 @@ function Get-LambekCategoryKnown {
     $told = @((Get-LambekTold).ToArray())
     $here = @($told | Where-Object { $_.PSObject.Properties['Hash'] -and $_.Hash } | ForEach-Object { $_.Hash })
     $before = @((Get-LambekToldJournal).ToArray() | Where-Object { $_.Hash -notin $here })
+    # (a sentence is read with what was told with it, the names and the words said: read again once more is told)
+    $context = (@($told | Where-Object { $_.PSObject.Properties['Core'] } | ForEach-Object { "$($_.Core)" }) -join "`n")
     foreach ($fact in @($before) + @($told)) {
         if ($fact.PSObject.Properties['Condition'] -and $fact.Condition) { continue }
         if ($fact.PSObject.Properties['Deduced'] -and $fact.Deduced) { continue }
@@ -447,7 +454,7 @@ function Get-LambekCategoryKnown {
         $sentence = ((($words.Trim() -replace '[.!;]+\s*$', '') -replace ',', ' ') -replace '\s+', ' ').Trim()
         if ($sentence -notmatch "^[\p{L}'\u2019 -]+$") { continue }
         if ($null -eq $script:CategoryReadings) { $script:CategoryReadings = @{} }
-        $key = "$Language|$([bool] $Shape)|$sentence"
+        $key = "$Language|$([bool] $Shape)|$sentence|$context"
         if (-not $script:CategoryReadings.ContainsKey($key)) { $script:CategoryReadings[$key] = Read-LambekCategorySentence -Sentence $sentence -Language $Language -Shape:$Shape }
         $read = $script:CategoryReadings[$key]
         if (-not $read -or "$($read.Kind)".StartsWith('ask')) { continue }
