@@ -58,8 +58,17 @@ jobs:
       # Lean, a prover that shares nothing with Lambek, at a fixed version so that its verdicts do not move
       - name: Install Lean
         shell: bash
+        # (GitHub may answer 503 for a moment: tried again, waiting longer each time)
         run: |
-          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain leanprover/lean4:v4.35.0
+          for attempt in 1 2 3 4 5; do
+            if curl -sSfL --retry 3 --retry-all-errors -o elan-init.sh https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh &&
+              sh elan-init.sh -y --default-toolchain leanprover/lean4:v4.35.0; then
+              break
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 20))
+          done
+          rm -f elan-init.sh
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
       - name: Judge the proofs
