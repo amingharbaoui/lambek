@@ -42,6 +42,15 @@ Describe 'What a reply is' {
         Get-TestKind "Je ne peux pas le conclure avec ce que vous m'avez dit : « Tweety vole » peut être vrai ou faux." | Should -Be 'Abstained'
     }
 
+    It 'reads the "I do not know" of a dialogue Lambek learned as abstained, and its answers as said' {
+        Get-TestKind 'Ich weiß nicht.' | Should -Be 'Abstained'
+        Get-TestKind 'No sé.' | Should -Be 'Abstained'
+        Get-TestKind 'Non lo so.' | Should -Be 'Abstained'
+        Get-TestKind 'Nein.' | Should -Be 'Said'
+        Get-TestKind 'No.' | Should -Be 'Said'
+        Get-TestKind 'Sì. Rex è un animale.' | Should -Be 'Said'
+    }
+
     It 'reads a question back as asked' {
         Get-TestKind 'Il me manque un détail. Que veut dire « julie » ici ?' | Should -Be 'Asked'
     }
@@ -159,6 +168,32 @@ Describe 'The free messages of the benchmark' {
     }
 
     It 'gives the same replies in any order' {
+        $report.Determinism | Should -Be 1
+    }
+}
+
+Describe 'The reasoning of the benchmark, in every language' {
+
+    BeforeAll {
+        $path = "$PSScriptRoot/../../bench/reasoning.json"
+        $cases = @((Get-Content -LiteralPath $path -Raw -Encoding utf8 | ConvertFrom-Json).Cases)
+        $report = Invoke-LambekMessageBenchmark -Path $path -Split test
+    }
+
+    It 'has a test split that nobody changed' {
+        $report.TestFrozen | Should -BeTrue -Because 'bench/reasoning.json says TestHash; the test split is never edited while working on Lambek'
+    }
+
+    It 'holds every conversation in each of the seven languages, the same turns in each' {
+        foreach ($group in $cases | Group-Object { $_.Id -replace '^R-\w+-', '' }) {
+            @($group.Group | ForEach-Object Language | Sort-Object) -join ',' | Should -Be 'de,en,es,fr,it,nl,pt' -Because $group.Name
+            @($group.Group | ForEach-Object { @($_.Turns).Count } | Select-Object -Unique).Count | Should -Be 1 -Because $group.Name
+        }
+    }
+
+    It 'says nothing wrong, the same in any order' {
+        $details = ($report.Failures | Where-Object Outcome -EQ 'Wrong' | ForEach-Object { "$($_.Id): $($_.Reply)" }) -join ' | '
+        $report.Wrong | Should -Be 0 -Because $details
         $report.Determinism | Should -Be 1
     }
 }

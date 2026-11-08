@@ -1,0 +1,4244 @@
+{
+  "Version": "1.0",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some). Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek. Written once for step 3e, never learned from.",
+  "Now": "2026-10-19T12:00:00",
+  "TestHash": "5183b7d1d00c0bfbab4366927b30930962c8acadbab2b44af7af5536309e3717",
+  "Cases": [
+    {
+      "Id": "R-fr-all-is-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens sont des animaux"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex est-il un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-all-is-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs are animals"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "is Rex an animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-all-is-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde sind Tiere"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "ist Rex ein Tier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-all-is-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros son animales"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿es Rex un animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-all-is-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden zijn dieren"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "is Rex een dier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-all-is-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães são animais"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex é um animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-all-is-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani sono animali"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex è un animale?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-no-is-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "aucun chat n'est un chien"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "Tom est-il un chien ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-no-is-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "no cat is a dog"
+        },
+        {
+          "Text": "Tom is a cat"
+        },
+        {
+          "Text": "is Tom a dog?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-no-is-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "keine Katze ist ein Hund"
+        },
+        {
+          "Text": "Tom ist eine Katze"
+        },
+        {
+          "Text": "ist Tom ein Hund?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-no-is-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "ningún gato es un perro"
+        },
+        {
+          "Text": "Tom es un gato"
+        },
+        {
+          "Text": "¿es Tom un perro?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-no-is-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "geen kat is een hond"
+        },
+        {
+          "Text": "Tom is een kat"
+        },
+        {
+          "Text": "is Tom een hond?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-no-is-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "nenhum gato é um cão"
+        },
+        {
+          "Text": "Tom é um gato"
+        },
+        {
+          "Text": "Tom é um cão?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-no-is-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "nessun gatto è un cane"
+        },
+        {
+          "Text": "Tom è un gatto"
+        },
+        {
+          "Text": "Tom è un cane?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-all-do-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens aboient"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex aboie-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-all-do-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs bark"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "does Rex bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-all-do-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde bellen"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "bellt Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-all-do-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros ladran"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿ladra Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-all-do-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden blaffen"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "blaft Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-all-do-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães latem"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex late?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-all-do-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani abbaiano"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex abbaia?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-all-do-what-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats mangent du poisson"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "Tom mange-t-il du poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-all-do-what-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "all cats eat fish"
+        },
+        {
+          "Text": "Tom is a cat"
+        },
+        {
+          "Text": "does Tom eat fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-all-do-what-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Katzen fressen Fisch"
+        },
+        {
+          "Text": "Tom ist eine Katze"
+        },
+        {
+          "Text": "frisst Tom Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-all-do-what-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los gatos comen pescado"
+        },
+        {
+          "Text": "Tom es un gato"
+        },
+        {
+          "Text": "¿come Tom pescado?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-all-do-what-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "alle katten eten vis"
+        },
+        {
+          "Text": "Tom is een kat"
+        },
+        {
+          "Text": "eet Tom vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-all-do-what-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os gatos comem peixe"
+        },
+        {
+          "Text": "Tom é um gato"
+        },
+        {
+          "Text": "Tom come peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-all-do-what-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i gatti mangiano pesce"
+        },
+        {
+          "Text": "Tom è un gatto"
+        },
+        {
+          "Text": "Tom mangia pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-no-do-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "aucun chat n'aboie"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "Tom aboie-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-no-do-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "no cat barks"
+        },
+        {
+          "Text": "Tom is a cat"
+        },
+        {
+          "Text": "does Tom bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-no-do-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "keine Katze bellt"
+        },
+        {
+          "Text": "Tom ist eine Katze"
+        },
+        {
+          "Text": "bellt Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-no-do-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "ningún gato ladra"
+        },
+        {
+          "Text": "Tom es un gato"
+        },
+        {
+          "Text": "¿ladra Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-no-do-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "geen kat blaft"
+        },
+        {
+          "Text": "Tom is een kat"
+        },
+        {
+          "Text": "blaft Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-no-do-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "nenhum gato late"
+        },
+        {
+          "Text": "Tom é um gato"
+        },
+        {
+          "Text": "Tom late?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-no-do-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "nessun gatto abbaia"
+        },
+        {
+          "Text": "Tom è un gatto"
+        },
+        {
+          "Text": "Tom abbaia?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-unknown-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chevaux sont des animaux"
+        },
+        {
+          "Text": "Rex est-il un animal ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-unknown-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "all horses are animals"
+        },
+        {
+          "Text": "is Rex an animal?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-unknown-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Pferde sind Tiere"
+        },
+        {
+          "Text": "ist Rex ein Tier?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-unknown-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los caballos son animales"
+        },
+        {
+          "Text": "¿es Rex un animal?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-unknown-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "alle paarden zijn dieren"
+        },
+        {
+          "Text": "is Rex een dier?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-unknown-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cavalos são animais"
+        },
+        {
+          "Text": "Rex é um animal?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-unknown-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cavalli sono animali"
+        },
+        {
+          "Text": "Rex è un animale?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-converse-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les oiseaux sont des animaux"
+        },
+        {
+          "Text": "Coco est un animal"
+        },
+        {
+          "Text": "Coco est-il un oiseau ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-converse-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "all birds are animals"
+        },
+        {
+          "Text": "Coco is an animal"
+        },
+        {
+          "Text": "is Coco a bird?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-converse-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Vögel sind Tiere"
+        },
+        {
+          "Text": "Coco ist ein Tier"
+        },
+        {
+          "Text": "ist Coco ein Vogel?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-converse-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los pájaros son animales"
+        },
+        {
+          "Text": "Coco es un animal"
+        },
+        {
+          "Text": "¿es Coco un pájaro?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-converse-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "alle vogels zijn dieren"
+        },
+        {
+          "Text": "Coco is een dier"
+        },
+        {
+          "Text": "is Coco een vogel?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-converse-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os pássaros são animais"
+        },
+        {
+          "Text": "Coco é um animal"
+        },
+        {
+          "Text": "Coco é um pássaro?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-converse-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti gli uccelli sono animali"
+        },
+        {
+          "Text": "Coco è un animale"
+        },
+        {
+          "Text": "Coco è un uccello?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-chain-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "toutes les roses sont des fleurs"
+        },
+        {
+          "Text": "toutes les fleurs sont des plantes"
+        },
+        {
+          "Text": "Bella est une rose"
+        },
+        {
+          "Text": "Bella est-elle une plante ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-chain-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "all roses are flowers"
+        },
+        {
+          "Text": "all flowers are plants"
+        },
+        {
+          "Text": "Bella is a rose"
+        },
+        {
+          "Text": "is Bella a plant?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-chain-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Rosen sind Blumen"
+        },
+        {
+          "Text": "alle Blumen sind Pflanzen"
+        },
+        {
+          "Text": "Bella ist eine Rose"
+        },
+        {
+          "Text": "ist Bella eine Pflanze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-chain-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "todas las rosas son flores"
+        },
+        {
+          "Text": "todas las flores son plantas"
+        },
+        {
+          "Text": "Bella es una rosa"
+        },
+        {
+          "Text": "¿es Bella una planta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-chain-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "alle rozen zijn bloemen"
+        },
+        {
+          "Text": "alle bloemen zijn planten"
+        },
+        {
+          "Text": "Bella is een roos"
+        },
+        {
+          "Text": "is Bella een plant?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-chain-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "todas as rosas são flores"
+        },
+        {
+          "Text": "todas as flores são plantas"
+        },
+        {
+          "Text": "Bella é uma rosa"
+        },
+        {
+          "Text": "Bella é uma planta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-chain-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "tutte le rose sono fiori"
+        },
+        {
+          "Text": "tutti i fiori sono piante"
+        },
+        {
+          "Text": "Bella è una rosa"
+        },
+        {
+          "Text": "Bella è una pianta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-fact-first-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max est un cheval"
+        },
+        {
+          "Text": "tous les chevaux sont des animaux"
+        },
+        {
+          "Text": "Max est-il un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-fact-first-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is a horse"
+        },
+        {
+          "Text": "all horses are animals"
+        },
+        {
+          "Text": "is Max an animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-fact-first-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max ist ein Pferd"
+        },
+        {
+          "Text": "alle Pferde sind Tiere"
+        },
+        {
+          "Text": "ist Max ein Tier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-fact-first-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max es un caballo"
+        },
+        {
+          "Text": "todos los caballos son animales"
+        },
+        {
+          "Text": "¿es Max un animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-fact-first-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is een paard"
+        },
+        {
+          "Text": "alle paarden zijn dieren"
+        },
+        {
+          "Text": "is Max een dier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-fact-first-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max é um cavalo"
+        },
+        {
+          "Text": "todos os cavalos são animais"
+        },
+        {
+          "Text": "Max é um animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-fact-first-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max è un cavallo"
+        },
+        {
+          "Text": "tutti i cavalli sono animali"
+        },
+        {
+          "Text": "Max è un animale?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-some-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "certains oiseaux chantent"
+        },
+        {
+          "Text": "Coco est un oiseau"
+        },
+        {
+          "Text": "Coco chante-t-il ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-some-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "some birds sing"
+        },
+        {
+          "Text": "Coco is a bird"
+        },
+        {
+          "Text": "does Coco sing?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-some-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "einige Vögel singen"
+        },
+        {
+          "Text": "Coco ist ein Vogel"
+        },
+        {
+          "Text": "singt Coco?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-some-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "algunos pájaros cantan"
+        },
+        {
+          "Text": "Coco es un pájaro"
+        },
+        {
+          "Text": "¿canta Coco?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-some-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "sommige vogels zingen"
+        },
+        {
+          "Text": "Coco is een vogel"
+        },
+        {
+          "Text": "zingt Coco?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-some-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "alguns pássaros cantam"
+        },
+        {
+          "Text": "Coco é um pássaro"
+        },
+        {
+          "Text": "Coco canta?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-some-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "alcuni uccelli cantano"
+        },
+        {
+          "Text": "Coco è un uccello"
+        },
+        {
+          "Text": "Coco canta?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-told-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo est un poisson"
+        },
+        {
+          "Text": "Nemo est-il un poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-told-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo is a fish"
+        },
+        {
+          "Text": "is Nemo a fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-told-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo ist ein Fisch"
+        },
+        {
+          "Text": "ist Nemo ein Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-told-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo es un pez"
+        },
+        {
+          "Text": "¿es Nemo un pez?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-told-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo is een vis"
+        },
+        {
+          "Text": "is Nemo een vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-told-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo é um peixe"
+        },
+        {
+          "Text": "Nemo é um peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-told-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo è un pesce"
+        },
+        {
+          "Text": "Nemo è un pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-all-is-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "toutes les vaches sont des animaux"
+        },
+        {
+          "Text": "Bella est une vache"
+        },
+        {
+          "Text": "Bella est-elle un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-all-is-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "all cows are animals"
+        },
+        {
+          "Text": "Bella is a cow"
+        },
+        {
+          "Text": "is Bella an animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-all-is-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Kühe sind Tiere"
+        },
+        {
+          "Text": "Bella ist eine Kuh"
+        },
+        {
+          "Text": "ist Bella ein Tier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-all-is-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "todas las vacas son animales"
+        },
+        {
+          "Text": "Bella es una vaca"
+        },
+        {
+          "Text": "¿es Bella un animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-all-is-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "alle koeien zijn dieren"
+        },
+        {
+          "Text": "Bella is een koe"
+        },
+        {
+          "Text": "is Bella een dier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-all-is-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "todas as vacas são animais"
+        },
+        {
+          "Text": "Bella é uma vaca"
+        },
+        {
+          "Text": "Bella é um animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-all-is-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "all-is"
+      ],
+      "Turns": [
+        {
+          "Text": "tutte le mucche sono animali"
+        },
+        {
+          "Text": "Bella è una mucca"
+        },
+        {
+          "Text": "Bella è un animale?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-no-is-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "aucun oiseau n'est un poisson"
+        },
+        {
+          "Text": "Coco est un oiseau"
+        },
+        {
+          "Text": "Coco est-il un poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-no-is-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "no bird is a fish"
+        },
+        {
+          "Text": "Coco is a bird"
+        },
+        {
+          "Text": "is Coco a fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-no-is-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "kein Vogel ist ein Fisch"
+        },
+        {
+          "Text": "Coco ist ein Vogel"
+        },
+        {
+          "Text": "ist Coco ein Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-no-is-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "ningún pájaro es un pez"
+        },
+        {
+          "Text": "Coco es un pájaro"
+        },
+        {
+          "Text": "¿es Coco un pez?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-no-is-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "geen vogel is een vis"
+        },
+        {
+          "Text": "Coco is een vogel"
+        },
+        {
+          "Text": "is Coco een vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-no-is-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "nenhum pássaro é um peixe"
+        },
+        {
+          "Text": "Coco é um pássaro"
+        },
+        {
+          "Text": "Coco é um peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-no-is-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "no-is"
+      ],
+      "Turns": [
+        {
+          "Text": "nessun uccello è un pesce"
+        },
+        {
+          "Text": "Coco è un uccello"
+        },
+        {
+          "Text": "Coco è un pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-all-do-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les oiseaux volent"
+        },
+        {
+          "Text": "Tweety est un oiseau"
+        },
+        {
+          "Text": "Tweety vole-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-all-do-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "all birds fly"
+        },
+        {
+          "Text": "Tweety is a bird"
+        },
+        {
+          "Text": "does Tweety fly?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-all-do-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Vögel fliegen"
+        },
+        {
+          "Text": "Tweety ist ein Vogel"
+        },
+        {
+          "Text": "fliegt Tweety?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-all-do-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los pájaros vuelan"
+        },
+        {
+          "Text": "Tweety es un pájaro"
+        },
+        {
+          "Text": "¿vuela Tweety?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-all-do-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "alle vogels vliegen"
+        },
+        {
+          "Text": "Tweety is een vogel"
+        },
+        {
+          "Text": "vliegt Tweety?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-all-do-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os pássaros voam"
+        },
+        {
+          "Text": "Tweety é um pássaro"
+        },
+        {
+          "Text": "Tweety voa?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-all-do-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "all-do"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti gli uccelli volano"
+        },
+        {
+          "Text": "Tweety è un uccello"
+        },
+        {
+          "Text": "Tweety vola?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-all-do-what-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens mangent de la viande"
+        },
+        {
+          "Text": "Max est un chien"
+        },
+        {
+          "Text": "Max mange-t-il de la viande ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-all-do-what-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs eat meat"
+        },
+        {
+          "Text": "Max is a dog"
+        },
+        {
+          "Text": "does Max eat meat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-all-do-what-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde fressen Fleisch"
+        },
+        {
+          "Text": "Max ist ein Hund"
+        },
+        {
+          "Text": "frisst Max Fleisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-all-do-what-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros comen carne"
+        },
+        {
+          "Text": "Max es un perro"
+        },
+        {
+          "Text": "¿come Max carne?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-all-do-what-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden eten vlees"
+        },
+        {
+          "Text": "Max is een hond"
+        },
+        {
+          "Text": "eet Max vlees?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-all-do-what-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães comem carne"
+        },
+        {
+          "Text": "Max é um cão"
+        },
+        {
+          "Text": "Max come carne?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-all-do-what-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "all-do-what"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani mangiano carne"
+        },
+        {
+          "Text": "Max è un cane"
+        },
+        {
+          "Text": "Max mangia carne?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-no-do-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "aucun chien ne vole"
+        },
+        {
+          "Text": "Max est un chien"
+        },
+        {
+          "Text": "Max vole-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-no-do-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "no dog flies"
+        },
+        {
+          "Text": "Max is a dog"
+        },
+        {
+          "Text": "does Max fly?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-no-do-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "kein Hund fliegt"
+        },
+        {
+          "Text": "Max ist ein Hund"
+        },
+        {
+          "Text": "fliegt Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-no-do-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "ningún perro vuela"
+        },
+        {
+          "Text": "Max es un perro"
+        },
+        {
+          "Text": "¿vuela Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-no-do-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "geen hond vliegt"
+        },
+        {
+          "Text": "Max is een hond"
+        },
+        {
+          "Text": "vliegt Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-no-do-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "nenhum cão voa"
+        },
+        {
+          "Text": "Max é um cão"
+        },
+        {
+          "Text": "Max voa?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-no-do-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "no-do"
+      ],
+      "Turns": [
+        {
+          "Text": "nessun cane vola"
+        },
+        {
+          "Text": "Max è un cane"
+        },
+        {
+          "Text": "Max vola?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-unknown-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats sont des animaux"
+        },
+        {
+          "Text": "Bella est-elle un animal ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-unknown-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "all cats are animals"
+        },
+        {
+          "Text": "is Bella an animal?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-unknown-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Katzen sind Tiere"
+        },
+        {
+          "Text": "ist Bella ein Tier?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-unknown-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los gatos son animales"
+        },
+        {
+          "Text": "¿es Bella un animal?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-unknown-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "alle katten zijn dieren"
+        },
+        {
+          "Text": "is Bella een dier?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-unknown-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os gatos são animais"
+        },
+        {
+          "Text": "Bella é um animal?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-unknown-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "unknown"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i gatti sono animali"
+        },
+        {
+          "Text": "Bella è un animale?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-converse-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens sont des animaux"
+        },
+        {
+          "Text": "Max est un animal"
+        },
+        {
+          "Text": "Max est-il un chien ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-converse-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs are animals"
+        },
+        {
+          "Text": "Max is an animal"
+        },
+        {
+          "Text": "is Max a dog?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-converse-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde sind Tiere"
+        },
+        {
+          "Text": "Max ist ein Tier"
+        },
+        {
+          "Text": "ist Max ein Hund?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-converse-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros son animales"
+        },
+        {
+          "Text": "Max es un animal"
+        },
+        {
+          "Text": "¿es Max un perro?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-converse-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden zijn dieren"
+        },
+        {
+          "Text": "Max is een dier"
+        },
+        {
+          "Text": "is Max een hond?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-converse-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães são animais"
+        },
+        {
+          "Text": "Max é um animal"
+        },
+        {
+          "Text": "Max é um cão?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-converse-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "converse"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani sono animali"
+        },
+        {
+          "Text": "Max è un animale"
+        },
+        {
+          "Text": "Max è un cane?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-chain-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats sont des mammifères"
+        },
+        {
+          "Text": "tous les mammifères sont des animaux"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "Tom est-il un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-chain-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "all cats are mammals"
+        },
+        {
+          "Text": "all mammals are animals"
+        },
+        {
+          "Text": "Tom is a cat"
+        },
+        {
+          "Text": "is Tom an animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-chain-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Katzen sind Säugetiere"
+        },
+        {
+          "Text": "alle Säugetiere sind Tiere"
+        },
+        {
+          "Text": "Tom ist eine Katze"
+        },
+        {
+          "Text": "ist Tom ein Tier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-chain-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los gatos son mamíferos"
+        },
+        {
+          "Text": "todos los mamíferos son animales"
+        },
+        {
+          "Text": "Tom es un gato"
+        },
+        {
+          "Text": "¿es Tom un animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-chain-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "alle katten zijn zoogdieren"
+        },
+        {
+          "Text": "alle zoogdieren zijn dieren"
+        },
+        {
+          "Text": "Tom is een kat"
+        },
+        {
+          "Text": "is Tom een dier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-chain-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os gatos são mamíferos"
+        },
+        {
+          "Text": "todos os mamíferos são animais"
+        },
+        {
+          "Text": "Tom é um gato"
+        },
+        {
+          "Text": "Tom é um animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-chain-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "chain"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i gatti sono mammiferi"
+        },
+        {
+          "Text": "tutti i mammiferi sono animali"
+        },
+        {
+          "Text": "Tom è un gatto"
+        },
+        {
+          "Text": "Tom è un animale?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-fact-first-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo est un poisson"
+        },
+        {
+          "Text": "tous les poissons sont des animaux"
+        },
+        {
+          "Text": "Nemo est-il un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-fact-first-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo is a fish"
+        },
+        {
+          "Text": "all fish are animals"
+        },
+        {
+          "Text": "is Nemo an animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-fact-first-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo ist ein Fisch"
+        },
+        {
+          "Text": "alle Fische sind Tiere"
+        },
+        {
+          "Text": "ist Nemo ein Tier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-fact-first-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo es un pez"
+        },
+        {
+          "Text": "todos los peces son animales"
+        },
+        {
+          "Text": "¿es Nemo un animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-fact-first-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo is een vis"
+        },
+        {
+          "Text": "alle vissen zijn dieren"
+        },
+        {
+          "Text": "is Nemo een dier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-fact-first-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo é um peixe"
+        },
+        {
+          "Text": "todos os peixes são animais"
+        },
+        {
+          "Text": "Nemo é um animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-fact-first-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "fact-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Nemo è un pesce"
+        },
+        {
+          "Text": "tutti i pesci sono animali"
+        },
+        {
+          "Text": "Nemo è un animale?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-some-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "certains chiens nagent"
+        },
+        {
+          "Text": "Max est un chien"
+        },
+        {
+          "Text": "Max nage-t-il ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-some-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "some dogs swim"
+        },
+        {
+          "Text": "Max is a dog"
+        },
+        {
+          "Text": "does Max swim?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-some-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "einige Hunde schwimmen"
+        },
+        {
+          "Text": "Max ist ein Hund"
+        },
+        {
+          "Text": "schwimmt Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-some-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "algunos perros nadan"
+        },
+        {
+          "Text": "Max es un perro"
+        },
+        {
+          "Text": "¿nada Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-some-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "sommige honden zwemmen"
+        },
+        {
+          "Text": "Max is een hond"
+        },
+        {
+          "Text": "zwemt Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-some-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "alguns cães nadam"
+        },
+        {
+          "Text": "Max é um cão"
+        },
+        {
+          "Text": "Max nada?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-some-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "some"
+      ],
+      "Turns": [
+        {
+          "Text": "alcuni cani nuotano"
+        },
+        {
+          "Text": "Max è un cane"
+        },
+        {
+          "Text": "Max nuota?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-told-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella est une vache"
+        },
+        {
+          "Text": "Bella est-elle une vache ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-told-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella is a cow"
+        },
+        {
+          "Text": "is Bella a cow?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-told-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella ist eine Kuh"
+        },
+        {
+          "Text": "ist Bella eine Kuh?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-told-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella es una vaca"
+        },
+        {
+          "Text": "¿es Bella una vaca?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-told-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella is een koe"
+        },
+        {
+          "Text": "is Bella een koe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-told-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella é uma vaca"
+        },
+        {
+          "Text": "Bella é uma vaca?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-told-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "told"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella è una mucca"
+        },
+        {
+          "Text": "Bella è una mucca?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

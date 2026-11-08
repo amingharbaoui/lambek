@@ -147,6 +147,33 @@ if ($Task -eq 'Benchmark') {
         }
     }
 
+    # Reasoning told in every language Lambek reads (bench/reasoning.json): the same conversations in French, English,
+    # German, Spanish, Dutch, Portuguese and Italian, so that what a step brings to one language, or takes from it, is
+    # seen. Shown next to the score written in bench/baseline.json at step 3e
+    $reasoning = Join-Path $PSScriptRoot 'bench/reasoning.json'
+    foreach ($split in 'calibration', 'test') {
+        $report = Invoke-LambekMessageBenchmark -Path $reasoning -Split $split
+        $before = $null
+        if ($baseline -and $baseline.PSObject.Properties['Reasoning'] -and $baseline.Reasoning.PSObject.Properties[$split]) { $before = $baseline.Reasoning.$split }
+        Write-Host ''
+        Write-Host "Reasoning in every language ($split)"
+        foreach ($name in 'Cases', 'Correct', 'Unanswered', 'NotUnderstood', 'Abstained', 'Wrong', 'WrongBound', 'Determinism') {
+            $was = ''
+            if ($before -and $before.PSObject.Properties[$name]) { $was = "(baseline $($before.$name))" }
+            Write-Host ("  {0,-16} {1,-10} {2}" -f $name, $report.$name, $was)
+        }
+        foreach ($language in 'fr', 'en', 'de', 'es', 'nl', 'pt', 'it') {
+            $rows = @($report.Results | Where-Object Language -EQ $language)
+            $correct = @($rows | Where-Object Outcome -EQ 'Correct').Count
+            $was = ''
+            if ($before -and $before.PSObject.Properties['Languages'] -and $before.Languages.PSObject.Properties[$language]) { $was = "(baseline $($before.Languages.$language))" }
+            Write-Host ("  {0,-16} {1,-10} {2}" -f $language, "$correct of $($rows.Count)", $was)
+        }
+        if ($split -eq 'test' -and -not $report.TestFrozen) {
+            Write-Warning 'The test split of bench/reasoning.json is not the frozen one (TestHash): its figures cannot be compared.'
+        }
+    }
+
     # The same messages without the dictionaries: Lambek reads and speaks with the words it learned only (the
     # roadmap removes the dictionaries once these figures are those above, with nothing said wrong). In a session of
     # its own, so that nothing the dictionaries gave above (a lemma kept, a reading kept) is used again here
@@ -281,6 +308,11 @@ if ($Task -eq 'Fingerprint') {
     # And every reply to the real sentences
     $real = Invoke-LambekMessageBenchmark -Path (Join-Path $PSScriptRoot 'bench/real.json')
     $lines = @($lines) + @(foreach ($turn in $real.Results) {
+            "$($turn.Id)#$($turn.Turn)|$($turn.Status)|$(@($turn.Actions) -join ',')|$(($turn.Reply -replace "`r", '') -replace "`n", ' / ')"
+        })
+    # And every reply to the reasoning in every language
+    $reasoning = Invoke-LambekMessageBenchmark -Path (Join-Path $PSScriptRoot 'bench/reasoning.json')
+    $lines = @($lines) + @(foreach ($turn in $reasoning.Results) {
             "$($turn.Id)#$($turn.Turn)|$($turn.Status)|$(@($turn.Actions) -join ',')|$(($turn.Reply -replace "`r", '') -replace "`n", ' / ')"
         })
     # And what the forms models read in every word of their test treebanks

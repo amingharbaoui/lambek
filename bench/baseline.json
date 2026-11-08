@@ -77,5 +77,58 @@
       "WrongBound": 0.1068,
       "Determinism": 1
     }
+  },
+  "Reasoning": {
+    "Description": "The score on the reasoning of bench/reasoning.json in every language, measured when it was written (step 3e), the same on every machine. Times are left out.",
+    "Date": "2026-11-08",
+    "TestHash": "5183b7d1d00c0bfbab4366927b30930962c8acadbab2b44af7af5536309e3717",
+    "calibration": {
+      "Cases": 77,
+      "Turns": 77,
+      "Correct": 68,
+      "Unanswered": 9,
+      "NotUnderstood": 2,
+      "Abstained": 7,
+      "Asked": 0,
+      "Wrong": 0,
+      "WrongActions": 0,
+      "UnansweredRate": 0.1607,
+      "WrongRate": 0.0,
+      "WrongBound": 0.0382,
+      "Determinism": 1.0,
+      "Languages": {
+        "fr": "11 of 11",
+        "en": "11 of 11",
+        "de": "11 of 11",
+        "es": "10 of 11",
+        "nl": "9 of 11",
+        "pt": "6 of 11",
+        "it": "10 of 11"
+      }
+    },
+    "test": {
+      "Cases": 77,
+      "Turns": 77,
+      "Correct": 70,
+      "Unanswered": 7,
+      "NotUnderstood": 0,
+      "Abstained": 7,
+      "Asked": 0,
+      "Wrong": 0,
+      "WrongActions": 0,
+      "UnansweredRate": 0.125,
+      "WrongRate": 0.0,
+      "WrongBound": 0.0382,
+      "Determinism": 1.0,
+      "Languages": {
+        "fr": "10 of 11",
+        "en": "11 of 11",
+        "de": "11 of 11",
+        "es": "10 of 11",
+        "nl": "9 of 11",
+        "pt": "9 of 11",
+        "it": "10 of 11"
+      }
+    }
   }
 }

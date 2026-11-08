@@ -41,8 +41,12 @@ function Get-LambekReplyTemplate {
     }
 
     $templates = [System.Collections.Generic.List[object]]::new()
-    foreach ($file in Get-ChildItem -Path (Join-Path $PSScriptRoot '../Data/Languages') -Filter '*.json' | Sort-Object Name) {
+    # (and the dialogues Lambek learned, under Dialogue as in a language file: Data/Forms/<language>.dialogue.json)
+    $files = @(Get-ChildItem -Path (Join-Path $PSScriptRoot '../Data/Languages') -Filter '*.json' | Sort-Object Name)
+    $files += @(Get-ChildItem -Path (Join-Path $PSScriptRoot '../Data/Forms') -Filter '*.dialogue.json' | Sort-Object Name)
+    foreach ($file in $files) {
         $data = Get-Content -LiteralPath $file.FullName -Raw -Encoding utf8 | ConvertFrom-Json -AsHashtable
+        if ($file.Name -like '*.dialogue.json') { $data = @{ Dialogue = $data['Dialogue'] } }
         foreach ($kind in $kinds.Keys) {
             foreach ($path in $kinds[$kind]) {
                 $value = $data
@@ -58,7 +62,7 @@ function Get-LambekReplyTemplate {
                         $pattern = [regex]::Escape((ConvertTo-LambekBenchText -Text $form)) -replace '\\\{\d+(:[^}]*)?\}', '.*'
                         # (a small word before what is filled in may lose its vowel to it: "si {1}" said "s'il neige")
                         $pattern = $pattern -replace '(?<![\p{L}])(\p{L})([aeiouy])\\ \.\*', '$1(?:$2\ |'').*'
-                        $templates.Add([pscustomobject]@{ Kind = $kind; Key = $path; Language = $file.BaseName; Pattern = [regex]::new("^$pattern", 'Singleline') })
+                        $templates.Add([pscustomobject]@{ Kind = $kind; Key = $path; Language = ($file.Name -split '\.')[0]; Pattern = [regex]::new("^$pattern", 'Singleline') })
                     }
                 }
             }

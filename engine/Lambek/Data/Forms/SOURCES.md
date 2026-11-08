@@ -59,12 +59,12 @@ Tried and set aside (step 4.5): reading the tags of a whole sentence at once, by
 readings kept), instead of word after word. The perceptron learned word after word, and the beam read a little worse
 (French GSD, all tags: 95.07 % word after word, 95.06 % and 95.01 % with the beam; English EWT: 93.16 %, 92.99 %).
 
-## Italian sentences confirmed by English
+## Italian sentences confirmed by English (tried, set aside)
 
-The Italian treebanks free to learn from are small (66 944 words). The tagger of Italian is also taught 9 604 of the
-Italian sentences of Tatoeba translated from English (the English-Italian pairs listed under "Words of logic and
-copulas", CC BY 2.0 FR): 66 942 words, as many as the treebanks have. They are chosen by
-`tools/Build-LambekForms.ps1 -English -Translated` (`Native/Projection.cs`), never by hand:
+The Italian treebanks free to learn from are small (66 944 words). `tools/Build-LambekForms.ps1 -English -Translated`
+(`Native/Projection.cs`) also teaches the tagger sentences translated from English, as many words of them as the
+treebanks have; tried on Italian, with 9 604 of the Italian sentences of Tatoeba (the English-Italian pairs listed under
+"Words of logic and copulas", CC BY 2.0 FR), 66 942 words, chosen so, never by hand:
 
 - the model of the treebanks alone, with the Italian lexicon, reads the Italian side, and the English model the English
   side; their words are aligned by IBM Model 1 both ways (`Native/Aligner.cs`; Brown et al. 1993), a link kept where
@@ -94,7 +94,10 @@ the test files:
 | VALICO | 91.94 % → 92.39 % | 86.47 % → 87.01 % | 85.92 % → 86.04 % |
 
 The features of MarkIT fall (90.03 % → 89.27 %): its words are mostly those of the treebanks, and the sentences of
-Tatoeba draw the tagger to their own.
+Tatoeba draw the tagger to their own. And Lambek reasons worse in Italian (`bench/reasoning.json`, test: 10 of 11 → 9
+of 11), its other benches the same: "uccello" in "nessun uccello è un pesce" is read as a verb, "uccellare". So
+`it.forms.gz` is the model of the treebanks alone, and the tool is kept for a projection from more languages than
+English, measured on the same benches.
 
 ## Words learned from plain text (step 4.6)
 
