@@ -67,6 +67,21 @@ Describe 'A dialogue learned, not written' {
         }
     }
 
+    It 'tells a language by how often its treebanks write the words, whatever one small word says: <Text>' -ForEach @(
+        # ("come" is a small word of Italian; "ningun", "perro", "hierba" are written in Spanish)
+        @{ Text = 'ningún perro come hierba'; Language = 'es'; Chat = $null }
+        # (a close call is the chat's: "bellen" is also Dutch)
+        @{ Text = 'alle Hunde bellen'; Language = 'de'; Chat = 'de' }
+        @{ Text = 'nenhum cão come erva'; Language = 'pt'; Chat = 'pt' }
+    ) {
+        InModuleScope Lambek -Parameters @{ Text = $Text; Chat = $Chat } {
+            param($Text, $Chat)
+            $script:LanguageHint = $Chat
+            try { Get-LambekLanguage -Tokens (Get-LambekLanguageToken -Text $Text) -Text $Text -Forms }
+            finally { $script:LanguageHint = $null }
+        } | Should -Be $Language
+    }
+
     It 'learns which translation to say, and a word met where English says it' {
         $english = [string[]] @('No.', 'No.', 'a friend of mine', 'the end of it', 'a box full of toys', 'Hello.')
         $other = [string[]] @('Noe.', 'Nein.', 'ein Freund von mir', 'das Ende von ihm', 'eine Kiste voller Spielzeug', 'Nein, hallo.')

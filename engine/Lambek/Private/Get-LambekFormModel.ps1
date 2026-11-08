@@ -22,3 +22,28 @@ function Get-LambekFormModel {
     $script:FormModels[$Language] = $model
     return $model
 }
+
+function Get-LambekWrittenWord {
+    # How often the treebanks of a language wrote each word, bare, and the words its lexicon holds, bare (what a word
+    # says of the language a message is in), loaded once without the tagger; nothing when there is no forms model
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string] $Language
+    )
+
+    if ($null -eq $script:WrittenWords) { $script:WrittenWords = @{} }
+    if ($script:WrittenWords.ContainsKey($Language)) { return $script:WrittenWords[$Language] }
+    $path = Join-Path $PSScriptRoot "../Data/Forms/$Language.forms.gz"
+    $known = $null
+    if (Test-Path -LiteralPath $path -PathType Leaf) {
+        $bare = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+        $lexicon = Join-Path $PSScriptRoot "../Data/Forms/$Language.lexicon.gz"
+        if (Test-Path -LiteralPath $lexicon -PathType Leaf) {
+            foreach ($form in [LambekLexicon]::Load([IO.Path]::GetFullPath($lexicon)).Forms.Keys) { [void] $bare.Add([LambekForms]::Bare($form)) }
+        }
+        $known = [pscustomobject]@{ Counts = [LambekFormCounts]::Load([IO.Path]::GetFullPath($path)); Lexicon = $bare }
+    }
+    $script:WrittenWords[$Language] = $known
+    return $known
+}

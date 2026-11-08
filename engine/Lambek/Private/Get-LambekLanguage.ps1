@@ -14,10 +14,13 @@ function Get-LambekLanguage {
     )
 
     # The frame language of the sentence: one clear winner, otherwise the language the chat is in, otherwise English
-    $scores = Get-LambekLanguageScore -Tokens $Tokens -Text $Text
+    $scores = Get-LambekLanguageScore -Tokens $Tokens -Text $Text -Forms:$Forms
     $best = ($scores.Values | Measure-Object -Maximum).Maximum
-    $winners = @($scores.Keys | Where-Object { $scores[$_] -eq $best })
-    if ($best -gt 0 -and $winners.Count -eq 1) { return $winners[0] }
+    # (some evidence: with the forms, the languages do not all score the same, and within a point of the best is a tie,
+    # less than a word of evidence, as the chat weighs it; without them, a word some language holds)
+    $evidence = $(if ($Forms) { $best -gt ($scores.Values | Measure-Object -Minimum).Minimum } else { $best -gt 0 })
+    $winners = @($scores.Keys | Where-Object { $scores[$_] -gt $best - 1 })
+    if ($evidence -and $winners.Count -eq 1) { return $winners[0] }
     # A tie with the language the chat is in: the chat's ("ma tante a 9 poules", in a chat in French, is not Italian
     # because "tante" is also an Italian word)
     # (without the app to say it, the chat is in the language of the last thing told in it)
@@ -26,10 +29,10 @@ function Get-LambekLanguage {
         $last = $script:Told[$script:Told.Count - 1]
         if ($last.PSObject.Properties['Language']) { $chat = "$($last.Language)" }
     }
-    if ($best -gt 0 -and $chat -and $chat -in $winners) { return $chat }
+    if ($chat -and $chat -in $winners -and ($Forms -or $evidence)) { return $chat }
     # A tie: the language whose forms, learned from its treebanks, hold the most words of the sentence ("Rex es un
     # perro": "perro" is a word of Spanish, not of French)
-    if ($Forms -and $best -gt 0 -and $winners.Count -gt 1) {
+    if ($Forms -and $evidence -and $winners.Count -gt 1) {
         # (as typed when the text is given, with its accents; else its words)
         $written = @($(if ($Text) { "$Text" -split '[^\p{L}]+' } else { $Tokens }) | Where-Object { $_ } | ForEach-Object { $_.ToLowerInvariant() })
         $held = @{}
@@ -45,15 +48,15 @@ function Get-LambekLanguage {
         }
     }
     # A tie: the language of the first word only one of them has (the verb that opens a command carries its frame)
-    if ($best -gt 0) {
+    if ($evidence) {
         foreach ($token in $Tokens) {
             $lower = $token.ToLowerInvariant()
             $in = @($winners | Where-Object { (Get-LambekLexicon -Language $_).Signals.Contains($lower) })
             if ($in.Count -eq 1) { return $in[0] }
         }
     }
-    if ($script:LanguageHint -and ($best -eq 0 -or $script:LanguageHint -in $winners)) { return $script:LanguageHint }
-    if ($best -gt 0) {
+    if ($script:LanguageHint -and (-not $evidence -or $script:LanguageHint -in $winners)) { return $script:LanguageHint }
+    if ($evidence) {
         # A tie: English first, then French, then by name (a stable order)
         foreach ($first in 'en', 'fr') { if ($first -in $winners) { return $first } }
         return @($winners | Sort-Object)[0]
@@ -85,13 +88,17 @@ function Get-LambekLanguageScore {
         [string[]] $Tokens,
 
         # The text as it was typed, with its accents: a letter a language does not write is evidence against it
-        [string] $Text
+        [string] $Text,
+
+        # And what the forms of each language know of the words no small words hold (for the readers of general rules
+        # and the language of a chat; the router was measured without it)
+        [switch] $Forms
     )
 
     # Matrix Language Frame (Myers-Scotton): the small words of grammar (articles, prepositions, pronouns) come from the
     # language that frames the sentence, the content words may come from another. A small word counts two, any other
     # word of the language one; words every language shares count for none of them
-    $key = "languages`n" + ($Tokens -join "`n") + "`n" + $Text
+    $key = "languages`n$([bool] $Forms)`n" + ($Tokens -join "`n") + "`n" + $Text
     $kept = $null
     if ($script:ReadCache.TryGetValue($key, [ref] $kept)) { return $kept }
     $lower = @($Tokens | ForEach-Object { $_.ToLowerInvariant() })
@@ -107,6 +114,40 @@ function Get-LambekLanguageScore {
             $weight = 1
             if ($lexicons[$language].StopWords.Contains($token) -or $lexicons[$language].GrammarWords.Contains($token)) { $weight = 2 }
             $scores[$language] += $weight
+        }
+    }
+    # And, among the languages the small words put within one of the best, what each forms model knows of the words
+    # none of these hold: a word its treebanks write often is evidence for its language, one they write ten times less
+    # often, or never and its lexicon does not hold, costs a point, as a word of another language does above, never more
+    # ("ningun perro come hierba" is Spanish whatever "come" says in Italian). The languages further behind lose that
+    # point too, so they stay behind; names, numbers and signs say nothing, a word no model knows says nothing either.
+    # Nothing to tell apart, nothing read: the forms of the other languages are not loaded for it
+    $known = @{}
+    $first = ($scores.Values | Measure-Object -Maximum).Maximum
+    if ($Forms -and $first -gt 0) {
+        foreach ($language in $languages) {
+            if ($scores[$language] -lt $first - 2) { continue }
+            $counts = Get-LambekWrittenWord -Language $language
+            if ($counts -and $counts.Counts.Total -gt 0) { $known[$language] = $counts }
+        }
+    }
+    if ($known.Count -gt 1) {
+        foreach ($token in $lower) {
+            # (a word the small words of some language hold has said its language above: each word speaks once)
+            if (@($languages | Where-Object { $lexicons[$_].Signals.Contains($token) }).Count -gt 0) { continue }
+            $likely = @{}
+            foreach ($language in $known.Keys) {
+                $count = $known[$language].Counts.Count($token)
+                # (a word the lexicon holds and the treebanks never wrote: as if written half a time)
+                $weight = $(if ($count -gt 0) { [double] $count } elseif ($known[$language].Lexicon.Contains($token)) { 0.5 } else { 0.0 })
+                if ($weight -gt 0) { $likely[$language] = [math]::Log10($weight / $known[$language].Counts.Total) }
+            }
+            if ($likely.Count -eq 0) { continue }
+            $top = ($likely.Values | Measure-Object -Maximum).Maximum
+            foreach ($language in $languages) {
+                $behind = $(if ($likely.ContainsKey($language)) { $top - $likely[$language] } else { 1.0 })
+                $scores[$language] -= [math]::Min(1.0, $behind)
+            }
         }
     }
     # A word written with a letter a language never writes ("a" with a grave accent is no English) counts two against
@@ -218,7 +259,7 @@ function Get-LambekLanguageBelief {
             }
         }
     }
-    $scores = Get-LambekLanguageScore -Tokens $Tokens -Text $Text
+    $scores = Get-LambekLanguageScore -Tokens $Tokens -Text $Text -Forms
     $best = ($scores.Values | Measure-Object -Maximum).Maximum
     $posterior = @{}
     $total = 0.0

@@ -143,6 +143,8 @@ $script:WordCounts = $null
 $script:WorldReads = $null
 # The letters each language writes, from its word counts (accents tell languages apart)
 $script:Alphabets = $null
+# How often each language writes its words, bare (Get-LambekWrittenWord), loaded once
+$script:WrittenWords = $null
 $script:SpeechFusion = $null
 $script:SpeechFrames = $null
 $script:SpeechReadings = $null

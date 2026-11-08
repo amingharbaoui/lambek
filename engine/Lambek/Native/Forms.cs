@@ -466,6 +466,18 @@ public class LambekForms
     Dictionary<string, int> lemmaWeights;
     bool TreebankLemma(string upos, string lemma) { return LemmaWeight(upos, lemma) > 0; }
 
+    // A word as the language of a message is told by: lower case, no accents ("ningun", "cao")
+    public static string Bare(string word)
+    {
+        string decomposed = (word ?? "").Normalize(System.Text.NormalizationForm.FormD);
+        System.Text.StringBuilder builder = new System.Text.StringBuilder(decomposed.Length);
+        foreach (char c in decomposed)
+        {
+            if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark) builder.Append(c);
+        }
+        return builder.ToString().Normalize(System.Text.NormalizationForm.FormC).ToLowerInvariant().Replace("\u00DF", "ss");
+    }
+
     // How often the treebanks met a form with a lemma and a part of speech
     Dictionary<string, int> formLemmaCounts;
     int FormLemmaCount(string upos, string lemma, string form)
@@ -1629,7 +1641,10 @@ public class LambekForms
         }
     }
 
-    public static LambekForms Load(string path)
+    public static LambekForms Load(string path) { return Load(path, true); }
+
+    // (without its tagger and lemmatiser, the words only: what is read before them)
+    internal static LambekForms Load(string path, bool readers)
     {
         using (FileStream file = File.OpenRead(path))
         using (GZipStream zip = new GZipStream(file, CompressionMode.Decompress))
@@ -1671,10 +1686,50 @@ public class LambekForms
                 for (int j = 0; j < count; j++) list[reader.ReadString()] = reader.ReadInt32();
                 forms.Paradigms[key] = list;
             }
+            if (!readers) return forms;
             forms.Tagger = LambekPerceptron.ReadFrom(reader);
             forms.Lemmatiser = LambekPerceptron.ReadFrom(reader);
             return forms;
         }
+    }
+}
+
+// How often the treebanks of a language wrote each word, bare (LambekForms.Bare), names, numbers and signs left out,
+// and all of them together: what a word says of the language a message is in. Every language may be asked, so only
+// the words of its forms model are read, not its tagger
+public sealed class LambekFormCounts
+{
+    readonly Dictionary<string, int> counts;
+    public long Total { get; private set; }
+
+    LambekFormCounts(Dictionary<string, int> counts, long total) { this.counts = counts; Total = total; }
+
+    public int Count(string form)
+    {
+        int count;
+        return counts.TryGetValue(form ?? "", out count) ? count : 0;
+    }
+
+    public static LambekFormCounts Load(string path) { return Of(LambekForms.Load(path, false)); }
+
+    public static LambekFormCounts Of(LambekForms forms)
+    {
+        Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
+        long total = 0;
+        foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in forms.Paradigms)
+        {
+            string upos = paradigm.Key.Split('\t')[0];
+            if (upos == "PROPN" || upos == "PUNCT" || upos == "NUM" || upos == "SYM" || upos == "X") continue;
+            foreach (KeyValuePair<string, int> seen in paradigm.Value)
+            {
+                string key = LambekForms.Bare(seen.Key);
+                int n;
+                counts.TryGetValue(key, out n);
+                counts[key] = n + seen.Value;
+                total += seen.Value;
+            }
+        }
+        return new LambekFormCounts(counts, total);
     }
 }
 
