@@ -43,6 +43,15 @@ Describe 'Spelling correction' {
         @($request.Corrections | Where-Object From -EQ 'mora').Count | Should -Be 0
         $request.Words | Should -Not -Contain 'mover'
     }
+
+    It 'keeps as written only a word the user wrote, not one a repair before made of it: <Text>' -ForEach @(
+        # ("mobe" is first read as "more", a word the treebanks write, but the user wrote "mobe")
+        @{ Text = 'mobe data.csv to C:\Temp'; Action = 'files.move' }
+        @{ Text = 'moce report.txt to C:\Temp'; Action = 'files.move' }
+    ) {
+        $plan = New-LambekPlan -Text $Text
+        @($plan.Steps | ForEach-Object { $_.Action }) | Should -Contain $Action
+    }
 }
 
 Describe 'Correction chosen by the grammar' {

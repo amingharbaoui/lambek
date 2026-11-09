@@ -165,6 +165,10 @@ is (`all`: "tous", "chaque"; `some`: "certains"; `no`: "aucun"), and its copulas
   at most 12 words). Under a negation, the English side says none for "some" and for "a": "I don't have anything" is
   "non ho niente", "a bee is not a bird" is "eine Biene ist kein Vogel" (not at least one is none). Counts only, in
   integers.
+- The word that asks who (`who`), the same way: the English side asks it with a pronoun tagged `PronType=Int` said
+  "who" (English is the side every pair is read by). German learns "wer" and "wem", Spanish "quién" and "quiénes",
+  Dutch "wie", Portuguese "quem", Italian "chi"; the reader of general rules reads "wer ist ein Tier?" with it. French
+  and English keep the patterns written for them.
 
 | Pairs | Licence | Pairs read |
 | --- | --- | --- |
@@ -236,3 +240,13 @@ them is written by hand.
   +0.4 to +0.8 points, the words never seen +2.8 to +4.5; German +0.2 to +0.6, the words never seen +1.2 to +3.3).
 
 As derived from Wiktionary, the lexicons are shared under CC BY-SA 4.0, with credit to the authors of Wiktionary.
+
+## Small words (language of a message)
+
+The `<language>.small` files are the small words each language writes, made by `tools/Learn-LambekSmallWords.ps1`
+from the forms models above, nothing written by hand: a word its treebanks wrote as a determiner, a preposition, a
+pronoun, a conjunction, an auxiliary or a particle more than half the times they wrote it, at least 2 in 10 000 of all
+the words they wrote, and that no other language writes as a small word ten times as often (an English "the" quoted in a
+German newspaper is no German word). They tell the language of a message where the lists written by hand forget one
+("y" of Spanish), for the readers of general rules and the language of a chat (`Get-LambekLanguageScore -Forms`); the
+router, the guards and the readers of requests keep the words written by hand, which they were measured with.

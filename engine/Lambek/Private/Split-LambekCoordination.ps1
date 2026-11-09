@@ -3,14 +3,17 @@ function Split-LambekCoordination {
     [OutputType([string[]])]
     param(
         [Parameter(Mandatory)]
-        [string] $Text
+        [string] $Text,
+
+        # The language the sentence is read in, when the one who asks knows it (the reader of general rules)
+        [string] $Language = 'auto'
     )
 
     # "my sister lives in Lyon and my brother lives in Paris" is two things told, read one after the other.
     # Each side must read as a sentence; when one side lacks its subject ("...and works in Paris") it takes the
     # subject of the other, and when it lacks its verb ("my sister and my mother live in Lyon") it takes the verb
     # of the other, put in the singular. Anything else stays whole, as it was
-    $request = ConvertTo-LambekRequest -Text $Text
+    $request = ConvertTo-LambekRequest -Text $Text -Language $Language
     $general = $null
     $lexicon = Get-LambekLexicon -Language $request.Language
     if ($lexicon.Dialogue -and $lexicon.Dialogue['General']) { $general = $lexicon.Dialogue['General'] }
@@ -23,8 +26,8 @@ function Split-LambekCoordination {
         if ($cause.Success) {
             $left = $Text.Substring(0, $cause.Index).Trim()
             $right = $Text.Substring($cause.Index + $cause.Length).Trim()
-            $one = @(Split-LambekCoordination -Text $left)
-            $two = @(Split-LambekCoordination -Text $right)
+            $one = @(Split-LambekCoordination -Text $left -Language $Language)
+            $two = @(Split-LambekCoordination -Text $right -Language $Language)
             $reads = {
                 param([string] $clause)
                 try { $asked = ConvertTo-LambekRequest -Text $clause -Language $request.Language } catch { return $false }
@@ -53,7 +56,7 @@ function Split-LambekCoordination {
     }
     $first = & $read $left
     $second = & $read $right
-    if ($first -and $second) { $more = Split-LambekCoordination -Text $right; return , [string[]] (@($left) + $more) }
+    if ($first -and $second) { $more = Split-LambekCoordination -Text $right -Language $Language; return , [string[]] (@($left) + $more) }
 
     # The first side reads and the second does not: it lacks what the first side has
     if ($first -and -not $second -and $first.Kind -eq 'statement') {
@@ -70,7 +73,7 @@ function Split-LambekCoordination {
                 foreach ($start in @(if ($cut.Success) { $cut.Groups[1].Value }) + @($head)) {
                     $joined = "$start $right"
                     # ("tea and coffee and milk": what follows may be a list itself)
-                    $more = Split-LambekCoordination -Text $joined
+                    $more = Split-LambekCoordination -Text $joined -Language $Language
                     $same = @($more | Where-Object {
                             $again = & $read $_
                             $again -and $again.Verb -eq $first.Verb -and ((@($again.Roles.Keys) | Sort-Object) -join '|') -eq $keys
@@ -87,7 +90,7 @@ function Split-LambekCoordination {
             $joined = "$subject $right"
             # (je + a vowel is j')
             if ($subject -eq 'je' -and $right -match '^[aeiouyh\u00E0-\u00FF]') { $joined = "j'$right" }
-            if (& $read $joined) { $more = Split-LambekCoordination -Text $joined; return , [string[]] (@($left) + $more) }
+            if (& $read $joined) { $more = Split-LambekCoordination -Text $joined -Language $Language; return , [string[]] (@($left) + $more) }
         }
     }
 
@@ -101,17 +104,32 @@ function Split-LambekCoordination {
             if ((& $read $clauses[0]) -and (& $read $clauses[1])) { return , [string[]] $clauses }
         }
     }
+    # "Rex en Max zijn honden": neither side reads, the verb in the plural ("zijn" is also "his"). When, said in the
+    # singular after the name that opens the second side, both sides read ("Rex is honden", "Max is honden"), each name
+    # takes the verb and what follows it as they were said ("Rex zijn honden", "Max zijn honden")
+    if (-not $first -and -not $second) {
+        $parts = @($right -split '\s+')
+        for ($take = 1; $take -le [math]::Min(2, $parts.Count - 1); $take++) {
+            $subject = $parts[0..($take - 1)] -join ' '
+            $rest = $parts[$take..($parts.Count - 1)] -join ' '
+            $one = Get-LambekSingular -Text $rest -Language $request.Language -Before $subject
+            if ($one -ceq $rest) { continue }
+            $readings = @("$left $one", "$subject $one" | ForEach-Object { & $read $_ })
+            if (@($readings | Where-Object { $_ -and $_.Kind -eq 'statement' }).Count -eq 2) { return , [string[]] @("$left $rest", "$subject $rest") }
+        }
+    }
     # "I like tea, coffee and milk": the commas of a list are read as "and"
     if ($Text.Contains(',')) {
         $listed = [regex]::Replace($Text, '\s*,\s*', " $($match.Value.Trim().TrimStart(',').Trim()) ")
-        $more = Split-LambekCoordination -Text $listed
+        $more = Split-LambekCoordination -Text $listed -Language $Language
         if ($more.Count -gt 1) { return , [string[]] $more }
     }
     return , [string[]] @($Text)
 }
 
 function Get-LambekSingular {
-    param([string] $Text, [string] $Language)
+    # (what comes before the verb, read with it for the verb to be read in its place: "zijn" after a name is "are")
+    param([string] $Text, [string] $Language, [string] $Before)
 
     # The first word of the predicate, a verb in the plural, said in the singular: "live" -> "lives", "habitent" -> "habite"
     $match = [regex]::Match($Text, '^\p{L}+')
@@ -132,10 +150,24 @@ function Get-LambekSingular {
         if ($dictionary) {
             foreach ($lemma in @($dictionary.Lemmas($plain, $Language) | Where-Object { $_.Pos -eq 'v' -or $_.Pos -like 'aux*' })) {
                 $tag = "$($lemma.Tag)"
-                $mood = @('P', 'I', 'F', 'C', 'J', 'S', 'T' | Where-Object { $tag.Contains($_) })[0]
+                $mood = @('P', 'I', 'F', 'C', 'J', 'S', 'T' | Where-Object { $tag.Contains($_) } | Select-Object -First 1)
+                $mood = $(if ($mood.Count -gt 0) { $mood[0] } else { $null })
                 if (-not $mood -or $tag -notmatch '3p') { continue }
                 $forms = @($dictionary.Forms($lemma.Lemma, $Language, $lemma.Pos, "$($mood)3s"))
                 if ($forms.Count -gt 0) { $singular = $forms[0]; break }
+            }
+        }
+    }
+    # (or, read after what comes before it, the forms its treebanks wrote: the same lemma, the same features, but one)
+    if (-not $singular -and $Before -and $Language -ne 'en') {
+        $model = Get-LambekFormModel -Language $Language
+        if ($model) {
+            $reading = @(@($model.ReadText("$Before $Text".Trim())) | Where-Object { "$($_.Form)" -ieq $verb } | Select-Object -First 1)
+            $reading = $(if ($reading.Count -gt 0) { $reading[0] } else { $null })
+            $feats = $(if ($reading) { "$($reading.Feats)" } else { '' })
+            if ($reading -and "$($reading.Upos)" -in 'AUX', 'VERB' -and $feats -match '(^|\|)Number=Plur(\||$)') {
+                $said = @($model.Inflect("$($reading.Lemma)", "$($reading.Upos)", ($feats -replace 'Number=Plur', 'Number=Sing')))
+                if ($said.Count -gt 0 -and $said[0]) { $singular = "$($said[0])" }
             }
         }
     }

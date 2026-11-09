@@ -32,6 +32,13 @@ Describe 'A dialogue learned, not written' {
         @{ Language = 'pt'; Told = 'nenhum peixe é um mamífero', 'Nemo é um peixe'; Question = 'Nemo é um mamífero?'; Said = 'Não.*' }
         @{ Language = 'it'; Told = 'ogni cane è un animale', 'Rex è un cane'; Question = 'Rex è un animale?'; Said = 'Sì. Rex è un animale.*' }
         @{ Language = 'it'; Told = 'tutti i cani mangiano carne', 'Rex è un cane'; Question = 'Rex mangia carne?'; Said = 'Sì. Rex mangia carne.*' }
+        # (two names told together, each told on its own: "zijn" after the second is the verb, not "his")
+        @{ Language = 'nl'; Told = 'Bello en Kiki zijn katten', 'alle katten slapen'; Question = 'slaapt Kiki?'; Said = 'Ja. Kiki slaapt.*' }
+        @{ Language = 'es'; Told = 'Bello y Kiki son gatos', 'todos los gatos comen pescado'; Question = '¿come Kiki pescado?'; Said = 'Sí. Kiki come pescado.*' }
+        # (who: the word that asks it learned from sentences translated from English)
+        @{ Language = 'de'; Told = 'alle Katzen sind Tiere', 'Kiki ist eine Katze'; Question = 'wer ist ein Tier?'; Said = 'Kiki ist ein Tier.*- Kiki ist eine Katze*' }
+        @{ Language = 'pt'; Told = 'todos os gatos são animais', 'Kiki é um gato'; Question = 'quem é um animal?'; Said = 'Kiki é um animal.*' }
+        @{ Language = 'it'; Told = 'tutti i gatti sono animali', 'Kiki è un gatto'; Question = 'chi è un animale?'; Said = 'Kiki è un animale.*' }
     ) {
         Tell $Told
         Ask $Question | Should -BeLike $Said

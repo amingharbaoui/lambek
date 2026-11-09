@@ -35,7 +35,7 @@ function Repair-LambekRequest {
         $best = $current
         $bestCost = 0.0
         $bestWord = $null
-        foreach ($candidate in Get-LambekSpellingCandidate -Token $token -Language $current.Request.Language) {
+        foreach ($candidate in Get-LambekSpellingCandidate -Token $token -Language $current.Request.Language -Original $Original) {
             $changed = Get-LambekCorrectedText -Text $current.Text -Word $token -With $candidate.Word
             if ($changed -ceq $current.Text) { continue }
 

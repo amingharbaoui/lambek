@@ -28,7 +28,8 @@ function New-LambekPlan {
 
     process {
         # A new message: what the one before read is forgotten (a plan made inside this one keeps what it read)
-        if ($script:PlanDepth -eq 0) { Clear-LambekReadCache }
+        # (and the message as it was typed is kept, for a word a repair made never to pass for one the user wrote)
+        if ($script:PlanDepth -eq 0) { Clear-LambekReadCache; $script:Typed = $Text }
         $script:PlanDepth++
         try {
             # "slt", "cmt tu vas", "la capitalle": what was typed fast is read as it was meant, and the plan says so
@@ -312,7 +313,10 @@ function New-LambekPlan {
             }
             $plan
         }
-        finally { $script:PlanDepth-- }
+        finally {
+            $script:PlanDepth--
+            if ($script:PlanDepth -eq 0) { $script:Typed = $null }
+        }
     }
 }
 

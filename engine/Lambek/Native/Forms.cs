@@ -1696,13 +1696,16 @@ public class LambekForms
 
 // How often the treebanks of a language wrote each word, bare (LambekForms.Bare), names, numbers and signs left out,
 // and all of them together: what a word says of the language a message is in. Every language may be asked, so only
-// the words of its forms model are read, not its tagger
+// the words of its forms model are read, not its tagger. And how often each was written as a small word, a word of a
+// closed class (a determiner, a preposition, a pronoun, a conjunction, an auxiliary, a particle)
 public sealed class LambekFormCounts
 {
+    static readonly HashSet<string> Closed = new HashSet<string>(StringComparer.Ordinal) { "DET", "ADP", "PRON", "CCONJ", "SCONJ", "AUX", "PART" };
     readonly Dictionary<string, int> counts;
+    readonly Dictionary<string, int> small;
     public long Total { get; private set; }
 
-    LambekFormCounts(Dictionary<string, int> counts, long total) { this.counts = counts; Total = total; }
+    LambekFormCounts(Dictionary<string, int> counts, Dictionary<string, int> small, long total) { this.counts = counts; this.small = small; Total = total; }
 
     public int Count(string form)
     {
@@ -1710,16 +1713,33 @@ public sealed class LambekFormCounts
         return counts.TryGetValue(form ?? "", out count) ? count : 0;
     }
 
+    public int SmallCount(string form)
+    {
+        int count;
+        return small.TryGetValue(form ?? "", out count) ? count : 0;
+    }
+
+    // The words written as small words, in the order of the ordinal comparer
+    public string[] SmallWords()
+    {
+        string[] words = new string[small.Count];
+        small.Keys.CopyTo(words, 0);
+        Array.Sort(words, StringComparer.Ordinal);
+        return words;
+    }
+
     public static LambekFormCounts Load(string path) { return Of(LambekForms.Load(path, false)); }
 
     public static LambekFormCounts Of(LambekForms forms)
     {
         Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
+        Dictionary<string, int> small = new Dictionary<string, int>(StringComparer.Ordinal);
         long total = 0;
         foreach (KeyValuePair<string, SortedDictionary<string, int>> paradigm in forms.Paradigms)
         {
             string upos = paradigm.Key.Split('\t')[0];
             if (upos == "PROPN" || upos == "PUNCT" || upos == "NUM" || upos == "SYM" || upos == "X") continue;
+            bool closed = Closed.Contains(upos);
             foreach (KeyValuePair<string, int> seen in paradigm.Value)
             {
                 string key = LambekForms.Bare(seen.Key);
@@ -1727,9 +1747,12 @@ public sealed class LambekFormCounts
                 counts.TryGetValue(key, out n);
                 counts[key] = n + seen.Value;
                 total += seen.Value;
+                if (!closed) continue;
+                small.TryGetValue(key, out n);
+                small[key] = n + seen.Value;
             }
         }
-        return new LambekFormCounts(counts, total);
+        return new LambekFormCounts(counts, small, total);
     }
 }
 

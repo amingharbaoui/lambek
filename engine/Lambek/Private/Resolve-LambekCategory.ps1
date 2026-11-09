@@ -37,6 +37,9 @@ function Resolve-LambekCategory {
         if (-not $words) { continue }
         $sentences = @(Split-LambekCategorySentence -Text $Text -Language $language)
         if ($sentences.Count -eq 0) { continue }
+        # Two names told together ("Rex en Max zijn honden"), in the language the message reads as: a sentence that
+        # does not read whole is told name by name, when each part reads (Split-LambekCoordination)
+        if ($language -eq $detected) { $sentences = @(Split-LambekCategoryCoordination -Sentences $sentences -Language $language) }
         # A quick look first, with the shapes of the sentences only
         $shapes = @(foreach ($sentence in $sentences) {
                 $shape = Read-LambekCategorySentence -Sentence $sentence.Text -Language $language -Question:$sentence.Question -Shape
@@ -54,6 +57,24 @@ function Resolve-LambekCategory {
         return Resolve-LambekCategoryMessage -Sentences $sentences -Language $language
     }
     return $null
+}
+
+function Split-LambekCategoryCoordination {
+    param([object[]] $Sentences, [string] $Language)
+
+    $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+    $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
+    $joins = @($(if ($general -and $general['Conjunctions']) { $general['Conjunctions'] }) | Where-Object { $_ } | ForEach-Object { [regex]::Escape("$_") })
+    foreach ($sentence in $Sentences) {
+        # (only a sentence told, with a word that joins, that does not read as it is, its shape aside)
+        if ($sentence.Question -or $joins.Count -eq 0 -or $sentence.Text -notmatch "(?i)(^|\s)($($joins -join '|'))(\s|$)" -or
+            (Read-LambekCategorySentence -Sentence $sentence.Text -Language $Language)) { $sentence; continue }
+        [string[]] $parts = Split-LambekCoordination -Text $sentence.Original -Language $Language
+        $split = @()
+        if ($parts.Count -gt 1) { $split = @(Split-LambekCategorySentence -Text (($parts | ForEach-Object { "$_." }) -join ' ') -Language $Language) }
+        $read = @($split | Where-Object { -not $_.Question -and (Read-LambekCategorySentence -Sentence $_.Text -Language $Language -Shape) })
+        if ($parts.Count -gt 1 -and $split.Count -eq $parts.Count -and $read.Count -eq $split.Count) { $split } else { $sentence }
+    }
 }
 
 function Get-LambekCategoryVocabulary {

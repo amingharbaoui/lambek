@@ -107,12 +107,18 @@ function Get-LambekLanguageScore {
     foreach ($language in $languages) { $lexicons[$language] = Get-LambekLexicon -Language $language }
     $scores = [ordered]@{}
     foreach ($language in $languages) { $scores[$language] = 0 }
+    # (with the forms, the small words each language writes, learned from its treebanks, are small words of it too: "y"
+    # is Spanish as much as French, whatever a list written by hand forgot; the router was measured without them)
+    $learned = @{}
+    foreach ($language in $(if ($Forms) { $languages })) { $learned[$language] = Get-LambekLearnedSmallWord -Language $language }
+    $speaks = { param($language, $token) $lexicons[$language].Signals.Contains($token) -or ($learned.Count -gt 0 -and $learned[$language].Contains($token)) }
     foreach ($token in $lower) {
-        $in = @($languages | Where-Object { $lexicons[$_].Signals.Contains($token) })
+        $in = @($languages | Where-Object { & $speaks $_ $token })
         if ($in.Count -eq 0 -or $in.Count -eq $languages.Count) { continue }
         foreach ($language in $in) {
             $weight = 1
             if ($lexicons[$language].StopWords.Contains($token) -or $lexicons[$language].GrammarWords.Contains($token)) { $weight = 2 }
+            elseif ($learned.Count -gt 0 -and $learned[$language].Contains($token)) { $weight = 2 }
             $scores[$language] += $weight
         }
     }
@@ -134,7 +140,7 @@ function Get-LambekLanguageScore {
     if ($known.Count -gt 1) {
         foreach ($token in $lower) {
             # (a word the small words of some language hold has said its language above: each word speaks once)
-            if (@($languages | Where-Object { $lexicons[$_].Signals.Contains($token) }).Count -gt 0) { continue }
+            if (@($languages | Where-Object { & $speaks $_ $token }).Count -gt 0) { continue }
             $likely = @{}
             foreach ($language in $known.Keys) {
                 $count = $known[$language].Counts.Count($token)

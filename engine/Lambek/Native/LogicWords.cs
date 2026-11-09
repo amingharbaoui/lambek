@@ -53,6 +53,9 @@ public static class LambekLogicWords
             foreach (LambekFormReading word in first)
             {
                 string kind = KindOf(word.Upos, word.Feats);
+                // (and the pronoun that asks who: English, the side every pair is read by, tags it PronType=Int, as it
+                // tags "what", and says it "who"; the word of the other side met with it asks who too)
+                if (kind == null && word.Upos == "PRON" && ("|" + (word.Feats ?? "") + "|").Contains("|PronType=Int|") && string.Equals(word.Lemma, "who", StringComparison.OrdinalIgnoreCase)) kind = "who";
                 // Not at least one is none: "I don't have anything" says what "non ho niente" says, and "not a",
                 // what "kein" says ("a bee is not a bird": "eine Biene ist kein Vogel")
                 if (denied && (kind == "some" || (word.Upos == "DET" && ("|" + (word.Feats ?? "") + "|").Contains("|Definite=Ind|")))) kind = "no";

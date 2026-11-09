@@ -47,3 +47,26 @@ function Get-LambekWrittenWord {
     $script:WrittenWords[$Language] = $known
     return $known
 }
+
+function Get-LambekLearnedSmallWord {
+    # The small words of a language as its treebanks write them (tools/Learn-LambekSmallWords.ps1,
+    # Data/Forms/<language>.small), bare, loaded once; an empty set when there are none
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string] $Language
+    )
+
+    if ($null -eq $script:LearnedSmallWords) { $script:LearnedSmallWords = @{} }
+    if ($script:LearnedSmallWords.ContainsKey($Language)) { return , $script:LearnedSmallWords[$Language] }
+    $words = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $path = Join-Path $PSScriptRoot "../Data/Forms/$Language.small"
+    if (Test-Path -LiteralPath $path -PathType Leaf) {
+        foreach ($line in [IO.File]::ReadAllLines([IO.Path]::GetFullPath($path), [Text.Encoding]::UTF8)) {
+            if (-not $line -or $line.StartsWith('#')) { continue }
+            [void] $words.Add($line.Split("`t")[0])
+        }
+    }
+    $script:LearnedSmallWords[$Language] = $words
+    return , $words
+}

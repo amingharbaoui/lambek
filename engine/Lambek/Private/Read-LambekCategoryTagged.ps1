@@ -141,6 +141,10 @@ function Read-LambekCategoryTagged {
             if ($told.Count -eq 1) { $reading.Lemma = $told[0] }
         }
     }
+    # (a question opened by the word that asks who, learned: "wer ist ein Tier", "wie blaft")
+    # (written with its accents or without: "quien" is the "quien" of the treebank, with its accent)
+    $opening = ConvertTo-LambekNormalizedText -Text "$(if ($readings.Count -gt 0) { $readings[0].Form })"
+    $who = $Question -and $readings.Count -gt 1 -and @($logic.Kinds.Keys | Where-Object { $logic.Kinds[$_] -eq 'who' -and (ConvertTo-LambekNormalizedText -Text $_) -eq $opening }).Count -gt 0
     $upos = [string[]]::new($readings.Count)
     for ($r = 0; $r -lt $readings.Count; $r++) {
         $form = "$($readings[$r].Form)"
@@ -151,7 +155,7 @@ function Read-LambekCategoryTagged {
         $capital = $form.Length -gt 0 -and [char]::IsUpper($form[0])
         if (-not $known -and $capital -and ($r -gt 0 -or $upos[$r] -in 'VERB', 'AUX', 'X')) { $upos[$r] = 'PROPN' }
         elseif (-not $known -and $upos[$r] -notin 'NOUN', 'ADJ', 'PROPN') { return $null }
-        if ("|$($readings[$r].Feats)|" -match '\|PronType=(?:[A-Za-z]+,)*Int(?:,[A-Za-z]+)*\|') { return $null }
+        if (-not ($who -and $r -eq 0) -and "|$($readings[$r].Feats)|" -match '\|PronType=(?:[A-Za-z]+,)*Int(?:,[A-Za-z]+)*\|') { return $null }
     }
     $has = { param($r, $feature) "|$($readings[$r].Feats)|".Contains("|$feature|") }
     $negative = [bool[]]::new($readings.Count)
@@ -190,6 +194,23 @@ function Read-LambekCategoryTagged {
     $first = 0
     while ($first -lt $readings.Count -and $negative[$first]) { $first++ }
     if ($first -ge $readings.Count) { return $null }
+    # Who: the word that asks it, then the copula and what the one asked is ("wer ist ein Tier"); nothing that says not.
+    # (who does, "wie blaft", is not said back yet in the languages learned: left unread)
+    if ($who) {
+        if (@($negative | Where-Object { $_ }).Count -gt 0 -or -not (& $isCopula 1)) { return $null }
+        if ($Shape) { return [pscustomobject]@{ Kind = 'askwho' } }
+        $asked = @{}
+        $lemmas = @{}
+        foreach ($reading in $readings) {
+            if ("$($reading.Upos)" -notin 'NOUN', 'ADJ', 'PROPN' -or -not $reading.Lemma) { continue }
+            $lemmas[(ConvertTo-LambekNormalizedText -Text "$($reading.Form)")] = ConvertTo-LambekNormalizedText -Text "$($reading.Lemma)"
+        }
+        $asked['lemmas'] = $lemmas
+        $rest = & $text 2 $readings.Count
+        if (-not $rest) { return $null }
+        $asked['p'] = $rest
+        return Read-LambekCategoryPart -Kind 'askwho' -Values $asked -Language $Language
+    }
     $asking = $Question -or $inverted
     # (an AUX first asks: "does it fly", "is Tom a cat"; in a question, so does a VERB first when another follows: "do
     # all cats drink milk")

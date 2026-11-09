@@ -90,6 +90,8 @@ $script:WordSource = 'forms'
 # What one message reads several times (the same sentence, the same words) is read once, until the next message
 $script:ReadCache = [System.Collections.Generic.Dictionary[string, object]]::new([StringComparer]::Ordinal)
 $script:PlanDepth = 0
+# The message being planned as it was typed, before any repair (New-LambekPlan, Get-LambekSpellingCandidate)
+$script:Typed = $null
 $script:ClauseVerbs = $null
 $script:PartTypes = $null
 # The dictionaries asked for, once loaded
@@ -145,6 +147,8 @@ $script:WorldReads = $null
 $script:Alphabets = $null
 # How often each language writes its words, bare (Get-LambekWrittenWord), loaded once
 $script:WrittenWords = $null
+# The small words each language writes, learned from its treebanks (Get-LambekLearnedSmallWord), loaded once
+$script:LearnedSmallWords = $null
 $script:SpeechFusion = $null
 $script:SpeechFrames = $null
 $script:SpeechReadings = $null
