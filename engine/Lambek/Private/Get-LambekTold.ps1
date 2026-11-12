@@ -132,6 +132,12 @@ function Write-LambekToldJournal {
         Source       = 'user'
         PreviousHash = $previousHash
     }
+    # Naskh: a thing told that cannot be true with an older one replaces it. The journal is never changed, so the new
+    # line names the hash of the line it replaces, and the old line stays where it was, with the day it was told
+    if ($Fact.PSObject.Properties['Replaces'] -and $Fact.Replaces) {
+        $entry.Status = 'replaces'
+        $entry.Replaces = "$($Fact.Replaces)"
+    }
     # A rule: its condition is kept with it, in the same shape as a thing told
     if ($Fact.PSObject.Properties['Condition'] -and $Fact.Condition) {
         $if = $Fact.Condition
@@ -192,9 +198,46 @@ function Get-LambekToldJournal {
         # (a line written before the board has no status: it was told)
         $status = 'told'
         if ($entry.Contains('Status') -and $entry['Status']) { $status = "$($entry['Status'])" }
+        # (a line that replaces another is a thing told like any other: what it replaces is said by its own field)
+        if ($status -eq 'replaces') { $status = 'told' }
         [void] (Add-LambekBoardFact -Fact $fact -Status $status -Source 'journal')
     }
+    # A line a later line replaces is left where it is and no longer counts (Set-LambekToldReplaced)
+    $replaced = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($fact in $script:ToldJournal) {
+        if ($fact.PSObject.Properties['Replaces'] -and $fact.Replaces) { [void] $replaced.Add("$($fact.Replaces)") }
+    }
+    foreach ($fact in $script:ToldJournal) {
+        if ($replaced.Contains("$($fact.Hash)")) { $fact | Add-Member -NotePropertyName Replaced -NotePropertyValue $true -Force }
+    }
     return , $script:ToldJournal
+}
+
+function Set-LambekToldReplaced {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Changes an object in memory only.')]
+    [CmdletBinding()]
+    param(
+        # The older thing told, which no longer counts
+        [Parameter(Mandatory)]
+        [pscustomobject] $Fact,
+
+        # The thing told now, whose line in the journal will name it
+        [Parameter(Mandatory)]
+        [pscustomobject] $By
+    )
+
+    $Fact | Add-Member -NotePropertyName Replaced -NotePropertyValue $true -Force
+    $hash = $(if ($Fact.PSObject.Properties['Hash']) { "$($Fact.Hash)" } else { '' })
+    if ($hash) { $By | Add-Member -NotePropertyName Replaces -NotePropertyValue $hash -Force }
+    $told = Get-LambekTold
+    $at = $told.IndexOf($Fact)
+    if ($at -ge 0) { [void] $told.RemoveAt($at) }
+    # (the same thing told has a line of its own in the journal, read as another thing: it is marked there too)
+    if ($hash) {
+        foreach ($line in (Get-LambekToldJournal)) {
+            if ("$($line.Hash)" -eq $hash) { $line | Add-Member -NotePropertyName Replaced -NotePropertyValue $true -Force }
+        }
+    }
 }
 
 function Clear-LambekTold {

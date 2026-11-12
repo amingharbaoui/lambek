@@ -144,16 +144,14 @@ Describe 'General rules told in words' {
 
     Context 'Contradictions' {
 
-        It 'says at once when what is told cannot be true with what was told, and keeps both' {
+        It 'says at once what it replaces, when what is told cannot be true with what was told about the same one' {
             Tell "aucun chat n'est noir", 'Minou est un chat'
             Ask 'Minou est noir' | Should -Be (@(
                     "C'est noté. Minou est noir. Je m'en souviendrai."
-                    "Attention : avec ce que vous m'avez dit, ces phrases ne peuvent pas être vraies ensemble :"
-                    "- Aucun chat n'est noir."
+                    "Je remplace ce que vous m'aviez dit :"
                     '- Minou est un chat.'
-                    '- Minou est noir.'
                 ) -join "`n")
-            @((Ask 'est-ce que Minou est noir ?') -split "`n")[0] | Should -Be "Ce que vous m'avez dit se contredit : ces phrases ne peuvent pas être vraies ensemble :"
+            @((Ask 'est-ce que Minou est noir ?') -split "`n")[0] | Should -Be 'Oui : Minou est noir.'
         }
 
         It 'gives a smallest set of sentences that cannot all be true' {
@@ -551,6 +549,36 @@ Describe 'General rules told in words' {
             $logic.Kinds[$None] | Should -Be 'no'
             $logic.Kinds[$Some] | Should -Be 'some'
             $logic.Copulas | Should -Contain $Copula
+        }
+    }
+
+    Context 'What is told now replaces what cannot be true with it' {
+
+        It 'keeps the newest and sets aside the sentence told before about the same one' {
+            Tell 'no dog is a cat', 'Rex is a dog'
+            (Ask 'Rex is a cat') -join ' ' | Should -BeLike '*I replace what you told me before:*- Rex is a dog.*'
+            (Ask 'is Rex a cat?') -join ' ' | Should -BeLike 'Yes: Rex is a cat.*'
+            (Ask 'is Rex a dog?') -join ' ' | Should -BeLike 'No, Rex is not a dog*'
+        }
+
+        It 'leaves the general rule standing, and what is told about someone else' {
+            Tell 'no dog is a cat', 'Max is a dog', 'Rex is a dog', 'Rex is a cat'
+            (Ask 'is Max a cat?') -join ' ' | Should -BeLike 'No, Max is not a cat*'
+        }
+
+        It 'replaces nothing, and says what cannot be true together, when the sentence told is a general rule' {
+            Tell 'Rex is a dog', 'Rex is a cat'
+            (Ask 'no dog is a cat') -join ' ' | Should -BeLike '*cannot all be true together:*'
+        }
+
+        It 'writes the line that replaces in the journal, and leaves the line replaced where it was' {
+            Tell 'no bird is a fish', 'Pip is a bird', 'Pip is a fish'
+            $lines = & (Get-Module Lambek) { @(Get-LambekToldJournal) }
+            $replacing = @($lines | Where-Object { $_.PSObject.Properties['Replaces'] -and $_.Replaces })
+            $replacing.Count | Should -BeGreaterThan 0
+            $replaced = @($lines | Where-Object { "$($_.Hash)" -eq "$($replacing[-1].Replaces)" })
+            $replaced.Count | Should -Be 1
+            $replaced[0].Text | Should -Be 'Pip is a bird'
         }
     }
 }

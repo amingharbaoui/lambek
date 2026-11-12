@@ -244,9 +244,17 @@
       "multiplie",
       "multipliez"
     ],
-    "Imperatives": {"divise": "/", "divisez": "/", "multiplie": "*", "multipliez": "*"},
+    "Imperatives": {
+      "divise": "/",
+      "divisez": "/",
+      "multiplie": "*",
+      "multipliez": "*"
+    },
     "By": "par",
-    "SuchThat": ["tel que", "telle que"],
+    "SuchThat": [
+      "tel que",
+      "telle que"
+    ],
     "Operators": {
       "multiplie par": "*",
       "divise par": "/",
@@ -346,7 +354,11 @@
     "Between": "\\bjours?\\b.*\\bentre\\b",
     "Weekday": "\\bquel jour\\b(?!.*\\bdans\\b)",
     "InDays": "\\bquel(?:le)? (?:date|jour)\\b.*\\bdans (?<n>\\d+) jours?\\b",
-    "Now": {"Time": "^(?:(?:dis moi|dites moi|tu sais|vous savez) )?(?:quelle heure (?:est il|il est|est ce)|il est quelle heure|l heure(?: qu il est)?|tu as l heure|vous avez l heure|quelle heure)(?: maintenant)?(?<place> (?:a|en|au|aux) .+)?$", "Today": "^(?:(?:dis moi|dites moi) )?(?:quel jour (?:sommes nous|on est|est on|c est|est ce)|on est quel jour|nous sommes quel jour|c est quel jour|quelle (?:est la )?date (?:sommes nous|on est|est on)|quelle est la date(?: du jour)?|quelle date|la date(?: du jour)?|date|on est le combien|nous sommes le combien)(?: (?:d )?aujourd hui)?$", "Year": "^(?:en )?quelle annee (?:sommes nous|on est|est on)$"},
+    "Now": {
+      "Time": "^(?:(?:dis moi|dites moi|tu sais|vous savez) )?(?:quelle heure (?:est il|il est|est ce)|il est quelle heure|l heure(?: qu il est)?|tu as l heure|vous avez l heure|quelle heure)(?: maintenant)?(?<place> (?:a|en|au|aux) .+)?$",
+      "Today": "^(?:(?:dis moi|dites moi) )?(?:quel jour (?:sommes nous|on est|est on|c est|est ce)|on est quel jour|nous sommes quel jour|c est quel jour|quelle (?:est la )?date (?:sommes nous|on est|est on)|quelle est la date(?: du jour)?|quelle date|la date(?: du jour)?|date|on est le combien|nous sommes le combien)(?: (?:d )?aujourd hui)?$",
+      "Year": "^(?:en )?quelle annee (?:sommes nous|on est|est on)$"
+    },
     "Functions": {
       "derivative": [
         "derivee de",
@@ -761,104 +773,367 @@
       }
     },
     "Abduction": {
-      "Words": [ "pourquoi est-ce que ", "pourquoi est-ce qu'", "pourquoi est-ce qu\u2019", "pourquoi " ],
-      "Inverted": [ "il", "elle", "ils", "elles", "on" ],
+      "Words": [
+        "pourquoi est-ce que ",
+        "pourquoi est-ce qu'",
+        "pourquoi est-ce qu’",
+        "pourquoi "
+      ],
+      "Inverted": [
+        "il",
+        "elle",
+        "ils",
+        "elles",
+        "on"
+      ],
       "Auxiliaries": [],
       "Do": [],
-      "Deduced": "Je le d\u00e9duis de ce que vous m'avez dit :",
+      "Deduced": "Je le déduis de ce que vous m'avez dit :",
       "PossibleOne": "Vous ne m'avez pas dit pourquoi. Je vois une explication possible :",
-      "PossibleMany": "Vous ne m'avez pas dit pourquoi. Je vois {0} explications possibles, en commen\u00e7ant par celle qui explique le plus de choses :",
-      "Maybe": "- peut-\u00eatre parce que {0} (vous m'avez dit : {1})",
+      "PossibleMany": "Vous ne m'avez pas dit pourquoi. Je vois {0} explications possibles, en commençant par celle qui explique le plus de choses :",
+      "Maybe": "- peut-être parce que {0} (vous m'avez dit : {1})",
       "AlsoExplains": "  cela expliquerait aussi : {0}",
       "Not": "- pas parce que {0} : vous m'avez dit le contraire.",
       "Ask": "est-ce que {0} ?",
-      "Decide": "Une question les d\u00e9partagerait : {0}",
-      "Check": "Pour le v\u00e9rifier : {0}",
+      "Decide": "Une question les départagerait : {0}",
+      "Check": "Pour le vérifier : {0}",
       "IfNo": "Si non, ce n'est pas parce que {0}."
     },
     "Categories": {
       "Statements": [
-        [ "isnotmember", "^(?<n>je) ne fais pas partie des (?<p>.+)$" ],
-        [ "ismember", "^(?<n>je) fais partie des (?<p>.+)$" ],
-        [ "isnotmember", "^(?<n>.+?) ne fait pas partie des (?<p>.+)$" ],
-        [ "ismember", "^(?<n>.+?) fait partie des (?<p>.+)$" ],
-        [ "no", "^(?<q>les) (?<s>.+?) ne sont pas (?<p>.+)$" ],
-        [ "no", "^(?<q>les) (?<s>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
-        [ "no", "^(?<q>les) (?<s>.+?) n['\u2019](?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
-        [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) n['’](?:est|sont) (?<p>.+)$" ],
-        [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) ne (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "no", "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) n['’](?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "somenot", "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) ne sont pas (?<p>.+)$" ],
-        [ "somenot", "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
-        [ "somenot", "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) n['’](?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
-        [ "some", "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) sont (?<p>.+)$" ],
-        [ "some", "^il (?:y a|existe) (?:des|au moins un|au moins une) (?<s>.+?) qui (?:sont|est) (?<p>.+)$" ],
-        [ "some", "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "all", "^(?<q>tous|toutes) les (?<s>.+?) sont (?<p>.+)$" ],
-        [ "all", "^(?<q>tout|toute|chaque) (?<s>.+?) est (?<p>.+)$" ],
-        [ "all", "^(?<q>les) (?<s>.+?) sont (?:tous |toutes )?(?<p>.+)$" ],
-        [ "all", "^(?<q>tous|toutes) les (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "all", "^(?<q>tout|toute|chaque) (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "all", "^(?<q>les) (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "isnot", "^(?<n>je) ne suis pas (?<p>.+)$" ],
-        [ "isnot", "^(?<n>.+?) n['’]est pas (?<p>.+)$" ],
-        [ "is", "^(?<n>je) suis (?<p>.+)$" ],
-        [ "is", "^(?<n>.+?) est (?<p>.+)$" ],
-        [ "doesnot", "^(?<n>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
-        [ "doesnot", "^(?<n>.+?) n['’](?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
-        [ "does", "^(?<n>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ]
+        [
+          "isnotmember",
+          "^(?<n>je) ne fais pas partie des (?<p>.+)$"
+        ],
+        [
+          "ismember",
+          "^(?<n>je) fais partie des (?<p>.+)$"
+        ],
+        [
+          "isnotmember",
+          "^(?<n>.+?) ne fait pas partie des (?<p>.+)$"
+        ],
+        [
+          "ismember",
+          "^(?<n>.+?) fait partie des (?<p>.+)$"
+        ],
+        [
+          "no",
+          "^(?<q>les) (?<s>.+?) ne sont pas (?<p>.+)$"
+        ],
+        [
+          "no",
+          "^(?<q>les) (?<s>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$"
+        ],
+        [
+          "no",
+          "^(?<q>les) (?<s>.+?) n['’](?<v>\\p{L}+) pas(?: (?<o>.+))?$"
+        ],
+        [
+          "no",
+          "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) n['’](?:est|sont) (?<p>.+)$"
+        ],
+        [
+          "no",
+          "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) ne (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "no",
+          "^(?<q>aucun|aucune|nul|nulle) (?<s>.+?) n['’](?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "somenot",
+          "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) ne sont pas (?<p>.+)$"
+        ],
+        [
+          "somenot",
+          "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$"
+        ],
+        [
+          "somenot",
+          "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) n['’](?<v>\\p{L}+) pas(?: (?<o>.+))?$"
+        ],
+        [
+          "some",
+          "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) sont (?<p>.+)$"
+        ],
+        [
+          "some",
+          "^il (?:y a|existe) (?:des|au moins un|au moins une) (?<s>.+?) qui (?:sont|est) (?<p>.+)$"
+        ],
+        [
+          "some",
+          "^(?<q>certains|certaines|quelques|plusieurs) (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "all",
+          "^(?<q>tous|toutes) les (?<s>.+?) sont (?<p>.+)$"
+        ],
+        [
+          "all",
+          "^(?<q>tout|toute|chaque) (?<s>.+?) est (?<p>.+)$"
+        ],
+        [
+          "all",
+          "^(?<q>les) (?<s>.+?) sont (?:tous |toutes )?(?<p>.+)$"
+        ],
+        [
+          "all",
+          "^(?<q>tous|toutes) les (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "all",
+          "^(?<q>tout|toute|chaque) (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "all",
+          "^(?<q>les) (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "isnot",
+          "^(?<n>je) ne suis pas (?<p>.+)$"
+        ],
+        [
+          "isnot",
+          "^(?<n>.+?) n['’]est pas (?<p>.+)$"
+        ],
+        [
+          "is",
+          "^(?<n>je) suis (?<p>.+)$"
+        ],
+        [
+          "is",
+          "^(?<n>.+?) est (?<p>.+)$"
+        ],
+        [
+          "doesnot",
+          "^(?<n>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$"
+        ],
+        [
+          "doesnot",
+          "^(?<n>.+?) n['’](?<v>\\p{L}+) pas(?: (?<o>.+))?$"
+        ],
+        [
+          "does",
+          "^(?<n>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ]
       ],
       "Listener": [
-        [ "isnotmember", "^(?<n>vous) ne faites pas partie des (?<p>.+)$" ],
-        [ "ismember", "^(?<n>vous) faites partie des (?<p>.+)$" ],
-        [ "isnotmember", "^(?<n>tu) ne fais pas partie des (?<p>.+)$" ],
-        [ "ismember", "^(?<n>tu) fais partie des (?<p>.+)$" ],
-        [ "isnot", "^(?<n>vous) n['’](?:êtes|etes) pas (?<p>.+)$" ],
-        [ "isnot", "^(?<n>tu) n['’]es pas (?<p>.+)$" ],
-        [ "is", "^(?<n>vous) (?:êtes|etes) (?<p>.+)$" ],
-        [ "is", "^(?<n>tu) es (?<p>.+)$" ]
+        [
+          "isnotmember",
+          "^(?<n>vous) ne faites pas partie des (?<p>.+)$"
+        ],
+        [
+          "ismember",
+          "^(?<n>vous) faites partie des (?<p>.+)$"
+        ],
+        [
+          "isnotmember",
+          "^(?<n>tu) ne fais pas partie des (?<p>.+)$"
+        ],
+        [
+          "ismember",
+          "^(?<n>tu) fais partie des (?<p>.+)$"
+        ],
+        [
+          "isnot",
+          "^(?<n>vous) n['’](?:êtes|etes) pas (?<p>.+)$"
+        ],
+        [
+          "isnot",
+          "^(?<n>tu) n['’]es pas (?<p>.+)$"
+        ],
+        [
+          "is",
+          "^(?<n>vous) (?:êtes|etes) (?<p>.+)$"
+        ],
+        [
+          "is",
+          "^(?<n>tu) es (?<p>.+)$"
+        ]
       ],
       "Questions": [
-        [ "askmember", "^est-ce que (?<n>je) fais partie des (?<p>.+)$" ],
-        [ "askmember", "^est-ce que (?<n>.+?) fait partie des (?<p>.+)$" ],
-        [ "askmember", "^est-ce qu['\u2019](?<n>.+?) fait partie des (?<p>.+)$" ],
-        [ "askmember", "^(?<n>.+?) fait-(?:il|elle) partie des (?<p>.+)$" ],
-        [ "askall", "^est-ce que (?<q>tous|toutes) les (?<s>.+?) sont (?<p>.+)$" ],
-        [ "askall", "^(?<q>tous|toutes) les (?<s>.+?) sont-(?:ils|elles) (?<p>.+)$" ],
-        [ "askall", "^est-ce que (?<q>tous|toutes) les (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "askall", "^(?<q>tous|toutes) les (?<s>.+?) (?<v>\\p{L}+)-(?:ils|elles)(?: (?<o>.+))?$" ],
-        [ "askno", "^est-ce qu['’](?<q>aucun|aucune) (?<s>.+?) n['’]est (?<p>.+)$" ],
-        [ "askno", "^est-ce qu['’](?<q>aucun|aucune) (?<s>.+?) ne (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "asksomenot", "^est-ce que (?<q>certains|certaines) (?<s>.+?) ne sont pas (?<p>.+)$" ],
-        [ "asksomenot", "^(?<q>certains|certaines) (?<s>.+?) ne sont-(?:ils|elles) pas (?<p>.+)$" ],
-        [ "asksomenot", "^est-ce que (?<q>certains|certaines) (?<s>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$" ],
-        [ "asksome", "^est-ce que (?<q>certains|certaines) (?<s>.+?) sont (?<p>.+)$" ],
-        [ "asksome", "^(?<q>certains|certaines) (?<s>.+?) sont-(?:ils|elles) (?<p>.+)$" ],
-        [ "asksome", "^(?:y a-t-il|est-ce qu['’]il y a) des (?<s>.+?) qui sont (?<p>.+)$" ],
-        [ "asksome", "^est-ce que (?<q>certains|certaines) (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "askwho", "^qui est (?<p>.+)$" ],
-        [ "askwho", "^qui (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "askis", "^est-ce que (?<n>je) suis (?<p>.+)$" ],
-        [ "askis", "^suis-(?<n>je) (?<p>.+)$" ],
-        [ "askis", "^est-ce que (?<n>.+?) est (?<p>.+)$" ],
-        [ "askis", "^est-ce qu['’](?<n>.+?) est (?<p>.+)$" ],
-        [ "askis", "^(?<n>.+?) est-(?:il|elle) (?<p>.+)$" ],
-        [ "askdoes", "^est-ce que (?<n>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "askdoes", "^est-ce qu['’](?<n>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$" ],
-        [ "askdoes", "^(?<n>.+?) (?<v>\\p{L}+)-t-(?:il|elle)(?: (?<o>.+))?$" ],
-        [ "askdoes", "^(?<n>.+?) (?<v>\\p{L}+)-(?:il|elle)(?: (?<o>.+))?$" ]
+        [
+          "askmember",
+          "^est-ce que (?<n>je) fais partie des (?<p>.+)$"
+        ],
+        [
+          "askmember",
+          "^est-ce que (?<n>.+?) fait partie des (?<p>.+)$"
+        ],
+        [
+          "askmember",
+          "^est-ce qu['’](?<n>.+?) fait partie des (?<p>.+)$"
+        ],
+        [
+          "askmember",
+          "^(?<n>.+?) fait-(?:il|elle) partie des (?<p>.+)$"
+        ],
+        [
+          "askall",
+          "^est-ce que (?<q>tous|toutes) les (?<s>.+?) sont (?<p>.+)$"
+        ],
+        [
+          "askall",
+          "^(?<q>tous|toutes) les (?<s>.+?) sont-(?:ils|elles) (?<p>.+)$"
+        ],
+        [
+          "askall",
+          "^est-ce que (?<q>tous|toutes) les (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "askall",
+          "^(?<q>tous|toutes) les (?<s>.+?) (?<v>\\p{L}+)-(?:ils|elles)(?: (?<o>.+))?$"
+        ],
+        [
+          "askno",
+          "^est-ce qu['’](?<q>aucun|aucune) (?<s>.+?) n['’]est (?<p>.+)$"
+        ],
+        [
+          "askno",
+          "^est-ce qu['’](?<q>aucun|aucune) (?<s>.+?) ne (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "asksomenot",
+          "^est-ce que (?<q>certains|certaines) (?<s>.+?) ne sont pas (?<p>.+)$"
+        ],
+        [
+          "asksomenot",
+          "^(?<q>certains|certaines) (?<s>.+?) ne sont-(?:ils|elles) pas (?<p>.+)$"
+        ],
+        [
+          "asksomenot",
+          "^est-ce que (?<q>certains|certaines) (?<s>.+?) ne (?<v>\\p{L}+) pas(?: (?<o>.+))?$"
+        ],
+        [
+          "asksome",
+          "^est-ce que (?<q>certains|certaines) (?<s>.+?) sont (?<p>.+)$"
+        ],
+        [
+          "asksome",
+          "^(?<q>certains|certaines) (?<s>.+?) sont-(?:ils|elles) (?<p>.+)$"
+        ],
+        [
+          "asksome",
+          "^(?:y a-t-il|est-ce qu['’]il y a) des (?<s>.+?) qui sont (?<p>.+)$"
+        ],
+        [
+          "asksome",
+          "^est-ce que (?<q>certains|certaines) (?<s>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "askwho",
+          "^qui est (?<p>.+)$"
+        ],
+        [
+          "askwho",
+          "^qui (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "askis",
+          "^est-ce que (?<n>je) suis (?<p>.+)$"
+        ],
+        [
+          "askis",
+          "^suis-(?<n>je) (?<p>.+)$"
+        ],
+        [
+          "askis",
+          "^est-ce que (?<n>.+?) est (?<p>.+)$"
+        ],
+        [
+          "askis",
+          "^est-ce qu['’](?<n>.+?) est (?<p>.+)$"
+        ],
+        [
+          "askis",
+          "^(?<n>.+?) est-(?:il|elle) (?<p>.+)$"
+        ],
+        [
+          "askdoes",
+          "^est-ce que (?<n>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "askdoes",
+          "^est-ce qu['’](?<n>.+?) (?<v>\\p{L}+)(?: (?<o>.+))?$"
+        ],
+        [
+          "askdoes",
+          "^(?<n>.+?) (?<v>\\p{L}+)-t-(?:il|elle)(?: (?<o>.+))?$"
+        ],
+        [
+          "askdoes",
+          "^(?<n>.+?) (?<v>\\p{L}+)-(?:il|elle)(?: (?<o>.+))?$"
+        ]
       ],
-      "Lead": [ "donc", "alors", "et", "mais", "or" ],
-      "Speaker": [ "je", "j", "moi" ],
-      "Addressee": [ "vous", "tu", "toi" ],
-      "Articles": [ "un", "une", "des", "le", "la", "les", "l", "du" ],
-      "Definite": [ "le", "la", "l", "les", "ce", "cet", "cette" ],
-      "Of": [ "de", "du", "des", "d" ],
-      "ObjectArticles": [ "un", "une", "des", "le", "la", "les", "l", "du", "de", "d" ],
-      "NotVerbs": [ "etre", "avoir", "faire" ],
+      "Lead": [
+        "donc",
+        "alors",
+        "et",
+        "mais",
+        "or"
+      ],
+      "Speaker": [
+        "je",
+        "j",
+        "moi"
+      ],
+      "Addressee": [
+        "vous",
+        "tu",
+        "toi"
+      ],
+      "Articles": [
+        "un",
+        "une",
+        "des",
+        "le",
+        "la",
+        "les",
+        "l",
+        "du"
+      ],
+      "Definite": [
+        "le",
+        "la",
+        "l",
+        "les",
+        "ce",
+        "cet",
+        "cette"
+      ],
+      "Of": [
+        "de",
+        "du",
+        "des",
+        "d"
+      ],
+      "ObjectArticles": [
+        "un",
+        "une",
+        "des",
+        "le",
+        "la",
+        "les",
+        "l",
+        "du",
+        "de",
+        "d"
+      ],
+      "NotVerbs": [
+        "etre",
+        "avoir",
+        "faire"
+      ],
       "Elide": [
-        [ "(?<![\\p{L}])ne (?=[aeiouyà-ÿ])", "n'" ],
-        [ "(?<![\\p{L}])Ne (?=[aeiouyà-ÿ])", "N'" ]
+        [
+          "(?<![\\p{L}])ne (?=[aeiouyà-ÿ])",
+          "n'"
+        ],
+        [
+          "(?<![\\p{L}])Ne (?=[aeiouyà-ÿ])",
+          "N'"
+        ]
       ],
       "Sentences": {
         "is": "{0} est {1}",
@@ -909,14 +1184,60 @@
       "WhoUnknown": "Je ne peux pas le dire avec ce que vous m'avez dit.",
       "Contradiction": "Ce que vous m'avez dit se contredit : ces phrases ne peuvent pas être vraies ensemble :",
       "Clash": "Attention : avec ce que vous m'avez dit, ces phrases ne peuvent pas être vraies ensemble :",
-      "YesWords": [ "oui", "ouais", "oui oui", "bien s\u00fbr", "bien sur", "exactement", "tout \u00e0 fait", "c'est \u00e7a" ],
-      "NoWords": [ "non", "non non", "pas du tout", "absolument pas", "nan" ],
-      "Plural": [ "tous", "toutes", "les", "certains", "certaines", "quelques", "plusieurs" ],
-      "AllOf": { "tous": "tous", "toutes": "toutes", "les": "tous", "certains": "tous", "certaines": "toutes", "quelques": "tous", "plusieurs": "tous" },
-      "PluralArticles": [ "des", "de", "d" ],
-      "Indefinite": { "m": "un", "f": "une" },
-      "VerbForms": { "one": "P3s", "speaker": "P1s", "many": "P3p" },
-      "AllByGender": { "m": "tous", "f": "toutes" },
+      "Replaced": "Je remplace ce que vous m'aviez dit :",
+      "YesWords": [
+        "oui",
+        "ouais",
+        "oui oui",
+        "bien sûr",
+        "bien sur",
+        "exactement",
+        "tout à fait",
+        "c'est ça"
+      ],
+      "NoWords": [
+        "non",
+        "non non",
+        "pas du tout",
+        "absolument pas",
+        "nan"
+      ],
+      "Plural": [
+        "tous",
+        "toutes",
+        "les",
+        "certains",
+        "certaines",
+        "quelques",
+        "plusieurs"
+      ],
+      "AllOf": {
+        "tous": "tous",
+        "toutes": "toutes",
+        "les": "tous",
+        "certains": "tous",
+        "certaines": "toutes",
+        "quelques": "tous",
+        "plusieurs": "tous"
+      },
+      "PluralArticles": [
+        "des",
+        "de",
+        "d"
+      ],
+      "Indefinite": {
+        "m": "un",
+        "f": "une"
+      },
+      "VerbForms": {
+        "one": "P3s",
+        "speaker": "P1s",
+        "many": "P3p"
+      },
+      "AllByGender": {
+        "m": "tous",
+        "f": "toutes"
+      },
       "NoneThereInline": "il n'y en a pas",
       "Asks": {
         "is": "est-ce que {0} est {1} ?",
@@ -933,8 +1254,28 @@
       "IfYes": "- Si oui : {0}.",
       "IfNo": "- Si non : {0}.",
       "Usually": {
-        "Words": [ "normalement", "g\u00e9n\u00e9ralement", "generalement", "en g\u00e9n\u00e9ral", "en general", "d'habitude", "habituellement", "d'ordinaire", "en principe", "en r\u00e8gle g\u00e9n\u00e9rale" ],
-        "Most": [ [ "^la plupart des ", "les " ], [ "^la plupart d['\u2019]", "les " ] ],
+        "Words": [
+          "normalement",
+          "généralement",
+          "generalement",
+          "en général",
+          "en general",
+          "d'habitude",
+          "habituellement",
+          "d'ordinaire",
+          "en principe",
+          "en règle générale"
+        ],
+        "Most": [
+          [
+            "^la plupart des ",
+            "les "
+          ],
+          [
+            "^la plupart d['’]",
+            "les "
+          ]
+        ],
         "Prefix": "les "
       },
       "NormallyYes": "Normalement oui : {0}.",
@@ -943,25 +1284,66 @@
       "ExceptionIs": "{0} est une exception",
       "ExceptionIs|je": "je suis une exception",
       "Exception": "Si {0}, dites-le-moi.",
-      "Conflict": "Je ne peux pas le conclure : pour {0}, des r\u00e8gles qui valent \u00ab normalement \u00bb se contredisent, et aucune n'est plus pr\u00e9cise que l'autre :",
+      "Conflict": "Je ne peux pas le conclure : pour {0}, des règles qui valent « normalement » se contredisent, et aucune n'est plus précise que l'autre :",
       "Imagine": {
-        "Words": [ "et si ", "et s'", "et s\u2019", "si ", "s'", "s\u2019" ],
-        "Pronouns": [ "il", "elle" ],
-        "Bare": [ "si ", "s'", "s\u2019" ],
+        "Words": [
+          "et si ",
+          "et s'",
+          "et s’",
+          "si ",
+          "s'",
+          "s’"
+        ],
+        "Pronouns": [
+          "il",
+          "elle"
+        ],
+        "Bare": [
+          "si ",
+          "s'",
+          "s’"
+        ],
         "AskPrefix": "est-ce que ",
-        "Mark": "(imagin\u00e9)",
+        "Mark": "(imaginé)",
         "Statements": [
-          [ "isnot", "^(?<n>je) n['\u2019](?:\u00e9tais|etais) pas (?<p>.+)$" ],
-          [ "is", "^(?<n>j)['\u2019](?:\u00e9tais|etais) (?<p>.+)$" ],
-          [ "isnot", "^(?<n>.+?) n['\u2019](?:\u00e9tait|etait) pas (?<p>.+)$" ],
-          [ "is", "^(?<n>.+?) (?:\u00e9tait|etait) (?<p>.+)$" ],
-          [ "all", "^(?<q>tous|toutes) les (?<s>.+?) (?:\u00e9taient|etaient) (?<p>.+)$" ],
-          [ "no", "^(?<q>aucun|aucune) (?<s>.+?) n['\u2019](?:\u00e9tait|etait) (?<p>.+)$" ]
+          [
+            "isnot",
+            "^(?<n>je) n['’](?:étais|etais) pas (?<p>.+)$"
+          ],
+          [
+            "is",
+            "^(?<n>j)['’](?:étais|etais) (?<p>.+)$"
+          ],
+          [
+            "isnot",
+            "^(?<n>.+?) n['’](?:était|etait) pas (?<p>.+)$"
+          ],
+          [
+            "is",
+            "^(?<n>.+?) (?:était|etait) (?<p>.+)$"
+          ],
+          [
+            "all",
+            "^(?<q>tous|toutes) les (?<s>.+?) (?:étaient|etaient) (?<p>.+)$"
+          ],
+          [
+            "no",
+            "^(?<q>aucun|aucune) (?<s>.+?) n['’](?:était|etait) (?<p>.+)$"
+          ]
         ],
         "Questions": [
-          [ "askis", "^est-ce que (?<n>je) serais (?<p>.+)$" ],
-          [ "askis", "^est-ce que (?<n>.+?) serait (?<p>.+)$" ],
-          [ "askis", "^est-ce qu['\u2019](?<n>.+?) serait (?<p>.+)$" ]
+          [
+            "askis",
+            "^est-ce que (?<n>je) serais (?<p>.+)$"
+          ],
+          [
+            "askis",
+            "^est-ce que (?<n>.+?) serait (?<p>.+)$"
+          ],
+          [
+            "askis",
+            "^est-ce qu['’](?<n>.+?) serait (?<p>.+)$"
+          ]
         ],
         "Sentences": {
           "is": "{0} serait {1}",
@@ -973,15 +1355,18 @@
           "does": "{0} {1}{2}",
           "doesnot": "{0} ne {1} pas{2}"
         },
-        "VerbForms": { "one": "C3s", "speaker": "C1s" },
-        "Header": "Dans ce monde imagin\u00e9 ({0}) :",
-        "SetAside": "Pour l'imaginer, je mets de c\u00f4t\u00e9 ce qui le contredit :",
+        "VerbForms": {
+          "one": "C3s",
+          "speaker": "C1s"
+        },
+        "Header": "Dans ce monde imaginé ({0}) :",
+        "SetAside": "Pour l'imaginer, je mets de côté ce qui le contredit :",
         "Usual": "normalement, ",
         "Lost": "- je ne pourrais plus dire si {0}",
-        "Nothing": "Rien d'autre ne changerait, d'apr\u00e8s ce que vous m'avez dit.",
-        "Follows": "Ce qui en suivrait, d'apr\u00e8s les r\u00e8gles que vous m'avez dites :",
-        "Kept": "Ce n'est qu'un monde imagin\u00e9 : ce que vous m'avez dit ne change pas.",
-        "Unknown": "M\u00eame dans ce monde-l\u00e0, je ne pourrais pas le conclure : {0} pourrait \u00eatre vrai ou faux."
+        "Nothing": "Rien d'autre ne changerait, d'après ce que vous m'avez dit.",
+        "Follows": "Ce qui en suivrait, d'après les règles que vous m'avez dites :",
+        "Kept": "Ce n'est qu'un monde imaginé : ce que vous m'avez dit ne change pas.",
+        "Unknown": "Même dans ce monde-là, je ne pourrais pas le conclure : {0} pourrait être vrai ou faux."
       },
       "And": "et"
     },
@@ -1047,7 +1432,7 @@
       },
       "Elide": [
         [
-          "(?i)\\b(puisqu|qu)e (?=[aeiouy\u00e0\u00e2\u00e9\u00e8\u00ea\u00ee\u00f4\u00fb])",
+          "(?i)\\b(puisqu|qu)e (?=[aeiouyàâéèêîôû])",
           "$1'"
         ]
       ],
@@ -1156,7 +1541,19 @@
       "quand est ce que les",
       "quand est ce que l"
     ],
-    "QuestionStarts": ["quel", "quelle", "quels", "quelles", "qui", "ou", "pourquoi", "comment", "combien", "est ce que", "est ce qu"],
+    "QuestionStarts": [
+      "quel",
+      "quelle",
+      "quels",
+      "quelles",
+      "qui",
+      "ou",
+      "pourquoi",
+      "comment",
+      "combien",
+      "est ce que",
+      "est ce qu"
+    ],
     "Speakers": [
       "je",
       "j",
@@ -1265,7 +1662,12 @@
     ],
     "General": {
       "OtherSide": {
-        "Elide": [ [ "(?<![\\p{L}])ne (?=[aeiouyh\u00e0-\u00ff])", "n'" ] ],
+        "Elide": [
+          [
+            "(?<![\\p{L}])ne (?=[aeiouyhà-ÿ])",
+            "n'"
+          ]
+        ],
         "Second": [
           "tu",
           "te",
@@ -1443,7 +1845,12 @@
         "depuis",
         "par"
       ],
-      "NounLinks": ["de", "du", "des", "d"],
+      "NounLinks": [
+        "de",
+        "du",
+        "des",
+        "d"
+      ],
       "Auxiliaries": [
         "ai",
         "as",
@@ -1568,29 +1975,114 @@
         "parce qu'",
         "car"
       ],
-      "Impersonal": ["pleut", "pleuvait", "pleuvra", "neige", "neigeait", "neigera", "fait beau", "fait froid", "fait chaud", "fait doux", "fait gris", "fait nuit", "fait jour", "faisait beau", "faisait froid", "faisait chaud", "fera beau", "fera froid", "fera chaud"],
+      "Impersonal": [
+        "pleut",
+        "pleuvait",
+        "pleuvra",
+        "neige",
+        "neigeait",
+        "neigera",
+        "fait beau",
+        "fait froid",
+        "fait chaud",
+        "fait doux",
+        "fait gris",
+        "fait nuit",
+        "fait jour",
+        "faisait beau",
+        "faisait froid",
+        "faisait chaud",
+        "fera beau",
+        "fera froid",
+        "fera chaud"
+      ],
       "Why": [
         "pourquoi"
       ],
-      "WhyAlone": ["pourquoi", "pourquoi ca", "pourquoi cela", "pourquoi donc", "comment ca", "comment le sais tu", "comment tu le sais", "comment le savez vous", "comment vous le savez"],
-      "Conditions": ["si", "s'", "quand", "lorsque", "lorsqu'"],
-      "Then": ["alors", "donc"],
-      "Elide": {"si il": "s'il", "si ils": "s'ils", "Si il": "S'il", "Si ils": "S'ils", "que il": "qu'il", "que ils": "qu'ils", "que elle": "qu'elle", "que elles": "qu'elles", "que on": "qu'on"},
-      "Doing": ["faire"],
-      "One": ["un", "une"],
+      "WhyAlone": [
+        "pourquoi",
+        "pourquoi ca",
+        "pourquoi cela",
+        "pourquoi donc",
+        "comment ca",
+        "comment le sais tu",
+        "comment tu le sais",
+        "comment le savez vous",
+        "comment vous le savez"
+      ],
+      "Conditions": [
+        "si",
+        "s'",
+        "quand",
+        "lorsque",
+        "lorsqu'"
+      ],
+      "Then": [
+        "alors",
+        "donc"
+      ],
+      "Elide": {
+        "si il": "s'il",
+        "si ils": "s'ils",
+        "Si il": "S'il",
+        "Si ils": "S'ils",
+        "que il": "qu'il",
+        "que ils": "qu'ils",
+        "que elle": "qu'elle",
+        "que elles": "qu'elles",
+        "que on": "qu'on"
+      },
+      "Doing": [
+        "faire"
+      ],
+      "One": [
+        "un",
+        "une"
+      ],
       "Participles": true,
-      "ObjectClitics": ["vous", "nous"],
-      "Partitive": ["en"],
-      "InSitu": { "quoi": "qu'est-ce que", "où": "où est-ce que" },
-      "HowMany": ["combien"],
-      "CountOf": ["de", "d"],
-      "Total": ["en tout", "au total", "ensemble"],
-      "Together": ["nous", "on"],
-      "More": ["de plus que", "de plus qu"],
-      "Fewer": ["de moins que", "de moins qu"],
+      "ObjectClitics": [
+        "vous",
+        "nous"
+      ],
+      "Partitive": [
+        "en"
+      ],
+      "InSitu": {
+        "quoi": "qu'est-ce que",
+        "où": "où est-ce que"
+      },
+      "HowMany": [
+        "combien"
+      ],
+      "CountOf": [
+        "de",
+        "d"
+      ],
+      "Total": [
+        "en tout",
+        "au total",
+        "ensemble"
+      ],
+      "Together": [
+        "nous",
+        "on"
+      ],
+      "More": [
+        "de plus que",
+        "de plus qu"
+      ],
+      "Fewer": [
+        "de moins que",
+        "de moins qu"
+      ],
       "Than": [],
-      "Me": ["moi"],
-      "Singular": [0, 1]
+      "Me": [
+        "moi"
+      ],
+      "Singular": [
+        0,
+        1
+      ]
     },
     "Say": {
       "Report": "Je lis cela comme une information, pas comme une demande. Je ne l'ai pas assez bien comprise pour la retenir.",
@@ -2134,7 +2626,10 @@
         "c est quoi lambek",
         "qu est ce que lambek",
         "comment tu t appelles",
-        "tu t appelles comment", "comment vous appelez vous", "vous vous appelez comment", "quel est votre nom",
+        "tu t appelles comment",
+        "comment vous appelez vous",
+        "vous vous appelez comment",
+        "quel est votre nom",
         "quel est ton nom",
         "t es quoi",
         "tu es quoi",
@@ -2157,7 +2652,22 @@
       "Reply": "Je suis Lambek. Je réponds à partir de ce que vous me dites et de ce que j'ai lu, je calcule, et je transforme vos demandes en actions sur votre ordinateur, en vous montrant chaque étape avant d'exécuter quoi que ce soit."
     },
     "Limits": {
-      "Phrases": ["tu ne sais pas faire", "ne sais tu pas faire", "vous ne savez pas faire", "ne savez vous pas faire", "tu ne peux pas faire", "ne peux tu pas faire", "vous ne pouvez pas faire", "ne pouvez vous pas faire", "tes limites", "vos limites", "te manque", "vous manque", "tu ne sais pas", "vous ne savez pas"],
+      "Phrases": [
+        "tu ne sais pas faire",
+        "ne sais tu pas faire",
+        "vous ne savez pas faire",
+        "ne savez vous pas faire",
+        "tu ne peux pas faire",
+        "ne peux tu pas faire",
+        "vous ne pouvez pas faire",
+        "ne pouvez vous pas faire",
+        "tes limites",
+        "vos limites",
+        "te manque",
+        "vous manque",
+        "tu ne sais pas",
+        "vous ne savez pas"
+      ],
       "Reply": "Je n'ai pas accès à internet : je ne connais ni la météo, ni l'actualité, ni ce qui change chaque jour, et ce que je sais du monde, je l'ai lu dans Wikidata, à la date où je l'ai lu. Je n'invente ni histoires ni poèmes, je ne donne ni conseils ni avis, et je ne peux ni envoyer de messages, ni téléphoner, ni acheter, ni m'occuper de la maison. Je comprends le français et l'anglais."
     },
     "Abilities": {
@@ -2467,7 +2977,11 @@
         "de quel pays",
         "en quel pays"
       ],
-      "age": ["a quel age", "quel age", "a quel age est"],
+      "age": [
+        "a quel age",
+        "quel age",
+        "a quel age est"
+      ],
       "yesno": [
         "est ce que",
         "est ce qu"
@@ -2677,7 +3191,7 @@
       "BeforeEra": "{0} av. J.-C."
     },
     "Number": {
-      "Group": "\u00a0",
+      "Group": " ",
       "Of": "{0} habitants ({1})",
       "OfUndated": "{0} habitants"
     },
@@ -3089,7 +3603,9 @@
       },
       {
         "Property": "P36",
-        "Role": ["capitale"],
+        "Role": [
+          "capitale"
+        ],
         "Subject": [
           "country"
         ],
@@ -3154,7 +3670,9 @@
       },
       {
         "Property": "P38",
-        "Role": ["monnaie"],
+        "Role": [
+          "monnaie"
+        ],
         "Subject": [
           "country"
         ],
@@ -3333,7 +3851,12 @@
       },
       {
         "Property": "P50",
-        "Role": ["auteur", "auteure", "autrice", "ecrivain"],
+        "Role": [
+          "auteur",
+          "auteure",
+          "autrice",
+          "ecrivain"
+        ],
         "Subject": [
           "book"
         ],
@@ -3373,7 +3896,10 @@
       },
       {
         "Property": "P57",
-        "Role": ["realisateur", "realisatrice"],
+        "Role": [
+          "realisateur",
+          "realisatrice"
+        ],
         "Subject": [
           "film"
         ],
@@ -3409,7 +3935,9 @@
       },
       {
         "Property": "P170",
-        "Role": ["peintre"],
+        "Role": [
+          "peintre"
+        ],
         "Subject": [
           "painting"
         ],
@@ -3774,7 +4302,37 @@
         "Say": "Le rayon de {label} est de {measure} km",
         "Bare": "{label} : rayon de {measure} km"
       },
-      {"Property": "Age", "Subject": ["person"], "Asks": ["age"], "Cues": ["mort", "morte", "decede", "decedee", "meurt", "mourut", "quand il est mort", "quand elle est morte", "lorsqu il est mort", "lorsqu elle est morte", "quand il mourut", "quand elle mourut", "a", "avait", "a t il", "a t elle", "est", "etait"], "Say": "{label} est mort{e} à {age} ans", "SayAlive": "{label} a {age} ans"},
+      {
+        "Property": "Age",
+        "Subject": [
+          "person"
+        ],
+        "Asks": [
+          "age"
+        ],
+        "Cues": [
+          "mort",
+          "morte",
+          "decede",
+          "decedee",
+          "meurt",
+          "mourut",
+          "quand il est mort",
+          "quand elle est morte",
+          "lorsqu il est mort",
+          "lorsqu elle est morte",
+          "quand il mourut",
+          "quand elle mourut",
+          "a",
+          "avait",
+          "a t il",
+          "a t elle",
+          "est",
+          "etait"
+        ],
+        "Say": "{label} est mort{e} à {age} ans",
+        "SayAlive": "{label} a {age} ans"
+      },
       {
         "Property": "Description",
         "Subject": [

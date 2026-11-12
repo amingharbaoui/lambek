@@ -77,6 +77,26 @@ function Split-LambekCategoryCoordination {
     }
 }
 
+function Find-LambekCategoryReplaced {
+    param([object] $Premises, [object] $Statements, [object] $Facts)
+
+    # Which older thing told the thing told now replaces: among the sentences that cannot all be true together, the
+    # last one told about the same one as the sentence told now. A general rule is never replaced by a sentence about
+    # someone, and nothing is replaced when the one told now is about no one in particular
+    if (@($Facts).Count -ne 1) { return $null }
+    $conflict = @([LambekCategories]::Smallest($Statements, $null))
+    if ($conflict.Count -eq 0) { return $null }
+    $new = @(for ($i = 0; $i -lt $Premises.Count; $i++) { if ($Premises[$i].Fact -and $Premises[$i].Fact -eq $Facts[0]) { $i } })
+    if ($new.Count -ne 1 -or $new[0] -notin $conflict) { return $null }
+    # (a general rule is about no one in particular)
+    $who = { param($item) $(if ($item.Individual) { "$($item.Individual.Key)" } else { '' }) }
+    $about = & $who $Premises[$new[0]].Item
+    if (-not $about) { return $null }
+    $older = @($conflict | Where-Object { $_ -ne $new[0] -and $Premises[$_].Fact -and (& $who $Premises[$_].Item) -eq $about })
+    if ($older.Count -eq 0) { return $null }
+    return $older[$older.Count - 1]
+}
+
 function Get-LambekCategoryVocabulary {
     param([string] $Language)
 
@@ -469,6 +489,7 @@ function Get-LambekCategoryKnown {
     foreach ($fact in @($before) + @($told)) {
         if ($fact.PSObject.Properties['Condition'] -and $fact.Condition) { continue }
         if ($fact.PSObject.Properties['Deduced'] -and $fact.Deduced) { continue }
+        if ($fact.PSObject.Properties['Replaced'] -and $fact.Replaced) { continue }
         if ("$($fact.Language)" -ne $Language -or -not $fact.Text) { continue }
         $words = "$($fact.Text)"
         if ($fact.PSObject.Properties['Said'] -and $fact.Said) { $words = "$($fact.Said)" }
@@ -742,8 +763,23 @@ function Resolve-LambekCategoryMessage {
         if ($script:Incognito) { $shape += 'Here' }
         $lines.Add(($say[$shape] -f (@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
         if (-not [LambekCategories]::Satisfiable($statements)) {
-            $lines.Add($data['Clash'])
-            foreach ($line in & $listed ([LambekCategories]::Smallest($statements, $null))) { $lines.Add($line) }
+            # Naskh: what is told now and cannot be true with what was told before replaces the last thing told about
+            # the same one. The general rules stay, the journal keeps both, and it is said which sentence was replaced
+            $gone = Find-LambekCategoryReplaced -Premises $premises -Statements $statements -Facts $facts
+            if ($null -ne $gone) {
+                $goneFact = $premises[$gone].Fact
+                Set-LambekToldReplaced -Fact $goneFact -By $facts[0]
+                $premises.RemoveAt($gone)
+                $atoms = @{}
+                $statements = [LambekCategoryStatement[]] @($premises | ForEach-Object { ConvertTo-LambekCategoryStatement -Item $_.Item -Atoms $atoms })
+                # (a language that has learned no words for it names the sentence alone)
+                if ($data['Replaced']) { $lines.Add($data['Replaced']) }
+                $lines.Add("- $(Format-LambekFact -Fact $goneFact -Language $Language -Register 'vous' -Bare)")
+            }
+            elseif (-not [LambekCategories]::Satisfiable($statements)) {
+                $lines.Add($data['Clash'])
+                foreach ($line in & $listed ([LambekCategories]::Smallest($statements, $null))) { $lines.Add($line) }
+            }
         }
         Set-LambekLastProof
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
