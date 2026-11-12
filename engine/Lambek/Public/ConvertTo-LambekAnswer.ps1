@@ -66,7 +66,7 @@ function ConvertTo-LambekAnswer {
                 # What Lambek has to say about this very sentence ("who is she?") comes first
                 if ($told -and $told.PSObject.Properties['ActSay'] -and $told.ActSay) { $reply = $told.ActSay }
                 # A sentence whose meaning was read is said back: who, what, when
-                if ($told -and $told.PSObject.Properties['Statement'] -and $told.Statement -and $said -and $said.Say['Told']) {
+                if ($told -and $told.PSObject.Properties['Statement'] -and $told.Statement -and $said) {
                     # Every thing told in the message, one sentence each
                     $facts = @($Plan.Steps | Where-Object { $_.PSObject.Properties['Statement'] -and $_.Statement } | ForEach-Object { $_.Statement })
                     # About files or code, it is said that nothing is done ("yesterday I deleted..." is no order);
@@ -75,7 +75,9 @@ function ConvertTo-LambekAnswer {
                     if (@($facts | Where-Object { -not "$($_.Action)".StartsWith('verb:') }).Count -eq 0 -and $said.Say['Noted']) { $shape = 'Noted' }
                     # In an incognito chat it is kept for the conversation only
                     if ($script:Incognito) { $shape += 'Here' }
-                    $reply = $said.Say[$shape] -f ((@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $language -Register $Register })) -join ' ')
+                    $told_ = (@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $language -Register $Register })) -join ' '
+                    # (a language that learned no sentence to answer with says what it read, and nothing more)
+                    $reply = $(if ("$($said.Say[$shape])") { $said.Say[$shape] -f $told_ } else { $told_ })
                     # Told the opposite before: both are kept, and it is said
                     $everything = @((Get-LambekTold).ToArray()) + @((Get-LambekToldJournal).ToArray())
                     foreach ($fact in $facts) {

@@ -6,7 +6,9 @@ function Get-LambekCoreTerm {
         [AllowEmptyCollection()]
         [string[]] $Terms,
 
+        # (empty when no pack of actions is loaded: then no term says anything about which action it is)
         [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
         [System.Collections.Generic.HashSet[string]] $Known
     )
 

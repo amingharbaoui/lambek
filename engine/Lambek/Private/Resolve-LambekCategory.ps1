@@ -602,13 +602,15 @@ function Get-LambekCategorySentence {
     elseif ($Item.PSObject.Properties['Member'] -and $Item.Member -and $Shape -in 'is', 'isnot') { $key = $(if ($Shape -eq 'is') { 'member' } else { 'notmember' }) }
     $candidates = @()
     # ("qui vole ?" is answered with its own verb: "Tweety vole", "Tweety flies")
+    # ("qui vole ?" is answered with its own verb: "Tweety vole", "Tweety flies"; a language that learned no sentence
+    # of its own for it says a doing the way it says any other, "Rex blaft")
     if ($Item.Kind -eq 'askwho' -and $Item.Verb -and $Shape -eq 'is') { $candidates += 'whodo' }
     if ($Item.Quantifier) { $candidates += "$key|$($Item.Quantifier)" }
     $speaker = $Item.Individual -and $Item.Individual.Key -eq 'speaker' -and -not $Subject
     if ($speaker) { $candidates += "$key|$(@($data['Speaker'])[0])" }
     if ($Shape -in 'is', 'isnot' -or $key -in 'member', 'notmember') { $candidates += $key }
     $template = $null
-    foreach ($candidate in $candidates) { if ($sentences.Contains($candidate)) { $template = $sentences[$candidate]; break } }
+    foreach ($candidate in $candidates) { if ($sentences.Contains($candidate) -and "$($sentences[$candidate])") { $template = $sentences[$candidate]; break } }
     if (-not $template) { return $null }
     $object = "$($Item.Written.Object)"
     # (what is not done to takes the article the language puts after a negation, learned: "n'a pas de poils")

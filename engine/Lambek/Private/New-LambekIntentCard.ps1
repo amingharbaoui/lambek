@@ -306,6 +306,22 @@ function New-LambekIntentCard {
         }
     }
 
+    # A slip corrected into one word where the same word in another number was as near ("the largest fils": "file" or
+    # "files", the largest one or how many?) never decides how many an action that changes things takes: when a value
+    # came from the word being one (a parameter of the action taken from the singular, no number said), Lambek asks
+    $fromSingular = $best -and @($best.Action.Parameters | Where-Object { $_.ContainsKey('Singular') -and $parameters.Contains($_.Name) }).Count -gt 0
+    $fromOne = $fromSingular -and @($request.Entities | Where-Object Type -EQ 'number').Count -eq 0
+    if ($status -eq 'Ready' -and $fromOne -and $best.Action.Risk -ne 'low' -and $request.PSObject.Properties['Corrections']) {
+        foreach ($correction in @($request.Corrections)) {
+            if (-not $correction -or $correction.PSObject.Properties['Sense']) { continue }
+            $other = Get-LambekNumberUnsaid -Token $correction.From -Word $correction.To -Language $language
+            if (-not $other) { continue }
+            $status = 'NeedsInput'
+            $questions.Add(($lexicon.GuessQuestion -f $correction.From, "$($correction.To) $($lexicon.Answer.Or) $other"))
+            break
+        }
+    }
+
     # A word the grammar does not know, where the sentence needs one: ask what it means,
     # with the actions whose verb has the type the equation gave it ("purge" is s o^l, like delete or list)
     if (-not $guess -and $status -ne 'Ready' -and $Evidence.PSObject.Properties['Guess'] -and $Evidence.Guess) {
@@ -421,6 +437,27 @@ function Get-LambekActionVerb {
             if ((ConvertTo-LambekNormalizedText -Text $said) -eq $verb) { return $said }
         }
         return $verb
+    }
+    return $null
+}
+
+function Get-LambekNumberUnsaid {
+    # The word a slip was as near to as the word it was corrected to, the same word of the treebanks of the language in
+    # another number ("fils": "file", and "files"); nothing when there is none
+    param([string] $Token, [string] $Word, [string] $Language)
+
+    $model = Get-LambekFormModel -Language $Language
+    if (-not $model -or -not $Token -or -not $Word) { return $null }
+    $one = @($model.ReadText($Word))
+    if ($one.Count -ne 1) { return $null }
+    $number = [regex]::Match("$($one[0].Feats)", '(?<=^|\|)Number=\w+').Value
+    if (-not $number) { return $null }
+    foreach ($candidate in @(Get-LambekSpellingCandidate -Token $Token -Language $Language)) {
+        if ($candidate.Word -eq $Word) { continue }
+        $two = @($model.ReadText($candidate.Word))
+        if ($two.Count -ne 1 -or "$($two[0].Lemma)" -ne "$($one[0].Lemma)" -or "$($two[0].Upos)" -ne "$($one[0].Upos)") { continue }
+        $other = [regex]::Match("$($two[0].Feats)", '(?<=^|\|)Number=\w+').Value
+        if ($other -and $other -ne $number) { return $candidate.Word }
     }
     return $null
 }

@@ -39,6 +39,12 @@ Describe 'A dialogue learned, not written' {
         @{ Language = 'de'; Told = 'alle Katzen sind Tiere', 'Kiki ist eine Katze'; Question = 'wer ist ein Tier?'; Said = 'Kiki ist ein Tier.*- Kiki ist eine Katze*' }
         @{ Language = 'pt'; Told = 'todos os gatos são animais', 'Kiki é um gato'; Question = 'quem é um animal?'; Said = 'Kiki é um animal.*' }
         @{ Language = 'it'; Told = 'tutti i gatti sono animali', 'Kiki è un gatto'; Question = 'chi è un animale?'; Said = 'Kiki è un animale.*' }
+        # (who does, said back with the sentence the language says a doing with)
+        @{ Language = 'nl'; Told = 'alle katten slapen', 'Kiki is een kat'; Question = 'wie slaapt?'; Said = 'Kiki slaapt.*- alle katten slapen*' }
+        @{ Language = 'de'; Told = 'alle Katzen schlafen', 'Kiki ist eine Katze'; Question = 'wer schläft?'; Said = 'Kiki schläft.*' }
+        @{ Language = 'es'; Told = 'todos los perros ladran', 'Bello es un perro'; Question = '¿quién ladra?'; Said = 'Bello ladra.*' }
+        @{ Language = 'pt'; Told = 'todos os cães ladram', 'Bello é um cão'; Question = 'quem ladra?'; Said = 'Bello ladra.*' }
+        @{ Language = 'it'; Told = 'tutti i gatti dormono', 'Kiki è un gatto'; Question = 'chi dorme?'; Said = 'Kiki dorme.*' }
     ) {
         Tell $Told
         Ask $Question | Should -BeLike $Said
@@ -87,6 +93,20 @@ Describe 'A dialogue learned, not written' {
             try { Get-LambekLanguage -Tokens (Get-LambekLanguageToken -Text $Text) -Text $Text -Forms }
             finally { $script:LanguageHint = $null }
         } | Should -Be $Language
+    }
+
+    It 'reads a thing told with its own words and says it back in <Language>' -ForEach @(
+        # ("no" of Portuguese is "em o", "in the", not the "no" of English: it says nothing against acting)
+        @{ Language = 'pt'; Told = 'a minha mãe mora no Porto'; Said = '*minha mãe mora no Porto.*' }
+        @{ Language = 'it'; Told = 'mia madre vive a Porto'; Said = '*madre vive a Porto.*' }
+        @{ Language = 'es'; Told = 'mi madre vive en Oporto'; Said = '*madre vive en Oporto.*' }
+    ) {
+        InModuleScope Lambek -Parameters @{ Told = $Told; Language = $Language } {
+            param($Told, $Language)
+            $script:LanguageHint = $Language
+            try { (New-LambekPlan -Text $Told | ConvertTo-LambekAnswer) -join ' ' }
+            finally { $script:LanguageHint = $null }
+        } | Should -BeLike $Said
     }
 
     It 'learns which translation to say, and a word met where English says it' {

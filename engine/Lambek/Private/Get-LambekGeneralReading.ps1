@@ -70,7 +70,11 @@ function Get-LambekGeneralReading {
     # A pronoun is read as the one it stands for, found among what was told; only as the subject for now
     $features = @{}
     if ($general['PronounFeatures']) { $features = $general['PronounFeatures'] }
-    if (@($tokens | Where-Object { $_ -in @($general['Pronouns']) -and -not $features.Contains($_) }).Count -gt 0) { return $null }
+    # (a word the treebanks of the language write for several words of its own is not only the pronoun it may be:
+    # "no" of "mora no Porto" is "em o", "in the", learned from the treebanks and in no other language)
+    $contractions = (Get-LambekFormModel -Language $language).Contractions
+    $pronouns = @(@($general['Pronouns']) | Where-Object { -not ($contractions -and $contractions.ContainsKey($_)) })
+    if (@($tokens | Where-Object { $_ -in $pronouns -and -not $features.Contains($_) }).Count -gt 0) { return $null }
     # "who are you", "what can you do": what is said to Lambek about itself is answered elsewhere
     $first = @($general['Speakers'])
     $second = @($general['Addressee'])
@@ -133,7 +137,7 @@ function Get-LambekGeneralReading {
         # "que", "comment" ask for what the verb takes; "qui", "quel" for the one who does it
         elseif ($token -in @($general['WhatObject'])) { $kind = 'what'; $types.Add('s n^ll s^l') }
         elseif ($token -in @($general['WhatSubject'])) { $kind = 'what'; $types.Add('s s^l n') }
-        elseif ($token -in $first -or $token -in $second -or $token -in @($general['Pronouns'])) { $kind = 'pronoun'; $types.Add('n') }
+        elseif ($token -in $first -or $token -in $second -or $token -in $pronouns) { $kind = 'pronoun'; $types.Add('n') }
         # ("la liste des courses", "the name of my cat": a word that links a noun to another noun, n^r n n^l)
         elseif ($token -in @($general['Determiners'])) { $types.Add('n n^l'); if ($token -in @($general['NounLinks'])) { $types.Add('n^r n n^l') } }
         # ("a" is "to" and "has": a word of place that also helps a verb is read both ways, the grammar chooses)
@@ -333,7 +337,7 @@ function Get-LambekGeneralChoice {
     }
 
     # A pronoun anywhere else is not read yet
-    $elsewhere = @(for ($w = 0; $w -lt $typed.Count; $w++) { if ($typed[$w].Position -notin $who -and $typed[$w].Word -in @($general['Pronouns'])) { $w } })
+    $elsewhere = @(for ($w = 0; $w -lt $typed.Count; $w++) { if ($typed[$w].Position -notin $who -and $typed[$w].Word -in $pronouns) { $w } })
     if ($elsewhere.Count -gt 0) { return $null }
 
     # What: the n the verb takes on its right, then each place or other complement a preposition brings

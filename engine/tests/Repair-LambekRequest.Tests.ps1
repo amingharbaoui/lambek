@@ -52,6 +52,15 @@ Describe 'Spelling correction' {
         $plan = New-LambekPlan -Text $Text
         @($plan.Steps | ForEach-Object { $_.Action }) | Should -Contain $Action
     }
+
+    It 'asks, before changing files, when a slip decides how many ("the largest fils": the largest file, or files)' {
+        $plan = New-LambekPlan -Text 'delete the largest fils in C:\Temp'
+        $plan.Status | Should -Not -Be 'Ready'
+        ($plan | ConvertTo-LambekAnswer) -join ' ' | Should -BeLike '*"fils"*file*files*'
+        # (a plan that only reads goes on, and one where the number decides nothing: all the files in C:\Temp)
+        (New-LambekPlan -Text 'list the fils in C:\Temp').Status | Should -Be 'Ready'
+        (New-LambekPlan -Text 'delet the fils in C:\Temp').Status | Should -Be 'Ready'
+    }
 }
 
 Describe 'Correction chosen by the grammar' {

@@ -194,23 +194,6 @@ function Read-LambekCategoryTagged {
     $first = 0
     while ($first -lt $readings.Count -and $negative[$first]) { $first++ }
     if ($first -ge $readings.Count) { return $null }
-    # Who: the word that asks it, then the copula and what the one asked is ("wer ist ein Tier"); nothing that says not.
-    # (who does, "wie blaft", is not said back yet in the languages learned: left unread)
-    if ($who) {
-        if (@($negative | Where-Object { $_ }).Count -gt 0 -or -not (& $isCopula 1)) { return $null }
-        if ($Shape) { return [pscustomobject]@{ Kind = 'askwho' } }
-        $asked = @{}
-        $lemmas = @{}
-        foreach ($reading in $readings) {
-            if ("$($reading.Upos)" -notin 'NOUN', 'ADJ', 'PROPN' -or -not $reading.Lemma) { continue }
-            $lemmas[(ConvertTo-LambekNormalizedText -Text "$($reading.Form)")] = ConvertTo-LambekNormalizedText -Text "$($reading.Lemma)"
-        }
-        $asked['lemmas'] = $lemmas
-        $rest = & $text 2 $readings.Count
-        if (-not $rest) { return $null }
-        $asked['p'] = $rest
-        return Read-LambekCategoryPart -Kind 'askwho' -Values $asked -Language $Language
-    }
     $asking = $Question -or $inverted
     # (an AUX first asks: "does it fly", "is Tom a cat"; in a question, so does a VERB first when another follows: "do
     # all cats drink milk")
@@ -245,6 +228,31 @@ function Read-LambekCategoryTagged {
         }
     }
     if ($verbal.Count -eq 0) { return $null }
+
+    # Who: the word that asks it, then the copula and what the one asked is ("wer ist ein Tier"), or the verb and what
+    # it is done to ("wie blaft", "quien come carne"); nothing that says not
+    if ($who) {
+        if (@($negative | Where-Object { $_ }).Count -gt 0 -or $upos[1] -notin 'AUX', 'VERB') { return $null }
+        if ($Shape) { return [pscustomobject]@{ Kind = 'askwho' } }
+        $asked = @{}
+        $lemmas = @{}
+        foreach ($reading in $readings) {
+            if ("$($reading.Upos)" -notin 'NOUN', 'ADJ', 'PROPN' -or -not $reading.Lemma) { continue }
+            $lemmas[(ConvertTo-LambekNormalizedText -Text "$($reading.Form)")] = ConvertTo-LambekNormalizedText -Text "$($reading.Lemma)"
+        }
+        $asked['lemmas'] = $lemmas
+        $rest = & $text 2 $readings.Count
+        if (& $isCopula 1) {
+            if (-not $rest) { return $null }
+            $asked['p'] = $rest
+        }
+        else {
+            $asked['v'] = "$($readings[1].Form)"
+            $asked['lemma'] = "$($readings[1].Lemma)"
+            if ($rest) { $asked['o'] = $rest }
+        }
+        return Read-LambekCategoryPart -Kind 'askwho' -Values $asked -Language $Language
+    }
     $front = $verbal[0] -eq $first -and ($upos[$first] -eq 'AUX' -or ($Question -and $verbal.Count -gt 1))
     # (in a question, the verb alone first, the one after it: "bellt Rex", "ladra Rex")
     $alone = $Question -and -not $front -and $verbal.Count -eq 1 -and $verbal[0] -eq $first -and $upos[$first] -eq 'VERB'
