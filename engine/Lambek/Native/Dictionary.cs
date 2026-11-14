@@ -33,6 +33,8 @@ public class LambekRelated
 public class LambekDictionary : ILambekWords
 {
     public List<string> Sources = new List<string>();
+    // The sources of each file, by what it holds: "graph" for the links between meanings, a language for its words
+    public Dictionary<string, List<string>> SourcesOf = new Dictionary<string, List<string>>(StringComparer.Ordinal);
     public HashSet<string> Languages = new HashSet<string>(StringComparer.Ordinal);
     public bool HasGlosses;
     public HashSet<string> Files = new HashSet<string>(StringComparer.Ordinal);
@@ -166,7 +168,14 @@ public class LambekDictionary : ILambekWords
                 if (line.Length < 2) continue;
                 if (line[0] == '#')
                 {
-                    if (line.StartsWith("#source ", StringComparison.Ordinal) && !Sources.Contains(line.Substring(8))) Sources.Add(line.Substring(8));
+                    if (line.StartsWith("#source ", StringComparison.Ordinal))
+                    {
+                        string source = line.Substring(8);
+                        if (!Sources.Contains(source)) Sources.Add(source);
+                        List<string> own;
+                        if (!SourcesOf.TryGetValue(kind, out own)) { own = new List<string>(); SourcesOf[kind] = own; }
+                        if (!own.Contains(source)) own.Add(source);
+                    }
                     continue;
                 }
                 int first = line.IndexOf('\t');

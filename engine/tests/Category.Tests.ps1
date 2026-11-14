@@ -699,6 +699,33 @@ Describe 'General rules told in words' {
             (Ask $Question) -join ' ' | Should -BeLike $Said
         }
 
+        It 'names the dictionary it found the kind in' {
+            Tell 'tous les chats sont noirs', 'Minou est un siamois'
+            (Ask 'est-ce que Minou est noir ?') -join ' ' | Should -BeLike "*D'après le dictionnaire (WOLF*, Open English WordNet*), « siamois » est une sorte de « chat »*"
+        }
+
+        It 'keeps where each premise comes from: what was told here, and the dictionary by its name' {
+            Tell 'tous les chats sont noirs', 'Minou est un siamois'
+            $null = Ask 'est-ce que Minou est noir ?'
+            $sources = @(& (Get-Module Lambek) { (Get-LambekLastProof).Sources })
+            @($sources | Where-Object { $_.Kind -eq 'told' -and $_.Name -eq 'here' }).Count | Should -Be 2
+            $book = @($sources | Where-Object Kind -EQ 'dictionary')
+            $book.Count | Should -Be 1
+            $book[0].Id | Should -Be 'siamois<chat'
+            $book[0].Name | Should -BeLike 'WOLF*Open English WordNet*'
+        }
+
+        It 'says a sentence told in a conversation before comes from the journal, by its line' {
+            Tell 'tous les chats sont noirs', 'Minou est un chat'
+            & (Get-Module Lambek) { $script:Told = $null; $script:ToldJournal = $null }
+            $null = Ask 'est-ce que Minou est noir ?'
+            $sources = @(& (Get-Module Lambek) { (Get-LambekLastProof).Sources })
+            $before = @($sources | Where-Object { $_.Kind -eq 'told' -and $_.Name -eq 'before' })
+            $before.Count | Should -Be 2
+            $lines = & (Get-Module Lambek) { @(Get-LambekToldJournal) }
+            foreach ($source in $before) { @($lines | Where-Object { "$($_.Hash)" -eq $source.Id }).Count | Should -Be 1 }
+        }
+
         It 'gives the dictionary to the checker as a premise of its own, never as a thing told' {
             Tell 'tous les chats sont noirs', 'Minou est un siamois'
             $null = Ask 'est-ce que Minou est noir ?'

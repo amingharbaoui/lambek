@@ -152,12 +152,43 @@ function Set-LambekLastProof {
     # Assumed: what the answer supposes without it being told ("et si Tom etait un chat ?"), in the same shape as Forms
     # Consulted: what a source that is no one said for it, as the answer said it ("D'apres le dictionnaire, ..."), so
     # that a "pourquoi ?" says it again, apart from what was told
-    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @(), [object[]] $Read = @(), [string[]] $Conclusion = @(), [string[]] $Forms = @(), [string[]] $Assumed = @(), [string[]] $Consulted = @())
+    # AssumedFrom: where each thing assumed comes from, in the same order (the dictionary named, or the words themselves)
+    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @(), [object[]] $Read = @(), [string[]] $Conclusion = @(), [string[]] $Forms = @(), [string[]] $Assumed = @(), [string[]] $Consulted = @(), [object[]] $AssumedFrom = @())
 
     if ($null -eq $script:LastProofs) { $script:LastProofs = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }
     $here = Get-LambekTold
     if (@($Facts).Count -eq 0 -and @($Said).Count -eq 0 -and @($Read).Count -eq 0) { [void] $script:LastProofs.Remove($here); return }
-    $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation; Said = @($Said); Read = @($Read); Conclusion = @($Conclusion); Forms = @($Forms); Assumed = @($Assumed | Where-Object { $_ }); Consulted = @($Consulted | Where-Object { $_ }) }
+    $assumedNow = @($Assumed | Where-Object { $_ })
+    $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation; Said = @($Said); Read = @($Read); Conclusion = @($Conclusion); Forms = @($Forms); Assumed = $assumedNow; Consulted = @($Consulted | Where-Object { $_ }); Sources = @(Get-LambekProofSource -Facts $Facts -Said $Said -Read $Read -Assumed $assumedNow -AssumedFrom $AssumedFrom -Calculation $Calculation) }
+}
+
+function Get-LambekProofSource {
+    param([object[]] $Facts = @(), [string[]] $Said = @(), [object[]] $Read = @(), [string[]] $Assumed = @(), [object[]] $AssumedFrom = @(), [string] $Calculation = '')
+
+    # Where each thing an answer rests on comes from, one for each, the same shape for all: told by the user (here, or in
+    # a conversation before, with the line of the journal that holds it), read (Wikidata, with the day the data was
+    # read), found in a dictionary (named), said by the words themselves, assumed, or worked out. What two things share a
+    # line of the journal is one thing told, whatever holds it (the conversation and the journal hold the same)
+    $here = [System.Collections.Generic.HashSet[object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance)
+    foreach ($fact in @((Get-LambekTold).ToArray())) { [void] $here.Add($fact) }
+    foreach ($fact in @($Facts)) {
+        if ($null -eq $fact) { continue }
+        $hash = $(if ($fact.PSObject.Properties['Hash'] -and $fact.Hash) { "$($fact.Hash)" } else { '' })
+        $day = $(if ($fact.PSObject.Properties['Told'] -and $fact.Told) { "$($fact.Told)" } else { '' })
+        $text = $(if ($fact.PSObject.Properties['Text'] -and $fact.Text) { "$($fact.Text)" } else { '' })
+        [pscustomobject]@{ Kind = 'told'; Name = $(if ($here.Contains($fact)) { 'here' } else { 'before' }); Id = $hash; Day = $day; Text = $text }
+    }
+    foreach ($line in @($Said | Where-Object { $_ })) { [pscustomobject]@{ Kind = 'told'; Name = 'here'; Id = ''; Day = ''; Text = "$line" } }
+    foreach ($read in @($Read | Where-Object { $_ })) {
+        $get = { param($name) $(if ($read.PSObject.Properties[$name]) { "$($read.$name)" } else { '' }) }
+        [pscustomobject]@{ Kind = 'read'; Name = (& $get 'Source'); Id = (& $get 'Id'); Day = (& $get 'Day'); Text = (& $get 'Line') }
+    }
+    for ($i = 0; $i -lt @($Assumed).Count; $i++) {
+        $from = $(if ($i -lt @($AssumedFrom).Count) { @($AssumedFrom)[$i] } else { $null })
+        if ($from) { [pscustomobject]@{ Kind = "$($from.Kind)"; Name = "$($from.Name)"; Id = "$($from.Id)"; Day = ''; Text = "$(@($Assumed)[$i])" } }
+        else { [pscustomobject]@{ Kind = 'assumed'; Name = ''; Id = ''; Day = ''; Text = "$(@($Assumed)[$i])" } }
+    }
+    if ($Calculation) { [pscustomobject]@{ Kind = 'calculation'; Name = ''; Id = ''; Day = ''; Text = $Calculation } }
 }
 
 function Format-LambekInline {

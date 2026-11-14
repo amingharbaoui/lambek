@@ -636,8 +636,27 @@ function Format-LambekCategoryCircle {
     # What the dictionary says, said plainly, with the words as the dictionary writes them: a language that has learned
     # no sentence for it names the two words alone
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
-    if ($data.Contains('Circle') -and "$($data['Circle'])") { return ($data['Circle'] -f $Circle.Under, $Circle.Above) }
-    return "$($Circle.Under) -> $($Circle.Above)"
+    $named = Get-LambekDictionarySource -Language $Language
+    if ($data.Contains('Circle') -and "$($data['Circle'])") { return ($data['Circle'] -f $Circle.Under, $Circle.Above, $named) }
+    return "$($Circle.Under) -> $($Circle.Above) ($named)"
+}
+
+function Get-LambekDictionarySource {
+    param([string] $Language)
+
+    # The dictionary a kind of a word was found in, by its name: the wordnet of the language, which gives the meanings of
+    # its words, and the one that links the meanings ("WOLF 1.0b, Open English WordNet 2022"); each once
+    $dictionary = Get-LambekDictionary -Language $Language
+    if ($dictionary -isnot [LambekDictionary]) { return '' }
+    $names = [System.Collections.Generic.List[string]]::new()
+    foreach ($kind in @($Language, 'graph')) {
+        $own = $null
+        if (-not $dictionary.SourcesOf.TryGetValue($kind, [ref] $own) -or $own.Count -eq 0) { continue }
+        # (the first source of a file is the wordnet it was built from; the others give the forms of the words)
+        $name = (("$($own[0])" -split ',')[0] -replace '\s+from\s.*$', '').Trim()
+        if ($name -and -not $names.Contains($name)) { $names.Add($name) }
+    }
+    return ($names -join ', ')
 }
 
 function Get-LambekCategoryLemma {
@@ -1004,6 +1023,16 @@ function Resolve-LambekCategoryMessage {
     # What the dictionary says is no thing told: it is said after them, on its own, so nothing is put in the user's mouth
     $saidOf = { param($item) $item.PSObject.Properties['Circle'] -and $item.Circle }
     $read = { param([int[]] $indices) @(foreach ($i in $indices) { if (-not $premises[$i].Fact -and (& $saidOf $premises[$i].Item)) { Format-LambekCategoryCircle -Circle $premises[$i].Item.Circle -Language $Language } }) }
+    # Where each thing assumed comes from: the dictionary, by its name, or the words themselves ("le cerisier")
+    $from = {
+        param([int[]] $indices)
+        foreach ($i in $indices) {
+            if ($premises[$i].Fact) { continue }
+            $item = $premises[$i].Item
+            if (& $saidOf $item) { [pscustomobject]@{ Kind = 'dictionary'; Name = (Get-LambekDictionarySource -Language $Language); Id = "$($item.Circle.Under)<$($item.Circle.Above)" } }
+            else { [pscustomobject]@{ Kind = 'words'; Name = ''; Id = '' } }
+        }
+    }
     # What an answer rests on, for a "pourquoi ?" and the checker: the things told, as the reasoning read them, and
     # what the words said by themselves apart
     $proof = {
@@ -1012,7 +1041,7 @@ function Resolve-LambekCategoryMessage {
         Set-LambekLastProof -Facts @($told | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded `
             -Forms @($told | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
             -Assumed @($indices | Where-Object { -not $premises[$_].Fact } | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
-            -Consulted @(& $read $indices)
+            -Consulted @(& $read $indices) -AssumedFrom @(& $from $indices)
     }
     $lines = [System.Collections.Generic.List[string]]::new()
 

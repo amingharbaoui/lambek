@@ -21,6 +21,8 @@
                   own with a small kernel that checks every proof it finds: Lean must prove the conclusion from the
                   premises, and must not prove its opposite from them (premises that prove both prove anything). Run
                   only when Lean is installed (-Lean, or lean on the path)
+      Sources     each fact cited and each thing assumed has where it comes from (told here or before, the dictionary
+                  named, the words themselves), and each link the dictionary gave is given by it again
     Each conversation is also said with one sentence of another conversation told first, which has nothing to do with
     the question: a proof that cites it, or that cites everything told, is caught by Needed. An answer about things told
     whose proof cites nothing is counted apart.
@@ -116,7 +118,20 @@ $converse = {
         # (what the answer only imagines is a premise of it too, never a sentence told)
         if ($proof -and $proof.PSObject.Properties['Assumed']) { $cores = @($cores) + @($proof.Assumed | Where-Object { $_ }) }
         $concluded = @(if ($proof -and $proof.PSObject.Properties['Conclusion']) { @($proof.Conclusion) })
-        [pscustomobject]@{ Answer = $answer; Facts = $facts.Count; Cited = @($cited); Lost = $lost; Cores = $cores; Conclusion = $concluded }
+        # (where each premise comes from: one source for each fact cited and each thing assumed, and a link of the
+        # dictionary must be one the dictionary still gives)
+        $sources = @(if ($proof -and $proof.PSObject.Properties['Sources']) { @($proof.Sources) })
+        $assumed = @(if ($proof -and $proof.PSObject.Properties['Assumed']) { @($proof.Assumed | Where-Object { $_ }) })
+        $unsourced = [math]::Max(0, $facts.Count + $assumed.Count - @($sources | Where-Object { $_.Kind -in 'told', 'dictionary', 'words', 'assumed' }).Count)
+        $books = 0; $wrongBooks = 0
+        foreach ($source in @($sources | Where-Object Kind -EQ 'dictionary')) {
+            $books++
+            $link = @("$($source.Id)" -split '<')
+            $dictionary = Get-LambekDictionary -Language $Language
+            if (-not $source.Name -or $link.Count -ne 2 -or $dictionary -isnot [LambekDictionary] -or
+                $dictionary.Under($link[0], $link[1], $Language, 'n', $script:CategoryCircleSenses, $script:CategoryCircleHops) -le 0) { $wrongBooks++ }
+        }
+        [pscustomobject]@{ Answer = $answer; Facts = $facts.Count; Cited = @($cited); Lost = $lost; Cores = $cores; Conclusion = $concluded; Unsourced = $unsourced; Books = $books; WrongBooks = $wrongBooks }
     } $Sentences $Language $Name
 }
 
@@ -135,6 +150,7 @@ if ($Limit -gt 0) { $cases = @($cases | Select-Object -First $Limit) }
 $plain = { param($Text) @(("$Text".ToLowerInvariant() -split '[^\p{L}\p{N}]+') | Where-Object { $_.Length -gt 3 }) }
 $proved = [System.Collections.Generic.List[object]]::new()
 $unproved = [System.Collections.Generic.List[string]]::new()
+$failedSources = [System.Collections.Generic.List[string]]::new()
 for ($c = 0; $c -lt $cases.Count; $c++) {
     $case = $cases[$c]
     $sentences = [string[]] @($case.Turns | ForEach-Object { [string] $_.Text })
@@ -152,14 +168,17 @@ for ($c = 0; $c -lt $cases.Count; $c++) {
     $proved.Add([pscustomobject]@{
             Id = $case.Id; Language = $case.Language; Sentences = $sentences; Question = $sentences[-1]
             Answer = $first.Answer; Cited = $first.Cited; Lost = $first.Lost; Aside = [int] ($aside -and 0 -in $first.Cited)
-            Cores = $first.Cores; Conclusion = $first.Conclusion
+            Cores = $first.Cores; Conclusion = $first.Conclusion; Unsourced = $first.Unsourced; Books = $first.Books; WrongBooks = $first.WrongBooks
         })
+    if ($first.Unsourced -gt 0) { $failedSources.Add("[$($case.Id) sources] $($first.Unsourced) premise(s) with no source") }
+    if ($first.WrongBooks -gt 0) { $failedSources.Add("[$($case.Id) sources] $($first.WrongBooks) link(s) the dictionary does not give") }
 }
 
 $rows = [System.Collections.Generic.List[object]]::new()
 $unchecked = [System.Collections.Generic.List[string]]::new()
 $unlean = [System.Collections.Generic.List[string]]::new()
 $failed = [System.Collections.Generic.List[string]]::new()
+foreach ($line in $failedSources) { $failed.Add($line) }
 foreach ($case in $proved) {
     $premises = @($case.Cited | ForEach-Object { $case.Sentences[$_] })
 
@@ -255,6 +274,7 @@ if ($Lean) {
     Remove-Item -LiteralPath $leanFolder -Recurse -Force -ErrorAction SilentlyContinue
 }
 else { Write-Host 'Judged by Lean: no, Lean is not installed (-Lean, or lean on the path)' }
+Write-Host ("Sources: premises with no source {0}; links of the dictionary {1}, given again by the dictionary {2}" -f (($proved | Measure-Object Unsourced -Sum).Sum), (($proved | Measure-Object Books -Sum).Sum), (($proved | Measure-Object Books -Sum).Sum - ($proved | Measure-Object WrongBooks -Sum).Sum))
 Write-Host ("Proof refused by the checker: {0} of {1}, so under {2:P3} at 95 %" -f $refused, ($holds + $refused), (& $bound $refused ($holds + $refused)))
 Write-Host ("Proof not enough on its own: {0} of {1}, so under {2:P3} at 95 %" -f ($total.Proofs - $total.Enough), $total.Proofs, (& $bound ($total.Proofs - $total.Enough) $total.Proofs))
 Write-Host ("Premise cited and not needed: {0} of {1}, so under {2:P3} at 95 %" -f ($total.Cited - $total.Needed), $total.Cited, (& $bound ($total.Cited - $total.Needed) $total.Cited))
