@@ -582,6 +582,32 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'What holds for a time is said with the day it was told' {
+
+        It 'says the day of a state told another day, in <Language>' -ForEach @(
+            @{ Language = 'fr'; Told = 'Minou est noir', 'Rex est un chien', 'tous les chats aiment le lait'; Dated = 'Minou est noir (dit le 6 octobre 2026).'; Kept = 'Rex est un chien.', 'Tous les chats aiment le lait.'; Asked = "qu'est-ce que je t'ai dit ?" }
+            @{ Language = 'en'; Told = 'Felix is black', 'Rex is a dog', 'all cats like milk'; Dated = 'Felix is black (told on October 6, 2026).'; Kept = 'Rex is a dog.', 'All cats like milk.'; Asked = 'what did I tell you?' }
+        ) {
+            Tell $Told
+            & (Get-Module Lambek) { $script:Now = [datetime] '2026-10-09 10:00' }
+            $lines = @((Ask $Asked) -split "`n" | ForEach-Object { $_ -replace '^- ', '' })
+            $lines | Should -Contain $Dated
+            foreach ($kept in $Kept) { $lines | Should -Contain $kept }
+        }
+
+        It 'says no day for what was told the same day' {
+            Tell 'Minou est noir'
+            & (Get-Module Lambek) { $script:Now = [datetime] '2026-10-06 18:00' }
+            (Ask "qu'est-ce que je t'ai dit ?") -join ' ' | Should -Not -BeLike '*(dit le*'
+        }
+
+        It 'answers from a state told before, with its day in the proof' {
+            Tell 'Minou est noir', 'Minou est un chat', 'tous les chats aiment le lait'
+            & (Get-Module Lambek) { $script:Now = [datetime] '2026-10-09 10:00' }
+            (Ask 'Minou est-il noir ?') -join "`n" | Should -BeLike "Oui : Minou est noir.*- Minou est noir (dit le 6 octobre 2026).*"
+        }
+    }
+
     Context 'A correction takes back what it corrects, and what followed from it' {
 
         It 'lets go of what is taken back with <Taken>' -ForEach @(

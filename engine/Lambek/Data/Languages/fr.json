@@ -2102,6 +2102,7 @@
       "Other": "Je lis cela comme un sujet autre que ceux dont je m'occupe : je ne fais donc rien.",
       "Speaker": "vous",
       "When": " ({0})",
+      "ToldOn": " (dit {0})",
       "Told": "Je comprends. {0} C'est une information, donc je ne fais rien. Je la retiens.",
       "Fact": "À propos de {0} : {1}{2}.",
       "FactWished": "À propos de {0}, souhaité : {1}{2}.",

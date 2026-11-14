@@ -1704,6 +1704,7 @@
       "Other": "I read that as being about something other than what I take care of, so I am not doing anything.",
       "Speaker": "you",
       "When": " ({0})",
+      "ToldOn": " (told {0})",
       "Told": "I understand. {0} You are telling me, so I am not doing it. I am keeping it.",
       "Fact": "About {0}: {1}{2}.",
       "FactWished": "About {0}, wanted: {1}{2}.",

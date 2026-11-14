@@ -269,7 +269,10 @@ function Format-LambekFact {
 
         # In a list that already says it was told ("parce que vous m'avez dit :", "deduit avec :"): what cannot be said
         # back is only quoted, "...", not "vous m'avez dit : ..." again
-        [switch] $Bare
+        [switch] $Bare,
+
+        # In a line that already says the day it was told ("Dit le 2026-10-06. ..."): not said again
+        [switch] $Undated
     )
 
     # One thing told, said back. First as a sentence, the user's own turned to the other side ("you bought a car"),
@@ -301,9 +304,12 @@ function Format-LambekFact {
         if ($sentence) {
             # "yesterday" told another day is said with the day it was
             if ($Fact.PSObject.Properties['PreviousHash'] -and $Fact.Time -and $Fact.Day) { $sentence += " ($($Fact.Day))" }
-            return $sentence
+            if ($Undated) { return $sentence }
+            return (Add-LambekFactAge -Sentence $sentence -Fact $Fact -Language $Language)
         }
-        return $say[$(if ($Bare -and $say['Quote']) { 'Quote' } else { 'Quoted' })] -f "$($Fact.Text)".Trim()
+        $quoted = $say[$(if ($Bare -and $say['Quote']) { 'Quote' } else { 'Quoted' })] -f "$($Fact.Text)".Trim()
+        if ($Undated) { return $quoted }
+        return (Add-LambekFactAge -Sentence $quoted -Fact $Fact -Language $Language)
     }
     # Without the words it was told in (a line of an older journal): what it was about, then what
     if ($Fact.PSObject.Properties['What'] -and $Fact.What) { $what = $Fact.What }
@@ -320,6 +326,44 @@ function Format-LambekFact {
     $shape = 'Fact'
     if ($Fact.Wish) { $shape = 'FactWished' }
     return $say[$shape] -f $who, $what, $when
+}
+
+function Add-LambekFactAge {
+    param([string] $Sentence, [pscustomobject] $Fact, [string] $Language)
+
+    # What holds for a time is said with the day it was told, when that was another day: "Vous avez faim (dit le
+    # 6 octobre 2026)." Lambek does not know whether it still holds, so it says when it was told, never that it stopped.
+    # What a thing is ("Rex est un chien") and a general rule ("tous les chats aiment le lait") are said as they are:
+    # what one is does not wear off (Avicenna's dhati, against the wasfi that holds while it is so)
+    if (-not $Sentence -or -not ($Fact.PSObject.Properties['Told'] -and $Fact.Told)) { return $Sentence }
+    $today = (Get-LambekNow).ToString('yyyy-MM-dd', [cultureinfo]::InvariantCulture)
+    if ([string]::CompareOrdinal("$($Fact.Told)", $today) -ge 0) { return $Sentence }
+    if (Test-LambekFactLasting -Fact $Fact) { return $Sentence }
+    $lexicon = Get-LambekLexicon -Language $Language
+    $day = $null
+    if ($lexicon.Facts) { $day = Format-LambekFactDate -Value "$($Fact.Told)" -Precision '11' -Facts $lexicon.Facts }
+    $said = $(if ($day -and $lexicon.Dialogue.Say['ToldOn']) { $lexicon.Dialogue.Say['ToldOn'] -f $day } else { " ($($Fact.Told))" })
+    # (inside the sentence, before its last mark)
+    $end = [regex]::Match($Sentence, '[.!?\u00bb"]*$')
+    return $Sentence.Substring(0, $end.Index) + $said + $end.Value
+}
+
+function Test-LambekFactLasting {
+    param([pscustomobject] $Fact)
+
+    # Whether a thing told says what one is, or a rule about every one of a kind: read again as a general rule, or as one
+    # being of a kind ("Rex est un chien": a kind after an article). What one is like or does, or how one is, is not
+    $text = $(if ($Fact.PSObject.Properties['Text']) { "$($Fact.Text)" } else { '' })
+    $language = $(if ($Fact.PSObject.Properties['Language']) { "$($Fact.Language)" } else { '' })
+    if (-not $text -or -not $language -or ($Fact.PSObject.Properties['Condition'] -and $Fact.Condition)) { return $false }
+    $plain = ((($text.Trim() -replace '[.!;]+\s*$', '') -replace ',', ' ') -replace '\s+', ' ').Trim()
+    if ($plain -notmatch "^[\p{L}'\u2019 -]+$") { return $false }
+    $read = Read-LambekCategorySentence -Sentence $plain -Language $language
+    if (-not $read) { return $false }
+    if ($read.Kind -in 'all', 'no', 'some', 'somenot') { return $true }
+    if ($read.Kind -notin 'is', 'isnot' -or -not $read.Written) { return $false }
+    $articles = @((Get-LambekCategoryVocabulary -Language $language).Data['Articles'] | Where-Object { $_ })
+    return (@("$($read.Written.Predicate)".Trim() -split '\s+')[0] -in $articles)
 }
 
 function Get-LambekFactSentence {
@@ -417,7 +461,7 @@ function Get-LambekToldAnswer {
     if ($older.Count -gt 0) {
         $lines.Add($say['RecalledBefore'])
         foreach ($answer in $older) {
-            $lines.Add("- $($say['OnDay'] -f $answer.Fact.Told, (Format-LambekFact -Fact $answer.Fact -Language $Language -Register $Register))")
+            $lines.Add("- $($say['OnDay'] -f $answer.Fact.Told, (Format-LambekFact -Fact $answer.Fact -Language $Language -Register $Register -Undated))")
             & $explain $answer
         }
     }
