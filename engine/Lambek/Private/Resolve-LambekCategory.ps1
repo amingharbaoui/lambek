@@ -97,6 +97,79 @@ function Find-LambekCategoryReplaced {
     return $older[$older.Count - 1]
 }
 
+function Find-LambekCategoryTakenBack {
+    param([object] $Premises, [object[]] $Items, [object[]] $Facts, [string] $Language)
+
+    # What a correction takes back, among the things told before about the same one, each with the thing told now that
+    # takes its place:
+    #   "Tom n'est pas un chat" (said after "je me suis trompe", or with "pas un chat") takes back "Tom est un chat";
+    #   "Tom est un chien" alone (after "en fait") takes back the last kind Tom was said to be, unless the dictionary
+    #   says one of the two is a kind of the other ("Tom est un animal" stays: a chien is one).
+    # Only sentences about someone are taken back, never a general rule
+    $data = (Get-LambekCategoryVocabulary -Language $Language).Data
+    $articles = @($data['Articles'] | Where-Object { $_ })
+    $said = [System.Collections.Generic.List[object]]::new()
+    $k = 0
+    foreach ($entry in $Items) {
+        if ($entry.Item.Kind.StartsWith('ask')) { continue }
+        if ($entry.Sentence.PSObject.Properties['Correcting'] -and $entry.Sentence.Correcting -and $entry.Item.Individual) {
+            $said.Add([pscustomobject]@{ Item = $entry.Item; Fact = $Facts[$k] })
+        }
+        $k++
+    }
+    $key = { param($item) (@($item.Predicate.Atoms) | ForEach-Object { "$_" }) -join ' ' }
+    $before = @(for ($i = 0; $i -lt $Premises.Count; $i++) {
+            $premise = $Premises[$i]
+            if (-not $premise.Fact -or @($Facts | Where-Object { [object]::ReferenceEquals($_, $premise.Fact) }).Count -gt 0) { continue }
+            if ($premise.Item.Kind -ne 'is' -or -not $premise.Item.Individual -or -not $premise.Item.Predicate) { continue }
+            [pscustomobject]@{ Index = $i; Who = "$($premise.Item.Individual.Key)"; What = (& $key $premise.Item); Item = $premise.Item }
+        })
+    $dictionary = Get-LambekDictionary -Language $Language
+    $related = {
+        param([string] $one, [string] $other)
+        if ($dictionary -isnot [LambekDictionary]) { return $false }
+        foreach ($pair in @(@($one, $other), @($other, $one))) {
+            if ($null -eq $script:CategoryCircles) { $script:CategoryCircles = @{} }
+            $circle = "$Language`t$($pair[0])`t$($pair[1])"
+            if (-not $script:CategoryCircles.ContainsKey($circle)) {
+                $script:CategoryCircles[$circle] = $dictionary.Under($pair[0], $pair[1], $Language, 'n', $script:CategoryCircleSenses, $script:CategoryCircleHops)
+            }
+            if ($script:CategoryCircles[$circle] -gt 0) { return $true }
+        }
+        return $false
+    }
+    $found = [System.Collections.Generic.List[object]]::new()
+    $taken = [System.Collections.Generic.HashSet[int]]::new()
+    foreach ($one in @($said | ForEach-Object { "$($_.Item.Individual.Key)" } | Select-Object -Unique)) {
+        $denied = @($said | Where-Object { "$($_.Item.Individual.Key)" -eq $one -and $_.Item.Kind -eq 'isnot' })
+        $told = @($said | Where-Object { "$($_.Item.Individual.Key)" -eq $one -and $_.Item.Kind -eq 'is' })
+        # (what one does is told in a sentence of another kind: nothing it says is a kind to take back)
+        if ($told.Count -eq 0 -and $denied.Count -eq 0) { continue }
+        $by = $(if ($told.Count -gt 0) { $told[0].Fact } else { $denied[0].Fact })
+        if ($denied.Count -gt 0) {
+            foreach ($no in $denied) {
+                foreach ($old in @($before | Where-Object { $_.Who -eq $one -and $_.What -ceq (& $key $no.Item) })) {
+                    if ($taken.Add($old.Index)) { $found.Add([pscustomobject]@{ Index = $old.Index; By = $by }) }
+                }
+            }
+            continue
+        }
+        foreach ($yes in $told) {
+            $kinds = @($before | Where-Object {
+                    $_.Who -eq $one -and $_.What -cne (& $key $yes.Item) -and
+                    @("$($_.Item.Written.Predicate)".Trim() -split '\s+')[0] -in $articles
+                })
+            for ($j = $kinds.Count - 1; $j -ge 0; $j--) {
+                $old = $kinds[$j]
+                if (& $related $old.What (& $key $yes.Item)) { continue }
+                if ($taken.Add($old.Index)) { $found.Add([pscustomobject]@{ Index = $old.Index; By = $yes.Fact }) }
+                break
+            }
+        }
+    }
+    return $found.ToArray()
+}
+
 function Get-LambekCategoryVocabulary {
     param([string] $Language)
 
@@ -140,6 +213,8 @@ function Split-LambekCategorySentence {
     # but words (a number, a path, a file) is no general rule: the whole message is left to the rest of Lambek
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
     $lead = @($data['Lead'] | Where-Object { $_ } | ForEach-Object { [regex]::Escape("$_") })
+    # (the words that take back what was told, the longest first: "non, en fait", "I was wrong")
+    $taking = @($data['Corrections'] | Where-Object { $_ } | Sort-Object { -"$_".Length }, { "$_" } | ForEach-Object { [regex]::Escape("$_") -replace '\\ ', '\s+' })
     $sentences = [System.Collections.Generic.List[object]]::new()
     foreach ($part in [regex]::Split($Text.Trim(), '(?<=[.!?;])\s+')) {
         $original = $part.Trim()
@@ -148,12 +223,66 @@ function Split-LambekCategorySentence {
         # (a mark that opens a sentence is no word of it: the inverted one of Spanish; an apostrophe is a letter's)
         $plain = (($original -replace '[.!?;]+\s*$', '') -replace "^[\p{Po}-['\u2019]]+", '').Trim()
         if ($lead.Count -gt 0) { $plain = [regex]::Replace($plain, "(?i)^(?:$($lead -join '|'))\s*,?\s+", '') }
+        # "non, en fait Tom est un chien", "correction : Tom est un chien, pas un chat": what follows the words that take
+        # something back is told in its place (Find-LambekCategoryTakenBack)
+        $correcting = $false
+        if (-not $question -and $taking.Count -gt 0) {
+            # (marked off as such: "no, actually", "correction :"; "no dog is a cat" takes nothing back)
+            $taken = [regex]::Match($plain, "(?i)^(?:(?:$($taking -join '|'))\s*[,:]\s*)+(?:(?:$($taking -join '|'))\s+)?")
+            if ($taken.Success -and $taken.Length -lt $plain.Length) {
+                $plain = $plain.Substring($taken.Length)
+                if ($lead.Count -gt 0) { $plain = [regex]::Replace($plain, "(?i)^(?:$($lead -join '|'))\s*,?\s+", '') }
+                $correcting = $true
+            }
+        }
+        if ($correcting) {
+            $parts = @(Split-LambekCategoryCorrection -Text $plain -Language $Language)
+            if ($parts.Count -gt 0) {
+                foreach ($said in $parts) { $sentences.Add([pscustomobject]@{ Text = $said; Original = $said; Question = $false; Correcting = $true }) }
+                continue
+            }
+        }
         # (a comma only marks a pause: "normalement, les oiseaux volent")
         $plain = (($plain -replace ',', ' ') -replace '\s+', ' ').Trim()
         if (-not $plain -or $plain -notmatch "^[\p{L}'\u2019 -]+$") { return @() }
-        $sentences.Add([pscustomobject]@{ Text = $plain; Original = ($original -replace '[.;]+\s*$', '').Trim(); Question = $question })
+        $sentences.Add([pscustomobject]@{ Text = $plain; Original = ($original -replace '[.;]+\s*$', '').Trim(); Question = $question; Correcting = $correcting })
     }
     return $sentences.ToArray()
+}
+
+function Split-LambekCategoryCorrection {
+    param([string] $Text, [string] $Language)
+
+    # What a correction tells, as sentences of their own: "Tom est un chien, pas un chat" is "Tom est un chien" and
+    # "Tom n'est pas un chat"; "Tom n'est pas un chat mais un chien" is "Tom n'est pas un chat" and "Tom est un chien".
+    # The first part that reads says who it is about; a part that does not read is what is said of the same one, denied
+    # when it holds a word that denies. Nothing when no part reads, or a part is anything else
+    $data = (Get-LambekCategoryVocabulary -Language $Language).Data
+    $general = (Get-LambekLexicon -Language $Language).Dialogue['General']
+    $lead = @($data['Lead'] | Where-Object { $_ } | ForEach-Object { [regex]::Escape("$_") })
+    $denying = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    foreach ($word in @($general['Negations'])) { if ($word) { [void] $denying.Add("$word") } }
+    $joins = '\s*,\s*'
+    if ($lead.Count -gt 0) { $joins += "|\s+(?:$($lead -join '|'))\s+" }
+    $pieces = @([regex]::Split($Text, "(?i)$joins") | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+    if ($pieces.Count -eq 0 -or @($pieces | Where-Object { $_ -notmatch "^[\p{L}'\u2019 -]+$" }).Count -gt 0) { return @() }
+    $first = Read-LambekCategorySentence -Sentence $pieces[0] -Language $Language
+    if (-not $first -or $first.Kind -notin 'is', 'isnot' -or -not $first.Individual) { return @() }
+    $said = [System.Collections.Generic.List[string]]::new()
+    $said.Add($pieces[0])
+    $sentences = $data['Sentences']
+    foreach ($piece in @($pieces | Select-Object -Skip 1)) {
+        $words = @($piece -split "\s+|(?<=['\u2019])")
+        $denied = @($words | Where-Object { $denying.Contains(("$_" -replace "['\u2019]$", '')) }).Count -gt 0
+        $what = (@($words | Where-Object { -not $denying.Contains(("$_" -replace "['\u2019]$", '')) }) -join ' ').Trim()
+        $shape = $(if ($denied) { 'isnot' } else { 'is' })
+        if (-not $what -or -not $sentences[$shape]) { return @() }
+        $sentence = $sentences[$shape] -f $first.Individual.Written, $what
+        $read = Read-LambekCategorySentence -Sentence $sentence -Language $Language
+        if (-not $read -or $read.Kind -ne $shape) { return @() }
+        $said.Add($sentence)
+    }
+    return $said.ToArray()
 }
 
 function Read-LambekCategorySentence {
@@ -781,6 +910,9 @@ function Resolve-LambekCategoryMessage {
     # A language whose dialogue is learned has no memory of its own yet: what is told of someone is kept here, for the
     # rules told after it ("Rex ist ein Hund", then "jeder Hund ist ein Tier")
     if ((Get-LambekLexicon -Language $Language).Dialogue['Learned']) { $individual = $true }
+    # (what is told in the place of something told before is about what was told, whatever rules there are)
+    $correcting = @($Sentences | Where-Object { $_.PSObject.Properties['Correcting'] -and $_.Correcting }).Count -gt 0
+    if ($correcting) { $individual = $true }
     if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
 
     # Each sentence read, with the dictionary: every one must read, or nothing is taken
@@ -803,6 +935,12 @@ function Resolve-LambekCategoryMessage {
     }
     # (in a dialogue learned, about anything told before or now: a question alone, with nothing told, is not one)
     if ((Get-LambekLexicon -Language $Language).Dialogue['Learned'] -and (@($known).Count -gt 0 -or @($items | Where-Object { -not $_.Item.Kind.StartsWith('ask') }).Count -gt 0)) { $about = $true }
+    # (a correction is about something only when something was told of the same one before)
+    if ($correcting) {
+        foreach ($entry in @($items | Where-Object { $_.Sentence.PSObject.Properties['Correcting'] -and $_.Sentence.Correcting -and $_.Item.Individual })) {
+            if (@($known | Where-Object { $_.Item.Kind -in 'is', 'isnot' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $entry.Item.Individual.Key }).Count -gt 0) { $about = $true }
+        }
+    }
     if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
     # A message with no general rule is taken only when it is about what a rule told is about: "all dogs are animals"
     # was told, "Rex is a dog" and "is Rex an animal?" are for it, "my cat is called Luna" and "do I take the bus?" are
@@ -838,8 +976,30 @@ function Resolve-LambekCategoryMessage {
     foreach ($circle in @(Get-LambekCategoryCircle -Items (@($premises | ForEach-Object { $_.Item }) + @($items | ForEach-Object { $_.Item })) -Language $Language)) {
         $premises.Add([pscustomobject]@{ Fact = $null; Item = $circle })
     }
+    # What a correction takes back ("non, en fait Tom est un chien") no longer counts, nor anything that follows from it:
+    # the answers are worked out again from what is still told. The journal keeps both, and it is said what was replaced
+    $takenBack = [System.Collections.Generic.List[string]]::new()
+    if ($correcting) {
+        $gone = @(Find-LambekCategoryTakenBack -Premises $premises -Items $items -Facts $facts -Language $Language)
+        foreach ($taken in $gone) { Set-LambekToldReplaced -Fact $premises[$taken.Index].Fact -By $taken.By }
+        if ($gone.Count -gt 0) {
+            # (a language that has learned no words for it names the sentences alone)
+            if ($data['Replaced']) { $takenBack.Add($data['Replaced']) }
+            foreach ($taken in @($gone | Sort-Object Index)) { $takenBack.Add("- $(Format-LambekFact -Fact $premises[$taken.Index].Fact -Language $Language -Register 'vous' -Bare)") }
+            foreach ($taken in @($gone | Sort-Object Index -Descending)) { $premises.RemoveAt($taken.Index) }
+        }
+    }
     $atoms = @{}
     $statements = [LambekCategoryStatement[]] @($premises | ForEach-Object { ConvertTo-LambekCategoryStatement -Item $_.Item -Atoms $atoms })
+    # What was told comes before what the dictionary says: a kind it gives that makes the sentences told contradict each
+    # other is left out ("Nemo est un dauphin", "Nemo n'est pas un poisson": a dauphin is a poisson in one sense only)
+    while (-not [LambekCategories]::Satisfiable($statements)) {
+        $book = @([LambekCategories]::Smallest($statements, $null) | Where-Object { -not $premises[$_].Fact -and $premises[$_].Item.PSObject.Properties['Circle'] -and $premises[$_].Item.Circle } | Sort-Object -Descending)
+        if ($book.Count -eq 0) { break }
+        foreach ($i in $book) { $premises.RemoveAt($i) }
+        $atoms = @{}
+        $statements = [LambekCategoryStatement[]] @($premises | ForEach-Object { ConvertTo-LambekCategoryStatement -Item $_.Item -Atoms $atoms })
+    }
     $listed = { param([int[]] $indices) @(foreach ($i in $indices) { if ($premises[$i].Fact) { "- $(Format-LambekFact -Fact $premises[$i].Fact -Language $Language -Register 'vous' -Bare)" } }) }
     # What the dictionary says is no thing told: it is said after them, on its own, so nothing is put in the user's mouth
     $saidOf = { param($item) $item.PSObject.Properties['Circle'] -and $item.Circle }
@@ -862,6 +1022,7 @@ function Resolve-LambekCategoryMessage {
         $shape = 'Noted'
         if ($script:Incognito) { $shape += 'Here' }
         $lines.Add(($say[$shape] -f (@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
+        foreach ($line in $takenBack) { $lines.Add($line) }
         if (-not [LambekCategories]::Satisfiable($statements)) {
             # Naskh: what is told now and cannot be true with what was told before replaces the last thing told about
             # the same one. The general rules stay, the journal keeps both, and it is said which sentence was replaced
@@ -903,6 +1064,7 @@ function Resolve-LambekCategoryMessage {
         if ($script:Incognito) { $shape += 'Here' }
         $lines.Add(($say[$shape] -f (@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
     }
+    foreach ($line in $takenBack) { $lines.Add($line) }
     $because = {
         param([int[]] $indices)
         # (a language that has learned no words for it lists what it rests on alone)

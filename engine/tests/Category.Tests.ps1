@@ -582,6 +582,79 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'A correction takes back what it corrects, and what followed from it' {
+
+        It 'lets go of what is taken back with <Taken>' -ForEach @(
+            @{ Taken = 'non, en fait Tom est un chien' }
+            @{ Taken = "je me suis trompé, Tom n'est pas un chat" }
+            @{ Taken = 'correction : Tom est un chien, pas un chat' }
+            @{ Taken = "pardon, Tom n'est pas un chat mais un chien" }
+        ) {
+            Tell 'Tom est un chat', 'Minou est un chat', 'tous les chats aiment le lait', $Taken
+            (Ask 'Tom est-il un chat ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            (Ask 'Tom aime-t-il le lait ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            (Ask 'Minou aime-t-il le lait ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'lets go of what is taken back in English: <Taken>' -ForEach @(
+            @{ Taken = 'no, actually Tom is a dog' }
+            @{ Taken = 'I was wrong, Tom is not a cat' }
+            @{ Taken = 'correction: Tom is a dog, not a cat' }
+            @{ Taken = 'sorry, Tom is not a cat but a dog' }
+        ) {
+            Tell 'Tom is a cat', 'Felix is a cat', 'all cats like milk', $Taken
+            (Ask 'is Tom a cat?') -join ' ' | Should -Not -BeLike 'Yes*'
+            (Ask 'does Tom like milk?') -join ' ' | Should -Not -BeLike 'Yes*'
+            (Ask 'does Felix like milk?') -join ' ' | Should -BeLike 'Yes*'
+        }
+
+        It 'says what it replaces, apart from what is noted' {
+            Tell 'Tom est un chat'
+            $lines = @((Ask 'non, en fait Tom est un chien') -split "`n")
+            $lines[0] | Should -BeLike "C'est noté. Tom est un chien.*"
+            $lines | Should -Contain "Je remplace ce que vous m'aviez dit :"
+            $lines | Should -Contain '- Tom est un chat.'
+        }
+
+        It 'writes in the journal which line the correction replaces' {
+            Tell 'Pip est un oiseau', 'non, en fait Pip est un poisson'
+            $lines = & (Get-Module Lambek) { @(Get-LambekToldJournal) }
+            $replacing = @($lines | Where-Object { $_.PSObject.Properties['Replaces'] -and $_.Replaces })
+            $replacing.Count | Should -Be 1
+            @($lines | Where-Object { "$($_.Hash)" -eq "$($replacing[0].Replaces)" })[0].Text | Should -Be 'Pip est un oiseau'
+        }
+
+        It 'keeps a kind the dictionary says the new one is a kind of, or is a kind of' {
+            Tell 'Tom est un animal', 'non, en fait Tom est un chien'
+            (Ask 'Tom est-il un animal ?') -join ' ' | Should -BeLike 'Oui*'
+            Tell 'Minou est un chat', 'non, en fait Minou est un siamois'
+            (Ask 'Minou est-il un chat ?') -join ' ' | Should -BeLike 'Oui : Minou est un chat.*'
+        }
+
+        It 'takes nothing back without the words marked off: <Told>' -ForEach @(
+            @{ Told = 'no dog is a cat' }
+            @{ Told = 'actually Rex is a cat' }
+        ) {
+            Tell 'Rex is a dog', $Told
+            (Ask 'is Rex a dog?') -join ' ' | Should -Not -BeLike 'No*'
+        }
+
+        It 'takes back nothing of someone else' {
+            Tell 'Rex est un chien', 'non, en fait Tom est un chat'
+            (Ask 'Rex est-il un chien ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'never takes back a general rule' {
+            Tell 'tous les chats aiment le lait', 'Tom est un chat', "non, en fait Tom n'aime pas le lait", 'Minou est un chat'
+            (Ask 'Minou aime-t-il le lait ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'leaves out a kind from the dictionary that makes what was told contradict itself' {
+            Tell 'Nemo est un dauphin', "Nemo n'est pas un poisson"
+            (Ask 'Nemo est-il un dauphin ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+    }
+
     Context 'A rule reaches what the dictionary says is a kind of what the rule is about' {
 
         It 'follows a rule about cats for a siamese, and says the dictionary said so' {

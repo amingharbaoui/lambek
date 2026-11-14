@@ -14,6 +14,8 @@
     - What it answers, from the sentences translated from English (Tatoeba): "Yes." is "Ja.", "No." is "Nein.",
       "I don't know." is "Ich weiss nicht.", "I understand." is "Ich verstehe.", "Why?" is "Warum?" Short answers, the
       proof after them: a sentence that is not said in the translated sentences is not said.
+    - The words that take back what was told ("Nein", "Ich habe mich geirrt", "Eigentlich"), from the same sentences:
+      the language's "No.", its "I was wrong.", and how it starts where English starts with "Actually,".
     - How it says that one is of a kind ("Rex ist ein Tier"), from the same sentences: the form of the copula for one
       the most often after a name ("Tom ist", "Tom es") when the English side says "Tom is".
 
@@ -132,6 +134,20 @@ if ($understood) { $dialogue['Say']['Noted'] = "$understood {0}"; $dialogue['Say
 # from one language to another)
 $dialogue['Say']['Quote'] = '{0}'
 $dialogue['Say']['Quoted'] = '{0}.'
+# The words that take back what was told: the language's "No", what it says for "I was wrong.", and the words it
+# starts with where English starts with "Actually," (before its comma, at most three words, met at least three times)
+$actually = @{}
+for ($i = 0; $i -lt $englishSide.Length -and $i -lt $otherSide.Length; $i++) {
+    if (-not $englishSide[$i].StartsWith('Actually, ')) { continue }
+    $found = [regex]::Match($otherSide[$i].Trim(), '^(?<lead>[^,]+),')
+    if (-not $found.Success -or @($found.Groups['lead'].Value.Trim() -split '\s+').Count -gt 3) { continue }
+    $form = $found.Groups['lead'].Value.Trim().ToLowerInvariant()
+    $actually[$form] = 1 + $(if ($actually.ContainsKey($form)) { $actually[$form] } else { 0 })
+}
+$wrong = & $phrase 'I was wrong.'
+$taking = @(@($no) + @($wrong) | Where-Object { $_ } | ForEach-Object { ($_ -replace '[\p{P}]', '').Trim().ToLowerInvariant() })
+$taking += @($actually.GetEnumerator() | Where-Object { $_.Value -ge 3 } | Sort-Object { -$_.Value }, { $_.Key } | Select-Object -First 2 | ForEach-Object { $_.Key })
+$categories['Corrections'] = [string[]] @($taking | Where-Object { $_ } | Sort-Object -Unique)
 # (a "why?" alone asks what the answer just given rests on)
 if ($why) { $dialogue['General']['WhyAlone'] = [string[]] @(& $plain @($why -replace '[\p{P}]', '')) }
 $categories['YesWords'] = & $plain @($yes -replace '[\p{P}]', '')

@@ -65,6 +65,17 @@ Describe 'A dialogue learned, not written' {
         $lines | Should -Contain "- $($Told[1])"
     }
 
+    # (the words that take back what was told, learned from the sentences translated from English)
+    It 'lets go of what is taken back in <Language>: <Taken>' -ForEach @(
+        @{ Language = 'es'; Told = 'Rex es un perro', 'todos los perros ladran'; Taken = 'en realidad, Rex es un gato'; Question = '¿ladra Rex?'; Said = 'No sé.' }
+        @{ Language = 'it'; Told = 'Rex è un cane', 'tutti i cani abbaiano'; Taken = 'mi sono sbagliato, Rex non è un cane'; Question = 'Rex abbaia?'; Said = 'Non lo so.' }
+        @{ Language = 'nl'; Told = 'Rex is een hond', 'alle honden blaffen'; Taken = 'nee, Rex is een kat'; Question = 'blaft Rex?'; Said = 'Ik weet het niet.' }
+    ) {
+        Tell $Told
+        Ask $Taken | Should -BeLike "*- $($Told[0])"
+        Ask $Question | Should -Be $Said
+    }
+
     It 'does not know what it was not told: <Question>' -ForEach @(
         @{ Told = 'Rex ist ein Hund'; Question = 'ist Rex ein Tier?'; Said = 'Ich weiß nicht.' }
         @{ Told = 'Rex es un perro'; Question = '¿es Rex un animal?'; Said = 'No sé.' }
