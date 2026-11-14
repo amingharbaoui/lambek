@@ -718,6 +718,29 @@ public class LambekDictionary : ILambekWords
         return string.CompareOrdinal(a.Synset ?? "", b.Synset ?? "") < 0;
     }
 
+    // How many steps up the hypernyms lead from one word to another ("siamois" to "chat": 1, "chat" to "animal": 4),
+    // -1 when the first word is not below the second. Only hypernyms are followed, so the way is one way: every cat is
+    // an animal, not every animal a cat. 0 when both name the same meaning ("chat" and "felis catus").
+    // Senses: how many meanings of each word are tried, the most frequent first (1: only the meaning it most often has)
+    public int Under(string word, string above, string language, string pos, int senses, int hops)
+    {
+        int[] mine = SenseIds(Normalize(word), language, pos);
+        int[] theirs = SenseIds(Normalize(above), language, pos);
+        if (mine.Length == 0 || theirs.Length == 0) { return -1; }
+        HashSet<int> wanted = new HashSet<int>();
+        for (int k = 0; k < theirs.Length && k < senses; k++) { wanted.Add(theirs[k]); }
+        int best = -1;
+        for (int k = 0; k < mine.Length && k < senses; k++)
+        {
+            foreach (KeyValuePair<int, int> step in Ancestors(mine[k]))
+            {
+                if (!wanted.Contains(step.Key) || step.Value > hops) { continue; }
+                if (best < 0 || step.Value < best) { best = step.Value; }
+            }
+        }
+        return best;
+    }
+
     // Wu-Palmer similarity of two synsets: 2 depth(common ancestor) / (depth a + depth b), depths counted from a shared root
     public double WuPalmer(string a, string b)
     {

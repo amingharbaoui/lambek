@@ -133,6 +133,10 @@ $script:CategoryWords = $null
 $script:LogicWords = $null
 $script:CategoryLemmas = $null
 $script:CategoryReadings = $null
+# How many meanings of a word the dictionary is asked about, and how far up its kinds are followed
+$script:CategoryCircleSenses = 6
+$script:CategoryCircleHops = 12
+$script:CategoryCircles = $null
 # The question Lambek asked in each conversation when it could not conclude, waiting for its answer
 $script:CategoryPending = $null
 $script:KnowledgeRules = $null

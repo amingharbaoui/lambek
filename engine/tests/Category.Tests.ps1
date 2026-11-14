@@ -581,4 +581,47 @@ Describe 'General rules told in words' {
             $replaced[0].Text | Should -Be 'Pip is a bird'
         }
     }
+
+    Context 'A rule reaches what the dictionary says is a kind of what the rule is about' {
+
+        It 'follows a rule about cats for a siamese, and says the dictionary said so' {
+            Tell 'tous les chats sont noirs', 'Minou est un siamois'
+            $said = (Ask 'est-ce que Minou est noir ?') -join "`n"
+            $said | Should -BeLike 'Oui : Minou est noir.*'
+            $said | Should -BeLike "*D'apr*dictionnaire*siamois*sorte de*chat*"
+        }
+
+        It 'says what the dictionary says apart from what was told' {
+            Tell 'tous les chats sont noirs', 'Minou est un siamois'
+            $lines = @((Ask 'est-ce que Minou est noir ?') -split "`n")
+            # (every sentence told is listed with a dash under "you told me"; the dictionary speaks for itself)
+            @($lines | Where-Object { $_ -like "*dictionnaire*" -and $_ -like '-*' }).Count | Should -Be 0
+        }
+
+        It 'works with a rule that says no one of a kind is something' {
+            Tell "aucun chat n'aime l'eau", 'Minou est un siamois'
+            (Ask "est-ce que Minou aime l'eau ?") -join ' ' | Should -BeLike "Non : Minou n'aime pas l'eau.*siamois*chat*"
+        }
+
+        It 'never goes down: a rule about siamese says nothing of a cat' {
+            Tell 'tous les siamois sont bleus', 'Minou est un chat'
+            (Ask 'est-ce que Minou est bleu ?') -join ' ' | Should -Not -BeLike 'Oui*'
+        }
+
+        It 'follows the way up in <Language>: <Question>' -ForEach @(
+            @{ Language = 'en'; Told = 'all cats are black', 'Minou is a siamese'; Question = 'is Minou black?'; Said = 'Yes: Minou is black.*dictionary*siamese*kind of*cat*' }
+            @{ Language = 'nl'; Told = 'elke hond is een dier', 'Rex is een teckel'; Question = 'is Rex een dier?'; Said = 'Ja. Rex is een dier.*teckel*hond*' }
+        ) {
+            Tell $Told
+            (Ask $Question) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'gives the dictionary to the checker as a premise of its own, never as a thing told' {
+            Tell 'tous les chats sont noirs', 'Minou est un siamois'
+            $null = Ask 'est-ce que Minou est noir ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            @($proof.Facts).Count | Should -Be 2
+            @($proof.Assumed) | Should -Contain 'category(all|siamois|chat)'
+        }
+    }
 }

@@ -420,6 +420,97 @@ function Get-LambekCategoryImplied {
     }
 }
 
+function Get-LambekCategoryCircle {
+    param([object[]] $Items, [string] $Language)
+
+    # What a word is a kind of, from the dictionary learned (WordNet and its wordnets): told "Minou est un siamois" and
+    # "tous les chats sont noirs", the dictionary says a siamois is a kind of chat, so the rule about chats is about
+    # Minou too. Only the way up is followed (every chat is an animal, not every animal a chat), so what is added is
+    # always true where the dictionary is right; it is said in the answer, and kept apart from what was told
+    # (the kinds of a word are in the dictionary and nowhere else: without it, the words learned know no kinds)
+    $dictionary = Get-LambekDictionary -Language $Language
+    if ($dictionary -isnot [LambekDictionary]) { return }
+    # What is said of someone, and what the rules are about: a rule is only brought nearer, never made up
+    $below = [System.Collections.Generic.List[string]]::new()
+    $above = [System.Collections.Generic.List[string]]::new()
+    # What each one is already said to be, and which kind the rules told already lead from one to another
+    # ("toutes les roses sont des fleurs"): the dictionary fills a gap, it never takes the place of a sentence told
+    $said = @{}
+    $leads = @{}
+    foreach ($item in $Items) {
+        if ($item.Kind -in 'is', 'isnot', 'askis' -and $item.Individual -and $item.Predicate) {
+            foreach ($atom in @($item.Predicate.Atoms)) { if ("$atom") { $below.Add("$atom") } }
+            if ($item.Kind -eq 'is') {
+                $who = "$($item.Individual.Key)"
+                if (-not $said.ContainsKey($who)) { $said[$who] = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal) }
+                foreach ($atom in @($item.Predicate.Atoms)) { if ("$atom") { [void] $said[$who].Add("$atom") } }
+            }
+        }
+        if ($item.Kind -in 'all', 'no', 'some', 'somenot' -and $item.Subject) {
+            foreach ($atom in @($item.Subject.Atoms)) { if ("$atom") { $above.Add("$atom") } }
+        }
+        # (only "every one of a kind is" carries from one kind to another, and only a rule that always holds)
+        if ($item.Kind -eq 'all' -and $item.Subject -and $item.Predicate -and -not ($item.PSObject.Properties['Default'] -and $item.Default)) {
+            foreach ($from in @($item.Subject.Atoms)) {
+                if (-not "$from") { continue }
+                if (-not $leads.ContainsKey("$from")) { $leads["$from"] = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal) }
+                foreach ($to in @($item.Predicate.Atoms)) { if ("$to") { [void] $leads["$from"].Add("$to") } }
+            }
+        }
+    }
+    # Whether the rules told already lead from one kind to another, by however many steps
+    $reaches = {
+        param([string] $from, [string] $to)
+        $seenHere = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+        $queue = [System.Collections.Generic.Queue[string]]::new()
+        $queue.Enqueue($from)
+        [void] $seenHere.Add($from)
+        while ($queue.Count -gt 0) {
+            $step = $queue.Dequeue()
+            if (-not $leads.ContainsKey($step)) { continue }
+            foreach ($next in $leads[$step]) {
+                if ($next -ceq $to) { return $true }
+                if ($seenHere.Add($next)) { $queue.Enqueue($next) }
+            }
+        }
+        return $false
+    }
+    $seen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($under in @($below | Select-Object -Unique)) {
+        foreach ($over in @($above | Select-Object -Unique)) {
+            if ($under -ceq $over -or -not $seen.Add("$under`t$over")) { continue }
+            # What was told comes first: someone already said to be both, or rules told that already lead from the one
+            # to the other, need no dictionary. An answer must rest on the sentences the user told, not on a word in a book
+            if (@($said.Values | Where-Object { $_.Contains($under) -and $_.Contains($over) }).Count -gt 0) { continue }
+            if (& $reaches $under $over) { continue }
+            # (the same two words are asked about again and again in a conversation: the way up is walked once)
+            if ($null -eq $script:CategoryCircles) { $script:CategoryCircles = @{} }
+            $key = "$Language`t$under`t$over"
+            if (-not $script:CategoryCircles.ContainsKey($key)) {
+                $script:CategoryCircles[$key] = $dictionary.Under($under, $over, $Language, 'n', $script:CategoryCircleSenses, $script:CategoryCircleHops)
+            }
+            if ($script:CategoryCircles[$key] -le 0) { continue }
+            [pscustomobject]@{
+                Kind = 'all'; Quantifier = ''; Individual = $null; Verb = $false; Member = $false; Default = $false
+                Subject = [pscustomobject]@{ Atoms = @($under) }
+                Predicate = [pscustomobject]@{ Atoms = @($over) }
+                Written = [pscustomobject]@{ Subject = $under; Predicate = $over; Object = '' }
+                Circle = [pscustomobject]@{ Under = $under; Above = $over }
+            }
+        }
+    }
+}
+
+function Format-LambekCategoryCircle {
+    param([pscustomobject] $Circle, [string] $Language)
+
+    # What the dictionary says, said plainly, with the words as the dictionary writes them: a language that has learned
+    # no sentence for it names the two words alone
+    $data = (Get-LambekCategoryVocabulary -Language $Language).Data
+    if ($data.Contains('Circle') -and "$($data['Circle'])") { return ($data['Circle'] -f $Circle.Under, $Circle.Above) }
+    return "$($Circle.Under) -> $($Circle.Above)"
+}
+
 function Get-LambekCategoryLemma {
     param([string] $Word, [string] $Language, [switch] $Verb)
 
@@ -742,9 +833,17 @@ function Resolve-LambekCategoryMessage {
     foreach ($implied in @(Get-LambekCategoryImplied -Items (@($premises | ForEach-Object { $_.Item }) + @($items | ForEach-Object { $_.Item })) -Language $Language)) {
         $premises.Add([pscustomobject]@{ Fact = $null; Item = $implied })
     }
+    # What the dictionary says one word is a kind of, so a rule about chats reaches a siamois. Never told either, and
+    # said with the dictionary named, so it can be seen and gainsaid
+    foreach ($circle in @(Get-LambekCategoryCircle -Items (@($premises | ForEach-Object { $_.Item }) + @($items | ForEach-Object { $_.Item })) -Language $Language)) {
+        $premises.Add([pscustomobject]@{ Fact = $null; Item = $circle })
+    }
     $atoms = @{}
     $statements = [LambekCategoryStatement[]] @($premises | ForEach-Object { ConvertTo-LambekCategoryStatement -Item $_.Item -Atoms $atoms })
     $listed = { param([int[]] $indices) @(foreach ($i in $indices) { if ($premises[$i].Fact) { "- $(Format-LambekFact -Fact $premises[$i].Fact -Language $Language -Register 'vous' -Bare)" } }) }
+    # What the dictionary says is no thing told: it is said after them, on its own, so nothing is put in the user's mouth
+    $saidOf = { param($item) $item.PSObject.Properties['Circle'] -and $item.Circle }
+    $read = { param([int[]] $indices) @(foreach ($i in $indices) { if (-not $premises[$i].Fact -and (& $saidOf $premises[$i].Item)) { Format-LambekCategoryCircle -Circle $premises[$i].Item.Circle -Language $Language } }) }
     # What an answer rests on, for a "pourquoi ?" and the checker: the things told, as the reasoning read them, and
     # what the words said by themselves apart
     $proof = {
@@ -778,7 +877,9 @@ function Resolve-LambekCategoryMessage {
             }
             elseif (-not [LambekCategories]::Satisfiable($statements)) {
                 $lines.Add($data['Clash'])
-                foreach ($line in & $listed ([LambekCategories]::Smallest($statements, $null))) { $lines.Add($line) }
+                $smallest = [LambekCategories]::Smallest($statements, $null)
+                foreach ($line in & $listed $smallest) { $lines.Add($line) }
+                foreach ($line in & $read $smallest) { $lines.Add($line) }
             }
         }
         Set-LambekLastProof
@@ -788,7 +889,9 @@ function Resolve-LambekCategoryMessage {
     # What was told cannot all be true: nothing follows from it, and it is said which sentences
     if (-not [LambekCategories]::Satisfiable($statements)) {
         $lines.Add($data['Contradiction'])
-        foreach ($line in & $listed ([LambekCategories]::Smallest($statements, $null))) { $lines.Add($line) }
+        $smallest = [LambekCategories]::Smallest($statements, $null)
+        foreach ($line in & $listed $smallest) { $lines.Add($line) }
+        foreach ($line in & $read $smallest) { $lines.Add($line) }
         Set-LambekLastProof
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
@@ -804,6 +907,7 @@ function Resolve-LambekCategoryMessage {
         # (a language that has learned no words for it lists what it rests on alone)
         if ($data['Because']) { $lines.Add($data['Because']) }
         foreach ($line in & $listed $indices) { $lines.Add($line) }
+        foreach ($line in & $read $indices) { $lines.Add($line) }
         & $proof $indices @()
     }
 

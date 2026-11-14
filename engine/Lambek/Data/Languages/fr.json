@@ -1185,6 +1185,7 @@
       "Contradiction": "Ce que vous m'avez dit se contredit : ces phrases ne peuvent pas être vraies ensemble :",
       "Clash": "Attention : avec ce que vous m'avez dit, ces phrases ne peuvent pas être vraies ensemble :",
       "Replaced": "Je remplace ce que vous m'aviez dit :",
+      "Circle": "D'après le dictionnaire, « {0} » est une sorte de « {1} ».",
       "YesWords": [
         "oui",
         "ouais",
