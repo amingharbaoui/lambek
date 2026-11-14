@@ -598,6 +598,16 @@ Describe 'General rules told in words' {
             @($lines | Where-Object { $_ -like "*dictionnaire*" -and $_ -like '-*' }).Count | Should -Be 0
         }
 
+        It 'says the dictionary again for a pourquoi, apart from what was told' {
+            Tell 'tous les chats sont noirs', 'Minou est un siamois'
+            $null = Ask 'est-ce que Minou est noir ?'
+            $lines = @((Ask 'pourquoi ?') -split "`n")
+            $lines | Should -Contain '- Tous les chats sont noirs.'
+            $lines | Should -Contain '- Minou est un siamois.'
+            @($lines | Where-Object { $_ -like "D'apr*dictionnaire*siamois*chat*" }).Count | Should -Be 1
+            @($lines | Where-Object { $_ -like '-*dictionnaire*' }).Count | Should -Be 0
+        }
+
         It 'works with a rule that says no one of a kind is something' {
             Tell "aucun chat n'aime l'eau", 'Minou est un siamois'
             (Ask "est-ce que Minou aime l'eau ?") -join ' ' | Should -BeLike "Non : Minou n'aime pas l'eau.*siamois*chat*"

@@ -851,7 +851,8 @@ function Resolve-LambekCategoryMessage {
         $told = @($indices | Where-Object { $premises[$_].Fact })
         Set-LambekLastProof -Facts @($told | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded `
             -Forms @($told | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
-            -Assumed @($indices | Where-Object { -not $premises[$_].Fact } | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" })
+            -Assumed @($indices | Where-Object { -not $premises[$_].Fact } | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
+            -Consulted @(& $read $indices)
     }
     $lines = [System.Collections.Generic.List[string]]::new()
 

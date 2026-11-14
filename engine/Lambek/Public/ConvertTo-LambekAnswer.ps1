@@ -86,8 +86,10 @@ function ConvertTo-LambekAnswer {
                         }
                     }
                 }
-                # A question about what was told is answered from the conversation, and only from it
-                if ($told -and $told.PSObject.Properties['Asked'] -and $told.Asked -and $said -and $said.Say['Recalled']) {
+                # A question about what was told is answered from the conversation, and only from it. A "pourquoi ?"
+                # needs no sentence of its own: what the answer rested on is listed as it was told
+                $why = $told -and $told.PSObject.Properties['Asked'] -and $told.Asked -and $told.Asked.PSObject.Properties['Kind'] -and $told.Asked.Kind -eq 'why'
+                if ($told -and $told.PSObject.Properties['Asked'] -and $told.Asked -and $said -and ($said.Say['Recalled'] -or $why)) {
                     $reply = Get-LambekToldAnswer -Asked $told.Asked -Language $language -Register $Register
                     $reply = Confirm-LambekProof -Reply $reply -Language $language
                 }

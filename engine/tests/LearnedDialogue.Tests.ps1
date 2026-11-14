@@ -50,6 +50,21 @@ Describe 'A dialogue learned, not written' {
         Ask $Question | Should -BeLike $Said
     }
 
+    # (a "why?" alone, learned from the sentences translated from English, lists again what the answer rested on)
+    It 'says again what an answer rested on, asked <Why> in <Language>' -ForEach @(
+        @{ Language = 'de'; Told = 'jeder Hund ist ein Tier', 'Rex ist ein Hund'; Question = 'ist Rex ein Tier?'; Why = 'warum?' }
+        @{ Language = 'es'; Told = 'todo perro es un animal', 'Rex es un perro'; Question = '¿es Rex un animal?'; Why = '¿por qué?' }
+        @{ Language = 'nl'; Told = 'elke hond is een dier', 'Rex is een hond'; Question = 'is Rex een dier?'; Why = 'waarom?' }
+        @{ Language = 'pt'; Told = 'todos os cães são animais', 'Rex é um cão'; Question = 'Rex é um animal?'; Why = 'por quê?' }
+        @{ Language = 'it'; Told = 'ogni cane è un animale', 'Rex è un cane'; Question = 'Rex è un animale?'; Why = 'perché?' }
+    ) {
+        Tell $Told
+        $null = Ask $Question
+        $lines = @((Ask $Why) -split "`n")
+        $lines | Should -Contain "- $($Told[0])"
+        $lines | Should -Contain "- $($Told[1])"
+    }
+
     It 'does not know what it was not told: <Question>' -ForEach @(
         @{ Told = 'Rex ist ein Hund'; Question = 'ist Rex ein Tier?'; Said = 'Ich weiß nicht.' }
         @{ Told = 'Rex es un perro'; Question = '¿es Rex un animal?'; Said = 'No sé.' }

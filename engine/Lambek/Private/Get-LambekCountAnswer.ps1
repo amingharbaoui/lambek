@@ -292,10 +292,13 @@ function Get-LambekWhyAnswer {
         }
         return ($lines -join "`n")
     }
-    $lines.Add($say['Why'])
+    # (a language that has learned no words for it lists what it rests on alone)
+    if ($say['Why']) { $lines.Add($say['Why']) }
     foreach ($fact in @($proof.Facts)) { $lines.Add("- $(Format-LambekFact -Fact $fact -Language $Language -Register $Register -Bare)") }
     # (what was told of a problem, as it was said back)
     if ($proof.PSObject.Properties['Said']) { foreach ($line in @($proof.Said)) { if ($line) { $lines.Add("- $line") } } }
+    # What no one told, said after it and on its own, with the source named, as the answer said it
+    if ($proof.PSObject.Properties['Consulted']) { foreach ($line in @($proof.Consulted)) { if ($line) { $lines.Add($line) } } }
     if ($proof.Calculation) { $lines.Add($say['WhyCalculated'] -f $proof.Calculation) }
     return ($lines -join "`n")
 }

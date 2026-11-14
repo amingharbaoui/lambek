@@ -169,6 +169,8 @@
       "WhoUnknown": "Ik weet het niet.",
       "Contradiction": "",
       "Clash": "",
+      "Replaced": "",
+      "Circle": "",
       "YesWords": "ja",
       "NoWords": "nee",
       "Plural": [],
@@ -500,7 +502,9 @@
       "Causes": [],
       "Impersonal": [],
       "Why": [],
-      "WhyAlone": [],
+      "WhyAlone": [
+        "waarom"
+      ],
       "Conditions": [],
       "Then": [],
       "Elide": {},

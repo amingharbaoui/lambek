@@ -199,6 +199,8 @@
       "WhoUnknown": "No sé.",
       "Contradiction": "",
       "Clash": "",
+      "Replaced": "",
+      "Circle": "",
       "YesWords": "si",
       "NoWords": "no",
       "Plural": [],
@@ -677,7 +679,9 @@
       "Causes": [],
       "Impersonal": [],
       "Why": [],
-      "WhyAlone": [],
+      "WhyAlone": [
+        "por que"
+      ],
       "Conditions": [],
       "Then": [],
       "Elide": {},

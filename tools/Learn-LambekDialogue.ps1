@@ -12,8 +12,8 @@
       where English says "of". The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from
       its words of logic (<language>.logic).
     - What it answers, from the sentences translated from English (Tatoeba): "Yes." is "Ja.", "No." is "Nein.",
-      "I don't know." is "Ich weiss nicht.", "I understand." is "Ich verstehe." Short answers, the proof after them: a
-      sentence that is not said in the translated sentences is not said.
+      "I don't know." is "Ich weiss nicht.", "I understand." is "Ich verstehe.", "Why?" is "Warum?" Short answers, the
+      proof after them: a sentence that is not said in the translated sentences is not said.
     - How it says that one is of a kind ("Rex ist ein Tier"), from the same sentences: the form of the copula for one
       the most often after a name ("Tom ist", "Tom es") when the English side says "Tom is".
 
@@ -123,6 +123,7 @@ $yes = & $phrase 'Yes.'
 $no = & $phrase 'No.'
 $unknown = & $phrase "I don't know."
 $understood = & $phrase 'I understand.'
+$why = & $phrase 'Why?'
 if ($yes) { $categories['YesShort'] = $yes; $categories['Yes'] = "$yes {0}." }
 if ($no) { $categories['NoShort'] = $no; $categories['No'] = $no }
 if ($unknown) { $categories['Unknown'] = $unknown; $categories['WhoUnknown'] = $unknown; $dialogue['Say']['NotKnown'] = $unknown }
@@ -131,6 +132,8 @@ if ($understood) { $dialogue['Say']['Noted'] = "$understood {0}"; $dialogue['Say
 # from one language to another)
 $dialogue['Say']['Quote'] = '{0}'
 $dialogue['Say']['Quoted'] = '{0}.'
+# (a "why?" alone asks what the answer just given rests on)
+if ($why) { $dialogue['General']['WhyAlone'] = [string[]] @(& $plain @($why -replace '[\p{P}]', '')) }
 $categories['YesWords'] = & $plain @($yes -replace '[\p{P}]', '')
 $categories['NoWords'] = & $plain @($no -replace '[\p{P}]', '')
 
