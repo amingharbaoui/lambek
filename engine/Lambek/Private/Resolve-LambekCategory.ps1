@@ -28,8 +28,11 @@ function Resolve-LambekCategory {
     $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Forms
     # (the languages general rules were told in come first, after the one the message reads as when rules were told
     # in it: "Rex abbaia?" after "tutti i cani abbaiano" is Italian, whatever its few words alone say)
-    $told = @(Get-LambekAvailableLanguage | Sort-Object | Where-Object { $_ -ne $detected -and @(Get-LambekCategoryKnown -Language $_ -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot' }).Count -gt 0 })
-    $own = @(Get-LambekCategoryKnown -Language $detected -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot' }).Count -gt 0
+    # (and a language whose dialogue was learned, where what was told of someone is kept for the rules: "Rex e grande?"
+    # after "Rex e un cane. Lui e grande." is Italian, whatever "grande" says in Portuguese)
+    $kept = { param($l) @(Get-LambekCategoryKnown -Language $l -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot' -or ((Get-LambekLexicon -Language $l).Dialogue['Learned'] -and "$($_.Fact.Action)" -eq 'verb:category') }).Count -gt 0 }
+    $told = @(Get-LambekAvailableLanguage | Sort-Object | Where-Object { $_ -ne $detected -and (& $kept $_) })
+    $own = & $kept $detected
     $languages = $(if ($own -or $told.Count -eq 0) { @($detected) + $told } else { $told + @($detected) })
     $languages = @($languages) + @(Get-LambekAvailableLanguage | Where-Object { $_ -notin $languages } | Sort-Object)
     foreach ($language in $languages) {
@@ -456,8 +459,17 @@ function Read-LambekCategoryPart {
     }
     if ($Values.ContainsKey('n')) {
         $item.Individual = ConvertTo-LambekCategoryIndividual -Text $Values['n'] -Language $Language -Listener:$Listener -Lemmas $Values['lemmas']
-        if (-not $item.Individual) { return $null }
         $item.Written.Subject = $Values['n'].Trim()
+        # (asked of "il", "he", or told of it after the one it stands for in the same message: the one it stands for,
+        # said by its name)
+        if (-not $item.Individual -and (($Values.ContainsKey('asked') -and $Values['asked']) -or $null -ne $script:CategoryMessage)) {
+            $item.Individual = Resolve-LambekCategoryPronoun -Text $Values['n'] -Language $Language
+            if ($item.Individual) {
+                $item.Written.Subject = "$($item.Individual.Written)"
+                $item | Add-Member -NotePropertyName Pronoun -NotePropertyValue $Values['n'].Trim()
+            }
+        }
+        if (-not $item.Individual) { return $null }
     }
     if ($Values.ContainsKey('p')) {
         $item.Predicate = ConvertTo-LambekCategoryTerm -Text $Values['p'] -Language $Language -Lemmas $Values['lemmas']
@@ -603,6 +615,51 @@ function ConvertTo-LambekCategoryTerm {
         [void] $atoms.Add("of:$($whose -join ' ')")
     }
     return [pscustomobject]@{ Atoms = @($atoms) }
+}
+
+function Resolve-LambekCategoryPronoun {
+    param([string] $Text, [string] $Language)
+
+    # Who a pronoun of the third person stands for in a question ("aime-t-il le lait", "does he like milk"): the one
+    # told of last whose gender and number agree with it, as the forms model reads them, the pronoun's own and those
+    # of the words said of each one ("Marie est une etudiante" is feminine); a word read without them agrees with
+    # any. Two told of in the same sentence, both agreeing: nobody, as nobody when nothing agrees. Only what was told
+    # before, here or earlier in the message ("Tom est un chat. Il est noir."), never what is asked
+    if ($script:CategoryResolving) { return $null }
+    $model = Get-LambekFormModel -Language $Language
+    if (-not $model) { return $null }
+    $words = @($Text.Trim() -split '\s+' | Where-Object { $_ })
+    if ($words.Count -ne 1) { return $null }
+    $pronoun = @($model.Read([string[]] @($words[0])))
+    if ($pronoun.Count -ne 1 -or "$($pronoun[0].Upos)" -ne 'PRON') { return $null }
+    $feats = "|$($pronoun[0].Feats)|"
+    if ($feats -notmatch '\|Person=3\|' -or $feats -notmatch '\|PronType=Prs\|') { return $null }
+    $feature = { param($text, $name) if ($text -match "\|$name=(\w+)\|") { $Matches[1] } else { '' } }
+    $gender = & $feature $feats 'Gender'
+    $number = & $feature $feats 'Number'
+    # (one told of is never "ils" or "they": several are, which the rules read here do not keep together)
+    if ($number -eq 'Plur') { return $null }
+    $script:CategoryResolving = $true
+    try { $known = @(Get-LambekCategoryKnown -Language $Language) + @($(if ($null -ne $script:CategoryMessage) { $script:CategoryMessage })) }
+    finally { $script:CategoryResolving = $false }
+    $found = $null
+    $from = $null
+    for ($i = $known.Count - 1; $i -ge 0; $i--) {
+        $item = $known[$i].Item
+        if (-not $item.Individual -or "$($item.Individual.Key)" -eq 'speaker') { continue }
+        # (the gender and number of what is said of the one: its article, adjective or noun)
+        $said = "$($item.Written.Predicate) $($item.Written.Object)".Trim()
+        $theirs = "|" + (@($(if ($said) { $model.ReadText($said) }) | ForEach-Object { "$($_.Feats)" }) -join '|') + "|"
+        $other = @([regex]::Matches($theirs, '\|Gender=(\w+)\|') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique)
+        $plural = @([regex]::Matches($theirs, '\|Number=(\w+)\|') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique)
+        if ($gender -and $other.Count -eq 1 -and $other[0] -ne $gender) { continue }
+        if ($number -and $plural.Count -eq 1 -and $plural[0] -ne $number) { continue }
+        if ($null -eq $found) { $found = $item.Individual; $from = $known[$i].Fact; continue }
+        # (another one, agreeing too, told in the same sentence: which is not said)
+        if ([object]::ReferenceEquals($known[$i].Fact, $from) -and "$($item.Individual.Key)" -ne "$($found.Key)") { return $null }
+        break
+    }
+    return $found
 }
 
 function ConvertTo-LambekCategoryIndividual {
@@ -850,8 +907,13 @@ function Get-LambekCategoryKnown {
 function ConvertTo-LambekCategoryFact {
     param([pscustomobject] $Sentence, [pscustomobject] $Item, [string] $Language)
 
-    # A sentence of the message, kept as a thing told, in the shape of every thing told
+    # A sentence of the message, kept as a thing told, in the shape of every thing told; one told of with a pronoun is
+    # kept with the name it stands for too, so that it reads alone after ("Il est noir" is "Tom est noir")
     $signature = Get-LambekCategorySignature -Item $Item
+    $said = $null
+    if ($Item.PSObject.Properties['Pronoun'] -and $Item.Pronoun) {
+        $said = ([regex] "(?i)(?<![\p{L}])$([regex]::Escape("$($Item.Pronoun)"))(?![\p{L}])").Replace("$($Sentence.Original)", "$($Item.Written.Subject)", 1)
+    }
     return [pscustomobject]@{
         Action     = 'verb:category'
         Parameters = [ordered]@{}
@@ -862,8 +924,8 @@ function ConvertTo-LambekCategoryFact {
         Time       = $null
         Day        = $null
         Told       = $null
-        Text       = $Sentence.Original
-        Said       = $null
+        Text       = $(if ($said) { $said } else { $Sentence.Original })
+        Said       = $said
         Language   = $Language
         Hash       = $null
         Negated    = $false
@@ -1063,14 +1125,24 @@ function Resolve-LambekCategoryMessage {
     # (what is told in the place of something told before is about what was told, whatever rules there are)
     $correcting = @($Sentences | Where-Object { $_.PSObject.Properties['Correcting'] -and $_.Correcting }).Count -gt 0
     if ($correcting) { $individual = $true }
+    # (several things told in one message, and nothing asked: each read here, as nothing else reads them together)
+    $several = @($Sentences).Count -gt 1 -and $asks.Count -eq 0
+    if ($several) { $individual = $true }
     if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
 
-    # Each sentence read, with the dictionary: every one must read, or nothing is taken
-    $items = @(foreach ($sentence in $Sentences) {
-            $read = Read-LambekCategorySentence -Sentence $sentence.Text -Language $Language -Question:$sentence.Question
-            if (-not $read) { return $null }
-            [pscustomobject]@{ Sentence = $sentence; Item = $read }
-        })
+    # Each sentence read, with the dictionary: every one must read, or nothing is taken. A pronoun stands for one told
+    # of before it, here or before
+    $script:CategoryMessage = [System.Collections.Generic.List[object]]::new()
+    try {
+        $items = @(foreach ($sentence in $Sentences) {
+                $read = Read-LambekCategorySentence -Sentence $sentence.Text -Language $Language -Question:$sentence.Question
+                if (-not $read) { return $null }
+                $entry = [pscustomobject]@{ Sentence = $sentence; Item = $read; Fact = $sentence }
+                if (-not "$($read.Kind)".StartsWith('ask')) { $script:CategoryMessage.Add($entry) }
+                $entry
+            })
+    }
+    finally { $script:CategoryMessage = $null }
     $known = @(Get-LambekCategoryKnown -Language $Language)
     # (the shape of a sentence only said what it may be: what it is read as says whether it is general)
     $general = @($items | Where-Object { $_.Item.Kind -in $quantified }).Count -gt 0
@@ -1083,6 +1155,12 @@ function Resolve-LambekCategoryMessage {
         $who = $asked[0].Item.Individual.Key
         $about = @(@($known) + @($items) | Where-Object { $_.Item.Kind -in 'is', 'isnot' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who }).Count -gt 0
     }
+    # (and how someone is, when what was told of that one was kept here, told with other things in one message: the
+    # memory holds it only as one of them)
+    if ($asked.Count -eq 1 -and -not $about) {
+        $who = $asked[0].Item.Individual.Key
+        $about = @($known | Where-Object { "$($_.Fact.Action)" -eq 'verb:category' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who }).Count -gt 0
+    }
     # (in a dialogue learned, about anything told before or now: a question alone, with nothing told, is not one)
     if ((Get-LambekLexicon -Language $Language).Dialogue['Learned'] -and (@($known).Count -gt 0 -or @($items | Where-Object { -not $_.Item.Kind.StartsWith('ask') }).Count -gt 0)) { $about = $true }
     # (a correction is about something only when something was told of the same one before)
@@ -1091,6 +1169,7 @@ function Resolve-LambekCategoryMessage {
             if (@($known | Where-Object { $_.Item.Kind -in 'is', 'isnot' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $entry.Item.Individual.Key }).Count -gt 0) { $about = $true }
         }
     }
+    if ($several) { $about = $true }
     if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
     # A message with no general rule is taken only when it is about what a rule told is about: "all dogs are animals"
     # was told, "Rex is a dog" and "is Rex an animal?" are for it, "my cat is called Luna" and "do I take the bus?" are

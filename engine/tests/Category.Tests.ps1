@@ -706,6 +706,30 @@ Describe 'General rules told in words' {
             (Ask 'Luigi est-il Rome ?') -join ' ' | Should -Not -BeLike 'Oui*'
         }
 
+        It 'asks of a pronoun for the one told of last that agrees with it: <Asked>' -ForEach @(
+            @{ Told = 'toutes les étudiantes sont curieuses', 'Marie est une étudiante', 'Tom est un chat'; Asked = 'est-elle curieuse ?'; Said = 'Oui, Marie est curieuse*' }
+            @{ Told = 'tous les chats aiment le lait', 'Tom est un chat'; Asked = 'aime-t-il le lait ?'; Said = 'Oui, Tom aime le lait*' }
+            @{ Told = 'all cats like milk', 'Tom is a cat'; Asked = 'does he like milk?'; Said = 'Yes, Tom does like milk*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'stands a pronoun for nobody when it agrees with none, or with several' {
+            Tell 'tous les chiens aboient', 'Rex et Max sont des chiens'
+            (Ask 'aboient-ils ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            Tell 'toutes les étudiantes sont curieuses', 'Tom est un chat'
+            (Ask 'est-elle curieuse ?') -join ' ' | Should -Not -BeLike 'Oui*'
+        }
+
+        It 'reads several things told in one message, a pronoun standing for one told before it' {
+            Tell 'Tom est un chat. Il est noir.'
+            (Ask 'Tom est-il noir ?') -join ' ' | Should -BeLike 'Oui*'
+            Tell 'Rex is a dog. Max is a cat.'
+            (Ask 'is Max a cat?') -join ' ' | Should -BeLike 'Yes*'
+            (Ask 'is Rex a cat?') -join ' ' | Should -Not -BeLike 'Yes*'
+        }
+
         It 'reads an object said with two small words the same as with one' {
             Tell "aucun chien ne mange d'herbe", 'Rex est un chien'
             (Ask "Rex mange-t-il de l'herbe ?") -join ' ' | Should -BeLike 'Non*'

@@ -1,8 +1,8 @@
 {
-  "Version": "1.1",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them). Written by hand, never learned from.",
+  "Version": "1.2",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "963142dd55c70932ce33c9319d8a3e8eb5655f519e0aaa70e9210854010d5a61",
+  "TestHash": "ca39d4423a9b7631cb34ec9fa0c1bf36f1dc30b64d6036a07f5833d598ce0a11",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -7497,6 +7497,1164 @@
             ],
             "Avoid": [
               "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-pronoun-ask-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens aboient"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "aboie-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-pronoun-ask-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats aiment le lait"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "aime-t-il le lait ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-pronoun-ask-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs bark"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "does he bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-pronoun-ask-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "all horses eat grass"
+        },
+        {
+          "Text": "Max is a horse"
+        },
+        {
+          "Text": "does he eat grass?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-pronoun-ask-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde bellen"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "bellt er?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-pronoun-ask-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Pferde fressen Gras"
+        },
+        {
+          "Text": "Max ist ein Pferd"
+        },
+        {
+          "Text": "frisst er Gras?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-pronoun-ask-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden blaffen"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "blaft hij?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-pronoun-ask-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "alle paarden eten gras"
+        },
+        {
+          "Text": "Max is een paard"
+        },
+        {
+          "Text": "eet hij gras?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-pronoun-ask-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros ladran"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿ladra él?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-pronoun-ask-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los caballos comen hierba"
+        },
+        {
+          "Text": "Max es un caballo"
+        },
+        {
+          "Text": "¿come él hierba?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-pronoun-ask-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães latem"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "ele late?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-pronoun-ask-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cavalos comem erva"
+        },
+        {
+          "Text": "Max é um cavalo"
+        },
+        {
+          "Text": "ele come erva?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-pronoun-ask-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani abbaiano"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "lui abbaia?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-pronoun-ask-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "pronoun-ask"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cavalli mangiano erba"
+        },
+        {
+          "Text": "Max è un cavallo"
+        },
+        {
+          "Text": "lui mangia erba?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-message-two-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est un chien. Max est un chat."
+        },
+        {
+          "Text": "Max est-il un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-message-two-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella est une vache. Tweety est un oiseau."
+        },
+        {
+          "Text": "Tweety est-il un oiseau ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-message-two-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is a dog. Max is a cat."
+        },
+        {
+          "Text": "is Max a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-message-two-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella is a cow. Tweety is a bird."
+        },
+        {
+          "Text": "is Tweety a bird?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-message-two-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist ein Hund. Max ist eine Katze."
+        },
+        {
+          "Text": "ist Max eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-message-two-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella ist eine Kuh. Tweety ist ein Vogel."
+        },
+        {
+          "Text": "ist Tweety ein Vogel?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-message-two-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es un perro. Max es un gato."
+        },
+        {
+          "Text": "¿es Max un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-message-two-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella es una vaca. Tweety es un pájaro."
+        },
+        {
+          "Text": "¿es Tweety un pájaro?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-message-two-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is een hond. Max is een kat."
+        },
+        {
+          "Text": "is Max een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-message-two-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella is een koe. Tweety is een vogel."
+        },
+        {
+          "Text": "is Tweety een vogel?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-message-two-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é um cão. Max é um gato."
+        },
+        {
+          "Text": "Max é um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-message-two-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella é uma vaca. Tweety é um pássaro."
+        },
+        {
+          "Text": "Tweety é um pássaro?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-message-two-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è un cane. Max è un gatto."
+        },
+        {
+          "Text": "Max è un gatto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-message-two-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "message-two"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella è una mucca. Tweety è un uccello."
+        },
+        {
+          "Text": "Tweety è un uccello?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-message-pronoun-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est un chien. Il est grand."
+        },
+        {
+          "Text": "Rex est-il grand ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-message-pronoun-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella est une vache. Elle est calme."
+        },
+        {
+          "Text": "Bella est-elle calme ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-message-pronoun-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is a dog. He is big."
+        },
+        {
+          "Text": "is Rex big?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-message-pronoun-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella is a cow. She is calm."
+        },
+        {
+          "Text": "is Bella calm?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-message-pronoun-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist ein Hund. Er ist groß."
+        },
+        {
+          "Text": "ist Rex groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-message-pronoun-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella ist eine Kuh. Sie ist ruhig."
+        },
+        {
+          "Text": "ist Bella ruhig?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-message-pronoun-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is een hond. Hij is groot."
+        },
+        {
+          "Text": "is Rex groot?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-message-pronoun-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella is een koe. Zij is rustig."
+        },
+        {
+          "Text": "is Bella rustig?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-message-pronoun-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es un perro. Él es grande."
+        },
+        {
+          "Text": "¿es Rex grande?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-message-pronoun-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella es una vaca. Ella es tranquila."
+        },
+        {
+          "Text": "¿es Bella tranquila?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-message-pronoun-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é um cão. Ele é grande."
+        },
+        {
+          "Text": "Rex é grande?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-message-pronoun-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella é uma vaca. Ela é calma."
+        },
+        {
+          "Text": "Bella é calma?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-message-pronoun-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è un cane. Lui è grande."
+        },
+        {
+          "Text": "Rex è grande?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-message-pronoun-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "message-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Bella è una mucca. Lei è tranquilla."
+        },
+        {
+          "Text": "Bella è tranquilla?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
             ]
           }
         }

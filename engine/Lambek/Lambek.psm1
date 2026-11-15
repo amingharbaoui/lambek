@@ -132,6 +132,8 @@ $script:ProblemTrigger = $null
 $script:CategoryWords = $null
 $script:LogicWords = $null
 $script:CategorySupport = $null
+$script:CategoryResolving = $false
+$script:CategoryMessage = $null
 $script:CategoryLemmas = $null
 $script:CategoryReadings = $null
 # How many meanings of a word the dictionary is asked about, and how far up its kinds are followed

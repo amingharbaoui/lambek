@@ -467,10 +467,13 @@ function Read-LambekCategoryTagged {
         $lemmas[(ConvertTo-LambekNormalizedText -Text "$($reading.Form)")] = ConvertTo-LambekNormalizedText -Text "$($reading.Lemma)"
     }
     $values['lemmas'] = $lemmas
+    # (a verb is written with a capital only for being said first: "Aboie-t-il" is "aboie")
+    $lower = { param($r) $form = "$($readings[$r].Form)"; if ($upos[$r] -in 'VERB', 'AUX' -and $form.Length -gt 0) { $form.Substring(0, 1).ToLowerInvariant() + $form.Substring(1) } else { $form } }
+    if ($asking) { $values['asked'] = $true }
     $name = $(if ($individual) { 'n' } else { 's' })
     if ($alone -and $null -ne $main) {
         # (where the one ends and what is done to begins is not said; the first cut that reads, from the left)
-        $values['v'] = "$($readings[$main].Form)"
+        $values['v'] = & $lower $main
         $values['lemma'] = "$($readings[$main].Lemma)"
         for ($j = $from + 1; $j -le $readings.Count; $j++) {
             $cut = $values.Clone()
@@ -481,7 +484,7 @@ function Read-LambekCategoryTagged {
         }
     }
     elseif ($null -ne $main) {
-        $values['v'] = "$($readings[$main].Form)"
+        $values['v'] = & $lower $main
         $values['lemma'] = "$($readings[$main].Lemma)"
         $object = & $text $(if ($null -ne $objectFrom) { $objectFrom } else { $main + 1 }) $readings.Count
         if ($object) { $values['o'] = $object }
@@ -513,7 +516,7 @@ function Read-LambekCategoryTagged {
         $item = Read-LambekCategoryPart -Kind $kind -Values $cut -Language $Language
         if (-not $item) { continue }
         if ($null -ne $helper -and $item.Verb) {
-            $item.Written.Predicate = "$($readings[$helper].Form)"
+            $item.Written.Predicate = & $lower $helper
             $item.Written.Object = " $($readings[$main].Form)$($item.Written.Object)"
         }
         return $item
