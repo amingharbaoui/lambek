@@ -529,6 +529,21 @@ function ConvertTo-LambekCategoryTerm {
     if (-not $Bare -and $tokens.Count -gt 0 -and $tokens[0] -in $articles) { $article = $tokens[0]; $tokens = @($tokens | Select-Object -Skip 1) }
     # (an object may be said with two such small words, as "de la" in "de la viande": "some of the" said in one)
     if ($Object -and -not $Bare -and $tokens.Count -gt 1 -and $tokens[0] -in $articles) { $article = $tokens[0]; $tokens = @($tokens | Select-Object -Skip 1) }
+    # (and the article a language puts before an adjective in the plural: "de" in "de grands tenors", where "des"
+    # goes before the noun alone. Read so by the tags of the words in context, or the article the language was learned
+    # to say after a negation, which is the same word ("n'a pas de poils"); only before an adjective in the plural,
+    # "de Paris" keeps its "de")
+    if (-not $Bare -and $tokens.Count -ge 3 -and $tokens[0] -notin $articles) {
+        $forms = Get-LambekFormModel -Language $Language
+        if ($forms) {
+            $next = @($forms.Read([string[]] @($tokens)))
+            $logic = Get-LambekLogicWord -Language $Language
+            $tagged = $next.Count -gt 0 -and "$($next[0].Upos)" -eq 'DET' -and "|$($next[0].Feats)|" -match '\|PronType=Art\|'
+            $negated = $logic -and $logic.Negated -and (ConvertTo-LambekNormalizedText -Text "$($logic.Negated)") -eq $tokens[0]
+            $leading = $next.Count -eq $tokens.Count -and ($tagged -or $negated)
+            if ($leading -and "$($next[1].Upos)" -eq 'ADJ' -and "|$($next[1].Feats)|" -match '\|Number=Plur\|') { $article = $tokens[0]; $tokens = @($tokens | Select-Object -Skip 1) }
+        }
+    }
     if ($tokens.Count -eq 0) { return $null }
     $of = -1
     for ($i = 1; $i -lt $tokens.Count; $i++) { if ($tokens[$i] -in @($data['Of'])) { $of = $i; break } }

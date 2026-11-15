@@ -693,6 +693,19 @@ Describe 'General rules told in words' {
             @((Ask $Asked) -split "`n")[0] | Should -Be $Said
         }
 
+        It 'reads the article said before an adjective in the plural: <Told>' -ForEach @(
+            @{ Told = 'tous les Italiens sont de grands ténors', 'Luigi est un Italien'; Asked = 'Luigi est-il un grand ténor ?', 'Luigi est-il un ténor ?' }
+            @{ Told = 'tous les chats sont de petits animaux', 'Tom est un chat'; Asked = 'Tom est-il un animal ?' }
+        ) {
+            Tell $Told
+            foreach ($question in $Asked) { (Ask $question) -join ' ' | Should -BeLike 'Oui*' }
+        }
+
+        It 'keeps the "de" of where one comes from' {
+            Tell 'tous les Italiens sont de Rome', 'Luigi est un Italien'
+            (Ask 'Luigi est-il Rome ?') -join ' ' | Should -Not -BeLike 'Oui*'
+        }
+
         It 'reads an object said with two small words the same as with one' {
             Tell "aucun chien ne mange d'herbe", 'Rex est un chien'
             (Ask "Rex mange-t-il de l'herbe ?") -join ' ' | Should -BeLike 'Non*'
