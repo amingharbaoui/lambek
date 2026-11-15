@@ -682,6 +682,17 @@ Describe 'General rules told in words' {
             (Ask 'trois chats sont noirs') -join ' ' | Should -BeLike '*ne peuvent pas être vraies ensemble*'
         }
 
+        It 'says a verb told in a past with the verb that helps it: <Asked>' -ForEach @(
+            @{ Told = 'tous les chats ont mangé du poisson', 'Tom est un chat'; Asked = 'Tom a-t-il mangé du poisson ?'; Said = 'Oui : Tom a mangé du poisson.' }
+            @{ Told = 'aucun chat n''a mangé', 'Tom est un chat'; Asked = 'Tom a-t-il mangé ?'; Said = 'Non : Tom n''a pas mangé.' }
+            @{ Told = 'all cats have eaten', 'Tom is a cat'; Asked = 'has Tom eaten?'; Said = 'Yes: Tom has eaten.' }
+            @{ Told = 'no cat has eaten', 'Tom is a cat'; Asked = 'has Tom eaten?'; Said = 'No: Tom has not eaten.' }
+            @{ Told = 'alle Katzen haben gegessen', 'Tom ist eine Katze'; Asked = 'hat Tom gegessen?'; Said = 'Ja. Tom hat gegessen.' }
+        ) {
+            Tell $Told
+            @((Ask $Asked) -split "`n")[0] | Should -Be $Said
+        }
+
         It 'reads an object said with two small words the same as with one' {
             Tell "aucun chien ne mange d'herbe", 'Rex est un chien'
             (Ask "Rex mange-t-il de l'herbe ?") -join ' ' | Should -BeLike 'Non*'

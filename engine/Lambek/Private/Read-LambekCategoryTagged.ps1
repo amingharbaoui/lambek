@@ -338,6 +338,7 @@ function Read-LambekCategoryTagged {
     $objectFrom = $null
     $copula = $null
     $subjectEnd = $null
+    $v = $null
     if ($front) {
         # (asked first: the copula is followed by the one and what it is, where the one ends is cut below; any other
         # verb that asks, by the one and the verb: "does my phone have a sensor")
@@ -348,6 +349,12 @@ function Read-LambekCategoryTagged {
             if ($after.Count -eq 0) { return $null }
             $main = $after[0]
             $subjectEnd = $main
+            # (asked first with a verb its treebanks also write as a helper, the verb after it in its past participle:
+            # helping it, "hat Tom gegessen")
+            if ($upos[$first] -eq 'VERB' -and (& $has $main 'VerbForm=Part')) {
+                $tags = $null
+                if ($model.Tags.TryGetValue("$($readings[$first].Form)".ToLowerInvariant(), [ref] $tags) -and @($tags | Where-Object { "$_".StartsWith('AUX|') }).Count -gt 0) { $upos[$first] = 'AUX' }
+            }
             # (asked with a verb that changes what is said: "can Klaus travel", the verb is "can", what follows what it
             # says; "does Klaus travel" is only "travel")
             if ($upos[$first] -eq 'AUX' -and (& $has $main 'VerbForm=Inf') -and
@@ -362,6 +369,14 @@ function Read-LambekCategoryTagged {
         if ($verb.Count -eq 0) { return $null }
         $v = $verb[0]
         $subjectEnd = $v
+        # (a verb the tagger read as said alone, right before one said in its past participle, that its treebanks also
+        # write as a helper: helping it, "all cats have eaten" as "all cats have not eaten")
+        $after = $v + 1
+        while ($after -lt $readings.Count -and $negative[$after]) { $after++ }
+        if ($upos[$v] -eq 'VERB' -and $after -lt $readings.Count -and $upos[$after] -eq 'VERB' -and (& $has $after 'VerbForm=Part')) {
+            $tags = $null
+            if ($model.Tags.TryGetValue("$($readings[$v].Form)".ToLowerInvariant(), [ref] $tags) -and @($tags | Where-Object { "$_".StartsWith('AUX|') }).Count -gt 0) { $upos[$v] = 'AUX' }
+        }
         if (& $isCopula $v) { $copula = $v }
         elseif ($upos[$v] -eq 'AUX') {
             # (a verb that helps another, with only what says not between: "a mange", "don't fly")
@@ -378,6 +393,14 @@ function Read-LambekCategoryTagged {
             }
         }
         else { $main = $v }
+    }
+    # (a verb said with the one that helps it into a past: "a mange", "has eaten", "ont assiste"; what it says is the
+    # verb, how it is said again keeps the helper, "Tom a mange", not "Tom mange")
+    $helper = $null
+    if ($null -ne $main -and $upos[$main] -eq 'VERB' -and (& $has $main 'VerbForm=Part')) {
+        $by = $(if ($front) { $first } elseif ($null -ne $v -and $v -ne $main) { $v } else { $null })
+        if ($null -ne $by -and $by -ne $main -and $upos[$by] -eq 'AUX' -and
+            (ConvertTo-LambekNormalizedText -Text "$($readings[$by].Lemma)") -notin @(Get-LambekCategorySupport -Language $Language)) { $helper = $by }
     }
     $denied = @(for ($r = $from; $r -lt $readings.Count; $r++) { if ($negative[$r]) { $r } }).Count -gt 0
 
@@ -488,7 +511,12 @@ function Read-LambekCategoryTagged {
     }
     foreach ($cut in $cuts) {
         $item = Read-LambekCategoryPart -Kind $kind -Values $cut -Language $Language
-        if ($item) { return $item }
+        if (-not $item) { continue }
+        if ($null -ne $helper -and $item.Verb) {
+            $item.Written.Predicate = "$($readings[$helper].Form)"
+            $item.Written.Object = " $($readings[$main].Form)$($item.Written.Object)"
+        }
+        return $item
     }
     return $null
 }

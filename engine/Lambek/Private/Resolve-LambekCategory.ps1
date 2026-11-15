@@ -961,9 +961,10 @@ function Get-LambekCategorySentence {
     $template = $null
     foreach ($candidate in $candidates) { if ($sentences.Contains($candidate) -and "$($sentences[$candidate])") { $template = $sentences[$candidate]; break } }
     if (-not $template) { return $null }
-    # (a verb that changes what is said is said as it was, without the word the language says "does" with: "Klaus can
-    # travel", not "Klaus does can travel")
-    if ($Item.Verb -and $key -eq 'does') {
+    # (a verb that changes what is said, or helps another into a past, is said as it was, without the word the language
+    # says "does" with: "Klaus can travel", not "Klaus does can travel"; "Tom has eaten"; and what says not after it:
+    # "Tom has not eaten")
+    if ($Item.Verb -and $key -in 'does', 'doesnot') {
         $model = Get-LambekFormModel -Language $Language
         $said = "$($Item.Written.Predicate)".Trim()
         if ($model -and $said -and $said -notmatch '\s') {
@@ -972,11 +973,18 @@ function Get-LambekCategorySentence {
             $reading = @($model.Read([string[]] (@($said) + $next)))
             $support = @(Get-LambekCategorySupport -Language $Language)
             if ($next.Count -eq 1 -and $reading.Count -eq 2 -and "$($reading[0].Upos)" -eq 'AUX' -and $support.Count -gt 0 -and
-                "|$($reading[1].Feats)|" -match '\|VerbForm=Inf\|' -and
+                "|$($reading[1].Feats)|" -match '\|VerbForm=(Inf|Part)\|' -and
                 (ConvertTo-LambekNormalizedText -Text "$($reading[0].Lemma)") -notin $support) {
-                $words = @(($template -replace '\{\d+\}', ' ').Trim() -split '\s+' | Where-Object { $_ })
-                foreach ($word in $words) { $template = [regex]::Replace($template, "\s*(?<!\{)\b$([regex]::Escape($word))\b(?!\})", '') }
-                $template = ($template -replace '\}\{', '} {') -replace '\{0\}\{1\}', '{0} {1}'
+                # (the words before the verb: those of the helper "does" go, the others, "not", come after it)
+                $between = [regex]::Match($template, '\{0\}(?<w>.*?)\{1\}')
+                if ($between.Success) {
+                    $kept = @(foreach ($word in @($between.Groups['w'].Value.Trim() -split '\s+' | Where-Object { $_ })) {
+                            $lemma = @($model.Read([string[]] @($word)))
+                            if ($lemma.Count -eq 1 -and (ConvertTo-LambekNormalizedText -Text "$($lemma[0].Lemma)") -in $support) { continue }
+                            $word
+                        })
+                    $template = $template.Substring(0, $between.Index) + '{0} {1}' + $(if ($kept.Count -gt 0) { ' ' + ($kept -join ' ') } else { '' }) + $template.Substring($between.Index + $between.Length)
+                }
             }
         }
     }
