@@ -641,6 +641,47 @@ Describe 'General rules told in words' {
             (Ask 'does Klaus travel freely within Europe?') -join ' ' | Should -Not -BeLike 'Yes*'
         }
 
+        It 'reads a number, an article that says not which, or a word that says not how many as some: <Told>' -ForEach @(
+            @{ Told = 'trois chats sont noirs'; Asked = 'certains chats sont-ils noirs ?'; Yes = 'Oui*' }
+            @{ Told = 'plusieurs chiens aboient'; Asked = 'des chiens aboient-ils ?'; Yes = 'Oui : certains chiens aboient*' }
+            @{ Told = 'des souris sont grises'; Asked = 'des souris sont-elles grises ?'; Yes = 'Oui : certaines souris sont grises*' }
+            @{ Told = 'un Irlandais a reçu le prix Nobel'; Asked = 'un Irlandais a-t-il reçu le prix Nobel ?'; Yes = 'Oui*' }
+            @{ Told = 'three dogs bark'; Asked = 'do some dogs bark?'; Yes = 'Yes*' }
+            @{ Told = 'an Irishman won the Nobel prize'; Asked = 'did an Irishman win the Nobel prize?'; Yes = 'Yes*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Yes
+        }
+
+        It 'says no more of one than that some are' {
+            Tell 'trois chats sont noirs', 'Minou est un chat'
+            (Ask 'Minou est-il noir ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            (Ask 'tous les chats sont-ils noirs ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            Tell 'Sean is an Irishman', 'an Irishman won the Nobel prize'
+            (Ask 'did Sean win the Nobel prize?') -join ' ' | Should -Not -BeLike 'Yes*'
+        }
+
+        It 'reads no some where how many may be none' {
+            Tell 'moins de trois chats sont noirs'
+            (Ask 'certains chats sont-ils noirs ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            Tell 'few cats are black'
+            (Ask 'are some cats black?') -join ' ' | Should -Not -BeLike 'Yes*'
+        }
+
+        It 'answers no question for more than one from one: <Asked>' -ForEach @(
+            @{ Asked = 'plusieurs comptables ont-ils assisté à la réunion ?' }
+            @{ Asked = 'trois comptables ont-ils assisté à la réunion ?' }
+        ) {
+            Tell 'un seul comptable a assisté à la réunion'
+            (Ask $Asked) -join ' ' | Should -Not -BeLike 'Oui*'
+            (Ask 'des comptables ont-ils assisté à la réunion ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'finds that some said with a number cannot be with none' {
+            Tell 'aucun chat n''est noir'
+            (Ask 'trois chats sont noirs') -join ' ' | Should -BeLike '*ne peuvent pas être vraies ensemble*'
+        }
+
         It 'reads an object said with two small words the same as with one' {
             Tell "aucun chien ne mange d'herbe", 'Rex est un chien'
             (Ask "Rex mange-t-il de l'herbe ?") -join ' ' | Should -BeLike 'Non*'

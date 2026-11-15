@@ -282,16 +282,54 @@ function Read-LambekCategoryTagged {
     $from = $(if ($front) { $first + 1 } else { $first })
     $quantity = $null
     $quantifier = ''
+    $implied = $false
     $q = $from
     while ($q -lt $readings.Count -and $negative[$q]) { $q++ }
     if ($q -lt $readings.Count -and $upos[$q] -notin 'NOUN', 'PROPN', 'VERB', 'AUX') {
         $form = "$($readings[$q].Form)".ToLowerInvariant()
+        # (or a form of one, read with its lemma: "nessuna" is "nessuno", which says none)
+        $base = $(if ($upos[$q] -in 'DET', 'PRON' -and $readings[$q].Lemma) { "$($readings[$q].Lemma)".ToLowerInvariant() } else { '' })
+        if (-not $logic.Kinds.ContainsKey($form) -and $base -and $logic.Kinds.ContainsKey($base)) { $form = $base }
         if ($logic.Kinds.ContainsKey($form)) {
             $quantity = $logic.Kinds[$form]
             $quantifier = $form
             $q++
             if ($q -lt $readings.Count -and $upos[$q] -eq 'DET' -and (& $has $q 'PronType=Art')) { $q++ }
             $from = $q
+        }
+        elseif ($q + 2 -lt $readings.Count -and $upos[$q] -eq 'ADP' -and $upos[$q + 1] -eq 'DET' -and (& $has ($q + 1) 'PronType=Art') -and
+            $of[$q] -eq $of[$q + 1] -and $upos[$q + 2] -in 'NOUN', 'ADJ') {
+            # (one written word for a preposition and its article, first: the language's article of some, as "des" in
+            # "des chats sont noirs", where nothing comes before to go "of" from)
+            $quantity = 'some'
+            $implied = $true
+            $from = $q + 2
+        }
+        elseif ($q + 1 -lt $readings.Count -and $upos[$q + 1] -in 'NOUN', 'ADJ') {
+            # (a number of things, an article that says not which, or a word the tags say does not say which ("quelques",
+            # "plusieurs", PronType=Ind): at least one, as "some" says. "trois chats sont noirs", "un Irlandais a recu le
+            # prix": some are. Only a number the language writes and that is one or more: "zero" and "moins de trois"
+            # say no such thing)
+            $count = $null
+            if ($upos[$q] -eq 'NUM') {
+                $said = "$($readings[$q].Form)"
+                $numbers = (Get-LambekLexicon -Language $Language).Numbers
+                if ($said -match '^\d+$') { $count = [long] $said }
+                elseif ($numbers -and $numbers.ContainsKey($said.ToLowerInvariant()) -and "$($numbers[$said.ToLowerInvariant()])" -match '^\d+$') { $count = [long] "$($numbers[$said.ToLowerInvariant()])" }
+            }
+            # (a word that says not which only in the plural: one said of one thing may say none, as "nessuna" or "nul"
+            # do where a tagger reads them so; one that says it of several says there are some. Never a word that
+            # says not)
+            $denies = (& $has $q 'Polarity=Neg') -or (& $has $q 'PronType=Neg')
+            $which = ((& $has $q 'Definite=Ind') -and (& $has $q 'PronType=Art')) -or ((& $has $q 'PronType=Ind') -and (& $has $q 'Number=Plur') -and -not $Question)
+            $article = $upos[$q] -eq 'DET' -and -not $denies -and $which
+            # (told, "trois" and "plusieurs" say at least one; asked, they ask for more than one, which "some" does not
+            # answer: "un seul comptable" says nothing of whether "plusieurs comptables" came. An article asks for one)
+            if (($null -ne $count -and $count -ge 1 -and (-not $Question -or $count -eq 1)) -or $article) {
+                $quantity = 'some'
+                $implied = $true
+                $from = $q + 1
+            }
         }
     }
 
@@ -353,6 +391,30 @@ function Read-LambekCategoryTagged {
             $quantity = 'all'
             # (the article of the plural is its word of how many: "les")
             if ($upos[$from] -eq 'DET' -and (& $has $from 'Definite=Def') -and (& $has $from 'Number=Plur')) { $quantifier = "$($readings[$from].Form)".ToLowerInvariant(); $from++ }
+        }
+    }
+    # (some said with no word of some is said again with the language's own, agreed with the kind it is of: "des
+    # chats sont noirs" is answered "certains chats sont noirs", "des souris", "certaines souris"; one of them, as it
+    # was said)
+    if ($implied) {
+        $end = $(if ($null -ne $subjectEnd) { $subjectEnd } else { $readings.Count })
+        $nouns = @(for ($r = $from; $r -lt $end; $r++) { if ($upos[$r] -eq 'NOUN') { $r } })
+        if ($nouns.Count -gt 0 -and (& $has $nouns[-1] 'Number=Plur')) {
+            # (the gender an adjective that agrees with it says first, as a noun may be written the same in both:
+            # "souris")
+            $agreeing = @(for ($r = $nouns[-1] + 1; $r -lt $readings.Count; $r++) { if ($upos[$r] -eq 'ADJ' -and (& $has $r 'Number=Plur') -and "|$($readings[$r].Feats)|" -match '\|Gender=') { $r } })
+            $by = $(if ($agreeing.Count -gt 0) { $agreeing[0] } else { $nouns[-1] })
+            $gender = $(if ("|$($readings[$by].Feats)|" -match '\|Gender=(\w+)\|') { $Matches[1] } else { '' })
+            $sentences = (Get-LambekCategoryVocabulary -Language $Language).Data['Sentences']
+            foreach ($word in @($logic.Kinds.Keys | Where-Object { $logic.Kinds[$_] -eq 'some' } | Sort-Object)) {
+                if (-not $sentences -or -not ($sentences.Contains("some|$word") -and $sentences.Contains("somedo|$word"))) { continue }
+                $single = @($model.Read([string[]] @($word)))
+                if ($single.Count -ne 1 -or "|$($single[0].Feats)|" -notmatch '\|Number=Plur\|') { continue }
+                $other = $(if ("|$($single[0].Feats)|" -match '\|Gender=(\w+)\|') { $Matches[1] } else { '' })
+                if ($gender -and $other -and $gender -ne $other) { continue }
+                $quantifier = $word
+                break
+            }
         }
     }
     $kind = switch ($quantity) {

@@ -127,10 +127,11 @@ function Get-LambekLanguageScore {
     # often, or never and its lexicon does not hold, costs a point, as a word of another language does above, never more
     # ("ningun perro come hierba" is Spanish whatever "come" says in Italian). The languages further behind lose that
     # point too, so they stay behind; names, numbers and signs say nothing, a word no model knows says nothing either.
-    # Nothing to tell apart, nothing read: the forms of the other languages are not loaded for it
+    # A sentence with no small word at all is told apart by these words alone ("trois chiens aboient": a number, then
+    # two words only French writes)
     $known = @{}
     $first = ($scores.Values | Measure-Object -Maximum).Maximum
-    if ($Forms -and $first -gt 0) {
+    if ($Forms -and $lower.Count -gt 0) {
         foreach ($language in $languages) {
             if ($scores[$language] -lt $first - 2) { continue }
             $counts = Get-LambekWrittenWord -Language $language
