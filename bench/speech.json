@@ -94,8 +94,8 @@
       ],
       "Ask": "Pingu vole-t-il ?",
       "Best": [
-        "Non, Pingu ne vole pas : c'est un pingouin et les pingouins ne volent pas.",
-        "Non, Pingu ne vole pas, car c'est un pingouin et les pingouins ne volent pas."
+        "Normalement non, Pingu ne vole pas : c'est un pingouin et les pingouins ne volent pas.",
+        "Normalement non, Pingu ne vole pas, car c'est un pingouin et les pingouins ne volent pas."
       ]
     },
     {

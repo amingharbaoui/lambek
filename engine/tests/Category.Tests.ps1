@@ -337,7 +337,8 @@ Describe 'General rules told in words' {
 
         It 'drops what it supposed when an exception is told' {
             Tell 'normalement, les oiseaux volent', 'Tweety est un oiseau', 'les pingouins ne volent pas', 'tous les pingouins sont des oiseaux', 'Tweety est un pingouin'
-            Ask 'Tweety vole-t-il ?' | Should -Be "Non, Tweety ne vole pas : c'est un pingouin et les pingouins ne volent pas."
+            # (said of penguins with no word of how many, it holds normalement: the narrower rule still wins)
+            (Ask 'Tweety vole-t-il ?') -join "`n" | Should -Be "Normalement non, Tweety ne vole pas : c'est un pingouin et les pingouins ne volent pas.`nSi Tweety est une exception, dites-le-moi."
         }
 
         It 'never supposes against what was told, and never calls an exception a contradiction' {
@@ -365,7 +366,7 @@ Describe 'General rules told in words' {
         It 'reads what most of a kind do, and speaks of the user: <Question>' -ForEach @(
             @{ Told = 'la plupart des oiseaux volent', 'je suis un oiseau'; Question = 'est-ce que je vole ?'; First = 'Normalement oui, vous volez : vous êtes un oiseau et la plupart des oiseaux volent.'; Last = 'Si vous êtes une exception, dites-le-moi.' }
             @{ Told = 'Birds normally fly.', 'Tweety is a bird.'; Question = 'Does Tweety fly?'; First = 'Normally yes, Tweety does fly: Tweety is a bird and birds normally fly.'; Last = 'If Tweety is an exception, tell me.' }
-            @{ Told = 'Most birds fly.', 'Penguins do not fly.', 'All penguins are birds.', 'Pingu is a penguin.'; Question = 'Does Pingu fly?'; First = 'No, Pingu does not fly: Pingu is a penguin and penguins do not fly.'; Last = 'No, Pingu does not fly: Pingu is a penguin and penguins do not fly.' }
+            @{ Told = 'Most birds fly.', 'Penguins do not fly.', 'All penguins are birds.', 'Pingu is a penguin.'; Question = 'Does Pingu fly?'; First = 'Normally no, Pingu does not fly: Pingu is a penguin and penguins do not fly.'; Last = 'If Pingu is an exception, tell me.' }
         ) {
             Tell $Told
             $lines = @((Ask $Question) -split "`n")
@@ -460,11 +461,11 @@ Describe 'General rules told in words' {
         }
 
         It 'says what is not done to with the article a negation takes, learned: <Question>' -ForEach @(
-            @{ Told = "les poissons n'ont pas de poils", 'Nemo est un poisson'; Question = 'Nemo a-t-il des poils ?'; Said = "Non : Nemo n'a pas de poils.*" }
+            @{ Told = "les poissons n'ont pas de poils", 'Nemo est un poisson'; Question = 'Nemo a-t-il des poils ?'; Said = "Normalement non : Nemo n'a pas de poils.*" }
             @{ Told = "aucun poisson n'a d'ailes", 'Nemo est un poisson'; Question = 'Nemo a-t-il des ailes ?'; Said = "Non : Nemo n'a pas d'ailes.*" }
             @{ Told = 'aucun chien ne mange une salade', 'Rex est un chien'; Question = 'Rex mange-t-il une salade ?'; Said = 'Non, Rex ne mange pas de salade*' }
-            @{ Told = "les chats n'aiment pas les légumes", 'Tom est un chat'; Question = 'Tom aime-t-il les légumes ?'; Said = "Non, Tom n'aime pas les légumes*" }
-            @{ Told = 'fish do not have fur', 'Nemo is a fish'; Question = 'does Nemo have fur?'; Said = 'No: Nemo does not have fur.*' }
+            @{ Told = "les chats n'aiment pas les légumes", 'Tom est un chat'; Question = 'Tom aime-t-il les légumes ?'; Said = "Normalement non, Tom n'aime pas les légumes*" }
+            @{ Told = 'fish do not have fur', 'Nemo is a fish'; Question = 'does Nemo have fur?'; Said = 'Normally no: Nemo does not have fur.*' }
         ) {
             Tell $Told
             Ask $Question | Should -BeLike $Said
@@ -579,6 +580,46 @@ Describe 'General rules told in words' {
             $replaced = @($lines | Where-Object { "$($_.Hash)" -eq "$($replacing[-1].Replaces)" })
             $replaced.Count | Should -Be 1
             $replaced[0].Text | Should -Be 'Pip is a bird'
+        }
+    }
+
+    Context 'Adjectives and plurals are read for what they say, no more' {
+
+        It 'keeps an adjective with its noun: a big ant is no big insect' {
+            Tell 'all ants are insects', 'Bob is a big ant'
+            (Ask 'is Bob big?') -join ' ' | Should -BeLike 'Yes*'
+            (Ask 'is Bob a big insect?') -join ' ' | Should -Not -BeLike 'Yes*'
+            Tell 'toutes les fourmis sont des insectes', 'Bob est une grosse fourmi'
+            (Ask 'Bob est-il un gros insecte ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            (Ask 'Bob est-il un insecte ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'reads an adjective that takes away what its noun says: <Told>' -ForEach @(
+            @{ Told = 'Jean est un ancien étudiant'; Asked = 'Jean est-il un étudiant ?'; Again = 'Jean est-il un ancien étudiant ?'; Yes = 'Oui*' }
+            @{ Told = 'Bob is a former soldier'; Asked = 'is Bob a soldier?'; Again = 'is Bob a former soldier?'; Yes = 'Yes*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -BeLike $Yes
+            (Ask $Again) -join ' ' | Should -BeLike $Yes
+        }
+
+        It 'keeps the noun of an adjective said after it: "les Grecs anciens" are Grecs' {
+            Tell 'Platon est un Grec ancien', 'tous les Grecs sont des humains'
+            (Ask 'Platon est-il un Grec ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'lets the rule about the narrower kind go first when that kind is one only normalement' {
+            Tell 'normalement, les oiseaux volent', 'les pingouins ne volent pas', 'les pingouins sont des oiseaux', 'Pingu est un pingouin'
+            (Ask 'Pingu vole-t-il ?') -join ' ' | Should -BeLike 'Normalement non*'
+        }
+
+        It 'reads a plural with no word of how many as what holds normalement: <Told>' -ForEach @(
+            @{ Told = 'les chats aiment le lait', 'Minou est un chat'; Asked = 'Minou aime-t-il le lait ?'; Said = 'Normalement oui*'; All = 'tous les chats aiment-ils le lait ?'; Yes = 'Oui*' }
+            @{ Told = 'cats like milk', 'Felix is a cat'; Asked = 'does Felix like milk?'; Said = 'Normally yes*'; All = 'do all cats like milk?'; Yes = 'Yes*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+            (Ask $All) -join ' ' | Should -Not -BeLike $Yes
         }
     }
 

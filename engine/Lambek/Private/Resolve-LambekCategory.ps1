@@ -434,6 +434,13 @@ function Read-LambekCategoryPart {
     }
     # A question about who has no one named; anything else is about someone or about a kind of things
     if (-not $item.Predicate -or ($Kind -ne 'askwho' -and -not $item.Subject -and -not $item.Individual)) { return $null }
+    # A plural said of a kind with no word of how many ("les chats aiment le lait", "cats like milk") is said of the kind,
+    # not of every one: it holds "normalement", unless something told says otherwise. Only "tous", "aucun" and their
+    # like say every one
+    if ($Kind -in 'all', 'no' -and $item.Subject) {
+        $articles = @((Get-LambekCategoryVocabulary -Language $Language).Data['Articles'] | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" })
+        if (-not $item.Quantifier -or $item.Quantifier -in $articles) { $item.Default = $true }
+    }
     return $item
 }
 
@@ -468,7 +475,8 @@ function ConvertTo-LambekCategoryTerm {
     $tokens = @(Get-LambekCategoryToken -Text $Text)
     $articles = @($data['Articles'])
     if ($Object) { $articles = @($data['ObjectArticles']) }
-    if (-not $Bare -and $tokens.Count -gt 0 -and $tokens[0] -in $articles) { $tokens = @($tokens | Select-Object -Skip 1) }
+    $article = $(if (@($articles).Count -gt 0) { "$(@($articles)[0])" } else { '' })
+    if (-not $Bare -and $tokens.Count -gt 0 -and $tokens[0] -in $articles) { $article = $tokens[0]; $tokens = @($tokens | Select-Object -Skip 1) }
     if ($tokens.Count -eq 0) { return $null }
     $of = -1
     for ($i = 1; $i -lt $tokens.Count; $i++) { if ($tokens[$i] -in @($data['Of'])) { $of = $i; break } }
@@ -480,6 +488,7 @@ function ConvertTo-LambekCategoryTerm {
     # (a language whose dialogue Lambek learned reads every sentence by its tags: each word is the lemma its forms model
     # read it with, the same in a rule and in a question, before any dictionary's; "gatos" is "gato" as "gato" is)
     $learned = [bool] $lexicon.Dialogue['Learned']
+    $lemmaOf = [System.Collections.Generic.List[string]]::new()
     foreach ($token in $head) {
         if ($lexicon.StopWords.Contains($token)) { return $null }
         $lemma = $null
@@ -488,6 +497,34 @@ function ConvertTo-LambekCategoryTerm {
         if (-not $lemma -and $Lemmas -and $Lemmas.ContainsKey($token)) { $lemma = $Lemmas[$token] }
         if (-not $lemma) { return $null }
         [void] $atoms.Add($lemma)
+        $lemmaOf.Add($lemma)
+    }
+    # An adjective said with a noun says how one is for that kind of thing, not for any thing: "une grande souris" is a
+    # souris, and grande, but for a souris; it is no "grand animal". The adjective is kept with its noun ("grand/souris")
+    # as well as alone, so "grande" and "souris" follow from it and "grand animal" does not. Which word is the noun is
+    # read by the tags of the forms model of the language; when it does not say one noun and adjectives, as before
+    if ($head.Count -ge 2) {
+        $model = Get-LambekFormModel -Language $Language
+        if ($model) {
+            # (read after an article, as a noun is said: alone, "insecte" may read as an adjective)
+            $tags = @($model.Read([string[]] (@($article | Where-Object { $_ }) + @($head))) | ForEach-Object { "$($_.Upos)" })
+            if ($article) { $tags = @($tags | Select-Object -Skip 1) }
+            $nouns = @(for ($i = 0; $i -lt $tags.Count; $i++) { if ($tags[$i] -eq 'NOUN') { $i } })
+            $adjectives = @(for ($i = 0; $i -lt $tags.Count; $i++) { if ($tags[$i] -eq 'ADJ') { $i } })
+            if ($nouns.Count -eq 1 -and $adjectives.Count -ge 1 -and $nouns.Count + $adjectives.Count -eq $head.Count) {
+                $noun = $lemmaOf[$nouns[0]]
+                foreach ($i in $adjectives) { if ($lemmaOf[$i] -cne $noun) { [void] $atoms.Add("$($lemmaOf[$i])/$noun") } }
+                # An adjective that takes away what the noun says, said before it: "un ancien etudiant" is no etudiant,
+                # "a fake diamond" no diamond (after the noun, "les grecs anciens" are grecs). Only the adjective with
+                # its noun is kept
+                $taking = @($data['Privative'] | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" })
+                $before = @($adjectives | Where-Object { $_ -lt $nouns[0] -and (ConvertTo-LambekNormalizedText -Text $lemmaOf[$_]) -in $taking })
+                if ($before.Count -gt 0) {
+                    [void] $atoms.Remove($noun)
+                    foreach ($i in $before) { [void] $atoms.Remove($lemmaOf[$i]) }
+                }
+            }
+        }
     }
     if ($of -gt 0) {
         $whose = @(foreach ($token in $complement) {

@@ -142,6 +142,18 @@ function Resolve-LambekImagineCategory {
                 -Conclusion (Get-LambekCategoryConclusion -Item $question -Shape $(if ($state -eq 'yes') { 'is' } else { 'isnot' }))
             return ($lines -join "`n")
         }
+        # (what is only supposed there, "normalement", says what it rests on too, and what is only imagined apart)
+        if ($state -in 'usual-yes', 'usual-no') {
+            $usual = Resolve-LambekCategoryUsual -Ask $question -Premises $worldPremises -Statements $worldStatements -Atoms $atoms -Language $Language
+            if ($usual -and $usual.PSObject.Properties['Forms']) {
+                $lines.Add($data['Assume'])
+                foreach ($fact in @($usual.Facts)) { $lines.Add("- $(Format-LambekFact -Fact $fact -Language $Language -Register 'vous' -Bare)") }
+                if ("category($(Get-LambekCategorySignature -Item $Item))" -in @($usual.Assumed)) { $lines.Add("- $Supposed $($imagine['Mark'])") }
+                $lines.Add($imagine['Kept'])
+                Set-LambekLastProof -Facts @($usual.Facts) -Forms @($usual.Forms) -Assumed @($usual.Assumed) -Conclusion (Get-LambekCategoryConclusion -Item $question -Shape $usual.Shape -Usual)
+                return ($lines -join "`n")
+            }
+        }
         $lines.Add($imagine['Kept'])
         Set-LambekLastProof
         return ($lines -join "`n")

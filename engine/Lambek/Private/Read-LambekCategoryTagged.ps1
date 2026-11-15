@@ -349,7 +349,7 @@ function Read-LambekCategoryTagged {
     }
     $values['lemmas'] = $lemmas
     $name = $(if ($individual) { 'n' } else { 's' })
-    if ($alone) {
+    if ($alone -and $null -ne $main) {
         # (where the one ends and what is done to begins is not said; the first cut that reads, from the left)
         $values['v'] = "$($readings[$main].Form)"
         $values['lemma'] = "$($readings[$main].Lemma)"

@@ -26,7 +26,7 @@ Describe 'Worlds imagined with et si' {
         Tell 'normalement, les oiseaux volent', 'les pingouins ne volent pas', 'tous les pingouins sont des oiseaux', 'Tweety est un oiseau'
         Ask 'et si Tweety était un pingouin ?' | Should -Be (@(
                 'Dans ce monde imaginé (Tweety était un pingouin) :'
-                '- Tweety ne volerait pas.'
+                '- normalement, Tweety ne volerait pas.'
                 "Ce n'est qu'un monde imaginé : ce que vous m'avez dit ne change pas."
             ) -join "`n")
         @((Ask 'Tweety vole-t-il ?') -split "`n")[0] | Should -Be "Normalement oui, Tweety vole : c'est un oiseau et normalement, les oiseaux volent."
@@ -36,17 +36,17 @@ Describe 'Worlds imagined with et si' {
         Tell 'les pingouins ne volent pas', 'tous les pingouins sont des oiseaux', 'Tweety est un oiseau'
         Ask "et si Tweety était un pingouin, est-ce qu'il volerait ?" | Should -Be (@(
                 'Dans ce monde imaginé (Tweety était un pingouin) :'
-                'Non : Tweety ne volerait pas.'
-                "Parce que vous m'avez dit :"
+                'Normalement non : Tweety ne volerait pas.'
+                "Je le suppose, parce que vous m'avez dit :"
                 '- Les pingouins ne volent pas.'
                 '- Tweety était un pingouin (imaginé)'
                 "Ce n'est qu'un monde imaginé : ce que vous m'avez dit ne change pas."
             ) -join "`n")
         # (what it rests on is kept for the checker: what was told, and what is only imagined, apart)
         $proof = & (Get-Module Lambek) { Get-LambekLastProof }
-        $proof.Forms | Should -Be @('category(no|pingouin|v:voler)')
+        $proof.Forms | Should -Be @('category(usual:no|pingouin|v:voler)')
         $proof.Assumed | Should -Be @('category(is|name:tweety|pingouin)')
-        $proof.Conclusion | Should -Be @('category(isnot|name:tweety|v:voler)')
+        $proof.Conclusion | Should -Be @('category(usual:isnot|name:tweety|v:voler)')
     }
 
     It 'sets aside what contradicts what is imagined, and says it' {
@@ -78,7 +78,7 @@ Describe 'Worlds imagined with et si' {
 
     It 'imagines in English' {
         Tell 'Birds normally fly.', 'Penguins do not fly.', 'All penguins are birds.', 'Tweety is a bird.'
-        @((Ask 'What if Tweety were a penguin, would he fly?') -split "`n")[1] | Should -Be 'No: Tweety would not fly.'
+        @((Ask 'What if Tweety were a penguin, would he fly?') -split "`n")[1] | Should -Be 'Normally no: Tweety would not fly.'
     }
 
     It 'leaves a rule told with a plain si to the rest of Lambek' {

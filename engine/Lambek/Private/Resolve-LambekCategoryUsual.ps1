@@ -85,10 +85,18 @@ function Resolve-LambekCategoryUsual {
         [pscustomobject]@{ Kind = 'askis'; Subject = $null; Individual = $who; Predicate = $default.Item.Subject }
     }
     $starts = { param([int[]] $used, $default) [LambekCategories]::Follows((& $with $used), (Get-LambekCategoryOpposite -Item (& $isA $default) -Atoms $Atoms -Individual $one)) }
+    # (which kind is narrower is read from what was told for sure and from the rules that say one kind is a kind of
+    # another "normalement": "les pingouins sont des oiseaux" makes penguins the narrower, as in Pearl's System Z, where
+    # a rule about penguins is more specific than one about birds whatever holds of every penguin)
+    $kinds = @($base) + @($defaults | Where-Object { $_.Item.Kind -eq 'all' -and -not $_.Item.Verb } | ForEach-Object {
+            $strict = $_.Item.PSObject.Copy()
+            $strict.Default = $false
+            ConvertTo-LambekCategoryStatement -Item $strict -Atoms $Atoms
+        })
     $everyIs = {
         param($narrow, $wide)
         $all = [pscustomobject]@{ Kind = 'askall'; Subject = $narrow.Item.Subject; Predicate = $wide.Item.Subject; Individual = $null }
-        [LambekCategories]::Follows([LambekCategoryStatement[]] $base, (Get-LambekCategoryOpposite -Item $all -Atoms $Atoms -Individual ''))
+        [LambekCategories]::Follows([LambekCategoryStatement[]] $kinds, (Get-LambekCategoryOpposite -Item $all -Atoms $Atoms -Individual ''))
     }
     # Which rule is about a narrower kind than which
     $narrower = @{}
