@@ -386,6 +386,54 @@ function ConvertTo-LambekCategoryItem {
     return $null
 }
 
+function ConvertTo-LambekCategoryOpaque {
+    param(
+        [string] $Text,
+        [string] $Language,
+
+        # What is said of one, not what is done to: kept to one thing said, with no number
+        [switch] $Predicate
+    )
+
+    # What is said of one or of a kind that is no kind of thing the dictionary knows ("veulent etre de grands tenors",
+    # "travel freely within Europe", "are from Sweden"), kept whole: one thing said, written with the lemma of each
+    # of its words, the articles left out, so that "veut etre un grand tenor" and "veulent etre de grands tenors" are
+    # the same thing said. Nothing follows from it but what is said with the same words: never a kind of anything, so
+    # it can make no answer that does not follow. Read by the tags of the forms model of the language; nothing when a
+    # word is a word of logic or says not, when a word is no word of the language, or when it is long. What is said of
+    # one is nothing either when it holds more than one thing said (a comma, a word that stands for one named
+    # elsewhere: "un homme, c'est un homme"), or a number, which says how much or when ("depuis 2000")
+    $model = Get-LambekFormModel -Language $Language
+    if (-not $model) { return $null }
+    if ($Predicate -and ($Text.Trim() -replace '[.!?]+$', '') -match '[,;:]') { return $null }
+    $plain = (($Text -replace "[,;:.!?]+", ' ') -replace '\s+', ' ').Trim()
+    if (-not $plain) { return $null }
+    $readings = @($model.ReadText($plain))
+    if ($readings.Count -eq 0 -or $readings.Count -gt 8) { return $null }
+    $logic = Get-LambekLogicWord -Language $Language
+    $general = (Get-LambekLexicon -Language $Language).Dialogue['General']
+    $denying = @($general['Negations'] | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" })
+    $words = [System.Collections.Generic.List[string]]::new()
+    $content = $false
+    foreach ($reading in $readings) {
+        $form = "$($reading.Form)"
+        $low = $form.ToLowerInvariant()
+        if ("$($reading.Upos)" -eq 'PUNCT') { continue }
+        if ($Predicate -and "$($reading.Upos)" -in 'PRON', 'NUM') { return $null }
+        if (($logic -and $logic.Kinds.ContainsKey($low)) -or (ConvertTo-LambekNormalizedText -Text $low) -in $denying -or "|$($reading.Feats)|" -match '\|Polarity=Neg\|') { return $null }
+        $known = $model.Knows($low) -or ($model.Lexicon -and $model.Lexicon.Forms.ContainsKey($low))
+        # (a word the language does not know is taken only as a noun, an adjective or a name, as when reading by tags)
+        if (-not $known -and -not ($form.Length -gt 0 -and [char]::IsUpper($form[0])) -and "$($reading.Upos)" -notin 'NOUN', 'ADJ', 'PROPN') { return $null }
+        # (an article says nothing of what is said: "un", "de", "les", "the", "a")
+        if ("$($reading.Upos)" -eq 'DET' -and "|$($reading.Feats)|" -match '\|PronType=Art\|') { continue }
+        if ("$($reading.Upos)" -in 'NOUN', 'PROPN', 'ADJ', 'VERB', 'ADV', 'NUM') { $content = $true }
+        $lemma = $(if ($reading.Lemma -and "$($reading.Upos)" -ne 'PROPN') { "$($reading.Lemma)" } else { $form })
+        $words.Add((ConvertTo-LambekNormalizedText -Text $lemma))
+    }
+    if (-not $content -or $words.Count -eq 0) { return $null }
+    return [pscustomobject]@{ Atoms = @("op:$($words -join ' ')") }
+}
+
 function Read-LambekCategoryPart {
     param([string] $Kind, [hashtable] $Values, [string] $Language, [switch] $Listener, [switch] $Member)
 
@@ -413,6 +461,7 @@ function Read-LambekCategoryPart {
     }
     if ($Values.ContainsKey('p')) {
         $item.Predicate = ConvertTo-LambekCategoryTerm -Text $Values['p'] -Language $Language -Lemmas $Values['lemmas']
+        if (-not $item.Predicate) { $item.Predicate = ConvertTo-LambekCategoryOpaque -Text $Values['p'] -Language $Language -Predicate }
         if (-not $item.Predicate) { return $null }
         $item.Written.Predicate = $Values['p'].Trim()
     }
@@ -424,6 +473,7 @@ function Read-LambekCategoryPart {
         $atom = "v:$lemma"
         if ($Values.ContainsKey('o') -and $Values['o']) {
             $object = ConvertTo-LambekCategoryTerm -Text $Values['o'] -Language $Language -Object -Lemmas $Values['lemmas']
+            if (-not $object) { $object = ConvertTo-LambekCategoryOpaque -Text $Values['o'] -Language $Language }
             if (-not $object) { return $null }
             $atom += ">$($object.Atoms -join '+')"
             $item.Written.Object = " $($Values['o'].Trim())"
@@ -477,6 +527,8 @@ function ConvertTo-LambekCategoryTerm {
     if ($Object) { $articles = @($data['ObjectArticles']) }
     $article = $(if (@($articles).Count -gt 0) { "$(@($articles)[0])" } else { '' })
     if (-not $Bare -and $tokens.Count -gt 0 -and $tokens[0] -in $articles) { $article = $tokens[0]; $tokens = @($tokens | Select-Object -Skip 1) }
+    # (an object may be said with two such small words, as "de la" in "de la viande": "some of the" said in one)
+    if ($Object -and -not $Bare -and $tokens.Count -gt 1 -and $tokens[0] -in $articles) { $article = $tokens[0]; $tokens = @($tokens | Select-Object -Skip 1) }
     if ($tokens.Count -eq 0) { return $null }
     $of = -1
     for ($i = 1; $i -lt $tokens.Count; $i++) { if ($tokens[$i] -in @($data['Of'])) { $of = $i; break } }
@@ -909,6 +961,25 @@ function Get-LambekCategorySentence {
     $template = $null
     foreach ($candidate in $candidates) { if ($sentences.Contains($candidate) -and "$($sentences[$candidate])") { $template = $sentences[$candidate]; break } }
     if (-not $template) { return $null }
+    # (a verb that changes what is said is said as it was, without the word the language says "does" with: "Klaus can
+    # travel", not "Klaus does can travel")
+    if ($Item.Verb -and $key -eq 'does') {
+        $model = Get-LambekFormModel -Language $Language
+        $said = "$($Item.Written.Predicate)".Trim()
+        if ($model -and $said -and $said -notmatch '\s') {
+            # (read with the first word of what follows it: "can travel" is said so, "have a sensor" is not)
+            $next = @("$($Item.Written.Object)".Trim() -split '\s+' | Where-Object { $_ } | Select-Object -First 1)
+            $reading = @($model.Read([string[]] (@($said) + $next)))
+            $support = @(Get-LambekCategorySupport -Language $Language)
+            if ($next.Count -eq 1 -and $reading.Count -eq 2 -and "$($reading[0].Upos)" -eq 'AUX' -and $support.Count -gt 0 -and
+                "|$($reading[1].Feats)|" -match '\|VerbForm=Inf\|' -and
+                (ConvertTo-LambekNormalizedText -Text "$($reading[0].Lemma)") -notin $support) {
+                $words = @(($template -replace '\{\d+\}', ' ').Trim() -split '\s+' | Where-Object { $_ })
+                foreach ($word in $words) { $template = [regex]::Replace($template, "\s*(?<!\{)\b$([regex]::Escape($word))\b(?!\})", '') }
+                $template = ($template -replace '\}\{', '} {') -replace '\{0\}\{1\}', '{0} {1}'
+            }
+        }
+    }
     $object = "$($Item.Written.Object)"
     # (what is not done to takes the article the language puts after a negation, learned: "n'a pas de poils")
     if ($Item.Verb -and $key -match 'not' -and $object.Trim()) { $object = ConvertTo-LambekNegatedObject -Object $object -Language $Language }

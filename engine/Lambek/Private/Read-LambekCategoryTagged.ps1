@@ -1,3 +1,22 @@
+function Get-LambekCategorySupport {
+    # The verbs a language says "does" with and no more ("does" of "Rex does fly"): the words of its own sentence for
+    # what one does ("{0} does {1}") that are none of what it is filled with, read by its forms model. None in most
+    # languages ("{0} {1}")
+    param([string] $Language)
+
+    if ($null -eq $script:CategorySupport) { $script:CategorySupport = @{} }
+    if ($script:CategorySupport.ContainsKey($Language)) { return $script:CategorySupport[$Language] }
+    $found = [System.Collections.Generic.List[string]]::new()
+    $sentence = "$((Get-LambekCategoryVocabulary -Language $Language).Data['Sentences']['does'])"
+    $words = @(($sentence -replace '\{\d+\}', ' ').Trim() -split '\s+' | Where-Object { $_ })
+    $model = Get-LambekFormModel -Language $Language
+    if ($model -and $words.Count -gt 0) {
+        foreach ($reading in $model.Read([string[]] $words)) { if ($reading.Lemma) { $found.Add((ConvertTo-LambekNormalizedText -Text "$($reading.Lemma)")) } }
+    }
+    $script:CategorySupport[$Language] = $found.ToArray()
+    return $script:CategorySupport[$Language]
+}
+
 function Get-LambekLogicWord {
     # The words of logic of a language, learned (tools/Learn-LambekLogicWords.ps1, Data/Forms/<language>.logic): what
     # each says of how many things ("all", "some", "no"), a word learned with two kinds saying neither; and its copulas,
@@ -278,6 +297,7 @@ function Read-LambekCategoryTagged {
 
     # The verb: what is said after the one or the kind
     $main = $null
+    $objectFrom = $null
     $copula = $null
     $subjectEnd = $null
     if ($front) {
@@ -290,6 +310,13 @@ function Read-LambekCategoryTagged {
             if ($after.Count -eq 0) { return $null }
             $main = $after[0]
             $subjectEnd = $main
+            # (asked with a verb that changes what is said: "can Klaus travel", the verb is "can", what follows what it
+            # says; "does Klaus travel" is only "travel")
+            if ($upos[$first] -eq 'AUX' -and (& $has $main 'VerbForm=Inf') -and
+                (ConvertTo-LambekNormalizedText -Text "$($readings[$first].Lemma)") -notin @(Get-LambekCategorySupport -Language $Language)) {
+                $objectFrom = $main
+                $main = $first
+            }
         }
     }
     else {
@@ -304,6 +331,13 @@ function Read-LambekCategoryTagged {
             while ($next -lt $readings.Count -and $negative[$next]) { $next++ }
             # (with none, it is the verb itself: "a un chat", as the tagger may read "avoir" before its object)
             $main = $(if ($next -lt $readings.Count -and $upos[$next] -eq 'VERB') { $next } else { $v })
+            # (but one that helps a verb said in its infinitive changes what is said: "can travel" is not "travels",
+            # "kann fliegen" not "fliegt": it is the verb, what follows what it says. Only the word the language says
+            # "does" with is no more than help: "does fly" is "flies")
+            if ($main -ne $v -and (& $has $main 'VerbForm=Inf')) {
+                $support = @(Get-LambekCategorySupport -Language $Language)
+                if ((ConvertTo-LambekNormalizedText -Text "$($readings[$v].Lemma)") -notin $support) { $main = $v }
+            }
         }
         else { $main = $v }
     }
@@ -364,9 +398,9 @@ function Read-LambekCategoryTagged {
     elseif ($null -ne $main) {
         $values['v'] = "$($readings[$main].Form)"
         $values['lemma'] = "$($readings[$main].Lemma)"
-        $object = & $text ($main + 1) $readings.Count
+        $object = & $text $(if ($null -ne $objectFrom) { $objectFrom } else { $main + 1 }) $readings.Count
         if ($object) { $values['o'] = $object }
-        $subject = & $text $from $(if ($front) { $main } else { $subjectEnd })
+        $subject = & $text $from $subjectEnd
         if (-not $subject) { return $null }
         $values[$name] = $subject
         $cuts.Add($values)

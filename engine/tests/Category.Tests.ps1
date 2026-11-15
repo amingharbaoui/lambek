@@ -623,6 +623,32 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'What is said after a verb is kept whole when its words are not read one by one' {
+
+        It 'keeps a wish for what it is, and no more: <Told>' -ForEach @(
+            @{ Told = 'tous les Italiens veulent être de grands ténors', 'Luigi est un Italien'; Asked = 'Luigi veut-il être un grand ténor ?'; Wider = 'Luigi veut-il être un ténor ?'; Is = 'Luigi est-il un grand ténor ?'; Yes = 'Oui*' }
+            @{ Told = 'all Italians want to be great tenors', 'Luigi is an Italian'; Asked = 'does Luigi want to be a great tenor?'; Wider = 'does Luigi want to be a tenor?'; Is = 'is Luigi a great tenor?'; Yes = 'Yes*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Yes
+            (Ask $Wider) -join ' ' | Should -Not -BeLike $Yes
+            (Ask $Is) -join ' ' | Should -Not -BeLike $Yes
+        }
+
+        It 'keeps what one can do apart from what one does' {
+            Tell 'every European can travel freely within Europe', 'Klaus is a European'
+            (Ask 'can Klaus travel freely within Europe?') -join ' ' | Should -BeLike 'Yes*'
+            (Ask 'does Klaus travel freely within Europe?') -join ' ' | Should -Not -BeLike 'Yes*'
+        }
+
+        It 'reads an object said with two small words the same as with one' {
+            Tell "aucun chien ne mange d'herbe", 'Rex est un chien'
+            (Ask "Rex mange-t-il de l'herbe ?") -join ' ' | Should -BeLike 'Non*'
+            Tell 'tous les chiens mangent de la viande', 'Max est un chien'
+            (Ask 'Max mange-t-il de la viande ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+    }
+
     Context 'What holds for a time is said with the day it was told' {
 
         It 'says the day of a state told another day, in <Language>' -ForEach @(
