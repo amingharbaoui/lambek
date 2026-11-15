@@ -1,8 +1,8 @@
 {
-  "Version": "1.2",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now). Written by hand, never learned from.",
+  "Version": "1.3",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "ca39d4423a9b7631cb34ec9fa0c1bf36f1dc30b64d6036a07f5833d598ce0a11",
+  "TestHash": "18131f740d127b8c9b7ea46d2382f3fe03f0e848abd81f31134a733bd2189fa8",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -8656,6 +8656,784 @@
             "Avoid": [
               "no."
             ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-relative-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens qui aboient sont bruyants"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex aboie"
+        },
+        {
+          "Text": "Rex est-il bruyant ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-relative-not-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens qui aboient sont bruyants"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex est-il bruyant ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-relative-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats qui miaulent sont contents"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "Tom miaule"
+        },
+        {
+          "Text": "Tom est-il content ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-relative-not-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats qui miaulent sont contents"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "Tom est-il content ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-relative-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs that bark are noisy"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "Rex barks"
+        },
+        {
+          "Text": "is Rex noisy?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-relative-not-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs that bark are noisy"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "is Rex noisy?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-relative-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "all cats that meow are happy"
+        },
+        {
+          "Text": "Tom is a cat"
+        },
+        {
+          "Text": "Tom meows"
+        },
+        {
+          "Text": "is Tom happy?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-relative-not-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "all cats that meow are happy"
+        },
+        {
+          "Text": "Tom is a cat"
+        },
+        {
+          "Text": "is Tom happy?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-relative-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde, die bellen, sind laut"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "Rex bellt"
+        },
+        {
+          "Text": "ist Rex laut?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-relative-not-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde, die bellen, sind laut"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "ist Rex laut?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-relative-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Katzen, die miauen, sind froh"
+        },
+        {
+          "Text": "Tom ist eine Katze"
+        },
+        {
+          "Text": "Tom miaut"
+        },
+        {
+          "Text": "ist Tom froh?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-relative-not-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Katzen, die miauen, sind froh"
+        },
+        {
+          "Text": "Tom ist eine Katze"
+        },
+        {
+          "Text": "ist Tom froh?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-relative-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros que ladran son ruidosos"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "Rex ladra"
+        },
+        {
+          "Text": "¿es Rex ruidoso?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-relative-not-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros que ladran son ruidosos"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿es Rex ruidoso?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-relative-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los gatos que maúllan son felices"
+        },
+        {
+          "Text": "Tom es un gato"
+        },
+        {
+          "Text": "Tom maúlla"
+        },
+        {
+          "Text": "¿es Tom feliz?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-relative-not-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los gatos que maúllan son felices"
+        },
+        {
+          "Text": "Tom es un gato"
+        },
+        {
+          "Text": "¿es Tom feliz?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-relative-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden die blaffen zijn luid"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "Rex blaft"
+        },
+        {
+          "Text": "is Rex luid?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-relative-not-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden die blaffen zijn luid"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "is Rex luid?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-relative-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "alle katten die miauwen zijn blij"
+        },
+        {
+          "Text": "Tom is een kat"
+        },
+        {
+          "Text": "Tom miauwt"
+        },
+        {
+          "Text": "is Tom blij?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-relative-not-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "alle katten die miauwen zijn blij"
+        },
+        {
+          "Text": "Tom is een kat"
+        },
+        {
+          "Text": "is Tom blij?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-relative-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães que latem são barulhentos"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex late"
+        },
+        {
+          "Text": "Rex é barulhento?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-relative-not-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães que latem são barulhentos"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex é barulhento?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-relative-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os gatos que miam são felizes"
+        },
+        {
+          "Text": "Tom é um gato"
+        },
+        {
+          "Text": "Tom mia"
+        },
+        {
+          "Text": "Tom é feliz?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-relative-not-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os gatos que miam são felizes"
+        },
+        {
+          "Text": "Tom é um gato"
+        },
+        {
+          "Text": "Tom é feliz?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-relative-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani che abbaiano sono rumorosi"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex abbaia"
+        },
+        {
+          "Text": "Rex è rumoroso?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-relative-not-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani che abbaiano sono rumorosi"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex è rumoroso?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-relative-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "relative"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i gatti che miagolano sono felici"
+        },
+        {
+          "Text": "Tom è un gatto"
+        },
+        {
+          "Text": "Tom miagola"
+        },
+        {
+          "Text": "Tom è felice?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-relative-not-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "relative-not"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i gatti che miagolano sono felici"
+        },
+        {
+          "Text": "Tom è un gatto"
+        },
+        {
+          "Text": "Tom è felice?",
+          "Expect": {
+            "Reply": "abstain"
           }
         }
       ]

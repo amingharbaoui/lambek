@@ -339,6 +339,7 @@ function Read-LambekCategoryTagged {
     $copula = $null
     $subjectEnd = $null
     $v = $null
+    $clauseAt = $null
     if ($front) {
         # (asked first: the copula is followed by the one and what it is, where the one ends is cut below; any other
         # verb that asks, by the one and the verb: "does my phone have a sensor")
@@ -368,6 +369,26 @@ function Read-LambekCategoryTagged {
         $verb = @($verbal | Where-Object { $_ -ge $from })
         if ($verb.Count -eq 0) { return $null }
         $v = $verb[0]
+        # (the one or the kind said with what it does, after a pronoun that says which, before what is said of it: "les
+        # chats qui sont noirs aiment le lait", "toute personne qui a le droit de vivre en Europe peut circuler"; the
+        # verb of the sentence is its last said in a person, the others are of the clause)
+        # (a pronoun read so, or that its treebanks write so after a noun: "die" in "alle Hunde die bellen")
+        $relative = {
+            param($r)
+            if ($upos[$r] -eq 'PRON' -and (& $has $r 'PronType=Rel')) { return $true }
+            $known = $null
+            return [bool] ($upos[$r - 1] -eq 'NOUN' -and $model.Tags.TryGetValue("$($readings[$r].Form)".ToLowerInvariant(), [ref] $known) -and
+                @($known | Where-Object { "$_" -match '^PRON\|' -and "$_" -match '(^|\|)PronType=([^|]*,)?Rel(,|\||$)' }).Count -gt 0)
+        }
+        $which = @(for ($r = $from + 1; $r -lt $v; $r++) { if (& $relative $r) { $r } })
+        if ($which.Count -gt 0) {
+            # (the verb of the clause may be one the tagger read as a noun right after the pronoun, "dogs that bark":
+            # the last verb said in a person after it is the verb of the sentence all the same)
+            $finite = @($verb | Where-Object { (& $has $_ 'VerbForm=Fin') -and $_ -gt $which[0] + 1 })
+            if ($finite.Count -lt 1) { return $null }
+            $v = $finite[-1]
+            $clauseAt = $which[0]
+        }
         $subjectEnd = $v
         # (a verb the tagger read as said alone, right before one said in its past participle, that its treebanks also
         # write as a helper: helping it, "all cats have eaten" as "all cats have not eaten")
@@ -407,7 +428,7 @@ function Read-LambekCategoryTagged {
     # What kind of sentence: of how many, whether it says not, whether it asks
     $generic = $false
     if (-not $quantity) {
-        $end = $(if ($null -ne $subjectEnd) { $subjectEnd } else { $readings.Count })
+        $end = $(if ($null -ne $clauseAt) { $clauseAt } elseif ($null -ne $subjectEnd) { $subjectEnd } else { $readings.Count })
         $nouns = @(for ($r = $from; $r -lt $end; $r++) { if ($upos[$r] -in 'NOUN', 'PROPN', 'PRON') { $r } })
         if ($nouns.Count -gt 0 -and $upos[$nouns[-1]] -eq 'NOUN' -and (& $has $nouns[-1] 'Number=Plur')) {
             $generic = $true

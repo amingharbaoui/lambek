@@ -730,6 +730,27 @@ Describe 'General rules told in words' {
             (Ask 'is Rex a cat?') -join ' ' | Should -Not -BeLike 'Yes*'
         }
 
+        It 'reads a kind said with what those of it do, after a relative pronoun: <Told>' -ForEach @(
+            @{ Told = 'les chats qui sont noirs aiment le lait', 'Tom est un chat', 'Tom est noir'; Asked = 'Tom aime-t-il le lait ?'; Yes = 'Normalement oui*' }
+            @{ Told = 'tout Européen a le droit de vivre en Europe', 'tout Européen est une personne', 'toute personne qui a le droit de vivre en Europe peut circuler librement en Europe', 'Klaus est un Européen'; Asked = 'Klaus peut-il circuler librement en Europe ?'; Yes = 'Oui*' }
+            @{ Told = 'all dogs that bark are noisy', 'Rex is a dog', 'Rex barks'; Asked = 'is Rex noisy?'; Yes = 'Yes*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Yes
+        }
+
+        It 'says nothing of one not said to do what the clause says' {
+            Tell 'all dogs that bark are noisy', 'Rex is a dog'
+            (Ask 'is Rex noisy?') -join ' ' | Should -Not -BeLike 'Yes*'
+            Tell 'les chats qui sont noirs aiment le lait', 'Minou est un chat'
+            (Ask 'Minou aime-t-il le lait ?') -join ' ' | Should -Not -BeLike '*oui*'
+        }
+
+        It 'does not read a clause about someone else as one about the kind' {
+            Tell 'Paul est un homme'
+            (Ask 'le chien que Paul aime est noir') -join ' ' | Should -Not -BeLike 'C''est noté. Le chien*'
+        }
+
         It 'reads an object said with two small words the same as with one' {
             Tell "aucun chien ne mange d'herbe", 'Rex est un chien'
             (Ask "Rex mange-t-il de l'herbe ?") -join ' ' | Should -BeLike 'Non*'

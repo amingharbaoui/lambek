@@ -513,6 +513,42 @@ function Get-LambekCategoryToken {
     return @((ConvertTo-LambekNormalizedText -Text $Text) -split "[\s'\u2019]+" | Where-Object { $_ })
 }
 
+function Split-LambekCategoryRelative {
+    param([string] $Text, [string] $Language)
+
+    # Where a kind ends and what is said of it after a relative pronoun begins: "personne qui a le droit" gives
+    # "personne" and "a le droit". Read by the forms model of the language; nothing when there is no such pronoun
+    # after a word, or no verb right after it (but what says not), or when it is said twice
+    $model = Get-LambekFormModel -Language $Language
+    if (-not $model -or $Text -notmatch '\p{L}') { return $null }
+    $words = @($Text.Trim() -split '\s+' | Where-Object { $_ })
+    if ($words.Count -lt 3) { return $null }
+    $readings = @($model.Read([string[]] $words))
+    if ($readings.Count -ne $words.Count) { return $null }
+    # (read so in this part of the sentence, or a word its treebanks write so: "that" read alone may be another)
+    $relative = {
+        param($i)
+        if ("$($readings[$i].Upos)" -eq 'PRON' -and "|$($readings[$i].Feats)|" -match '\|PronType=([^|]*,)?Rel(,|\|)') { return $true }
+        $known = $null
+        return [bool] ($model.Tags.TryGetValue("$($readings[$i].Form)".ToLowerInvariant(), [ref] $known) -and @($known | Where-Object { "$_" -match '^PRON\|' -and "$_" -match '(^|\|)PronType=([^|]*,)?Rel(,|\||$)' }).Count -gt 0)
+    }
+    $at = @(for ($i = 1; $i -lt $readings.Count - 1; $i++) { if (& $relative $i) { $i } })
+    if ($at.Count -ne 1) { return $null }
+    $next = $at[0] + 1
+    while ($next -lt $readings.Count -and ("$($readings[$next].Upos)" -in 'ADV', 'PART') -and "|$($readings[$next].Feats)|" -match '\|Polarity=Neg\|') { $next++ }
+    if ($next -ge $readings.Count) { return $null }
+    # (a verb, or a word the tagger read otherwise here that its treebanks or its dictionary also give as a verb:
+    # "dogs that bark")
+    $tags = $null
+    $form = "$($readings[$next].Form)".ToLowerInvariant()
+    $tagged = $model.Tags.TryGetValue($form, [ref] $tags) -and @($tags | Where-Object { "$_".StartsWith('VERB|') }).Count -gt 0
+    $listed = $model.Lexicon -and $model.Lexicon.Forms.ContainsKey($form) -and @($model.Lexicon.Forms[$form] | Where-Object { "$($_.Upos)" -eq 'VERB' }).Count -gt 0
+    $verbal = "$($readings[$next].Upos)" -in 'VERB', 'AUX' -or $tagged -or $listed
+    if (-not $verbal) { return $null }
+    # (anyone the clause may be said of: a name its model reads as one, so that the sentence reads as about someone)
+    return [pscustomobject]@{ Head = ($words[0..($at[0] - 1)] -join ' '); Clause = ($words[($at[0] + 1)..($words.Count - 1)] -join ' '); Someone = 'Rex' }
+}
+
 function ConvertTo-LambekCategoryTerm {
     param(
         [string] $Text,
@@ -534,6 +570,20 @@ function ConvertTo-LambekCategoryTerm {
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
     $lexicon = Get-LambekLexicon -Language $Language
     $general = $lexicon.Dialogue['General']
+    # A kind said with what those of it do or are, after a pronoun that says which ("personne qui a le droit de vivre
+    # en Europe", "chats that are black"): the kind before it, and what is said after it, together. The pronoun is the
+    # one the tags of the language read as relative (PronType=Rel) and a verb follows it, so that it is the one doing
+    # ("que Paul aime" is not read); what follows is read as a sentence about anyone would be
+    $relative = Split-LambekCategoryRelative -Text $Text -Language $Language
+    if ($relative) {
+        $head = ConvertTo-LambekCategoryTerm -Text $relative.Head -Language $Language -Bare:$Bare -Object:$Object -Lemmas $Lemmas
+        if (-not $head) { return $null }
+        $clause = Read-LambekCategorySentence -Sentence "$($relative.Someone) $($relative.Clause)" -Language $Language
+        if (-not $clause -or $clause.Kind -notin 'is', 'does' -or -not $clause.Predicate) { return $null }
+        $together = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
+        foreach ($atom in @($head.Atoms) + @($clause.Predicate.Atoms)) { [void] $together.Add("$atom") }
+        return [pscustomobject]@{ Atoms = @($together) }
+    }
     $tokens = @(Get-LambekCategoryToken -Text $Text)
     $articles = @($data['Articles'])
     if ($Object) { $articles = @($data['ObjectArticles']) }
