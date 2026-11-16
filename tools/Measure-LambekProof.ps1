@@ -21,6 +21,8 @@
                   own with a small kernel that checks every proof it finds: Lean must prove the conclusion from the
                   premises, and must not prove its opposite from them (premises that prove both prove anything). Run
                   only when Lean is installed (-Lean, or lean on the path)
+      Least       for an answer worked out from rules: "yes" when no fewer sentences could give it (every smaller set of
+                  the sentences that bear on it was tried), "<n" when only the sets of fewer than n were tried
       Sources     each fact cited and each thing assumed has where it comes from (told here or before, the dictionary
                   named, the words themselves), and each link the dictionary gave is given by it again
     Each conversation is also said with one sentence of another conversation told first, which has nothing to do with
@@ -131,7 +133,11 @@ $converse = {
             if (-not $source.Name -or $link.Count -ne 2 -or $dictionary -isnot [LambekDictionary] -or
                 $dictionary.Under($link[0], $link[1], $Language, 'n', $script:CategoryCircleSenses, $script:CategoryCircleHops) -le 0) { $wrongBooks++ }
         }
-        [pscustomobject]@{ Answer = $answer; Facts = $facts.Count; Cited = @($cited); Lost = $lost; Cores = $cores; Conclusion = $concluded; Unsourced = $unsourced; Books = $books; WrongBooks = $wrongBooks }
+        # (whether no fewer sentences could give the answer: "yes", or below how many it was checked, "<3"; nothing for an
+        # answer that is not worked out from rules)
+        $least = ''
+        if ($proof -and $proof.PSObject.Properties['Least'] -and $proof.Least) { $least = $(if ($proof.Least.Least) { 'yes' } else { "<$($proof.Least.Checked)" }) }
+        [pscustomobject]@{ Answer = $answer; Facts = $facts.Count; Cited = @($cited); Lost = $lost; Cores = $cores; Conclusion = $concluded; Unsourced = $unsourced; Books = $books; WrongBooks = $wrongBooks; Least = $least }
     } $Sentences $Language $Name
 }
 
@@ -169,6 +175,7 @@ for ($c = 0; $c -lt $cases.Count; $c++) {
             Id = $case.Id; Language = $case.Language; Sentences = $sentences; Question = $sentences[-1]
             Answer = $first.Answer; Cited = $first.Cited; Lost = $first.Lost; Aside = [int] ($aside -and 0 -in $first.Cited)
             Cores = $first.Cores; Conclusion = $first.Conclusion; Unsourced = $first.Unsourced; Books = $first.Books; WrongBooks = $first.WrongBooks
+            Least = $first.Least
         })
     if ($first.Unsourced -gt 0) { $failedSources.Add("[$($case.Id) sources] $($first.Unsourced) premise(s) with no source") }
     if ($first.WrongBooks -gt 0) { $failedSources.Add("[$($case.Id) sources] $($first.WrongBooks) link(s) the dictionary does not give") }
@@ -239,12 +246,12 @@ foreach ($case in $proved) {
     }
 
     $rows.Add([pscustomobject]@{
-            Id = $case.Id; Cited = $premises.Count; Lost = $case.Lost; Aside = $case.Aside; Checked = $checked; Lean = $judged; Unneeded = $unneededHere; Enough = [int] $enough
+            Id = $case.Id; Cited = $premises.Count; Lost = $case.Lost; Aside = $case.Aside; Checked = $checked; Lean = $judged; Unneeded = $unneededHere; Least = $case.Least; Enough = [int] $enough
             Needed = $needed; Swapped = $swapped; Tried = $tried
         })
 }
 
-$rows | Format-Table Id, Cited, Lost, Aside, Checked, Lean, Unneeded, Enough, Needed, Swapped, Tried -AutoSize | Out-String -Width 200 | Write-Host
+$rows | Format-Table Id, Cited, Lost, Aside, Checked, Lean, Unneeded, Least, Enough, Needed, Swapped, Tried -AutoSize | Out-String -Width 200 | Write-Host
 if ($Show) {
     $failed | ForEach-Object { Write-Host "  $_" }
     $unproved | ForEach-Object { Write-Host "  [no proof] $_" }
@@ -266,11 +273,14 @@ Write-Host ("Answers with a proof: {0} of {1} conversations; facts cited without
 $holds = @($rows | Where-Object Checked -EQ 'holds').Count
 $refused = @($rows | Where-Object Checked -EQ 'refused').Count
 Write-Host ("Checked by a checker of its own: {0} hold, {1} refused, {2} it cannot check; premises it finds not needed: {3}" -f $holds, $refused, $unchecked.Count, ($rows | Measure-Object Unneeded -Sum).Sum)
+$fewest = @($rows | Where-Object { $_.Least })
+Write-Host ("Fewest sentences possible: {0} of {1} proofs worked out from rules; searched only below so many: {2}" -f @($fewest | Where-Object Least -EQ 'yes').Count, $fewest.Count, @($fewest | Where-Object { $_.Least -ne 'yes' }).Count)
 if ($Lean) {
-    $proved = @($rows | Where-Object Lean -EQ 'proved').Count
+    # (counted apart from $proved, the proofs found, which the sources are summed over below)
+    $leanProved = @($rows | Where-Object Lean -EQ 'proved').Count
     $judgedCount = @($rows | Where-Object { $_.Lean -in 'proved', 'unproved', 'both' }).Count
-    Write-Host ("Judged by {0}: {1} proved, {2} not proved, {3} whose premises prove the opposite too, {4} not written" -f ((@(& $Lean --version)[0]) -replace ',.*$', ')'), $proved, @($rows | Where-Object Lean -EQ 'unproved').Count, @($rows | Where-Object Lean -EQ 'both').Count, $unlean.Count)
-    Write-Host ("Proof Lean does not prove: {0} of {1}, so under {2:P3} at 95 %" -f ($judgedCount - $proved), $judgedCount, (& $bound ($judgedCount - $proved) $judgedCount))
+    Write-Host ("Judged by {0}: {1} proved, {2} not proved, {3} whose premises prove the opposite too, {4} not written" -f ((@(& $Lean --version)[0]) -replace ',.*$', ')'), $leanProved, @($rows | Where-Object Lean -EQ 'unproved').Count, @($rows | Where-Object Lean -EQ 'both').Count, $unlean.Count)
+    Write-Host ("Proof Lean does not prove: {0} of {1}, so under {2:P3} at 95 %" -f ($judgedCount - $leanProved), $judgedCount, (& $bound ($judgedCount - $leanProved) $judgedCount))
     Remove-Item -LiteralPath $leanFolder -Recurse -Force -ErrorAction SilentlyContinue
 }
 else { Write-Host 'Judged by Lean: no, Lean is not installed (-Lean, or lean on the path)' }

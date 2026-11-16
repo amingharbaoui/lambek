@@ -40,6 +40,15 @@ public sealed class LambekCategoryStatement
     public void AddToWitness(int witness, int[] clause) { Witnesses[witness].Add(clause); }
 }
 
+// What an answer rests on: the sentences, whether no fewer could give it (Least), and how far that was checked: no
+// set of fewer than Checked sentences gives it
+public sealed class LambekCategoryProof
+{
+    public int[] Indices = new int[0];
+    public bool Least;
+    public int Checked;
+}
+
 public static class LambekCategories
 {
     // Whether the sentences can all be true together
@@ -72,19 +81,98 @@ public static class LambekCategories
         return !Satisfiable(With(statements, opposite));
     }
 
-    // A smallest set of the sentences (their indices, in order) that, with the extra one, cannot all be true:
-    // each sentence is taken out in turn, and left out when what remains still cannot. Null when they all can
+    // A smallest set of the sentences (their indices, in order) that, with the extra one, cannot all be true. Null when
+    // they all can
     public static int[] Smallest(LambekCategoryStatement[] statements, LambekCategoryStatement extra)
     {
+        LambekCategoryProof proof = Shortest(statements, extra, null, DefaultBudget);
+        return proof == null ? null : proof.Indices;
+    }
+
+    // How many sets of sentences may be tried to find the fewest an answer rests on
+    public const int DefaultBudget = 2000;
+
+    // The fewest sentences that, with the extra one, cannot all be true, the same whatever order they were told in.
+    // First each sentence is taken out in turn and left out when what remains still cannot (in the order of the keys,
+    // when given: what the sentences say, so that the order they were told in changes nothing); then every smaller set of
+    // the sentences that share a word with the question, through one another, is tried, the fewest first; with keys,
+    // the sets of the same size too, in the order of the keys, so that of two answers as short the same is given. When
+    // the sets to try are more than the budget allows, what was found is given, and how far the search went: no set
+    // of fewer than Checked sentences gives it
+    public static LambekCategoryProof Shortest(LambekCategoryStatement[] statements, LambekCategoryStatement extra, string[] keys, int budget)
+    {
         if (statements == null) { throw new ArgumentNullException(nameof(statements)); }
+        if (keys != null && keys.Length != statements.Length) { throw new ArgumentException("one key for each sentence", nameof(keys)); }
         if (Satisfiable(With(statements, extra))) { return null; }
-        List<int> kept = Enumerable.Range(0, statements.Length).ToList();
-        for (int i = 0; i < statements.Length; i++)
+        int[] order = Enumerable.Range(0, statements.Length).ToArray();
+        if (keys != null) { order = order.OrderBy(i => keys[i], StringComparer.Ordinal).ThenBy(i => i).ToArray(); }
+        List<int> kept = order.ToList();
+        foreach (int i in order)
         {
             List<int> without = kept.Where(k => k != i).ToList();
             if (!Satisfiable(With(without.Select(k => statements[k]).ToArray(), extra))) { kept = without; }
         }
-        return kept.ToArray();
+        int[] found = kept.OrderBy(k => k).ToArray();
+        // The sentences that may matter: those sharing a word or a name with the question, or with the sentences found,
+        // through one another
+        HashSet<int> words = new HashSet<int>();
+        HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
+        Action<LambekCategoryStatement> mark = s =>
+        {
+            foreach (int[] c in s.Every) { foreach (int l in c) { words.Add(Math.Abs(l)); } }
+            foreach (KeyValuePair<string, List<int[]>> p in s.Named) { names.Add(p.Key); foreach (int[] c in p.Value) { foreach (int l in c) { words.Add(Math.Abs(l)); } } }
+            foreach (List<int[]> w in s.Witnesses) { foreach (int[] c in w) { foreach (int l in c) { words.Add(Math.Abs(l)); } } }
+        };
+        Func<LambekCategoryStatement, bool> touches = s =>
+            s.Every.Any(c => c.Any(l => words.Contains(Math.Abs(l)))) ||
+            s.Named.Any(p => names.Contains(p.Key) || p.Value.Any(c => c.Any(l => words.Contains(Math.Abs(l))))) ||
+            s.Witnesses.Any(w => w.Any(c => c.Any(l => words.Contains(Math.Abs(l)))));
+        if (extra != null) { mark(extra); }
+        foreach (int i in found) { mark(statements[i]); }
+        HashSet<int> pool = new HashSet<int>();
+        bool grew = true;
+        while (grew)
+        {
+            grew = false;
+            for (int i = 0; i < statements.Length; i++)
+            {
+                if (pool.Contains(i) || !touches(statements[i])) { continue; }
+                pool.Add(i);
+                mark(statements[i]);
+                grew = true;
+            }
+        }
+        int[] candidates = order.Where(i => pool.Contains(i)).ToArray();
+        int tried = 0;
+        int largest = keys != null ? found.Length : found.Length - 1;
+        for (int size = 1; size <= largest; size++)
+        {
+            foreach (int[] set in Sets(candidates, size))
+            {
+                if (++tried > budget) { return new LambekCategoryProof { Indices = found, Least = false, Checked = size }; }
+                if (!Satisfiable(With(set.Select(k => statements[k]).ToArray(), extra)))
+                {
+                    return new LambekCategoryProof { Indices = set.OrderBy(k => k).ToArray(), Least = true, Checked = size };
+                }
+            }
+        }
+        return new LambekCategoryProof { Indices = found, Least = true, Checked = found.Length };
+    }
+
+    // Every set of so many of the items, in the order they come (the first items first)
+    static IEnumerable<int[]> Sets(int[] items, int size)
+    {
+        int[] at = Enumerable.Range(0, size).ToArray();
+        if (size > items.Length) { yield break; }
+        while (true)
+        {
+            yield return at.Select(i => items[i]).ToArray();
+            int k = size - 1;
+            while (k >= 0 && at[k] == items.Length - size + k) { k--; }
+            if (k < 0) { yield break; }
+            at[k]++;
+            for (int j = k + 1; j < size; j++) { at[j] = at[j - 1] + 1; }
+        }
     }
 
     static LambekCategoryStatement[] With(LambekCategoryStatement[] statements, LambekCategoryStatement extra)

@@ -1530,8 +1530,11 @@ function Resolve-LambekCategoryMessage {
         Set-LambekLastProof -Facts @($told | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded `
             -Forms @($told | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
             -Assumed @($indices | Where-Object { -not $premises[$_].Fact } | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
-            -Consulted @(& $read $indices) -AssumedFrom @(& $from $indices)
+            -Consulted @(& $read $indices) -AssumedFrom @(& $from $indices) -Least $least
     }
+    # The fewest sentences an answer rests on, the same whatever order they were told in (what each says is its key),
+    # and whether no fewer could give it
+    $least = $null
     $lines = [System.Collections.Generic.List[string]]::new()
 
     $question = @($items | Where-Object { $_.Item.Kind.StartsWith('ask') })
@@ -1648,9 +1651,15 @@ function Resolve-LambekCategoryMessage {
 
     $individual = ''
     if ($ask.Individual) { $individual = $ask.Individual.Key }
-    $yes = [LambekCategories]::Smallest($statements, (Get-LambekCategoryOpposite -Item $ask -Atoms $atoms -Individual $individual))
+    $keys = [string[]] @($premises | ForEach-Object { Get-LambekCategorySignature -Item $_.Item })
+    $least = [LambekCategories]::Shortest($statements, (Get-LambekCategoryOpposite -Item $ask -Atoms $atoms -Individual $individual), $keys, [LambekCategories]::DefaultBudget)
+    $yes = $null
+    if ($least) { $yes = $least.Indices }
     $no = $null
-    if ($null -eq $yes) { $no = [LambekCategories]::Smallest($statements, (Get-LambekCategoryOpposite -Item $ask -Atoms $atoms -Individual $individual -No)) }
+    if ($null -eq $yes) {
+        $least = [LambekCategories]::Shortest($statements, (Get-LambekCategoryOpposite -Item $ask -Atoms $atoms -Individual $individual -No), $keys, [LambekCategories]::DefaultBudget)
+        if ($least) { $no = $least.Indices }
+    }
     $answers = @{
         askis      = @('is', 'isnot')
         askdoes    = @('is', 'isnot')

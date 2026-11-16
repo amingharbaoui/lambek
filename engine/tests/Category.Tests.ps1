@@ -997,6 +997,47 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'The fewest sentences an answer rests on' {
+
+        It 'rests on a thing told rather than on a way through several: <Name>' -ForEach @(
+            @{ Name = 'told last'; Told = 'Rex est un chien', 'tous les chiens sont des animaux', 'Rex est un animal' }
+            @{ Name = 'told first'; Told = 'Rex est un animal', 'Rex est un chien', 'tous les chiens sont des animaux' }
+        ) {
+            Tell $Told
+            Ask 'Rex est-il un animal ?' | Should -Be (@('Oui : Rex est un animal.', "Parce que vous m'avez dit :", '- Rex est un animal.') -join "`n")
+        }
+
+        It 'gives the same, shortest way whatever order the rules were told in: <Name>' -ForEach @(
+            @{ Name = 'long way first'; Told = 'tous les chiens sont des mammifères', 'tous les mammifères sont des animaux', 'tous les chiens sont des animaux', 'Rex est un chien' }
+            @{ Name = 'short way first'; Told = 'tous les chiens sont des animaux', 'Rex est un chien', 'tous les chiens sont des mammifères', 'tous les mammifères sont des animaux' }
+        ) {
+            Tell $Told
+            Ask 'Rex est-il un animal ?' | Should -Be "Oui, Rex est un animal : c'est un chien et tous les chiens sont des animaux."
+            $least = (& (Get-Module Lambek) { Get-LambekLastProof }).Least
+            $least.Least | Should -BeTrue
+            $least.Checked | Should -Be 2
+        }
+
+        It 'says how far it looked when it could not try every smaller set' {
+            & (Get-Module Lambek) {
+                # (told first that Rex is of the second kind, then that it is of the first, and that the first is the
+                # second: taking each out in turn keeps the way of two; only trying the sets of one finds the first)
+                $statements = [System.Collections.Generic.List[LambekCategoryStatement]]::new()
+                $s = [LambekCategoryStatement]::new(); $s.AddNamed('rex', [int[]] @(2)); $statements.Add($s)
+                $s = [LambekCategoryStatement]::new(); $s.AddNamed('rex', [int[]] @(1)); $statements.Add($s)
+                $s = [LambekCategoryStatement]::new(); $s.AddEvery([int[]] @(-1, 2)); $statements.Add($s)
+                $question = [LambekCategoryStatement]::new(); $question.AddNamed('rex', [int[]] @(-2))
+                $all = [LambekCategories]::Shortest($statements.ToArray(), $question, $null, 100)
+                $all.Indices | Should -Be @(0)
+                $all.Least | Should -BeTrue
+                $cut = [LambekCategories]::Shortest($statements.ToArray(), $question, $null, 0)
+                $cut.Indices | Should -Be @(1, 2)
+                $cut.Least | Should -BeFalse
+                $cut.Checked | Should -Be 1
+            }
+        }
+    }
+
     Context 'One said to be more than another' {
 
         It 'follows more from one to the next, and says what it rests on' {

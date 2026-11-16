@@ -1,8 +1,8 @@
 {
-  "Version": "1.7",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "1.8",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "90f29a7b0a0cbb133ea1d637fc09ff622a776e3ca753f6d8d83bf186347eb309",
+  "TestHash": "22a55258545169520aac16da30ae19f3c71e439e4dc01eaca28080be202b51fa",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -13896,6 +13896,1030 @@
           "Text": "Coco è un uccello?",
           "Expect": {
             "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-shortest-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens sont des mammifères"
+        },
+        {
+          "Text": "tous les mammifères sont des animaux"
+        },
+        {
+          "Text": "tous les chiens sont des animaux"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex est-il un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,",
+              "mammifère"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-shortest-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "toutes les roses sont des fleurs"
+        },
+        {
+          "Text": "toutes les fleurs sont des plantes"
+        },
+        {
+          "Text": "toutes les roses sont des plantes"
+        },
+        {
+          "Text": "Rosa est une rose"
+        },
+        {
+          "Text": "Rosa est-elle une plante ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,",
+              "fleur"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-shortest-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs are mammals"
+        },
+        {
+          "Text": "all mammals are animals"
+        },
+        {
+          "Text": "all dogs are animals"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "is Rex an animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,",
+              "mammal"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-shortest-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "all roses are flowers"
+        },
+        {
+          "Text": "all flowers are plants"
+        },
+        {
+          "Text": "all roses are plants"
+        },
+        {
+          "Text": "Rosa is a rose"
+        },
+        {
+          "Text": "is Rosa a plant?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,",
+              "flower"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-shortest-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde sind Säugetiere"
+        },
+        {
+          "Text": "alle Säugetiere sind Tiere"
+        },
+        {
+          "Text": "alle Hunde sind Tiere"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "ist Rex ein Tier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein.",
+              "säugetier"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-shortest-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Rosen sind Blumen"
+        },
+        {
+          "Text": "alle Blumen sind Pflanzen"
+        },
+        {
+          "Text": "alle Rosen sind Pflanzen"
+        },
+        {
+          "Text": "Rosa ist eine Rose"
+        },
+        {
+          "Text": "ist Rosa eine Pflanze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein.",
+              "blume"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-shortest-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros son mamíferos"
+        },
+        {
+          "Text": "todos los mamíferos son animales"
+        },
+        {
+          "Text": "todos los perros son animales"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿es Rex un animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no.",
+              "mamífero"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-shortest-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "todas las rosas son flores"
+        },
+        {
+          "Text": "todas las flores son plantas"
+        },
+        {
+          "Text": "todas las rosas son plantas"
+        },
+        {
+          "Text": "Rosa es una rosa"
+        },
+        {
+          "Text": "¿es Rosa una planta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no.",
+              "flor"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-shortest-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden zijn zoogdieren"
+        },
+        {
+          "Text": "alle zoogdieren zijn dieren"
+        },
+        {
+          "Text": "alle honden zijn dieren"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "is Rex een dier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee.",
+              "zoogdier"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-shortest-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "alle rozen zijn bloemen"
+        },
+        {
+          "Text": "alle bloemen zijn planten"
+        },
+        {
+          "Text": "alle rozen zijn planten"
+        },
+        {
+          "Text": "Rosa is een roos"
+        },
+        {
+          "Text": "is Rosa een plant?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee.",
+              "bloem"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-shortest-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães são mamíferos"
+        },
+        {
+          "Text": "todos os mamíferos são animais"
+        },
+        {
+          "Text": "todos os cães são animais"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex é um animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao.",
+              "mamífero"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-shortest-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "todas as rosas são flores"
+        },
+        {
+          "Text": "todas as flores são plantas"
+        },
+        {
+          "Text": "todas as rosas são plantas"
+        },
+        {
+          "Text": "Rosa é uma rosa"
+        },
+        {
+          "Text": "Rosa é uma planta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao.",
+              "flor"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-shortest-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani sono mammiferi"
+        },
+        {
+          "Text": "tutti i mammiferi sono animali"
+        },
+        {
+          "Text": "tutti i cani sono animali"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex è un animale?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no.",
+              "mammifer"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-shortest-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "tutte le rose sono fiori"
+        },
+        {
+          "Text": "tutti i fiori sono piante"
+        },
+        {
+          "Text": "tutte le rose sono piante"
+        },
+        {
+          "Text": "Rosa è una rosa"
+        },
+        {
+          "Text": "Rosa è una pianta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no.",
+              "fior"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-shortest-first-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens sont des animaux"
+        },
+        {
+          "Text": "tous les chiens sont des mammifères"
+        },
+        {
+          "Text": "tous les mammifères sont des animaux"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex est-il un animal ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,",
+              "mammifère"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-shortest-first-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "toutes les roses sont des plantes"
+        },
+        {
+          "Text": "toutes les roses sont des fleurs"
+        },
+        {
+          "Text": "toutes les fleurs sont des plantes"
+        },
+        {
+          "Text": "Rosa est une rose"
+        },
+        {
+          "Text": "Rosa est-elle une plante ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,",
+              "fleur"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-shortest-first-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs are animals"
+        },
+        {
+          "Text": "all dogs are mammals"
+        },
+        {
+          "Text": "all mammals are animals"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "is Rex an animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,",
+              "mammal"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-shortest-first-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "all roses are plants"
+        },
+        {
+          "Text": "all roses are flowers"
+        },
+        {
+          "Text": "all flowers are plants"
+        },
+        {
+          "Text": "Rosa is a rose"
+        },
+        {
+          "Text": "is Rosa a plant?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,",
+              "flower"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-shortest-first-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde sind Tiere"
+        },
+        {
+          "Text": "alle Hunde sind Säugetiere"
+        },
+        {
+          "Text": "alle Säugetiere sind Tiere"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "ist Rex ein Tier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein.",
+              "säugetier"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-shortest-first-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Rosen sind Pflanzen"
+        },
+        {
+          "Text": "alle Rosen sind Blumen"
+        },
+        {
+          "Text": "alle Blumen sind Pflanzen"
+        },
+        {
+          "Text": "Rosa ist eine Rose"
+        },
+        {
+          "Text": "ist Rosa eine Pflanze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein.",
+              "blume"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-shortest-first-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros son animales"
+        },
+        {
+          "Text": "todos los perros son mamíferos"
+        },
+        {
+          "Text": "todos los mamíferos son animales"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿es Rex un animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no.",
+              "mamífero"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-shortest-first-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "todas las rosas son plantas"
+        },
+        {
+          "Text": "todas las rosas son flores"
+        },
+        {
+          "Text": "todas las flores son plantas"
+        },
+        {
+          "Text": "Rosa es una rosa"
+        },
+        {
+          "Text": "¿es Rosa una planta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no.",
+              "flor"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-shortest-first-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden zijn dieren"
+        },
+        {
+          "Text": "alle honden zijn zoogdieren"
+        },
+        {
+          "Text": "alle zoogdieren zijn dieren"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "is Rex een dier?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee.",
+              "zoogdier"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-shortest-first-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "alle rozen zijn planten"
+        },
+        {
+          "Text": "alle rozen zijn bloemen"
+        },
+        {
+          "Text": "alle bloemen zijn planten"
+        },
+        {
+          "Text": "Rosa is een roos"
+        },
+        {
+          "Text": "is Rosa een plant?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee.",
+              "bloem"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-shortest-first-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães são animais"
+        },
+        {
+          "Text": "todos os cães são mamíferos"
+        },
+        {
+          "Text": "todos os mamíferos são animais"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex é um animal?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao.",
+              "mamífero"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-shortest-first-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "todas as rosas são plantas"
+        },
+        {
+          "Text": "todas as rosas são flores"
+        },
+        {
+          "Text": "todas as flores são plantas"
+        },
+        {
+          "Text": "Rosa é uma rosa"
+        },
+        {
+          "Text": "Rosa é uma planta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao.",
+              "flor"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-shortest-first-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani sono animali"
+        },
+        {
+          "Text": "tutti i cani sono mammiferi"
+        },
+        {
+          "Text": "tutti i mammiferi sono animali"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex è un animale?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no.",
+              "mammifer"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-shortest-first-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "shortest"
+      ],
+      "Turns": [
+        {
+          "Text": "tutte le rose sono piante"
+        },
+        {
+          "Text": "tutte le rose sono fiori"
+        },
+        {
+          "Text": "tutti i fiori sono piante"
+        },
+        {
+          "Text": "Rosa è una rosa"
+        },
+        {
+          "Text": "Rosa è una pianta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no.",
+              "fior"
+            ]
           }
         }
       ]
