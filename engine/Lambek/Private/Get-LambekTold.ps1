@@ -280,6 +280,23 @@ function Format-LambekFact {
     # what Lambek cannot say right is never said in a form ("Who: ... What: ..."), nor guessed
     $lexicon = Get-LambekLexicon -Language $Language
     $say = $lexicon.Dialogue.Say
+    # One of several told in one sentence ("Rex et Max sont des chiens"): that sentence, as it was said, from the
+    # other side
+    if ($Fact.PSObject.Properties['Joined'] -and $Fact.Joined) {
+        $whole = ConvertTo-LambekOtherSide -Text ("$($Fact.Joined)".Trim() -replace '[.!;]+$', '') -Language $Language -Register $Register
+        if ($whole) {
+            # (written the way each of them alone is: with a capital and a period, or without)
+            $alone = $Fact.PSObject.Copy()
+            $alone.PSObject.Properties.Remove('Joined')
+            $plain = "$(Format-LambekFact -Fact $alone -Language $Language -Register $Register -Bare:$Bare -Undated:$Undated)".Trim()
+            $whole = $whole.Trim().TrimEnd('.')
+            # (or, when each alone is only quoted, as a sentence of its own)
+            $sentence = $plain -match '^\p{L}'
+            if (-not $sentence -or $plain -cmatch '^\p{Lu}') { $whole = $whole.Substring(0, 1).ToUpperInvariant() + $whole.Substring(1) }
+            if (-not $sentence -or $plain.EndsWith('.')) { $whole += '.' }
+            return $whole
+        }
+    }
     # A rule told ("s'il pleut, je prends le bus"): the condition and what holds then, each said back and read again,
     # in the language it was told in, as everything told is ("if it rains" is never "si it rains")
     if ($Fact.PSObject.Properties['Condition'] -and $Fact.Condition -and $say['IfThen']) {

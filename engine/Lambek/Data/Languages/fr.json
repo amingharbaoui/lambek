@@ -1998,6 +1998,11 @@
         "et",
         "mais"
       ],
+      "Comparing": {
+        "More": ["plus"],
+        "Less": ["moins"],
+        "Than": ["que", "qu"]
+      },
       "Causes": [
         "parce que",
         "parce qu'",

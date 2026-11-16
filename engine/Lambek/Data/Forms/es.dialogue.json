@@ -686,6 +686,11 @@
         "y",
         "pero"
       ],
+      "Comparing": {
+        "More": ["mas"],
+        "Less": ["menos"],
+        "Than": ["que"]
+      },
       "Causes": [],
       "Impersonal": [],
       "Why": [],

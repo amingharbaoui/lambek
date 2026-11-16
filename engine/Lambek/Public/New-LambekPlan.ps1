@@ -81,6 +81,14 @@ function New-LambekPlan {
                 # "Marie a 2 ans de plus que Paul... quel age a Marie ?", "qui est au milieu ?": solved and checked
                 $problem = Resolve-LambekProblem -Text $Text
                 if ($problem) { return ConvertTo-LambekReplyPlan -Text $Text -Language $problem.Language -Reply $problem.Reply -Spoken }
+                # "Rex est plus grand que Max... Rex est-il plus grand que Tom ?": kept as told, and answered with the way from
+                # one to the other
+                $compared = Resolve-LambekComparison -Text $Text
+                if ($compared) {
+                    if (@($compared.Facts).Count -gt 0) { Add-LambekTold -Plan ([pscustomobject]@{ Steps = @($compared.Facts | ForEach-Object { [pscustomobject]@{ Statement = $_ } }) }) }
+                    $reply = Confirm-LambekProof -Reply $compared.Reply -Language $compared.Language
+                    return ConvertTo-LambekReplyPlan -Text $Text -Language $compared.Language -Reply $reply -Spoken
+                }
                 # "tous les chats de ma soeur sont noirs... Minou est-il noir ?": kept as told, and answered yes, no, or that it
                 # cannot be known, with what the answer rests on
                 $category = Resolve-LambekCategory -Text $Text

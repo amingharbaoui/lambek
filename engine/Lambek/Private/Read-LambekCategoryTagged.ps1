@@ -272,6 +272,24 @@ function Read-LambekCategoryTagged {
         }
         return Read-LambekCategoryPart -Kind 'askwho' -Values $asked -Language $Language
     }
+    # (asked with the word the language says "does" with, first, and no other verb read: the verb is the word after
+    # the one asked of that its treebanks or its dictionary also give as a verb, "do all dogs bark", "bark" read a
+    # noun)
+    if ($Question -and $verbal.Count -eq 1 -and $verbal[0] -eq $first -and
+        (ConvertTo-LambekNormalizedText -Text "$($readings[$first].Lemma)") -in @(Get-LambekCategorySupport -Language $Language)) {
+        for ($r = $readings.Count - 1; $r -gt $first + 1; $r--) {
+            $form = "$($readings[$r].Form)".ToLowerInvariant()
+            $tags = $null
+            $tagged = $model.Tags.TryGetValue($form, [ref] $tags) -and @($tags | Where-Object { "$_".StartsWith('VERB|') }).Count -gt 0
+            $listed = $model.Lexicon -and $model.Lexicon.Forms.ContainsKey($form) -and @($model.Lexicon.Forms[$form] | Where-Object { "$($_.Upos)" -eq 'VERB' }).Count -gt 0
+            if ($upos[$r] -in 'NOUN', 'ADJ' -and $upos[$r - 1] -in 'NOUN', 'PROPN' -and ($tagged -or $listed)) {
+                $upos[$first] = 'AUX'
+                $upos[$r] = 'VERB'
+                $verbal = @($first, $r)
+                break
+            }
+        }
+    }
     $front = $verbal[0] -eq $first -and ($upos[$first] -eq 'AUX' -or ($Question -and $verbal.Count -gt 1))
     # (in a question, the verb alone first, the one after it: "bellt Rex", "ladra Rex")
     $alone = $Question -and -not $front -and $verbal.Count -eq 1 -and $verbal[0] -eq $first -and $upos[$first] -eq 'VERB'

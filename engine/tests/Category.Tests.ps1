@@ -778,6 +778,19 @@ Describe 'General rules told in words' {
             Tell 'tous les chiens mangent de la viande', 'Max est un chien'
             (Ask 'Max mange-t-il de la viande ?') -join ' ' | Should -BeLike 'Oui*'
         }
+
+        It 'says two names told together back as they were told, and keeps each' {
+            Ask 'Tom et Rex sont des animaux' | Should -Be "C'est noté. Tom et Rex sont des animaux. Je m'en souviendrai."
+            (Ask 'Rex est-il un animal ?') -join ' ' | Should -BeLike 'Oui*- Tom et Rex sont des animaux.'
+        }
+
+        It 'answers each part of a question joined by the word that says both: <Asked>' -ForEach @(
+            @{ Told = 'tous les chats sont noirs'; Asked = 'tous les chats sont-ils noirs et gentils ?'; Said = 'Oui : tous les chats sont noirs.*peut être vrai ou faux*' }
+            @{ Told = 'all dogs bark', 'all dogs bite'; Asked = 'do all dogs bark and bite?'; Said = 'Yes: all dogs bark.*Yes: all dogs bite.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
     }
 
     Context 'What holds for a time is said with the day it was told' {
@@ -956,6 +969,58 @@ Describe 'General rules told in words' {
             $proof = & (Get-Module Lambek) { Get-LambekLastProof }
             @($proof.Facts).Count | Should -Be 2
             @($proof.Assumed) | Should -Contain 'category(all|siamois|chat)'
+        }
+    }
+
+    Context 'One said to be more than another' {
+
+        It 'follows more from one to the next, and says what it rests on' {
+            Tell 'Rex est plus grand que Max', 'Max est plus grand que Tom'
+            Ask 'Rex est-il plus grand que Tom ?' | Should -Be (@(
+                    'Oui : Rex est plus grand que Tom.'
+                    "Parce que vous m'avez dit :"
+                    '- Rex est plus grand que Max.'
+                    '- Max est plus grand que Tom.'
+                ) -join "`n")
+        }
+
+        It 'says no when the other is the one said to be more' {
+            Tell 'Rex est plus grand que Max', 'Max est plus grand que Tom'
+            (Ask 'Tom est-il plus grand que Rex ?') -join ' ' | Should -BeLike 'Non : Rex est plus grand que Tom.*'
+        }
+
+        It 'never guesses about one nothing was said of, or about another way of being more' {
+            Tell 'Rex est plus grand que Max'
+            (Ask 'Tom est-il plus grand que Max ?') -join ' ' | Should -BeLike '*peut être vrai ou faux*'
+            (Ask 'Rex est-il plus fort que Max ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            (Ask 'Rex est-il plus fort que Max ?') -join ' ' | Should -Not -BeLike 'Non*'
+        }
+
+        It 'reads less the other way' {
+            Tell 'le chat est moins grand que le chien', 'le chien est moins grand que le cheval'
+            (Ask 'le chat est-il moins grand que le cheval ?') -join ' ' | Should -BeLike 'Oui : le chat est moins grand que le cheval.*'
+        }
+
+        It 'says when what is told cannot be true with what was told' {
+            Tell 'Rex est plus grand que Max', 'Max est plus grand que Tom'
+            (Ask 'Tom est plus grand que Rex') -join ' ' | Should -BeLike '*ne peuvent pas être vraies ensemble*- Tom est plus grand que Rex.*'
+        }
+
+        It 'reads it in <Language>: <Question>' -ForEach @(
+            @{ Language = 'en'; Told = 'Rex is taller than Max', 'Max is taller than Tom'; Question = 'is Rex taller than Tom?'; Said = 'Yes*' }
+            @{ Language = 'de'; Told = 'Rex ist größer als Max', 'Max ist größer als Tom'; Question = 'ist Rex größer als Tom?'; Said = 'Ja*' }
+            @{ Language = 'it'; Told = 'Rex è più alto di Max', 'Max è più alto di Tom'; Question = 'Tom è più alto di Rex?'; Said = 'No*' }
+        ) {
+            Tell $Told
+            (Ask $Question) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'keeps the answer in the shape a checker reads' {
+            Tell 'Rex est plus grand que Max', 'Max est plus grand que Tom'
+            $null = Ask 'Rex est-il plus grand que Tom ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('compare(more|grand|name:rex|name:tom)')
+            $proof.Forms | Should -Be @('compare(more|grand|name:rex|name:max)', 'compare(more|grand|name:max|name:tom)')
         }
     }
 }

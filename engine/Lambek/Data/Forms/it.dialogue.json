@@ -713,6 +713,11 @@
         "e",
         "ma"
       ],
+      "Comparing": {
+        "More": ["piu"],
+        "Less": ["meno"],
+        "Than": ["di"]
+      },
       "Causes": [],
       "Impersonal": [],
       "Why": [],

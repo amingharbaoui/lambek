@@ -11,6 +11,7 @@
       category(all|chat|animal)        every cat is an animal ("no", and "usual:all"/"usual:no" for what holds
       category(no|poisson|mammifere)   "normalement"); a kind of several words is written chat+soeur
       category(is|name:tom|chat)       Tom is a cat ("isnot": Tom is not; "does"/"doesnot" for a verb, v:voler)
+      compare(more|grand|name:rex|name:max)  Rex is more grand than Max ("notmore" in a conclusion: is not)
       if(cond(X), then(Y))|            a rule told with if: when X was told, Y follows
       X|                               a thing told, as it is held (what follows the last bar is its day)
     and what an answer may conclude: one of those facts, or "usual:is"/"usual:isnot" about someone, for what is only
@@ -22,6 +23,8 @@
       - every one of a kind is what a wider kind is (every cat is a mammal, every mammal is an animal)
       - what holds normalement is supposed of one when nothing told and no rule about a narrower kind says otherwise
       - modus ponens on the rules told with if
+      - what is more than one that is more than a third is more than the third, and what is more than another is not
+        less than it (no one is more than itself)
     A conclusion it cannot work out is refused; "some" and "not every" are not checked (it says so).
     Test-LambekCalculation works out again a sum an answer shows ("2 + 3 = 5").
 .EXAMPLE
@@ -71,6 +74,10 @@ function ConvertFrom-LambekProofFact {
         $kind = @{ does = 'is'; doesnot = 'isnot' }[$kind] ?? $kind
         $set = { param($s) [string[]] @($s -split '\+' | Where-Object { $_ }) }
         return [pscustomobject]@{ Shape = 'category'; Kind = $kind; Usual = $usual; Who = $category.Groups['who'].Value; Atoms = (& $set $category.Groups['what'].Value); Subject = (& $set $category.Groups['who'].Value) }
+    }
+    $compare = [regex]::Match($text, '^compare\((?<kind>more|notmore)\|(?<of>[^|()]+)\|(?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
+    if ($compare.Success) {
+        return [pscustomobject]@{ Shape = 'compare'; Kind = $compare.Groups['kind'].Value; Of = $compare.Groups['of'].Value; A = $compare.Groups['a'].Value; B = $compare.Groups['b'].Value }
     }
     if ($text.StartsWith('if(cond(')) {
         # if(cond(X), then(Y)): X and Y found by their parentheses
@@ -171,6 +178,27 @@ function Test-LambekProofOnce {
         if (-not $said) { return [pscustomobject]@{ Holds = $null; Reason = "not read: $conclusion" } }
         if ($said.Shape -eq 'told') {
             if (-not $told.Contains($said.Key)) { return [pscustomobject]@{ Holds = $false; Reason = "does not follow: $conclusion" } }
+            continue
+        }
+        if ($said.Shape -eq 'compare') {
+            # (more than: every one reached from the one that is more, by what was told is more than what)
+            $more = @($facts | Where-Object { $_.Shape -eq 'compare' -and $_.Kind -eq 'more' -and $_.Of -eq $said.Of })
+            $reach = {
+                param([string] $from, [string] $to)
+                $seen = [System.Collections.Generic.HashSet[string]]::new()
+                $todo = [System.Collections.Generic.Queue[string]]::new()
+                $todo.Enqueue($from)
+                while ($todo.Count -gt 0) {
+                    $at = $todo.Dequeue()
+                    foreach ($fact in @($more | Where-Object { $_.A -eq $at })) {
+                        if ($fact.B -eq $to) { return $true }
+                        if ($seen.Add($fact.B)) { $todo.Enqueue($fact.B) }
+                    }
+                }
+                return $false
+            }
+            $holds = $(if ($said.Kind -eq 'more') { & $reach $said.A $said.B } else { & $reach $said.B $said.A })
+            if (-not $holds) { return [pscustomobject]@{ Holds = $false; Reason = "does not follow: $conclusion" } }
             continue
         }
         if ($said.Shape -ne 'category') { return [pscustomobject]@{ Holds = $null; Reason = "not checked: $conclusion" } }

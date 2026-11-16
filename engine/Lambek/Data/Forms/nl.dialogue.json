@@ -507,6 +507,11 @@
         "en",
         "maar"
       ],
+      "Comparing": {
+        "More": ["meer"],
+        "Less": ["minder"],
+        "Than": ["dan"]
+      },
       "Causes": [],
       "Impersonal": [],
       "Why": [],

@@ -16,6 +16,8 @@ Describe 'The checker of proofs' {
         @{ Name = 'no one of a kind, from what it is'; Premises = 'category(all|chat|noir)|', 'category(no|corbeau|noir)|'; Conclusion = 'category(no|corbeau|chat)' }
         @{ Name = 'what one does not do, recalled'; Premises = 'category(doesnot|name:tweety|v:voler)|'; Conclusion = 'category(isnot|name:tweety|v:voler)' }
         @{ Name = 'a rule with a condition in the negative'; Premises = 'if(cond(not(pleuvoir(agent("il")))), then(prendre(agent(speaker), object("le velo"))))|', 'not(pleuvoir(agent("il")))|'; Conclusion = 'prendre(agent(speaker), object("le velo"))|' }
+        @{ Name = 'one more than another, through a third'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
+        @{ Name = 'one not more than the one more than it'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(notmore|grand|name:tom|name:rex)' }
     ) {
         $check = Test-LambekProof -Premises $Premises -Conclusions $Conclusion -Each
         $check.Holds | Should -BeTrue -Because $check.Reason
@@ -31,6 +33,9 @@ Describe 'The checker of proofs' {
         @{ Name = 'another thing than the one told'; Premises = 'habiter(agent("ma soeur"), a("Lyon"))|'; Conclusion = 'habiter(agent("ma soeur"), a("Paris"))|' }
         @{ Name = 'what one is not, from what it is not'; Premises = 'category(all|chat|noir)|', 'category(isnot|name:tom|chat)|'; Conclusion = 'category(isnot|name:tom|noir)' }
         @{ Name = 'a condition in the negative, from its opposite'; Premises = 'if(cond(not(pleuvoir(agent("il")))), then(prendre(agent(speaker), object("le velo"))))|', 'pleuvoir(agent("il"))|'; Conclusion = 'prendre(agent(speaker), object("le velo"))|' }
+        @{ Name = 'more, the other way round'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:max|name:rex)' }
+        @{ Name = 'more in another way'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|fort|name:rex|name:max)' }
+        @{ Name = 'a way broken in the middle'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:paul|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
     ) {
         (Test-LambekProof -Premises $Premises -Conclusions $Conclusion).Holds | Should -BeFalse
     }

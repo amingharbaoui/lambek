@@ -10,7 +10,8 @@
       quoted in its treebanks ("the" in German) is not one of them.
     - The word that says whose ("von"), from the sentences translated from English: the preposition met the most often
       where English says "of"; and the words that join two things and say both ("und", "sondern"), the conjunctions
-      met the most often where English says "and" and "but". The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from
+      met the most often where English says "and" and "but"; and the words that compare, met where it says "more",
+      "less" and "than". The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from
       its words of logic (<language>.logic).
     - What it answers, from the sentences translated from English (Tatoeba): "Yes." is "Ja.", "No." is "Nein.",
       "I don't know." is "Ich weiss nicht.", "I understand." is "Ich verstehe.", "Why?" is "Warum?" Short answers, the
@@ -117,6 +118,16 @@ $general['Conjunctions'] = & $plain $lists['Conjunctions']
 # (those that say both: the one met the most often where English says "and", and where it says "but"; never the one
 # where it says "or", which says one of them)
 $general['And'] = & $plain @(foreach ($word in 'and', 'but') { [LambekDialogueWords]::Aligned($englishSide, $otherSide, $word, [string[]] $lists['Conjunctions'], 20, 12) } | Where-Object { $_ } | Select-Object -Unique)
+# (the words that compare: those met the most often where English says "more" and "less", among the words its
+# treebanks tag as adverbs, and where it says "than", among those they tag as prepositions or conjunctions)
+$tagged = { param($pattern) [string[]] @($model.Tags.Keys | Where-Object { @($model.Tags[$_] | Where-Object { "$_" -match $pattern }).Count -gt 0 } | Sort-Object) }
+$adverbs = & $tagged '^ADV\|'
+$links = & $tagged '^(ADP|SCONJ|CCONJ)\|'
+$general['Comparing'] = [ordered]@{
+    More = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'more', $adverbs, 20, 12) | Where-Object { $_ })
+    Less = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'less', $adverbs, 20, 12) | Where-Object { $_ })
+    Than = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'than', $links, 20, 12) | Where-Object { $_ })
+}
 $general['NounLinks'] = & $plain $ofForms
 foreach ($name in 'Speakers', 'Addressee', 'Articles', 'Determiners') { if ($dialogue.Contains($name)) { $dialogue[$name] = $general[$(if ($name -eq 'Articles') { 'Determiners' } else { $name })] } }
 $dialogue['Articles'] = & $plain $lists['Definite']

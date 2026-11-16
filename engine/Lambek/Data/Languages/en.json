@@ -1629,6 +1629,11 @@
         "and",
         "but"
       ],
+      "Comparing": {
+        "More": ["more"],
+        "Less": ["less"],
+        "Than": ["than"]
+      },
       "Causes": [
         "because"
       ],

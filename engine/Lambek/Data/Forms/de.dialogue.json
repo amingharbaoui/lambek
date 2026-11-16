@@ -737,6 +737,11 @@
         "und",
         "sondern"
       ],
+      "Comparing": {
+        "More": ["mehr"],
+        "Less": ["weniger"],
+        "Than": ["als"]
+      },
       "Causes": [],
       "Impersonal": [],
       "Why": [],

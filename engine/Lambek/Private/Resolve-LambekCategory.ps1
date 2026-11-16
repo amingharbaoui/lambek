@@ -43,6 +43,22 @@ function Resolve-LambekCategory {
         # Two names told together ("Rex en Max zijn honden"), in the language the message reads as: a sentence that
         # does not read whole is told name by name, when each part reads (Split-LambekCoordination)
         if ($language -eq $detected) { $sentences = @(Split-LambekCategoryCoordination -Sentences $sentences -Language $language) }
+        # A question of two things at once ("tous les chats sont-ils noirs et gentils ?"): each asked, each answered
+        $asked = @($sentences | Where-Object { $_.Question })
+        $joins = @(Get-LambekConjunctionWord -Language $language | ForEach-Object { [regex]::Escape("$_") })
+        if ($asked.Count -eq 1 -and $joins.Count -gt 0 -and [object]::ReferenceEquals($asked[0], $sentences[-1])) {
+            $both = @(Split-LambekCategoryBoth -Text $asked[0].Text -Language $language -Joins $joins -Question)
+            if ($both.Count -eq 2) {
+                $told = @($sentences | Select-Object -SkipLast 1)
+                $answers = @(foreach ($one in $both) {
+                        $question = [pscustomobject]@{ Original = "$one ?"; Text = $one; Question = $true; Correcting = $false }
+                        Resolve-LambekCategoryMessage -Sentences (@($told) + @($question)) -Language $language
+                    })
+                if ($answers.Count -eq 2 -and $answers[0] -and $answers[1]) {
+                    return [pscustomobject]@{ Language = $language; Reply = "$($answers[0].Reply)`n$($answers[1].Reply)"; Facts = $answers[0].Facts }
+                }
+            }
+        }
         # A quick look first, with the shapes of the sentences only
         $shapes = @(foreach ($sentence in $sentences) {
                 $shape = Read-LambekCategorySentence -Sentence $sentence.Text -Language $language -Question:$sentence.Question -Shape
@@ -63,7 +79,7 @@ function Resolve-LambekCategory {
 }
 
 function Split-LambekCategoryBoth {
-    param([string] $Text, [string] $Language, [string[]] $Joins)
+    param([string] $Text, [string] $Language, [string[]] $Joins, [switch] $Question)
 
     # One sentence that says two things with one word that says both, as two sentences, each read as such:
     #   what is said of one kind or one, twice: "tous les chats sont noirs et gentils" is "tous les chats sont noirs" and
@@ -78,9 +94,10 @@ function Split-LambekCategoryBoth {
     if ($at.Count -ne 1) { return }
     $left = @($words[0..($at[0] - 1)])
     $right = @($words[($at[0] + 1)..($words.Count - 1)])
-    # (rules about kinds only: what is told of one is read by the rest of Lambek, which splits it its own way)
-    $kept = 'all', 'some'
-    $read = { param($t) $r = Read-LambekCategorySentence -Sentence $t -Language $Language; if ($r -and $r.Kind -in $kept) { $r } }
+    # (rules about kinds only: what is told of one is read by the rest of Lambek, which splits it its own way; asked,
+    # whether it holds of every one or of some)
+    $kept = $(if ($Question) { 'askall', 'asksome' } else { 'all', 'some' })
+    $read = { param($t) $r = Read-LambekCategorySentence -Sentence $t -Language $Language -Question:$Question; if ($r -and $r.Kind -in $kept) { $r } }
     $who = { param($r) if ($r.Individual) { "one:$($r.Individual.Key)" } elseif ($r.Subject) { "kind:$(@($r.Subject.Atoms) -join '+')" } else { '' } }
     $what = { param($r) "$([bool] $r.Verb)|$(@($r.Predicate.Atoms) -join '+')" }
     # (what is said of the same one or kind, twice: the longest start of the first that reads with the second, where
@@ -166,7 +183,16 @@ function Split-LambekCategoryCoordination {
         $split = @()
         if ($parts.Count -gt 1) { $split = @(Split-LambekCategorySentence -Text (($parts | ForEach-Object { "$_." }) -join ' ') -Language $Language) }
         $read = @($split | Where-Object { -not $_.Question -and (Read-LambekCategorySentence -Sentence $_.Text -Language $Language -Shape) })
-        if ($parts.Count -gt 1 -and $split.Count -eq $parts.Count -and $read.Count -eq $split.Count) { $split } else { $sentence }
+        if ($parts.Count -gt 1 -and $split.Count -eq $parts.Count -and $read.Count -eq $split.Count) {
+            # (what they are said to be together is said back as it was said, once: "Rex et Max sont des chiens", not "Rex
+            # est des chiens"; what they do is said of each, "your sister lives in Lyon")
+            $kinds = @($split | ForEach-Object { (Read-LambekCategorySentence -Sentence $_.Text -Language $Language -Shape).Kind })
+            if (@($kinds | Where-Object { $_ -notin 'is', 'isnot' }).Count -eq 0) {
+                foreach ($part in $split) { $part | Add-Member -NotePropertyName Joined -NotePropertyValue $sentence.Original -Force }
+            }
+            $split
+        }
+        else { $sentence }
     }
 }
 
@@ -1054,7 +1080,7 @@ function ConvertTo-LambekCategoryFact {
     if ($Item.PSObject.Properties['Pronoun'] -and $Item.Pronoun) {
         $said = ([regex] "(?i)(?<![\p{L}])$([regex]::Escape("$($Item.Pronoun)"))(?![\p{L}])").Replace("$($Sentence.Original)", "$($Item.Written.Subject)", 1)
     }
-    return [pscustomobject]@{
+    $fact = [pscustomobject]@{
         Action     = 'verb:category'
         Parameters = [ordered]@{}
         What       = $Sentence.Original
@@ -1072,6 +1098,8 @@ function ConvertTo-LambekCategoryFact {
         Core       = "category($signature)|"
         Form       = "category($signature)"
     }
+    if ($Sentence.PSObject.Properties['Joined'] -and $Sentence.Joined) { $fact | Add-Member -NotePropertyName Joined -NotePropertyValue "$($Sentence.Joined)" }
+    return $fact
 }
 
 function Get-LambekCategorySaid {
@@ -1400,7 +1428,17 @@ function Resolve-LambekCategoryMessage {
         # Told: said back, and said at once when it cannot be true with what was told before
         $shape = 'Noted'
         if ($script:Incognito) { $shape += 'Here' }
-        $lines.Add(($say[$shape] -f (@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
+        # (what was told in one sentence of several names is said back once, in that sentence)
+        $said = [System.Collections.Generic.List[string]]::new()
+        $joined = $null
+        foreach ($fact in $facts) {
+            if ($fact.PSObject.Properties['Joined'] -and $fact.Joined) {
+                if ($fact.Joined -eq $joined) { continue }
+                $joined = $fact.Joined
+            }
+            $said.Add((Format-LambekFact -Fact $fact -Language $Language -Register 'vous'))
+        }
+        $lines.Add(($say[$shape] -f ($said -join ' ')))
         foreach ($line in $takenBack) { $lines.Add($line) }
         if (-not [LambekCategories]::Satisfiable($statements)) {
             # Naskh: what is told now and cannot be true with what was told before replaces the last thing told about
@@ -1441,7 +1479,17 @@ function Resolve-LambekCategoryMessage {
     if ($Noted -and @($facts).Count -gt 0) {
         $shape = 'Noted'
         if ($script:Incognito) { $shape += 'Here' }
-        $lines.Add(($say[$shape] -f (@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
+        # (what was told in one sentence of several names is said back once, in that sentence)
+        $said = [System.Collections.Generic.List[string]]::new()
+        $joined = $null
+        foreach ($fact in $facts) {
+            if ($fact.PSObject.Properties['Joined'] -and $fact.Joined) {
+                if ($fact.Joined -eq $joined) { continue }
+                $joined = $fact.Joined
+            }
+            $said.Add((Format-LambekFact -Fact $fact -Language $Language -Register 'vous'))
+        }
+        $lines.Add(($say[$shape] -f ($said -join ' ')))
     }
     foreach ($line in $takenBack) { $lines.Add($line) }
     $because = {

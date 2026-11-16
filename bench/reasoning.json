@@ -1,8 +1,8 @@
 {
-  "Version": "1.4",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "1.5",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "18634683d1416d298f98adc1763b77499613230d58f0b0c32cb90d5db1e274f5",
+  "TestHash": "95f3ed74199f10e9e017281e53269c94b3feaa91ca13aa2f9b224c8392c90cf4",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -10261,6 +10261,834 @@
             ],
             "Avoid": [
               "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-compare-chain-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est plus grand que Max"
+        },
+        {
+          "Text": "Max est plus grand que Tom"
+        },
+        {
+          "Text": "Rex est-il plus grand que Tom ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-compare-back-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est plus grand que Max"
+        },
+        {
+          "Text": "Max est plus grand que Tom"
+        },
+        {
+          "Text": "Tom est-il plus grand que Rex ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-compare-chain-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est plus âgé que Marc"
+        },
+        {
+          "Text": "Marc est plus âgé que Luc"
+        },
+        {
+          "Text": "Paul est-il plus âgé que Luc ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-compare-back-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est plus âgé que Marc"
+        },
+        {
+          "Text": "Marc est plus âgé que Luc"
+        },
+        {
+          "Text": "Luc est-il plus âgé que Paul ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-compare-chain-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is taller than Max"
+        },
+        {
+          "Text": "Max is taller than Tom"
+        },
+        {
+          "Text": "is Rex taller than Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-compare-back-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is taller than Max"
+        },
+        {
+          "Text": "Max is taller than Tom"
+        },
+        {
+          "Text": "is Tom taller than Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-compare-chain-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is older than Mark"
+        },
+        {
+          "Text": "Mark is older than Luke"
+        },
+        {
+          "Text": "is Paul older than Luke?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-compare-back-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is older than Mark"
+        },
+        {
+          "Text": "Mark is older than Luke"
+        },
+        {
+          "Text": "is Luke older than Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-compare-chain-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist größer als Max"
+        },
+        {
+          "Text": "Max ist größer als Tom"
+        },
+        {
+          "Text": "ist Rex größer als Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-compare-back-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist größer als Max"
+        },
+        {
+          "Text": "Max ist größer als Tom"
+        },
+        {
+          "Text": "ist Tom größer als Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-compare-chain-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist älter als Mark"
+        },
+        {
+          "Text": "Mark ist älter als Lukas"
+        },
+        {
+          "Text": "ist Paul älter als Lukas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-compare-back-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist älter als Mark"
+        },
+        {
+          "Text": "Mark ist älter als Lukas"
+        },
+        {
+          "Text": "ist Lukas älter als Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-compare-chain-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es más alto que Max"
+        },
+        {
+          "Text": "Max es más alto que Tom"
+        },
+        {
+          "Text": "¿es Rex más alto que Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-compare-back-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es más alto que Max"
+        },
+        {
+          "Text": "Max es más alto que Tom"
+        },
+        {
+          "Text": "¿es Tom más alto que Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-compare-chain-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo es más viejo que Marcos"
+        },
+        {
+          "Text": "Marcos es más viejo que Lucas"
+        },
+        {
+          "Text": "¿es Pablo más viejo que Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-compare-back-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo es más viejo que Marcos"
+        },
+        {
+          "Text": "Marcos es más viejo que Lucas"
+        },
+        {
+          "Text": "¿es Lucas más viejo que Pablo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-compare-chain-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is groter dan Max"
+        },
+        {
+          "Text": "Max is groter dan Tom"
+        },
+        {
+          "Text": "is Rex groter dan Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-compare-back-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is groter dan Max"
+        },
+        {
+          "Text": "Max is groter dan Tom"
+        },
+        {
+          "Text": "is Tom groter dan Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-compare-chain-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is ouder dan Mark"
+        },
+        {
+          "Text": "Mark is ouder dan Luuk"
+        },
+        {
+          "Text": "is Paul ouder dan Luuk?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-compare-back-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is ouder dan Mark"
+        },
+        {
+          "Text": "Mark is ouder dan Luuk"
+        },
+        {
+          "Text": "is Luuk ouder dan Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-compare-chain-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é mais alto que Max"
+        },
+        {
+          "Text": "Max é mais alto que Tom"
+        },
+        {
+          "Text": "Rex é mais alto que Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-compare-back-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é mais alto que Max"
+        },
+        {
+          "Text": "Max é mais alto que Tom"
+        },
+        {
+          "Text": "Tom é mais alto que Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-compare-chain-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo é mais velho que Marcos"
+        },
+        {
+          "Text": "Marcos é mais velho que Lucas"
+        },
+        {
+          "Text": "Paulo é mais velho que Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-compare-back-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo é mais velho que Marcos"
+        },
+        {
+          "Text": "Marcos é mais velho que Lucas"
+        },
+        {
+          "Text": "Lucas é mais velho que Paulo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-compare-chain-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è più alto di Max"
+        },
+        {
+          "Text": "Max è più alto di Tom"
+        },
+        {
+          "Text": "Rex è più alto di Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-compare-back-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è più alto di Max"
+        },
+        {
+          "Text": "Max è più alto di Tom"
+        },
+        {
+          "Text": "Tom è più alto di Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-compare-chain-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "compare-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo è più vecchio di Marco"
+        },
+        {
+          "Text": "Marco è più vecchio di Luca"
+        },
+        {
+          "Text": "Paolo è più vecchio di Luca?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-compare-back-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "compare-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo è più vecchio di Marco"
+        },
+        {
+          "Text": "Marco è più vecchio di Luca"
+        },
+        {
+          "Text": "Luca è più vecchio di Paolo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
             ]
           }
         }
