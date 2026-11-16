@@ -25,6 +25,7 @@
       - modus ponens on the rules told with if
       - what is more than one that is more than a third is more than the third, and what is more than another is not
         less than it (no one is more than itself)
+      - one more so than one that is so is so; one less so than one that is not so is not (more grand than one grand)
     A conclusion it cannot work out is refused; "some" and "not every" are not checked (it says so).
     Test-LambekCalculation works out again a sum an answer shows ("2 + 3 = 5").
 .EXAMPLE
@@ -111,6 +112,26 @@ function Test-LambekProofOnce {
     } while ($more)
 
     $kinds = @($facts | Where-Object { $_.Shape -eq 'category' })
+    # One more so than one told to be so is so; one less so than one told not to be is not (being so is being so
+    # beyond some point, the same for both): what was told one is, and is not, of one word, carried along "more"
+    $compared = @($facts | Where-Object { $_.Shape -eq 'compare' -and $_.Kind -eq 'more' })
+    if ($compared.Count -gt 0) {
+        $said = [System.Collections.Generic.List[object]]::new()
+        foreach ($fact in @($kinds | Where-Object { -not $_.Usual -and $_.Kind -in 'is', 'isnot' -and @($_.Atoms).Count -eq 1 })) { $said.Add($fact) }
+        do {
+            $more = $false
+            foreach ($edge in $compared) {
+                foreach ($fact in @($said)) {
+                    if ("$(@($fact.Atoms)[0])" -ne $edge.Of) { continue }
+                    $who = $(if ($fact.Kind -eq 'is' -and $fact.Who -eq $edge.B) { $edge.A } elseif ($fact.Kind -eq 'isnot' -and $fact.Who -eq $edge.A) { $edge.B } else { $null })
+                    if (-not $who -or @($said | Where-Object { $_.Kind -eq $fact.Kind -and $_.Who -eq $who -and "$(@($_.Atoms)[0])" -eq $edge.Of }).Count -gt 0) { continue }
+                    $said.Add([pscustomobject]@{ Shape = 'category'; Kind = $fact.Kind; Usual = $false; Who = $who; Atoms = [string[]] @($edge.Of); Subject = [string[]] @($who) })
+                    $more = $true
+                }
+            }
+        } while ($more)
+        $kinds = @(@($kinds | Where-Object { $_.Usual -or $_.Kind -notin 'is', 'isnot' -or @($_.Atoms).Count -ne 1 }) + @($said))
+    }
     $strict = @($kinds | Where-Object { -not $_.Usual -and $_.Kind -in 'all', 'no' })
     $usual = @($kinds | Where-Object { $_.Usual -and $_.Kind -in 'all', 'no' })
     $subset = { param([string[]] $part, $whole) @($part | Where-Object { -not $whole.Contains($_) }).Count -eq 0 }

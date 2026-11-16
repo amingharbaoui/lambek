@@ -18,15 +18,97 @@ function Resolve-LambekComparison {
         if (-not (Get-LambekComparisonWord -Language $language)) { continue }
         $sentences = @(Split-LambekCategorySentence -Text $Text -Language $language)
         if ($sentences.Count -eq 0) { continue }
-        $items = @(foreach ($sentence in $sentences) {
-                $read = Read-LambekComparison -Sentence $sentence.Text -Language $language -Question:$sentence.Question
-                if (-not $read) { break }
-                [pscustomobject]@{ Sentence = $sentence; Item = $read }
-            })
-        if ($items.Count -ne $sentences.Count) { continue }
+        $items = [System.Collections.Generic.List[object]]::new()
+        $read = 0
+        foreach ($sentence in $sentences) {
+            # (read with its commas when they are all it has more: "Rex, Max et Paul" are three)
+            $words = $sentence.Text
+            $marked = (("$($sentence.Original)" -replace '[.!?;]+\s*$', '') -replace "^[\p{Po}-['\u2019]]+", '').Trim()
+            if ($marked -match ',' -and (($marked -replace ',', ' ') -replace '\s+', ' ').Trim() -ceq $words) { $words = $marked }
+            $pairs = @(Read-LambekComparison -Sentence $words -Language $language -Question:$sentence.Question | Where-Object { $_ })
+            if ($pairs.Count -eq 0) { break }
+            foreach ($pair in $pairs) { $items.Add([pscustomobject]@{ Sentence = $sentence; Item = $pair }) }
+            $read++
+        }
+        if ($read -ne $sentences.Count) { continue }
+        $items = $items.ToArray()
         return Resolve-LambekComparisonMessage -Items $items -Language $language
     }
-    return $null
+    return Resolve-LambekComparisonDegree -Text $Text
+}
+
+function Resolve-LambekComparisonDegree {
+    param([string] $Text)
+
+    # What one is, from one it is more so than: "Max est grand", "Rex est plus grand que Max": "Rex est-il grand ?" ->
+    # yes. One is so when it is more so than one that is, and not so when it is less so than one that is not (being
+    # so is being so beyond some point, the same for both). Only a question alone, about one named, of one word said
+    # of it; what was told of that one itself is left to the reasoning on kinds
+    # (in the language the question reads in where something was told compared so, the one it seems in first)
+    $first = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Forms
+    $detected = $null
+    foreach ($language in @(@($first) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $first } | Sort-Object))) {
+        if (-not $language -or -not (Get-LambekComparisonWord -Language $language)) { continue }
+        $sentences = @(Split-LambekCategorySentence -Text $Text -Language $language)
+        if ($sentences.Count -ne 1 -or -not $sentences[0].Question) { continue }
+        $known = @(Get-LambekComparisonKnown -Language $language)
+        if ($known.Count -eq 0) { continue }
+        $ask = Read-LambekCategorySentence -Sentence $sentences[0].Text -Language $language -Question
+        if (-not $ask -or $ask.Kind -ne 'askis' -or -not $ask.Individual -or $ask.Verb -or $ask.Quantifier) { continue }
+        $atoms = @($ask.Predicate.Atoms)
+        if ($atoms.Count -ne 1) { continue }
+        # (the word as the reasoning on kinds keeps it, "op:fast" for one its dictionary does not know apart)
+        $atom = "$($atoms[0])"
+        $of = $atom -replace '^op:', ''
+        $compared = @($known | Where-Object { $_.Item.Of -eq $of })
+        if ($compared.Count -gt 0) { $detected = $language; break }
+    }
+    if (-not $detected) { return $null }
+    $who = "$($ask.Individual.Key)"
+    $said = @(Get-LambekCategoryKnown -Language $detected | Where-Object {
+            $_.Item.Kind -in 'is', 'isnot' -and $_.Item.Individual -and -not ($_.Item.PSObject.Properties['Default'] -and $_.Item.Default) -and
+            @($_.Item.Predicate.Atoms).Count -eq 1 -and "$(@($_.Item.Predicate.Atoms)[0])" -eq $atom
+        })
+    if (@($said | Where-Object { "$($_.Item.Individual.Key)" -eq $who }).Count -gt 0) { return $null }
+    # (the shortest way: to one said to be so, or from one said not to be)
+    $ways = [System.Collections.Generic.List[object]]::new()
+    foreach ($one in $said) {
+        $other = "$($one.Item.Individual.Key)"
+        $path = $(if ($one.Item.Kind -eq 'is') { Find-LambekComparisonPath -Known $compared -Of $of -From $who -To $other } else { Find-LambekComparisonPath -Known $compared -Of $of -From $other -To $who })
+        if ($path) { $ways.Add([pscustomobject]@{ Kind = $one.Item.Kind; Path = $path; Said = $one }) }
+    }
+    $yes = @($ways | Where-Object Kind -EQ 'is' | Sort-Object { @($_.Path).Count } | Select-Object -First 1)
+    $no = @($ways | Where-Object Kind -EQ 'isnot' | Sort-Object { @($_.Path).Count } | Select-Object -First 1)
+    # (both: what was told cannot all be true, and that is for the reasoning on kinds to say)
+    if (($yes.Count -gt 0) -eq ($no.Count -gt 0)) { return $null }
+    $found = $(if ($yes.Count -gt 0) { $yes[0] } else { $no[0] })
+    $shape = $(if ($yes.Count -gt 0) { 'is' } else { 'isnot' })
+    $data = (Get-LambekCategoryVocabulary -Language $detected).Data
+    # (said as the answers on kinds are: "Oui : Rex est grand.", "Nein.")
+    $template = "$($data[$(if ($shape -eq 'is') { 'Yes' } else { 'No' })])"
+    $sentence = Get-LambekCategorySentence -Item $ask -Shape $shape -Language $detected
+    if (-not $template -or (-not $sentence -and $template -match '\{0\}')) { return $null }
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $lines.Add(($template -f $sentence))
+    if ($data['Because']) { $lines.Add($data['Because']) }
+    $steps = @(Select-LambekComparisonOnce -Items @($found.Path) -Key { param($s) "$($s.Fact.Joined)|$($s.Fact.Text)|$(Get-LambekComparisonForm -Item $s.Item)" })
+    $facts = @(@($steps | ForEach-Object { $_.Fact }) + @($found.Said.Fact))
+    $shown = @{}
+    foreach ($fact in $facts) {
+        $line = "- $(Format-LambekFact -Fact $fact -Language $detected -Register 'vous' -Bare)"
+        if (-not $shown.ContainsKey($line)) { $shown[$line] = $true; $lines.Add($line) }
+    }
+    Set-LambekLastProof -Facts $facts -Conclusion @(Get-LambekCategoryConclusion -Item $ask -Shape $shape) `
+        -Forms @(@($steps | ForEach-Object { (Get-LambekComparisonForm -Item $_.Item) -replace '^compare\((more|notmore)\|[^|]*\|', "compare(`$1|$atom|" }) + @("category($(Get-LambekCategorySignature -Item $found.Said.Item))"))
+    return [pscustomobject]@{ Language = $detected; Reply = ($lines -join "`n"); Facts = @() }
+}
+
+function Select-LambekComparisonOnce {
+    param([object[]] $Items, [scriptblock] $Key)
+
+    # Each once, in the order they came: a sentence of several said back once, a thing told listed once
+    $seen = [System.Collections.Generic.HashSet[string]]::new()
+    foreach ($item in $Items) { if ($seen.Add("$(& $Key $item)")) { $item } }
 }
 
 function Get-LambekComparisonWord {
@@ -65,7 +147,12 @@ function Read-LambekComparison {
         if ($match.Success) { $text = $text.Substring($match.Length).Trim(); $Question = $true }
     }
     $tokens = [System.Collections.Generic.List[string]]::new()
-    foreach ($token in @($text -split '\s+' | Where-Object { $_ })) {
+    # (a comma after a word ends one named of several: kept apart from the word, by its place)
+    $commas = [System.Collections.Generic.HashSet[int]]::new()
+    foreach ($word in @($text -split '\s+' | Where-Object { $_ })) {
+        $token = $word.TrimEnd(',')
+        if (-not $token) { continue }
+        if ($token.Length -lt $word.Length) { [void] $commas.Add($tokens.Count) }
         # (a pronoun after the verb, joined to it, is the one asked of said again: "est-il" is "est")
         $cut = [regex]::Match($token, '^(?<verb>\p{L}+)-(?:t-)?(?<pronoun>\p{L}+)$')
         if ($cut.Success) {
@@ -83,25 +170,35 @@ function Read-LambekComparison {
     if ($readings.Count -ne $tokens.Count) { return $null }
     $plain = @($tokens | ForEach-Object { ConvertTo-LambekNormalizedText -Text $_ })
     # (nothing said not: "Rex n'est pas plus grand que Max" says less than it seems)
-    if (@($readings | Where-Object { "|$($_.Feats)|" -match '\|(Polarity|PronType)=Neg\|' }).Count -gt 0) { return $null }
+    $not = @(Get-LambekNotWord -Language $Language)
+    if (@($readings | Where-Object { "|$($_.Feats)|" -match '\|(Polarity|PronType)=Neg\|' -or (ConvertTo-LambekNormalizedText -Text "$($_.Form)") -in $not }).Count -gt 0) { return $null }
     $than = @(for ($i = 0; $i -lt $plain.Count; $i++) { if ($plain[$i] -in $words.Than) { $i } })
     if ($than.Count -ne 1 -or $than[0] -lt 2 -or $than[0] -ge $tokens.Count - 1) { return $null }
     $t = $than[0]
     # How it is compared: "plus grand", "more beautiful", or one adjective said in its comparative ("taller", "groesser")
     $adjective = $t - 1
+    $feats = "$($readings[$adjective].Feats)"
+    $lemma = "$($readings[$adjective].Lemma)"
     if ("$($readings[$adjective].Upos)" -ne 'ADJ') {
+        # (read otherwise in its sentence, "faster" a noun before "than": an adjective when its treebanks or its
+        # dictionary say it is one, with the features and the lemma of that tag)
         $known = $null
         $listed = $model.Lexicon -and $model.Lexicon.Forms.ContainsKey($plain[$adjective]) -and @($model.Lexicon.Forms[$plain[$adjective]] | Where-Object { "$($_.Upos)" -eq 'ADJ' }).Count -gt 0
-        $tagged = $model.Tags.TryGetValue($tokens[$adjective].ToLowerInvariant(), [ref] $known) -and @($known | Where-Object { "$_".StartsWith('ADJ|') }).Count -gt 0
-        if (-not ($listed -or $tagged)) { return $null }
+        $tags = @($(if ($model.Tags.TryGetValue($tokens[$adjective].ToLowerInvariant(), [ref] $known)) { $known | Where-Object { "$_".StartsWith('ADJ|') } }))
+        if (-not $listed -and $tags.Count -eq 0) { return $null }
+        if ($tags.Count -gt 0) {
+            $feats = "$($tags[0])".Substring(4)
+            $lemma = $model.LemmaFor($tokens[$adjective], "$($tags[0])")
+        }
+        elseif ($listed) { $lemma = "$(@($model.Lexicon.Forms[$plain[$adjective]] | Where-Object { "$($_.Upos)" -eq 'ADJ' })[0].Lemma)" }
     }
     $more = $null
     $start = $adjective
     if ($plain[$adjective - 1] -in $words.More) { $more = $true; $start = $adjective - 1 }
     elseif ($plain[$adjective - 1] -in $words.Less) { $more = $false; $start = $adjective - 1 }
-    elseif ("|$($readings[$adjective].Feats)|" -match '\|Degree=Cmp\|') { $more = $true }
+    elseif ("|$feats|" -match '\|Degree=Cmp\|') { $more = $true }
     if ($null -eq $more) { return $null }
-    $lemma = ConvertTo-LambekNormalizedText -Text "$(if ($readings[$adjective].Lemma) { $readings[$adjective].Lemma } else { $tokens[$adjective] })"
+    $lemma = ConvertTo-LambekNormalizedText -Text "$(if ($lemma) { $lemma } else { $tokens[$adjective] })"
     if (-not $lemma) { return $null }
     # The copula, and who is compared: before it when told, after it when it is asked first
     $isCopula = { param($i) $i -ge 0 -and "$($readings[$i].Lemma)".ToLowerInvariant() -in $logic.Copulas }
@@ -115,20 +212,57 @@ function Read-LambekComparison {
     }
     if ($who.Count -eq 0) { return $null }
     $other = @($tokens[($t + 1)..($tokens.Count - 1)])
-    $one = ConvertTo-LambekCategoryIndividual -Text ($who -join ' ') -Language $Language
-    $two = ConvertTo-LambekCategoryIndividual -Text ($other -join ' ') -Language $Language
-    if (-not $one -or -not $two -or "$($one.Key)" -eq "$($two.Key)") { return $null }
-    $greater = $(if ($more) { $one } else { $two })
-    $smaller = $(if ($more) { $two } else { $one })
-    return [pscustomobject]@{
-        Kind     = $(if ($asking) { 'askcompare' } else { 'compare' })
-        Of       = $lemma
-        Greater  = $greater
-        Smaller  = $smaller
-        # (said again with the words of the sentence: the one, the verb, how, than, the other)
-        Said     = ((@($who) + @($(if ($copula -eq 0) { $tokens[$copula].ToLowerInvariant() } else { $tokens[$copula] })) + @($tokens[$start..$t]) + @($other)) -join ' ')
-        # (and the other way round, for an answer no: "Rex est plus grand que Tom" when "Tom" was asked of)
-        Back     = ((@($other) + @($(if ($copula -eq 0) { $tokens[$copula].ToLowerInvariant() } else { $tokens[$copula] })) + @($tokens[$start..$t]) + @($who)) -join ' ')
+    # Each side one named, or several joined by the word that says both ("Rex et Max sont plus grands que Tom"): one
+    # compared with one for each two, the sentence kept whole. A word of the sentence read as a name or a thing by its
+    # tags is one even when the dictionary does not know it ("the XR-200")
+    $lemmas = @{}
+    foreach ($reading in $readings) {
+        if ("$($reading.Upos)" -notin 'NOUN', 'ADJ', 'PROPN' -or -not $reading.Lemma) { continue }
+        $lemmas[(ConvertTo-LambekNormalizedText -Text "$($reading.Form)")] = ConvertTo-LambekNormalizedText -Text "$($reading.Lemma)"
+    }
+    $and = @(Get-LambekConjunctionWord -Language $Language | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" })
+    $side = {
+        param([int] $from, [int] $to)
+        $parts = [System.Collections.Generic.List[string]]::new()
+        $part = [System.Collections.Generic.List[string]]::new()
+        for ($i = $from; $i -le $to; $i++) {
+            if ((ConvertTo-LambekNormalizedText -Text $tokens[$i]) -in $and) { $parts.Add(($part -join ' ')); $part.Clear(); continue }
+            $part.Add($tokens[$i])
+            if ($commas.Contains($i)) { $parts.Add(($part -join ' ')); $part.Clear() }
+        }
+        $parts.Add(($part -join ' '))
+        $found = [System.Collections.Generic.List[object]]::new()
+        foreach ($text in $parts) {
+            $one = $(if ($text) { ConvertTo-LambekCategoryIndividual -Text $text -Language $Language -Lemmas $lemmas })
+            if (-not $one) { return , @() }
+            $found.Add($one)
+        }
+        , $found.ToArray()
+    }
+    $first = $(if ($copula -eq 0) { 1 } else { 0 })
+    $ones = & $side $first ($first + $who.Count - 1)
+    $twos = & $side ($t + 1) ($tokens.Count - 1)
+    if ($ones.Count -eq 0 -or $twos.Count -eq 0) { return $null }
+    $keys = @(@($ones) + @($twos) | ForEach-Object { "$($_.Key)" })
+    if (@($keys | Select-Object -Unique).Count -ne $keys.Count) { return $null }
+    $verb = $(if ($copula -eq 0) { $tokens[$copula].ToLowerInvariant() } else { $tokens[$copula] })
+    $written = { param([int] $from, [int] $to) @(for ($i = $from; $i -le $to; $i++) { "$($tokens[$i])$(if ($commas.Contains($i) -and $i -lt $to) { ',' })" }) }
+    $who = & $written $first ($first + $who.Count - 1)
+    $other = & $written ($t + 1) ($tokens.Count - 1)
+    foreach ($one in $ones) {
+        foreach ($two in $twos) {
+            [pscustomobject]@{
+                Kind    = $(if ($asking) { 'askcompare' } else { 'compare' })
+                Of      = $lemma
+                Greater = $(if ($more) { $one } else { $two })
+                Smaller = $(if ($more) { $two } else { $one })
+                # (said again with the words of the sentence: the one, the verb, how, than, the other)
+                Said    = ((@($who) + @($verb) + @($tokens[$start..$t]) + @($other)) -join ' ')
+                # (and the other way round, for an answer no: "Rex est plus grand que Tom" when "Tom" was asked of)
+                Back    = ((@($other) + @($verb) + @($tokens[$start..$t]) + @($who)) -join ' ')
+                Several = ($ones.Count * $twos.Count) -gt 1
+            }
+        }
     }
 }
 
@@ -149,8 +283,14 @@ function Get-LambekComparisonKnown {
     foreach ($fact in @($before) + @($told)) {
         if ("$($fact.Language)" -ne $Language -or -not $fact.Text) { continue }
         if ($fact.PSObject.Properties['Replaced'] -and $fact.Replaced) { continue }
-        $read = Read-LambekComparison -Sentence (("$($fact.Text)".Trim()) -replace '[.!;]+\s*$', '') -Language $Language
-        if ($read -and $read.Kind -eq 'compare') { [pscustomobject]@{ Fact = $fact; Item = $read } }
+        # (what was kept as a thing one is, or a rule about kinds, says no one is more than another)
+        if ($fact.PSObject.Properties['Core'] -and "$($fact.Core)".StartsWith('category(')) { continue }
+        foreach ($read in @(Read-LambekComparison -Sentence (("$($fact.Text)".Trim()) -replace '[.!;]+\s*$', '') -Language $Language | Where-Object { $_ })) {
+            # (a sentence of several kept once for each two: each read back as the two it was kept for)
+            if ($read.Kind -ne 'compare') { continue }
+            if ($fact.PSObject.Properties['Core'] -and "$($fact.Core)".StartsWith('compare(') -and "$($fact.Core)" -ne "$(Get-LambekComparisonForm -Item $read)|") { continue }
+            [pscustomobject]@{ Fact = $fact; Item = $read }
+        }
     }
 }
 
@@ -213,7 +353,8 @@ function Resolve-LambekComparisonMessage {
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
     $say = (Get-LambekLexicon -Language $Language).Dialogue.Say
     $asks = @($Items | Where-Object { $_.Item.Kind -eq 'askcompare' })
-    if ($asks.Count -gt 1 -or ($asks.Count -eq 1 -and -not [object]::ReferenceEquals($asks[0], $Items[-1]))) { return $null }
+    # (one question, the last sentence; asked of several, one for each two)
+    if (@($asks | Where-Object { -not [object]::ReferenceEquals($_.Sentence, $Items[-1].Sentence) }).Count -gt 0) { return $null }
     $facts = @(foreach ($entry in $Items) { if ($entry.Item.Kind -eq 'compare') { ConvertTo-LambekComparisonFact -Sentence $entry.Sentence -Item $entry.Item -Language $Language } })
     $known = @(Get-LambekComparisonKnown -Language $Language)
     $k = 0
@@ -234,12 +375,14 @@ function Resolve-LambekComparisonMessage {
         # Told: said back; and said at once when it goes back on what was told (more and less than the same one)
         $shape = 'Noted'
         if ($script:Incognito) { $shape += 'Here' }
-        $lines.Add(($say[$shape] -f (@($facts | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
+        # (a sentence of several said back once)
+        $once = @(Select-LambekComparisonOnce -Items $facts -Key { param($f) "$($f.Joined)" })
+        $lines.Add(($say[$shape] -f (@($once | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
         foreach ($entry in $now) {
             $back = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)"
             if ($back) {
                 $lines.Add($data['Clash'])
-                foreach ($step in @(@($back) + @($entry))) { $lines.Add("- $(Format-LambekFact -Fact $step.Fact -Language $Language -Register 'vous' -Bare)") }
+                foreach ($step in @(Select-LambekComparisonOnce -Items @(@($back) + @($entry)) -Key { param($s) "$($s.Fact.Joined)|$($s.Fact.Text)" })) { $lines.Add("- $(Format-LambekFact -Fact $step.Fact -Language $Language -Register 'vous' -Bare)") }
                 break
             }
         }
@@ -250,10 +393,51 @@ function Resolve-LambekComparisonMessage {
     $said = ConvertTo-LambekOtherSide -Text $ask.Said -Language $Language -Register 'vous'
     if (-not $said) { $said = $ask.Said }
     $said = $said.Trim().TrimEnd('.')
-    $listed = { param($path) foreach ($step in $path) { $lines.Add("- $(Format-LambekFact -Fact $step.Fact -Language $Language -Register 'vous' -Bare)") } }
+    # (each thing told said once, even when the way goes through two of one sentence)
+    $once = { param($path) @(Select-LambekComparisonOnce -Items @($path) -Key { param($s) "$($s.Fact.Joined)|$($s.Fact.Text)|$(Get-LambekComparisonForm -Item $s.Item)" }) }
+    $listed = {
+        param($path)
+        $shown = @{}
+        foreach ($step in (& $once $path)) {
+            $line = "- $(Format-LambekFact -Fact $step.Fact -Language $Language -Register 'vous' -Bare)"
+            if (-not $shown.ContainsKey($line)) { $shown[$line] = $true; $lines.Add($line) }
+        }
+    }
     $proof = {
-        param($path, [string] $concluded)
-        Set-LambekLastProof -Facts @($path | ForEach-Object { $_.Fact }) -Conclusion @($concluded) -Forms @($path | ForEach-Object { Get-LambekComparisonForm -Item $_.Item })
+        param($path, [string[]] $concluded)
+        $steps = & $once $path
+        Set-LambekLastProof -Facts @($steps | ForEach-Object { $_.Fact }) -Conclusion $concluded -Forms @($steps | ForEach-Object { Get-LambekComparisonForm -Item $_.Item })
+    }
+    if ($asks.Count -gt 1) {
+        # Asked of several at once ("Rex et Max sont-ils plus grands que Tom ?"): yes when it holds for each two, no
+        # when it does not hold for one of them; otherwise it may be true or false
+        $path = [System.Collections.Generic.List[object]]::new()
+        $each = $true
+        foreach ($entry in $asks) {
+            $way = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Greater.Key)" -To "$($entry.Item.Smaller.Key)"
+            if (-not $way) { $each = $false; break }
+            foreach ($step in $way) { $path.Add($step) }
+        }
+        if ($each) {
+            $lines.Add(($data['Yes'] -f (& $sentence $said)))
+            if ($data['Because']) { $lines.Add($data['Because']) }
+            $path = $path.ToArray()
+            & $listed $path
+            & $proof $path ([string[]] @($asks | ForEach-Object { Get-LambekComparisonForm -Item $_.Item }))
+            return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+        }
+        foreach ($entry in $asks) {
+            $no = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)"
+            if (-not $no) { continue }
+            $lines.Add($data['NoShort'])
+            if ($data['Because']) { $lines.Add($data['Because']) }
+            & $listed $no
+            & $proof $no ([string[]] @(Get-LambekComparisonForm -Item $entry.Item -Not))
+            return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+        }
+        Set-LambekLastProof
+        $lines.Add(($data['Unknown'] -f ($say['Quote'] -f $said)))
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
     $yes = Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Greater.Key)" -To "$($ask.Smaller.Key)"
     if ($yes) {
@@ -275,10 +459,7 @@ function Resolve-LambekComparisonMessage {
         & $proof $no (Get-LambekComparisonForm -Item $ask -Not)
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
-    # (nothing told of either compared so: the question is for the rest of Lambek)
-    $named = "$($ask.Greater.Key)", "$($ask.Smaller.Key)"
-    $about = @($all | Where-Object { $_.Item.Of -eq $ask.Of -and @("$($_.Item.Greater.Key)", "$($_.Item.Smaller.Key)" | Where-Object { $_ -in $named }).Count -gt 0 })
-    if ($about.Count -eq 0 -and $facts.Count -eq 0) { return $null }
+    # (nothing told leads either way: it may be true or false, said so, whether or not anything was told of them)
     Set-LambekLastProof
     $lines.Add(($data['Unknown'] -f ($say['Quote'] -f $said)))
     return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }

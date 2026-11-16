@@ -507,6 +507,9 @@
         "en",
         "maar"
       ],
+      "Not": [
+        "niet"
+      ],
       "Comparing": {
         "More": ["meer"],
         "Less": ["minder"],

@@ -180,9 +180,12 @@ function Read-LambekCategoryTagged {
     $negative = [bool[]]::new($readings.Count)
     # (what says not, as each treebank tags it: "no", "nao" with Polarity=Neg; "non", and "kein", "geen" after the verb,
     # with PronType=Neg; first, "kein", "nessun" say how many: none)
+    # (and the adverb learned where English says "not", for a treebank that marks it with nothing: "niet")
+    $not = @(Get-LambekNotWord -Language $Language)
     $verbSeen = $false
     for ($r = 0; $r -lt $readings.Count; $r++) {
-        $negative[$r] = (& $has $r 'Polarity=Neg') -or ((& $has $r 'PronType=Neg') -and ("$($readings[$r].Upos)" -in 'ADV', 'PART' -or $verbSeen))
+        $negative[$r] = (& $has $r 'Polarity=Neg') -or ((& $has $r 'PronType=Neg') -and ("$($readings[$r].Upos)" -in 'ADV', 'PART' -or $verbSeen)) -or
+        ("$($readings[$r].Upos)" -in 'ADV', 'PART' -and $not.Count -gt 0 -and (ConvertTo-LambekNormalizedText -Text "$($readings[$r].Form)") -in $not)
         if ("$($readings[$r].Upos)" -in 'AUX', 'VERB') { $verbSeen = $true }
     }
     # (the text of readings from one to another, as written when whole words, else as read: "i" of "i'm")
@@ -561,4 +564,14 @@ function Read-LambekCategoryTagged {
         return $item
     }
     return $null
+}
+
+function Get-LambekNotWord {
+    param([string] $Language)
+
+    # The word that says not, learned where English says "not" (Dialogue.General.Not); none for a language without it
+    $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+    $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
+    if (-not $general -or -not $general.Contains('Not')) { return }
+    @($general['Not']) | Where-Object { $_ } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" }
 }

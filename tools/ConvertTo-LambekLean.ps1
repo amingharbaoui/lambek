@@ -19,6 +19,11 @@
                                        that it is no exception ("usual:is"/"usual:isnot" in a conclusion); a rule about
                                        a narrower kind that says otherwise makes it one (forall x, pingouin x -> ab x),
                                        and two such rules about kinds neither narrower make each other's members one
+      compare(more|grand|name:rex|name:max)
+                                       r0 c0 c1, with r0 "more grand than": a strict order (forall x y z, r0 x y ->
+                                       r0 y z -> r0 x z; forall x y, r0 x y -> Not (r0 y x)); and one more so than one
+                                       that is so is so (forall x y, r0 x y -> k0 y -> k0 x) when "grand" is a kind
+                                       here ("notmore": Not (r0 c0 c1))
       if(cond(X), then(Y))|            X -> Y, each thing told a proposition of its own
       X|                               X
     "some" and "not every" are not written: $null comes back, with the reason.
@@ -62,6 +67,10 @@ function ConvertTo-LambekLean {
                 Atoms = [string[]] @($match.Groups['what'].Value -split '\+' | Where-Object { $_ })
             }
         }
+        $compare = [regex]::Match($text, '^compare\((?<kind>more|notmore)\|(?<of>[^|()]+)\|(?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
+        if ($compare.Success) {
+            return [pscustomobject]@{ Shape = 'compare'; Kind = $compare.Groups['kind'].Value; Of = $compare.Groups['of'].Value; A = $compare.Groups['a'].Value; B = $compare.Groups['b'].Value }
+        }
         if ($text.StartsWith('if(cond(')) {
             $depth = 0; $end = -1
             for ($i = 'if(cond'.Length; $i -lt $text.Length; $i++) {
@@ -82,6 +91,7 @@ function ConvertTo-LambekLean {
     foreach ($fact in @($facts + $goals)) {
         if ($fact.Shape -eq 'category' -and $fact.Kind -notin 'all', 'no', 'is', 'isnot') { return & $none "not written: $($fact.Kind)" }
         if ($fact.Shape -eq 'if' -and -not $fact.If) { return & $none 'a rule with no condition' }
+        if ($fact.Shape -eq 'compare' -and $fact.Kind -eq 'notmore' -and $fact -notin $goals) { return & $none 'not more, told' }
     }
 
     # Each thing, kind, exception and proposition gets a plain name of its own (c0, k0, ab0, p0); what it stands for
@@ -96,6 +106,8 @@ function ConvertTo-LambekLean {
     $kind = { param($atom) & $id 'k' $atom }
     $one = { param($who) & $id 'c' $who }
     $prop = { param($key) & $id 'p' $key }
+    $order = { param($of) & $id 'r' $of }
+    $compared = { param($fact) $relation = "$(& $order $fact.Of) $(& $one $fact.A) $(& $one $fact.B)"; if ($fact.Kind -eq 'more') { $relation } else { "Not ($relation)" } }
     $all = { param([string[]] $atoms, [string] $x) (@($atoms | ForEach-Object { "$(& $kind $_) $x" }) -join ' /\ ') }
 
     $categories = @($facts | Where-Object Shape -EQ 'category')
@@ -122,6 +134,7 @@ function ConvertTo-LambekLean {
     foreach ($fact in $facts) {
         switch ($fact.Shape) {
             'told' { $hypotheses.Add((& $prop $fact.Key)) }
+            'compare' { $hypotheses.Add((& $compared $fact)) }
             'if' { $hypotheses.Add("$(& $prop $fact.If) -> $(& $prop $fact.Then)") }
             'category' {
                 $says = $(if ($fact.Kind -in 'all', 'is') { & $all $fact.Atoms 'x' } else { "Not ($(& $all $fact.Atoms 'x'))" })
@@ -152,6 +165,12 @@ function ConvertTo-LambekLean {
     $assumed = [System.Collections.Generic.List[string]]::new()
     foreach ($goal in $goals) {
         if ($goal.Shape -eq 'told') { $wanted.Add((& $prop $goal.Key)); $opposite.Add("Not $(& $prop $goal.Key)"); continue }
+        if ($goal.Shape -eq 'compare') {
+            $said = & $compared $goal
+            $wanted.Add($said)
+            $opposite.Add($(if ($goal.Kind -eq 'more') { "Not ($said)" } else { "$(& $order $goal.Of) $(& $one $goal.A) $(& $one $goal.B)" }))
+            continue
+        }
         if ($goal.Shape -ne 'category') { return & $none 'a conclusion that is a rule' }
         $x = $(if ($goal.Kind -in 'is', 'isnot') { & $one $goal.Who } else { 'x' })
         $positive = & $all $goal.Atoms $x
@@ -173,12 +192,22 @@ function ConvertTo-LambekLean {
         }
     }
 
+    # Being more so: a strict order, and one more so than one that is so is so, for a kind of the same word
+    foreach ($key in @($named.Keys | Where-Object { $_.StartsWith('r|') })) {
+        $r = $named[$key]
+        $hypotheses.Add("forall x y z, $r x y -> $r y z -> $r x z")
+        $hypotheses.Add("forall x y, $r x y -> Not ($r y x)")
+        $word = ($key -split '\|', 2)[1]
+        if ($named.Contains("k|$word")) { $k = $named["k|$word"]; $hypotheses.Add("forall x y, $r x y -> $k y -> $k x") }
+    }
+
     # The things, kinds, exceptions and propositions named, each given its type
     $of = { param([string] $prefix) @($named.Keys | Where-Object { $_.StartsWith("$prefix|") } | ForEach-Object { $named[$_] }) }
     $binders = [System.Collections.Generic.List[string]]::new()
     $binders.Add('(T : Type)')
     $ones = & $of 'c'; if ($ones) { $binders.Add("($($ones -join ' ') : T)") }
     $kinds = @((& $of 'k') + (& $of 'ab')); if ($kinds) { $binders.Add("($($kinds -join ' ') : T -> Prop)") }
+    $orders = @(& $of 'r'); if ($orders) { $binders.Add("($($orders -join ' ') : T -> T -> Prop)") }
     $props = & $of 'p'; if ($props) { $binders.Add("($($props -join ' ') : Prop)") }
     $given = @($hypotheses + $assumed)
     for ($i = 0; $i -lt $given.Count; $i++) { $binders.Add("(h$i : $($given[$i]))") }

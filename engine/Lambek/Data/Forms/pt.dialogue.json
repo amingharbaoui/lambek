@@ -639,6 +639,9 @@
         "e",
         "mas"
       ],
+      "Not": [
+        "nao"
+      ],
       "Comparing": {
         "More": ["mais"],
         "Less": ["menos"],

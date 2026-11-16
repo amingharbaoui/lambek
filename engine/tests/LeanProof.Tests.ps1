@@ -39,6 +39,14 @@ Describe 'A proof written for Lean' {
         $lean.Theorem | Should -BeLike '*Not (ab1 c0)) :*'
     }
 
+    It 'writes one more than another as an order, and links it to the kind of the same word' {
+        $lean = ConvertTo-LambekLean -Name 'rex' -Premises 'compare(more|grand|name:rex|name:max)|', 'category(is|name:max|grand)|' -Conclusions 'category(is|name:rex|grand)'
+        $lean.Theorem | Should -BeLike '*(r0 : T -> T -> Prop)*'
+        $lean.Theorem | Should -BeLike '*(h0 : r0 c0 c1)*'
+        $lean.Theorem | Should -BeLike '*forall x y z, r0 x y -> r0 y z -> r0 x z*'
+        $lean.Theorem | Should -BeLike '*forall x y, r0 x y -> k0 y -> k0 x*'
+    }
+
     It 'does not write what it cannot: <Name>' -ForEach @(
         @{ Name = 'some'; Premises = 'category(some|oiseau|v:voler)|'; Conclusion = 'category(some|oiseau|v:voler)' }
         @{ Name = 'no conclusion'; Premises = 'category(all|homme|mortel)|'; Conclusion = @() }
@@ -59,6 +67,10 @@ Describe 'A proof written for Lean' {
             @{ Name = 'the narrower kind first'; Premises = 'category(usual:all|oiseau|v:voler)|', 'category(usual:no|pingouin|v:voler)|', 'category(all|pingouin|oiseau)|', 'category(is|name:pingu|pingouin)|'; Conclusion = 'category(usual:isnot|name:pingu|v:voler)' }
             @{ Name = 'a rule told with if'; Premises = 'if(cond(pleuvoir(agent("il"))), then(prendre(agent(speaker), object("le bus"))))|', 'pleuvoir(agent("il"))|'; Conclusion = 'prendre(agent(speaker), object("le bus"))|' }
             @{ Name = 'what one is not, from what its kind is'; Premises = 'category(all|chat|noir)|', 'category(isnot|speaker|noir)|'; Conclusion = 'category(isnot|speaker|chat)' }
+            @{ Name = 'more than a third, through a second'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
+            @{ Name = 'not more than the one more than it'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(notmore|grand|name:tom|name:rex)' }
+            @{ Name = 'so, more so than one that is'; Premises = 'compare(more|grand|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
+            @{ Name = 'not so, less so than one that is not'; Premises = 'compare(more|grand|name:rex|name:max)|', 'category(isnot|name:rex|grand)|'; Conclusion = 'category(isnot|name:max|grand)' }
         ) {
             $lean = ConvertTo-LambekLean -Name 'case' -Premises $Premises -Conclusions $Conclusion
             & $Prove $lean.Theorem | Should -BeTrue -Because $lean.Theorem
@@ -70,6 +82,10 @@ Describe 'A proof written for Lean' {
             @{ Name = 'the opposite answer'; Premises = 'category(no|poisson|mammifere)|', 'category(is|name:nemo|poisson)|'; Conclusion = 'category(is|name:nemo|mammifere)' }
             @{ Name = 'a rule whose condition was not told'; Premises = 'if(cond(pleuvoir(agent("il"))), then(prendre(agent(speaker), object("le bus"))))|'; Conclusion = 'prendre(agent(speaker), object("le bus"))|' }
             @{ Name = 'what the narrower kind rules out'; Premises = 'category(usual:all|oiseau|v:voler)|', 'category(usual:no|pingouin|v:voler)|', 'category(all|pingouin|oiseau)|', 'category(is|name:pingu|pingouin)|'; Conclusion = 'category(usual:is|name:pingu|v:voler)' }
+            @{ Name = 'more, the other way round'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:max|name:rex)' }
+            @{ Name = 'more in another way'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|fort|name:rex|name:max)' }
+            @{ Name = 'so, less so than one that is'; Premises = 'compare(more|grand|name:max|name:rex)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
+            @{ Name = 'so, more so in another way'; Premises = 'compare(more|fort|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
         ) {
             $lean = ConvertTo-LambekLean -Name 'case' -Premises $Premises -Conclusions $Conclusion
             $proved = & $Prove $lean.Theorem

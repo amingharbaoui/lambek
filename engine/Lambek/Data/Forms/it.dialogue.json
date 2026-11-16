@@ -713,6 +713,9 @@
         "e",
         "ma"
       ],
+      "Not": [
+        "non"
+      ],
       "Comparing": {
         "More": ["piu"],
         "Less": ["meno"],

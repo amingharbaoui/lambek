@@ -992,8 +992,48 @@ Describe 'General rules told in words' {
         It 'never guesses about one nothing was said of, or about another way of being more' {
             Tell 'Rex est plus grand que Max'
             (Ask 'Tom est-il plus grand que Max ?') -join ' ' | Should -BeLike '*peut être vrai ou faux*'
-            (Ask 'Rex est-il plus fort que Max ?') -join ' ' | Should -Not -BeLike 'Oui*'
-            (Ask 'Rex est-il plus fort que Max ?') -join ' ' | Should -Not -BeLike 'Non*'
+            (Ask 'Rex est-il plus fort que Max ?') -join ' ' | Should -BeLike '*« Rex est plus fort que Max » peut être vrai ou faux*'
+        }
+
+        It 'reads several joined by the word that says both, on either side' {
+            Ask 'Rex et Max sont plus grands que Tom' | Should -Be "C'est noté. Rex et Max sont plus grands que Tom. Je m'en souviendrai."
+            Tell 'Tom est plus grand que Paul'
+            (Ask 'Max est-il plus grand que Paul ?') -join ' ' | Should -BeLike 'Oui : Max est plus grand que Paul.*- Rex et Max sont plus grands que Tom.*- Tom est plus grand que Paul.'
+            (Ask 'Rex et Max sont-ils plus grands que Paul ?') -join ' ' | Should -BeLike 'Oui : Rex et Max sont plus grands que Paul.*'
+            (Ask 'Paul et Rex sont-ils plus grands que Tom ?') -join ' ' | Should -BeLike 'Non.*- Tom est plus grand que Paul.'
+            Tell 'Luc est plus petit que Rex, Max et Paul'
+            (Ask 'Luc est-il plus petit que Paul ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'reads one named with figures in its name' {
+            Tell 'the XR-200 is faster than the ZX-10'
+            (Ask 'is the XR-200 faster than the ZX-10?') -join ' ' | Should -BeLike 'Yes*'
+            (Ask 'is the ZX-10 faster than the XR-200?') -join ' ' | Should -BeLike 'No*'
+        }
+
+        It 'says one is so when it is more so than one that is, and not when it is less so than one that is not' {
+            Tell 'Max est grand', 'Rex est plus grand que Max'
+            Ask 'Rex est-il grand ?' | Should -Be (@(
+                    'Oui : Rex est grand.'
+                    "Parce que vous m'avez dit :"
+                    '- Rex est plus grand que Max.'
+                    '- Max est grand.'
+                ) -join "`n")
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('category(is|name:rex|grand)')
+            $proof.Forms | Should -Be @('compare(more|grand|name:rex|name:max)', 'category(is|name:max|grand)')
+            Tell "Paul n'est pas grand", 'Paul est plus grand que Luc'
+            (Ask 'Luc est-il grand ?') -join ' ' | Should -BeLike "Non : Luc n'est pas grand.*"
+        }
+
+        It 'never says one is so from one less so, or from another way of being more: <Asked>' -ForEach @(
+            @{ Told = 'Max est grand', 'Max est plus grand que Rex'; Asked = 'Rex est-il grand ?' }
+            @{ Told = 'Max est grand', 'Rex est plus fort que Max'; Asked = 'Rex est-il grand ?' }
+            @{ Told = 'Max est petit', 'Rex est moins grand que Max'; Asked = 'Rex est-il petit ?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -BeLike 'Oui*'
+            (Ask $Asked) -join ' ' | Should -Not -BeLike 'Non*'
         }
 
         It 'reads less the other way' {

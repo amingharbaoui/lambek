@@ -1,8 +1,8 @@
 {
-  "Version": "1.5",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "1.6",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "95f3ed74199f10e9e017281e53269c94b3feaa91ca13aa2f9b224c8392c90cf4",
+  "TestHash": "24214d34dd0dfbcf6b0865679c2ee2e0f810f3be68b769ef422da602c137aa7f",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -11082,6 +11082,1206 @@
         },
         {
           "Text": "Luca è più vecchio di Paolo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-compare-several-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex et Max sont plus grands que Tom"
+        },
+        {
+          "Text": "Max est-il plus grand que Tom ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-degree-yes-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Max est grand"
+        },
+        {
+          "Text": "Rex est plus grand que Max"
+        },
+        {
+          "Text": "Rex est-il grand ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-degree-no-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex n'est pas grand"
+        },
+        {
+          "Text": "Rex est plus grand que Max"
+        },
+        {
+          "Text": "Max est-il grand ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-compare-several-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul et Marc sont plus âgés que Luc"
+        },
+        {
+          "Text": "Marc est-il plus âgé que Luc ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-degree-yes-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Marc est âgé"
+        },
+        {
+          "Text": "Paul est plus âgé que Marc"
+        },
+        {
+          "Text": "Paul est-il âgé ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-degree-no-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul n'est pas âgé"
+        },
+        {
+          "Text": "Paul est plus âgé que Marc"
+        },
+        {
+          "Text": "Marc est-il âgé ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-compare-several-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex and Max are taller than Tom"
+        },
+        {
+          "Text": "is Max taller than Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-degree-yes-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is tall"
+        },
+        {
+          "Text": "Rex is taller than Max"
+        },
+        {
+          "Text": "is Rex tall?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-degree-no-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is not tall"
+        },
+        {
+          "Text": "Rex is taller than Max"
+        },
+        {
+          "Text": "is Max tall?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-compare-several-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul and Mark are older than Luke"
+        },
+        {
+          "Text": "is Mark older than Luke?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-degree-yes-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Mark is old"
+        },
+        {
+          "Text": "Paul is older than Mark"
+        },
+        {
+          "Text": "is Paul old?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-degree-no-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is not old"
+        },
+        {
+          "Text": "Paul is older than Mark"
+        },
+        {
+          "Text": "is Mark old?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-compare-several-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex und Max sind größer als Tom"
+        },
+        {
+          "Text": "ist Max größer als Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-degree-yes-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Max ist groß"
+        },
+        {
+          "Text": "Rex ist größer als Max"
+        },
+        {
+          "Text": "ist Rex groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-degree-no-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist nicht groß"
+        },
+        {
+          "Text": "Rex ist größer als Max"
+        },
+        {
+          "Text": "ist Max groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-compare-several-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul und Mark sind älter als Lukas"
+        },
+        {
+          "Text": "ist Mark älter als Lukas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-degree-yes-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Mark ist alt"
+        },
+        {
+          "Text": "Paul ist älter als Mark"
+        },
+        {
+          "Text": "ist Paul alt?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-degree-no-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist nicht alt"
+        },
+        {
+          "Text": "Paul ist älter als Mark"
+        },
+        {
+          "Text": "ist Mark alt?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-compare-several-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex y Max son más altos que Tom"
+        },
+        {
+          "Text": "¿es Max más alto que Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-degree-yes-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Max es alto"
+        },
+        {
+          "Text": "Rex es más alto que Max"
+        },
+        {
+          "Text": "¿es Rex alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-degree-no-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex no es alto"
+        },
+        {
+          "Text": "Rex es más alto que Max"
+        },
+        {
+          "Text": "¿es Max alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-compare-several-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo y Marcos son más viejos que Lucas"
+        },
+        {
+          "Text": "¿es Marcos más viejo que Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-degree-yes-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Marcos es viejo"
+        },
+        {
+          "Text": "Pablo es más viejo que Marcos"
+        },
+        {
+          "Text": "¿es Pablo viejo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-degree-no-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo no es viejo"
+        },
+        {
+          "Text": "Pablo es más viejo que Marcos"
+        },
+        {
+          "Text": "¿es Marcos viejo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-compare-several-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex en Max zijn groter dan Tom"
+        },
+        {
+          "Text": "is Max groter dan Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-degree-yes-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is groot"
+        },
+        {
+          "Text": "Rex is groter dan Max"
+        },
+        {
+          "Text": "is Rex groot?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-degree-no-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is niet groot"
+        },
+        {
+          "Text": "Rex is groter dan Max"
+        },
+        {
+          "Text": "is Max groot?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-compare-several-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul en Mark zijn ouder dan Luuk"
+        },
+        {
+          "Text": "is Mark ouder dan Luuk?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-degree-yes-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Mark is oud"
+        },
+        {
+          "Text": "Paul is ouder dan Mark"
+        },
+        {
+          "Text": "is Paul oud?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-degree-no-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is niet oud"
+        },
+        {
+          "Text": "Paul is ouder dan Mark"
+        },
+        {
+          "Text": "is Mark oud?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-compare-several-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex e Max são mais altos que Tom"
+        },
+        {
+          "Text": "Max é mais alto que Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-degree-yes-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Max é alto"
+        },
+        {
+          "Text": "Rex é mais alto que Max"
+        },
+        {
+          "Text": "Rex é alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-degree-no-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex não é alto"
+        },
+        {
+          "Text": "Rex é mais alto que Max"
+        },
+        {
+          "Text": "Max é alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-compare-several-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo e Marcos são mais velhos que Lucas"
+        },
+        {
+          "Text": "Marcos é mais velho que Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-degree-yes-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Marcos é velho"
+        },
+        {
+          "Text": "Paulo é mais velho que Marcos"
+        },
+        {
+          "Text": "Paulo é velho?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-degree-no-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo não é velho"
+        },
+        {
+          "Text": "Paulo é mais velho que Marcos"
+        },
+        {
+          "Text": "Marcos é velho?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-compare-several-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex e Max sono più alti di Tom"
+        },
+        {
+          "Text": "Max è più alto di Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-degree-yes-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Max è alto"
+        },
+        {
+          "Text": "Rex è più alto di Max"
+        },
+        {
+          "Text": "Rex è alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-degree-no-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex non è alto"
+        },
+        {
+          "Text": "Rex è più alto di Max"
+        },
+        {
+          "Text": "Max è alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-compare-several-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "compare-several"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo e Marco sono più vecchi di Luca"
+        },
+        {
+          "Text": "Marco è più vecchio di Luca?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-degree-yes-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "degree-yes"
+      ],
+      "Turns": [
+        {
+          "Text": "Marco è vecchio"
+        },
+        {
+          "Text": "Paolo è più vecchio di Marco"
+        },
+        {
+          "Text": "Paolo è vecchio?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-degree-no-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "degree-no"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo non è vecchio"
+        },
+        {
+          "Text": "Paolo è più vecchio di Marco"
+        },
+        {
+          "Text": "Marco è vecchio?",
           "Expect": {
             "Reply": "answer",
             "Contains": [

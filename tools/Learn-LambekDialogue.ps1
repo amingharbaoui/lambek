@@ -123,6 +123,9 @@ $general['And'] = & $plain @(foreach ($word in 'and', 'but') { [LambekDialogueWo
 $tagged = { param($pattern) [string[]] @($model.Tags.Keys | Where-Object { @($model.Tags[$_] | Where-Object { "$_" -match $pattern }).Count -gt 0 } | Sort-Object) }
 $adverbs = & $tagged '^ADV\|'
 $links = & $tagged '^(ADP|SCONJ|CCONJ)\|'
+# (the word that says not: the one met the most often where English says "not", among the words its treebanks tag as
+# adverbs or particles; some treebanks do not mark it Polarity=Neg, "niet")
+$general['Not'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'not', (& $tagged '^(ADV|PART)\|'), 20, 12) | Where-Object { $_ })
 $general['Comparing'] = [ordered]@{
     More = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'more', $adverbs, 20, 12) | Where-Object { $_ })
     Less = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'less', $adverbs, 20, 12) | Where-Object { $_ })

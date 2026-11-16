@@ -737,6 +737,9 @@
         "und",
         "sondern"
       ],
+      "Not": [
+        "nicht"
+      ],
       "Comparing": {
         "More": ["mehr"],
         "Less": ["weniger"],

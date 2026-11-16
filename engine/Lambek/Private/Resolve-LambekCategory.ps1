@@ -363,10 +363,20 @@ function Split-LambekCategorySentence {
         }
         # (a comma only marks a pause: "normalement, les oiseaux volent")
         $plain = (($plain -replace ',', ' ') -replace '\s+', ' ').Trim()
-        if (-not $plain -or $plain -notmatch "^[\p{L}'\u2019 -]+$") { return @() }
+        # (a name may have figures in it, "the XR-200", "le PC-6082"; a figure alone is a number, for the rest of Lambek)
+        if (-not $plain -or -not (Test-LambekCategoryWording -Text $plain)) { return @() }
         $sentences.Add([pscustomobject]@{ Text = $plain; Original = ($original -replace '[.;]+\s*$', '').Trim(); Question = $question; Correcting = $correcting })
     }
     return $sentences.ToArray()
+}
+
+function Test-LambekCategoryWording {
+    param([string] $Text)
+
+    # Only words: letters, and figures only in a word that has letters too ("XR-200"), never a number alone
+    if ($Text -notmatch "^[\p{L}\p{N}'\u2019 -]+$") { return $false }
+    foreach ($word in @($Text -split '\s+' | Where-Object { $_ })) { if ($word -match '\p{N}' -and $word -notmatch '\p{L}') { return $false } }
+    return $true
 }
 
 function Split-LambekCategoryCorrection {
@@ -1057,10 +1067,12 @@ function Get-LambekCategoryKnown {
         if ($fact.PSObject.Properties['Deduced'] -and $fact.Deduced) { continue }
         if ($fact.PSObject.Properties['Replaced'] -and $fact.Replaced) { continue }
         if ("$($fact.Language)" -ne $Language -or -not $fact.Text) { continue }
+        # (one compared with another is no thing one is: "Rex est plus grand que Max" says nothing of "grand")
+        if ($fact.PSObject.Properties['Core'] -and "$($fact.Core)".StartsWith('compare(')) { continue }
         $words = "$($fact.Text)"
         if ($fact.PSObject.Properties['Said'] -and $fact.Said) { $words = "$($fact.Said)" }
         $sentence = ((($words.Trim() -replace '[.!;]+\s*$', '') -replace ',', ' ') -replace '\s+', ' ').Trim()
-        if ($sentence -notmatch "^[\p{L}'\u2019 -]+$") { continue }
+        if (-not (Test-LambekCategoryWording -Text $sentence)) { continue }
         if ($null -eq $script:CategoryReadings) { $script:CategoryReadings = @{} }
         $key = "$Language|$([bool] $Shape)|$sentence|$context"
         if (-not $script:CategoryReadings.ContainsKey($key)) { $script:CategoryReadings[$key] = Read-LambekCategorySentence -Sentence $sentence -Language $Language -Shape:$Shape }

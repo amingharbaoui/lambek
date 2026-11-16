@@ -686,6 +686,9 @@
         "y",
         "pero"
       ],
+      "Not": [
+        "no"
+      ],
       "Comparing": {
         "More": ["mas"],
         "Less": ["menos"],
