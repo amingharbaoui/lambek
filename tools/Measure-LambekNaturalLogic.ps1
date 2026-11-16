@@ -15,6 +15,9 @@
       FalseNo     no when its opposite does not follow
       Unknown     unknown when yes or no follows: safe, but not reasoned far enough
       Unread      not understood: what is left to read
+      Ambiguous   problems the suite asks twice in the same words, expecting two different answers (as 087 and 088, the
+                  two readings of "every representative and client"): no answer can be right for both, so they are
+                  counted apart, in neither Right nor False, whatever Lambek answers
     The problems marked undefined by the suite are left out.
 
     FraCaS is under a licence that forbids using it for gain (CC BY-NC-SA 4.0). As decided for Lambek, it is used to
@@ -103,15 +106,24 @@ foreach ($tongue in $Language) {
     }
 }
 
+# The problems asked twice in the same words with two answers expected: the same text in the same language
+$twice = @{}
+foreach ($group in @($rows | Group-Object { "$($_.Language)`n$($_.Text)" })) {
+    if (@($group.Group | ForEach-Object Expected | Select-Object -Unique).Count -gt 1) { foreach ($row in $group.Group) { $twice["$($row.Language) $($row.Id)"] = $true } }
+}
+foreach ($row in $rows) { $row | Add-Member -NotePropertyName Ambiguous -NotePropertyValue ([bool] $twice["$($row.Language) $($row.Id)"]) }
+
 $count = {
     param([object[]] $Rows)
+    $scored = @($Rows | Where-Object { -not $_.Ambiguous })
     [pscustomobject]@{
-        Problems = $Rows.Count
-        Right    = @($Rows | Where-Object { $_.Answer -eq $_.Expected }).Count
-        FalseYes = @($Rows | Where-Object { $_.Answer -eq 'yes' -and $_.Expected -ne 'yes' }).Count
-        FalseNo  = @($Rows | Where-Object { $_.Answer -eq 'no' -and $_.Expected -ne 'no' }).Count
-        Unknown  = @($Rows | Where-Object { $_.Answer -eq 'unknown' -and $_.Expected -ne 'unknown' }).Count
-        Unread   = @($Rows | Where-Object { $_.Answer -eq 'unread' }).Count
+        Problems  = $Rows.Count
+        Right     = @($scored | Where-Object { $_.Answer -eq $_.Expected }).Count
+        FalseYes  = @($scored | Where-Object { $_.Answer -eq 'yes' -and $_.Expected -ne 'yes' }).Count
+        FalseNo   = @($scored | Where-Object { $_.Answer -eq 'no' -and $_.Expected -ne 'no' }).Count
+        Unknown   = @($scored | Where-Object { $_.Answer -eq 'unknown' -and $_.Expected -ne 'unknown' }).Count
+        Unread    = @($scored | Where-Object { $_.Answer -eq 'unread' }).Count
+        Ambiguous = @($Rows | Where-Object { $_.Ambiguous }).Count
     }
 }
 $table = foreach ($tongue in $Language) {
@@ -125,16 +137,17 @@ $table = foreach ($tongue in $Language) {
     $all | Add-Member -NotePropertyName Language -NotePropertyValue $tongue
     $all | Add-Member -NotePropertyName Section -NotePropertyValue 'all' -PassThru
 }
-$table | Format-Table Language, Section, Problems, Right, FalseYes, FalseNo, Unknown, Unread -AutoSize | Out-String -Width 200 | Write-Host
+$table | Format-Table Language, Section, Problems, Right, FalseYes, FalseNo, Unknown, Unread, Ambiguous -AutoSize | Out-String -Width 200 | Write-Host
 if ($Show) {
     foreach ($row in @($rows | Where-Object { $_.Answer -ne $_.Expected })) {
-        Write-Host "  [$($row.Language) $($row.Id) $($row.Expected) -> $($row.Answer)] $($row.Text)`n      $($row.Reply)"
+        $mark = $(if ($row.Ambiguous) { ' (asked twice, two answers expected)' } else { '' })
+        Write-Host "  [$($row.Language) $($row.Id) $($row.Expected) -> $($row.Answer)$mark] $($row.Text)`n      $($row.Reply)"
     }
 }
 $bound = { param($f, $n) & (Get-Module Lambek) { param($f, $n) Get-LambekRateBound -Failures $f -Cases $n } $f $n }
 foreach ($tongue in $Language) {
     $mine = @($rows | Where-Object Language -EQ $tongue)
-    $claims = @($mine | Where-Object { $_.Answer -in 'yes', 'no' })
+    $claims = @($mine | Where-Object { $_.Answer -in 'yes', 'no' -and -not $_.Ambiguous })
     $wrong = @($claims | Where-Object { $_.Answer -ne $_.Expected }).Count
     Write-Host ("{0}: yes or no said {1} times, {2} of them wrong, so under {3:P2} at 95 %" -f $tongue, $claims.Count, $wrong, (& $bound $wrong $claims.Count))
 }

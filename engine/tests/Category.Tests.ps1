@@ -751,6 +751,27 @@ Describe 'General rules told in words' {
             (Ask 'le chien que Paul aime est noir') -join ' ' | Should -Not -BeLike 'C''est noté. Le chien*'
         }
 
+        It 'reads two kinds, or two things said, joined by the word that says both: <Told>' -ForEach @(
+            @{ Told = 'tous les chats et les chiens sont des animaux', 'Rex est un chien'; Asked = 'Rex est-il un animal ?'; Yes = 'Oui*' }
+            @{ Told = 'tous les chats sont noirs et gentils', 'Tom est un chat'; Asked = 'Tom est-il gentil ?'; Yes = 'Oui*' }
+            @{ Told = 'tous les chiens aboient et mordent', 'Rex est un chien'; Asked = 'Rex mord-il ?'; Yes = 'Oui*' }
+            @{ Told = 'all cats and dogs are animals', 'Rex is a dog'; Asked = 'is Rex an animal?'; Yes = 'Yes*' }
+            @{ Told = 'alle Katzen und Hunde sind Tiere', 'Rex ist ein Hund'; Asked = 'ist Rex ein Tier?'; Yes = 'Ja*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Yes
+        }
+
+        It 'never splits what says one of them, or what says not of both: <Told>' -ForEach @(
+            @{ Told = 'Rex o Max es un perro'; Asked = '¿es Rex un perro?'; Yes = 'Sí*' }
+            @{ Told = 'Rex oder Max ist ein Hund'; Asked = 'ist Rex ein Hund?'; Yes = 'Ja*' }
+            @{ Told = 'tous les chats sont noirs ou blancs', 'Tom est un chat'; Asked = 'Tom est-il noir ?'; Yes = 'Oui*' }
+            @{ Told = 'aucun chat n''est noir et gentil', 'Tom est un chat'; Asked = 'Tom est-il noir ?'; Yes = 'Non*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -BeLike $Yes
+        }
+
         It 'reads an object said with two small words the same as with one' {
             Tell "aucun chien ne mange d'herbe", 'Rex est un chien'
             (Ask "Rex mange-t-il de l'herbe ?") -join ' ' | Should -BeLike 'Non*'

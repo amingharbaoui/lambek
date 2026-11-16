@@ -62,13 +62,103 @@ function Resolve-LambekCategory {
     return $null
 }
 
+function Split-LambekCategoryBoth {
+    param([string] $Text, [string] $Language, [string[]] $Joins)
+
+    # One sentence that says two things with one word that says both, as two sentences, each read as such:
+    #   what is said of one kind or one, twice: "tous les chats sont noirs et gentils" is "tous les chats sont noirs" and
+    #   "tous les chats sont gentils"; "Rex aboie et mord", "tous les chats aiment le lait et le poisson";
+    #   two kinds said the same: "tous les chats et les chiens sont des animaux" is said of the chats and of the
+    #   chiens, the second taking the word of how many of the first ("all cats and dogs": "all dogs").
+    # Only when both read, about the same one or kind, or saying the same of each, and only for what holds of each
+    # part when it holds of both: never with "aucun" or a word that says not ("aucun chat n'est noir et gentil" says
+    # no such thing of each), never a question
+    $words = @($Text.Trim() -split '\s+' | Where-Object { $_ })
+    $at = @(for ($i = 1; $i -lt $words.Count - 1; $i++) { if ($words[$i] -match "(?i)^($($Joins -join '|'))$") { $i } })
+    if ($at.Count -ne 1) { return }
+    $left = @($words[0..($at[0] - 1)])
+    $right = @($words[($at[0] + 1)..($words.Count - 1)])
+    # (rules about kinds only: what is told of one is read by the rest of Lambek, which splits it its own way)
+    $kept = 'all', 'some'
+    $read = { param($t) $r = Read-LambekCategorySentence -Sentence $t -Language $Language; if ($r -and $r.Kind -in $kept) { $r } }
+    $who = { param($r) if ($r.Individual) { "one:$($r.Individual.Key)" } elseif ($r.Subject) { "kind:$(@($r.Subject.Atoms) -join '+')" } else { '' } }
+    $what = { param($r) "$([bool] $r.Verb)|$(@($r.Predicate.Atoms) -join '+')" }
+    # (what is said of the same one or kind, twice: the longest start of the first that reads with the second, where
+    # the second takes the place of words of the same part of speech, "noirs" for "gentils", "aboient" for "mordent")
+    $model = Get-LambekFormModel -Language $Language
+    $first = & $read ($left -join ' ')
+    if ($first -and $model) {
+        $leftTags = @($model.Read([string[]] $left))
+        for ($k = $left.Count - 1; $k -ge 1; $k--) {
+            # (the second part with what the first part's own words would say twice is no reading: "un un animal")
+            if ($left[$k - 1].ToLowerInvariant() -eq $right[0].ToLowerInvariant()) { continue }
+            # (read in the sentence it makes, as the first word it takes the place of was read in its own)
+            $candidateTags = @($model.Read([string[]] (@($left[0..($k - 1)]) + $right)))
+            if ($leftTags.Count -ne $left.Count -or $candidateTags.Count -le $k) { continue }
+            # (words that say something stand for each other, whatever the tagger made of each, "grands" for "forts";
+            # a small word only for one of its own kind, "le" for "le", never "in" for "work")
+            $sort = { param($u) if ("$u" -in 'NOUN', 'PROPN', 'ADJ', 'VERB', 'ADV', 'NUM', 'X') { 'content' } else { "$u" } }
+            if ((& $sort $leftTags[$k].Upos) -ne (& $sort $candidateTags[$k].Upos)) { continue }
+            $second = & $read ((@($left[0..($k - 1)]) + $right) -join ' ')
+            if ($second -and $second.Kind -eq $first.Kind -and (& $who $second) -eq (& $who $first) -and (& $what $second) -ne (& $what $first)) {
+                return @(($left -join ' '), ((@($left[0..($k - 1)]) + $right) -join ' '))
+            }
+        }
+    }
+    # (two kinds said the same: the first takes what follows the second, the second the word of how many of the first)
+    $logic = Get-LambekLogicWord -Language $Language
+    $many = $(if ($logic -and $logic.Kinds.ContainsKey($left[0].ToLowerInvariant())) { $left[0] } else { '' })
+    # (what follows the second kind starts at its verb: "sont des animaux")
+    $tags = @($(if ($model) { $model.Read([string[]] $right) }))
+    # (one said of one kind, then a noun said without its own article: "every representative and client" may be every
+    # one who is both, as much as each of them; told of several, "all cats and dogs", or each with its article, "tous
+    # les chats et les chiens", it is each of them)
+    $before = @($(if ($model) { $model.Read([string[]] $left) }))
+    if ($before.Count -gt 0 -and "|$($before[-1].Feats)|" -match '\|Number=Sing\|' -and $tags.Count -gt 0 -and "$($tags[0].Upos)" -ne 'DET') { return }
+    for ($j = 1; $j -lt $right.Count; $j++) {
+        if ($tags.Count -ne $right.Count -or "$($tags[$j].Upos)" -notin 'VERB', 'AUX') { continue }
+        $rest = @($right[$j..($right.Count - 1)])
+        $one = & $read ((@($left) + $rest) -join ' ')
+        if (-not $one -or -not $one.Subject) { continue }
+        $others = [System.Collections.Generic.List[string]]::new()
+        if ($many -and $right[0].ToLowerInvariant() -ne $many.ToLowerInvariant()) { $others.Add((@($many) + $right) -join ' ') }
+        $others.Add($right -join ' ')
+        foreach ($other in $others) {
+            $two = & $read $other
+            if ($two -and $two.Subject -and $two.Kind -eq $one.Kind -and [bool] $two.Default -eq [bool] $one.Default -and (& $what $two) -eq (& $what $one) -and (& $who $two) -ne (& $who $one)) {
+                return @(((@($left) + $rest) -join ' '), $other)
+            }
+        }
+    }
+}
+
+function Get-LambekConjunctionWord {
+    param([string] $Language)
+
+    # The words that join two things said and say both: learned where English says "and" or "but" (General.And), never
+    # those that say one of them; a language that has none learned joins nothing
+    $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+    $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
+    if (-not $general -or -not $general.Contains('And')) { return }
+    @($general['And']) | Where-Object { $_ }
+}
+
 function Split-LambekCategoryCoordination {
     param([object[]] $Sentences, [string] $Language)
 
-    $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
-    $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
-    $joins = @($(if ($general -and $general['Conjunctions']) { $general['Conjunctions'] }) | Where-Object { $_ } | ForEach-Object { [regex]::Escape("$_") })
+    # (only the words that say both, "et", "and", "und", learned where English says "and" or "but": never "ou", "o",
+    # "oder", which say one of them)
+    $joins = @(Get-LambekConjunctionWord -Language $Language | ForEach-Object { [regex]::Escape("$_") })
     foreach ($sentence in $Sentences) {
+        # A sentence told with two kinds or two things said of the same ("tous les chats et les chiens sont des
+        # animaux", "tous les chats sont noirs et gentils", "tous les chiens aboient et mordent"): two sentences
+        if (-not $sentence.Question -and $joins.Count -gt 0) {
+            $both = @(Split-LambekCategoryBoth -Text $sentence.Text -Language $Language -Joins $joins)
+            if ($both.Count -eq 2) {
+                $split = @(Split-LambekCategorySentence -Text (($both | ForEach-Object { "$_." }) -join ' ') -Language $Language)
+                if ($split.Count -eq 2) { $split; continue }
+            }
+        }
         # (only a sentence told, with a word that joins, that does not read as it is, its shape aside)
         if ($sentence.Question -or $joins.Count -eq 0 -or $sentence.Text -notmatch "(?i)(^|\s)($($joins -join '|'))(\s|$)" -or
             (Read-LambekCategorySentence -Sentence $sentence.Text -Language $Language)) { $sentence; continue }

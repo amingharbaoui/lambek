@@ -17,7 +17,9 @@ function Split-LambekCoordination {
     $general = $null
     $lexicon = Get-LambekLexicon -Language $request.Language
     if ($lexicon.Dialogue -and $lexicon.Dialogue['General']) { $general = $lexicon.Dialogue['General'] }
-    if (-not $general -or -not $general['Conjunctions']) { return , [string[]] @($Text) }
+    # (the words that say both, never those that say one of them: "or", "oder", "o")
+    $joining = @(Get-LambekConjunctionWord -Language $request.Language)
+    if (-not $general -or $joining.Count -eq 0) { return , [string[]] @($Text) }
     if (@($request.Entities | Where-Object { $_.Type -ne 'number' }).Count -gt 0) { return , [string[]] @($Text) }
     # "...because she works in Lyon": the second side is the reason of the first. It is marked, so the plan can link them
     $causes = (@($general['Causes']) | Where-Object { $_ } | ForEach-Object { if ($_ -match "'$") { [regex]::Escape($_) } else { [regex]::Escape($_) + '\s+' } }) -join '|'
@@ -40,7 +42,7 @@ function Split-LambekCoordination {
             return , [string[]] @($Text)
         }
     }
-    $words = (@($general['Conjunctions']) | ForEach-Object { [regex]::Escape($_) }) -join '|'
+    $words = (@($joining) | ForEach-Object { [regex]::Escape($_) }) -join '|'
     $match = [regex]::Match($Text, "(?i)\s*,?\s+(?:$words)\s+")
     if (-not $match.Success) { return , [string[]] @($Text) }
     $left = $Text.Substring(0, $match.Index).Trim()
