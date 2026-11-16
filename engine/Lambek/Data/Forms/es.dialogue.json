@@ -689,6 +689,7 @@
       "Not": [
         "no"
       ],
+      "Or": ["o"],
       "Comparing": {
         "More": ["mas"],
         "Less": ["menos"],

@@ -24,6 +24,9 @@
                                        r0 y z -> r0 x z; forall x y, r0 x y -> Not (r0 y x)); and one more so than one
                                        that is so is so (forall x y, r0 x y -> k0 y -> k0 x) when "grand" is a kind
                                        here ("notmore": Not (r0 c0 c1))
+      category(is|name:rex|or:chat;chien)
+                                       (k0 c0) \/ (k1 c0): one of several kinds (a kind of several words, chat&noir,
+                                       with /\)
       if(cond(X), then(Y))|            X -> Y, each thing told a proposition of its own
       X|                               X
     "some" and "not every" are not written: $null comes back, with the reason.
@@ -108,7 +111,13 @@ function ConvertTo-LambekLean {
     $prop = { param($key) & $id 'p' $key }
     $order = { param($of) & $id 'r' $of }
     $compared = { param($fact) $relation = "$(& $order $fact.Of) $(& $one $fact.A) $(& $one $fact.B)"; if ($fact.Kind -eq 'more') { $relation } else { "Not ($relation)" } }
-    $all = { param([string[]] $atoms, [string] $x) (@($atoms | ForEach-Object { "$(& $kind $_) $x" }) -join ' /\ ') }
+    # (one of several kinds, "or:chat;chien", is said with \/: (k0 x \/ k1 x); a kind of several words, chat&noir, with /\)
+    $either = {
+        param([string] $atom, [string] $x)
+        if (-not $atom.StartsWith('or:')) { return "$(& $kind $atom) $x" }
+        '(' + (@($atom.Substring(3) -split ';' | ForEach-Object { '(' + (@($_ -split '&' | Where-Object { $_ } | ForEach-Object { "$(& $kind $_) $x" }) -join ' /\ ') + ')' }) -join ' \/ ') + ')'
+    }
+    $all = { param([string[]] $atoms, [string] $x) (@($atoms | ForEach-Object { & $either $_ $x }) -join ' /\ ') }
 
     $categories = @($facts | Where-Object Shape -EQ 'category')
     $usual = @($categories | Where-Object { $_.Usual -and $_.Kind -in 'all', 'no' })

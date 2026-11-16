@@ -160,6 +160,17 @@ function Get-LambekConjunctionWord {
     @($general['And']) | Where-Object { $_ }
 }
 
+function Get-LambekDisjunctionWord {
+    param([string] $Language)
+
+    # The words that join two things said and say one of them: learned where English says "or" (General.Or); a
+    # language that has none learned joins nothing so
+    $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+    $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
+    if (-not $general -or -not $general.Contains('Or')) { return }
+    @($general['Or']) | Where-Object { $_ } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" }
+}
+
 function Split-LambekCategoryCoordination {
     param([object[]] $Sentences, [string] $Language)
 
@@ -598,7 +609,10 @@ function Read-LambekCategoryPart {
         if (-not $item.Individual) { return $null }
     }
     if ($Values.ContainsKey('p')) {
-        $item.Predicate = ConvertTo-LambekCategoryTerm -Text $Values['p'] -Language $Language -Lemmas $Values['lemmas']
+        # (one of several kinds, "un chien ou un chat", only where it is said to be so: what is said not to be one of
+        # several, "n'est pas noir ou blanc", may say not either or not both, and is left as it is)
+        $either = $Kind -in 'is', 'all', 'some', 'askis', 'askall', 'asksome'
+        $item.Predicate = ConvertTo-LambekCategoryTerm -Text $Values['p'] -Language $Language -Lemmas $Values['lemmas'] -Alternatives:$either
         if (-not $item.Predicate) { $item.Predicate = ConvertTo-LambekCategoryOpaque -Text $Values['p'] -Language $Language -Predicate }
         if (-not $item.Predicate) { return $null }
         $item.Written.Predicate = $Values['p'].Trim()
@@ -686,7 +700,10 @@ function ConvertTo-LambekCategoryTerm {
         [switch] $Object,
 
         # The lemmas the words were read with in their sentence, for a word the dictionary does not know out of it
-        [hashtable] $Lemmas
+        [hashtable] $Lemmas,
+
+        # One of several kinds may be said, joined by the word that says one of them ("un chien ou un chat")
+        [switch] $Alternatives
     )
 
     # A kind of things, as the properties it puts together: "un chat noir de ma soeur" is chat, noir and "de ma soeur".
@@ -696,6 +713,29 @@ function ConvertTo-LambekCategoryTerm {
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
     $lexicon = Get-LambekLexicon -Language $Language
     $general = $lexicon.Dialogue['General']
+    # One of several kinds ("un chien ou un chat", "noirs ou blancs"): each read as a kind, kept as one property
+    # "or:chat;chien" that the clauses read as one or the other (ConvertTo-LambekCategoryClause); a reader that does not
+    # know it takes it for a property of its own, and so concludes nothing from it
+    $or = @(Get-LambekDisjunctionWord -Language $Language)
+    $words = @($Text.Trim() -split '\s+' | Where-Object { $_ })
+    if ($or.Count -gt 0 -and @($words | Where-Object { (ConvertTo-LambekNormalizedText -Text $_) -in $or }).Count -gt 0) {
+        if (-not $Alternatives) { return $null }
+        $parts = [System.Collections.Generic.List[string]]::new()
+        $part = [System.Collections.Generic.List[string]]::new()
+        foreach ($word in $words) {
+            if ((ConvertTo-LambekNormalizedText -Text $word) -in $or) { $parts.Add(($part -join ' ')); $part.Clear() } else { $part.Add($word) }
+        }
+        $parts.Add(($part -join ' '))
+        $each = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
+        foreach ($said in $parts) {
+            if (-not $said) { return $null }
+            $term = ConvertTo-LambekCategoryTerm -Text $said -Language $Language -Bare:$Bare -Object:$Object -Lemmas $Lemmas
+            if (-not $term -or @($term.Atoms | Where-Object { "$_" -match '[;&]' -or "$_".StartsWith('or:') }).Count -gt 0) { return $null }
+            [void] $each.Add((@($term.Atoms | Sort-Object) -join '&'))
+        }
+        if ($each.Count -lt 2) { return $null }
+        return [pscustomobject]@{ Atoms = @("or:$(@($each) -join ';')") }
+    }
     # A kind said with what those of it do or are, after a pronoun that says which ("personne qui a le droit de vivre
     # en Europe", "chats that are black"): the kind before it, and what is said after it, together. The pronoun is the
     # one the tags of the language read as relative (PronType=Rel) and a verb follows it, so that it is the one doing
@@ -905,7 +945,8 @@ function Get-LambekCategoryCircle {
     $leads = @{}
     foreach ($item in $Items) {
         if ($item.Kind -in 'is', 'isnot', 'askis' -and $item.Individual -and $item.Predicate) {
-            foreach ($atom in @($item.Predicate.Atoms)) { if ("$atom") { $below.Add("$atom") } }
+            # (each of several kinds one is said to be one of is looked up too: "un siamois ou un persan")
+            foreach ($atom in @($item.Predicate.Atoms)) { if ("$atom") { foreach ($one in (Get-LambekCategoryAtomPart -Atom "$atom")) { $below.Add("$one") } } }
             if ($item.Kind -eq 'is') {
                 $who = "$($item.Individual.Key)"
                 if (-not $said.ContainsKey($who)) { $said[$who] = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal) }
@@ -1128,6 +1169,56 @@ function Get-LambekCategorySaid {
     return $sentence
 }
 
+function Get-LambekCategoryAtomPart {
+    param([string] $Atom)
+
+    # The properties a property is made of: itself, or each of several kinds one is one of ("or:chat;chien")
+    if ($Atom.StartsWith('or:')) { return @($Atom.Substring(3) -split '[;&]' | Where-Object { $_ }) }
+    return @($Atom)
+}
+
+function ConvertTo-LambekCategoryClause {
+    param([string[]] $Atoms, [scriptblock] $Index, [switch] $Not)
+
+    # What a term says, as clauses that must all hold: each property alone ("chat", "noir": one clause each), and one of
+    # several kinds, "or:chat;chien", as one clause that one of them holds (with a kind of several words, chat&noir, one
+    # clause for each way of taking one word from each). Said not: one clause that one of its properties does not hold,
+    # one of several kinds taken as none of them
+    $plain = [System.Collections.Generic.List[int]]::new()
+    $either = [System.Collections.Generic.List[object]]::new()
+    foreach ($atom in $Atoms) {
+        if ("$atom".StartsWith('or:')) { $either.Add(@("$atom".Substring(3) -split ';' | ForEach-Object { , [int[]] @($_ -split '&' | ForEach-Object { & $Index $_ }) })) }
+        else { $plain.Add((& $Index $atom)) }
+    }
+    # (one clause for each way of taking one from each list: "a or b" with "c or d" is four clauses... of one
+    # literal from each)
+    $product = {
+        param([object[]] $lists)
+        $out = [System.Collections.Generic.List[int[]]]::new()
+        $out.Add([int[]] @())
+        foreach ($list in $lists) {
+            $next = [System.Collections.Generic.List[int[]]]::new()
+            foreach ($done in $out) { foreach ($more in $list) { $next.Add([int[]] (@($done) + @($more) | Select-Object -Unique)) } }
+            $out = $next
+        }
+        , $out.ToArray()
+    }
+    if (-not $Not) {
+        $clauses = [System.Collections.Generic.List[int[]]]::new()
+        foreach ($literal in $plain) { $clauses.Add([int[]] @($literal)) }
+        foreach ($alternatives in $either) {
+            foreach ($clause in (& $product @(foreach ($alternative in $alternatives) { , [object[]] @($alternative | ForEach-Object { , [int[]] @($_) }) }))) { $clauses.Add($clause) }
+        }
+        return , $clauses.ToArray()
+    }
+    # Not: one of the properties fails. Each part as clauses of its own (a property: one clause, its opposite; one of
+    # several kinds: none of them, one clause each), then one clause for each way of taking one clause from each part
+    $parts = [System.Collections.Generic.List[object]]::new()
+    foreach ($literal in $plain) { $parts.Add([object[]] @(, [int[]] @(- $literal))) }
+    foreach ($alternatives in $either) { $parts.Add([object[]] @(foreach ($alternative in $alternatives) { , [int[]] @($alternative | ForEach-Object { - $_ }) })) }
+    return , (& $product $parts.ToArray())
+}
+
 function ConvertTo-LambekCategoryStatement {
     param([pscustomobject] $Item, [hashtable] $Atoms)
 
@@ -1135,19 +1226,19 @@ function ConvertTo-LambekCategoryStatement {
     $table = $Atoms
     $index = { param($atom) if (-not $table.ContainsKey($atom)) { $table[$atom] = $table.Count + 1 }; [int] $table[$atom] }
     $s = @(); if ($Item.Subject) { $s = @($Item.Subject.Atoms | ForEach-Object { & $index $_ }) }
-    $p = @($Item.Predicate.Atoms | ForEach-Object { & $index $_ })
     $notS = @($s | ForEach-Object { - $_ })
-    $notP = @($p | ForEach-Object { - $_ })
+    $p = ConvertTo-LambekCategoryClause -Atoms @($Item.Predicate.Atoms) -Index $index
+    $notP = ConvertTo-LambekCategoryClause -Atoms @($Item.Predicate.Atoms) -Index $index -Not
     $statement = [LambekCategoryStatement]::new()
     # (a rule that holds "normalement" is no clause: it is used only where nothing told says otherwise)
     if ($Item.PSObject.Properties['Default'] -and $Item.Default) { return $statement }
     switch ($Item.Kind) {
-        'all' { foreach ($atom in $p) { $statement.AddEvery([int[]] (@($notS) + @($atom))) } }
-        'no' { $statement.AddEvery([int[]] (@($notS) + @($notP))) }
-        'some' { $w = $statement.AddWitness(); foreach ($atom in @($s) + @($p)) { $statement.AddToWitness($w, [int[]] @($atom)) } }
-        'somenot' { $w = $statement.AddWitness(); foreach ($atom in $s) { $statement.AddToWitness($w, [int[]] @($atom)) }; $statement.AddToWitness($w, [int[]] $notP) }
-        { $_ -in 'is', 'does' } { foreach ($atom in $p) { $statement.AddNamed($Item.Individual.Key, [int[]] @($atom)) } }
-        { $_ -in 'isnot', 'doesnot' } { $statement.AddNamed($Item.Individual.Key, [int[]] $notP) }
+        'all' { foreach ($clause in $p) { $statement.AddEvery([int[]] (@($notS) + @($clause))) } }
+        'no' { foreach ($clause in $notP) { $statement.AddEvery([int[]] (@($notS) + @($clause))) } }
+        'some' { $w = $statement.AddWitness(); foreach ($atom in $s) { $statement.AddToWitness($w, [int[]] @($atom)) }; foreach ($clause in $p) { $statement.AddToWitness($w, $clause) } }
+        'somenot' { $w = $statement.AddWitness(); foreach ($atom in $s) { $statement.AddToWitness($w, [int[]] @($atom)) }; foreach ($clause in $notP) { $statement.AddToWitness($w, $clause) } }
+        { $_ -in 'is', 'does' } { foreach ($clause in $p) { $statement.AddNamed($Item.Individual.Key, $clause) } }
+        { $_ -in 'isnot', 'doesnot' } { foreach ($clause in $notP) { $statement.AddNamed($Item.Individual.Key, $clause) } }
     }
     return $statement
 }
@@ -1160,27 +1251,30 @@ function Get-LambekCategoryOpposite {
     $table = $Atoms
     $index = { param($atom) if (-not $table.ContainsKey($atom)) { $table[$atom] = $table.Count + 1 }; [int] $table[$atom] }
     $s = @(); if ($Item.Subject) { $s = @($Item.Subject.Atoms | ForEach-Object { & $index $_ }) }
-    $p = @($Item.Predicate.Atoms | ForEach-Object { & $index $_ })
     $notS = @($s | ForEach-Object { - $_ })
-    $notP = @($p | ForEach-Object { - $_ })
+    $p = ConvertTo-LambekCategoryClause -Atoms @($Item.Predicate.Atoms) -Index $index
+    $notP = ConvertTo-LambekCategoryClause -Atoms @($Item.Predicate.Atoms) -Index $index -Not
     $o = [LambekCategoryStatement]::new()
-    $witness = { param([int[]] $units, [int[]] $clause) $w = $o.AddWitness(); foreach ($atom in $units) { $o.AddToWitness($w, [int[]] @($atom)) }; if ($clause) { $o.AddToWitness($w, $clause) } }
-    $every = { param([int[]] $clause) $o.AddEvery($clause) }
+    $witness = { param([int[]] $units, [object[]] $clauses) $w = $o.AddWitness(); foreach ($atom in $units) { $o.AddToWitness($w, [int[]] @($atom)) }; foreach ($clause in $clauses) { $o.AddToWitness($w, [int[]] $clause) } }
+    $every = { param([object[]] $clauses) foreach ($clause in $clauses) { $o.AddEvery([int[]] (@($notS) + @($clause))) } }
     $kind = $Item.Kind
     if ($kind -in 'askis', 'askdoes', 'askwho') {
-        if ($No) { foreach ($atom in $p) { $o.AddNamed($Individual, [int[]] @($atom)) } } else { $o.AddNamed($Individual, [int[]] $notP) }
+        # (each clause whole: one of several kinds asked is one clause, never one for each)
+        $clauses = $notP
+        if ($No) { $clauses = $p }
+        foreach ($clause in $clauses) { $o.AddNamed($Individual, [int[]] $clause) }
     }
     elseif ($kind -eq 'askall') {
-        if ($No) { foreach ($atom in $p) { & $every ([int[]] (@($notS) + @($atom))) } } else { & $witness $s $notP }
+        if ($No) { & $every $p } else { & $witness $s $notP }
     }
     elseif ($kind -eq 'asksome') {
-        if ($No) { & $witness (@($s) + @($p)) $null } else { & $every ([int[]] (@($notS) + @($notP))) }
+        if ($No) { & $witness $s $p } else { & $every $notP }
     }
     elseif ($kind -eq 'asksomenot') {
-        if ($No) { & $witness $s $notP } else { foreach ($atom in $p) { & $every ([int[]] (@($notS) + @($atom))) } }
+        if ($No) { & $witness $s $notP } else { & $every $p }
     }
     elseif ($kind -eq 'askno') {
-        if ($No) { & $every ([int[]] (@($notS) + @($notP))) } else { & $witness (@($s) + @($p)) $null }
+        if ($No) { & $every $notP } else { & $witness $s $p }
     }
     return $o
 }
@@ -1308,6 +1402,9 @@ function Resolve-LambekCategoryMessage {
     # (several things told in one message, and nothing asked: each read here, as nothing else reads them together)
     $several = @($Sentences).Count -gt 1 -and $asks.Count -eq 0
     if ($several) { $individual = $true }
+    # (one of several kinds said, "Rex est un chien ou un chat": read here, as nothing else reads it)
+    $or = @(Get-LambekDisjunctionWord -Language $Language)
+    if ($or.Count -gt 0 -and @($Sentences | Where-Object { @("$($_.Text)" -split '\s+' | Where-Object { (ConvertTo-LambekNormalizedText -Text $_) -in $or }).Count -gt 0 }).Count -gt 0) { $individual = $true }
     if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
 
     # Each sentence read, with the dictionary: every one must read, or nothing is taken. A pronoun stands for one told
@@ -1350,6 +1447,8 @@ function Resolve-LambekCategoryMessage {
         }
     }
     if ($several) { $about = $true }
+    # (one said to be one of several kinds, "Rex est un chien ou un chat": kept here, as nothing else reads it)
+    if (@($items | Where-Object { $_.Item.Predicate -and @($_.Item.Predicate.Atoms | Where-Object { "$_".StartsWith('or:') }).Count -gt 0 }).Count -gt 0) { $about = $true }
     if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
     # A message with no general rule is taken only when it is about what a rule told is about: "all dogs are animals"
     # was told, "Rex is a dog" and "is Rex an animal?" are for it, "my cat is called Luna" and "do I take the bus?" are
@@ -1357,7 +1456,7 @@ function Resolve-LambekCategoryMessage {
     if (-not $general -and -not $about) {
         $ruled = [System.Collections.Generic.HashSet[string]]::new()
         foreach ($entry in @($known | Where-Object { $_.Item.Kind -in $quantified })) {
-            foreach ($part in $entry.Item.Subject, $entry.Item.Predicate) { if ($part) { foreach ($atom in @($part.Atoms)) { [void] $ruled.Add("$atom") } } }
+            foreach ($part in $entry.Item.Subject, $entry.Item.Predicate) { if ($part) { foreach ($atom in @($part.Atoms)) { foreach ($one in (Get-LambekCategoryAtomPart -Atom "$atom")) { [void] $ruled.Add($one) } } } }
         }
         foreach ($entry in $items) {
             $atoms = @(foreach ($part in $entry.Item.Subject, $entry.Item.Predicate) { if ($part) { $part.Atoms } })
@@ -1365,7 +1464,7 @@ function Resolve-LambekCategoryMessage {
             if ($entry.Item.Individual) {
                 $atoms += @($known | Where-Object { $_.Item.Individual -and $_.Item.Individual.Key -eq $entry.Item.Individual.Key -and $_.Item.Predicate } | ForEach-Object { $_.Item.Predicate.Atoms })
             }
-            if (@($atoms | Where-Object { $ruled.Contains("$_") }).Count -eq 0) { return $null }
+            if (@($atoms | ForEach-Object { Get-LambekCategoryAtomPart -Atom "$_" } | Where-Object { $ruled.Contains("$_") }).Count -eq 0) { return $null }
         }
     }
 

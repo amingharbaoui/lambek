@@ -26,6 +26,8 @@
       - what is more than one that is more than a third is more than the third, and what is more than another is not
         less than it (no one is more than itself)
       - one more so than one that is so is so; one less so than one that is not so is not (more grand than one grand)
+      - what holds in each of several kinds one is one of holds ("or:chat;chien": Rex is a dog or a cat, Rex is not a
+        cat: Rex is a dog; every dog and every cat is an animal: Rex is an animal)
     A conclusion it cannot work out is refused; "some" and "not every" are not checked (it says so).
     Test-LambekCalculation works out again a sum an answer shows ("2 + 3 = 5").
 .EXAMPLE
@@ -193,6 +195,39 @@ function Test-LambekProofOnce {
         [pscustomobject]@{ Is = $is; IsNot = $isNot }
     }
 
+    # One of several kinds ("or:chat;chien", each kind of several words written chat&noir): what holds in each of them
+    # holds; one that cannot be, with what else one is and is not, is no case at all (Rex is a dog or a cat, Rex is not a
+    # cat: Rex is a dog). Each such property is taken apart once, the first in order first
+    $alternatives = { param([string] $atom) @("$atom".Substring(3) -split ';' | ForEach-Object { , [string[]] @($_ -split '&' | Where-Object { $_ }) }) }
+    $has = {
+        param($state, [string] $atom)
+        if (-not "$atom".StartsWith('or:')) { return $state.Is.Contains($atom) }
+        $state.Is.Contains($atom) -or @(& $alternatives $atom | Where-Object { & $subset $_ $state.Is }).Count -gt 0
+    }
+    $hasNot = {
+        param($state, [string[]] $is, [object[]] $isNot, [string[]] $atoms)
+        # (not all of them: for one of several kinds, none of the kinds)
+        $plain = @($atoms | Where-Object { -not "$_".StartsWith('or:') })
+        $either = @($atoms | Where-Object { "$_".StartsWith('or:') })
+        if ($either.Count -eq 0) { return (& $isNotAll $state $plain) -or (& $refuted $is $isNot $plain) }
+        if ($plain.Count -gt 0 -or $either.Count -gt 1) { return $false }
+        @(& $alternatives $either[0] | Where-Object { -not ((& $isNotAll $state $_) -or (& $refuted $is $isNot $_)) }).Count -eq 0
+    }
+    $cases = {
+        param([string] $kind, [string[]] $atoms, [string[]] $is, [object[]] $isNot, [string[]] $used)
+        $state = & $close $is $isNot
+        # (a case that cannot be: nothing to show in it)
+        if (@($state.IsNot | Where-Object { & $subset $_ $state.Is }).Count -gt 0) { return $true }
+        $here = $(if ($kind -eq 'is') { @($atoms | Where-Object { -not (& $has $state $_) }).Count -eq 0 } else { & $hasNot $state $is $isNot $atoms })
+        if ($here) { return $true }
+        $open = @($state.Is | Where-Object { "$_".StartsWith('or:') -and $_ -notin $used } | Sort-Object | Select-Object -First 1)
+        if ($open.Count -eq 0) { return $false }
+        foreach ($alternative in (& $alternatives $open[0])) {
+            if (-not (& $cases $kind $atoms ([string[]] @(@($is) + @($alternative))) $isNot ([string[]] @(@($used) + @($open[0]))))) { return $false }
+        }
+        return $true
+    }
+
     if ($Conclusions.Count -eq 0) { return [pscustomobject]@{ Holds = $null; Reason = 'no conclusion' } }
     foreach ($conclusion in $Conclusions) {
         $said = ConvertFrom-LambekProofFact -Text $conclusion
@@ -226,14 +261,15 @@ function Test-LambekProofOnce {
         $holds = $null
         switch ($said.Kind) {
             { $_ -in 'is', 'isnot' } {
-                $state = & $individual $said.Who
-                if ($said.Usual) { $state = & $suppose $state }
-                $holds = $(if ($said.Kind -eq 'is') { & $subset $said.Atoms $state.Is } else { (& $isNotAll $state $said.Atoms) -or (& $refuted (& $toldIs $said.Who) (& $toldNot $said.Who) $said.Atoms) })
+                if ($said.Usual) {
+                    $state = & $suppose (& $individual $said.Who)
+                    $holds = $(if ($said.Kind -eq 'is') { & $subset $said.Atoms $state.Is } else { (& $isNotAll $state $said.Atoms) -or (& $refuted (& $toldIs $said.Who) (& $toldNot $said.Who) $said.Atoms) })
+                }
+                else { $holds = & $cases $said.Kind $said.Atoms (& $toldIs $said.Who) (& $toldNot $said.Who) @() }
             }
             { $_ -in 'all', 'no' } {
                 # Every one of the kind: what one that is only of that kind is
-                $state = & $close $said.Subject @()
-                $holds = $(if ($said.Kind -eq 'all') { & $subset $said.Atoms $state.Is } else { (& $isNotAll $state $said.Atoms) -or (& $refuted $said.Subject @() $said.Atoms) })
+                $holds = & $cases $(if ($said.Kind -eq 'all') { 'is' } else { 'isnot' }) $said.Atoms $said.Subject @() @()
             }
             default { return [pscustomobject]@{ Holds = $null; Reason = "not checked: $conclusion" } }
         }

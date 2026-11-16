@@ -1998,6 +1998,7 @@
         "et",
         "mais"
       ],
+      "Or": ["ou"],
       "Comparing": {
         "More": ["plus"],
         "Less": ["moins"],

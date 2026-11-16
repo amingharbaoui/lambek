@@ -766,10 +766,35 @@ Describe 'General rules told in words' {
             @{ Told = 'Rex o Max es un perro'; Asked = '¿es Rex un perro?'; Yes = 'Sí*' }
             @{ Told = 'Rex oder Max ist ein Hund'; Asked = 'ist Rex ein Hund?'; Yes = 'Ja*' }
             @{ Told = 'tous les chats sont noirs ou blancs', 'Tom est un chat'; Asked = 'Tom est-il noir ?'; Yes = 'Oui*' }
+            @{ Told = 'Rex est un chien ou un chat'; Asked = 'Rex est-il un chat ?'; Yes = 'Oui*' }
+            @{ Told = "Rex n'est pas un chien ou un chat", 'Rex est un animal'; Asked = 'Rex est-il un chien ?'; Yes = 'Non*' }
+            @{ Told = 'tous les chiens aboient ou mordent', 'Rex est un chien'; Asked = 'Rex mord-il ?'; Yes = 'Oui*' }
             @{ Told = 'aucun chat n''est noir et gentil', 'Tom est un chat'; Asked = 'Tom est-il noir ?'; Yes = 'Non*' }
         ) {
             Tell $Told
             (Ask $Asked) -join ' ' | Should -Not -BeLike $Yes
+        }
+
+        It 'reads one of two kinds joined by the word that says one of them: <Asked>' -ForEach @(
+            @{ Told = 'Rex est un chien ou un chat', "Rex n'est pas un chat"; Asked = 'Rex est-il un chien ?'; Said = 'Oui, Rex est un chien : c''est un chien ou un chat et ce n''est pas un chat.' }
+            @{ Told = 'tous les chiens sont des animaux', 'tous les chats sont des animaux', 'Rex est un chien ou un chat'; Asked = 'Rex est-il un animal ?'; Said = 'Oui, Rex est un animal*' }
+            @{ Told = 'tous les chats sont noirs ou blancs', 'Tom est un chat', "Tom n'est pas noir"; Asked = 'Tom est-il blanc ?'; Said = 'Oui, Tom est blanc*' }
+            @{ Told = 'Tom est un chat noir ou un chien', "Tom n'est pas un chien"; Asked = 'Tom est-il noir ?'; Said = 'Oui, Tom est noir*' }
+            @{ Told = 'Rex est un cheval', "aucun cheval n'est un chien", "aucun cheval n'est un chat"; Asked = 'Rex est-il un chien ou un chat ?'; Said = 'Non*' }
+            @{ Told = 'every dog is black or white', 'Rex is a dog', 'Rex is not white'; Asked = 'is Rex black?'; Said = 'Yes, Rex is black*' }
+            @{ Told = 'Rex is een hond of een kat', 'Rex is geen kat'; Asked = 'is Rex een hond?'; Said = 'Ja. Rex is een hond.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'keeps one of two kinds in the shape the checker reads, and never says no for one of them alone' {
+            Tell 'Rex est un chien ou un chat', "Rex n'est pas un chat"
+            $null = Ask 'Rex est-il un chien ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Forms | Should -Be @('category(is|name:rex|or:chat;chien)', 'category(isnot|name:rex|chat)')
+            Tell 'Max est un cheval', "aucun cheval n'est un chat"
+            (Ask 'Max est-il un chien ou un chat ?') -join ' ' | Should -Not -BeLike 'Non*'
         }
 
         It 'reads an object said with two small words the same as with one' {

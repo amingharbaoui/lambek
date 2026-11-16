@@ -716,6 +716,7 @@
       "Not": [
         "non"
       ],
+      "Or": ["o"],
       "Comparing": {
         "More": ["piu"],
         "Less": ["meno"],

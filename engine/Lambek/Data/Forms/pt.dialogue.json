@@ -642,6 +642,7 @@
       "Not": [
         "nao"
       ],
+      "Or": ["ou"],
       "Comparing": {
         "More": ["mais"],
         "Less": ["menos"],

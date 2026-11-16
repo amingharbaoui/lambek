@@ -1629,6 +1629,7 @@
         "and",
         "but"
       ],
+      "Or": ["or"],
       "Comparing": {
         "More": ["more"],
         "Less": ["less"],

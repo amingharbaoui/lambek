@@ -47,6 +47,12 @@ Describe 'A proof written for Lean' {
         $lean.Theorem | Should -BeLike '*forall x y, r0 x y -> k0 y -> k0 x*'
     }
 
+    It 'writes one of several kinds with or' {
+        $lean = ConvertTo-LambekLean -Name 'rex' -Premises 'category(is|name:rex|or:chat&noir;chien)|', 'category(isnot|name:rex|chien)|' -Conclusions 'category(is|name:rex|chat)'
+        $lean.Theorem | Should -BeLike '*(h0 : ((k0 c0 /\ k1 c0) \/ (k2 c0)))*'
+        $lean.Theorem | Should -BeLike '*(h1 : Not (k2 c0))*'
+    }
+
     It 'does not write what it cannot: <Name>' -ForEach @(
         @{ Name = 'some'; Premises = 'category(some|oiseau|v:voler)|'; Conclusion = 'category(some|oiseau|v:voler)' }
         @{ Name = 'no conclusion'; Premises = 'category(all|homme|mortel)|'; Conclusion = @() }
@@ -71,6 +77,9 @@ Describe 'A proof written for Lean' {
             @{ Name = 'not more than the one more than it'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(notmore|grand|name:tom|name:rex)' }
             @{ Name = 'so, more so than one that is'; Premises = 'compare(more|grand|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
             @{ Name = 'not so, less so than one that is not'; Premises = 'compare(more|grand|name:rex|name:max)|', 'category(isnot|name:rex|grand)|'; Conclusion = 'category(isnot|name:max|grand)' }
+            @{ Name = 'one of two, not the other'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(isnot|name:rex|chat)|'; Conclusion = 'category(is|name:rex|chien)' }
+            @{ Name = 'what holds in each of two'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chat|animal)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
+            @{ Name = 'a rule of one of two, and not the one'; Premises = 'category(all|chat|or:blanc;noir)|', 'category(is|name:tom|chat)|', 'category(isnot|name:tom|noir)|'; Conclusion = 'category(is|name:tom|blanc)' }
         ) {
             $lean = ConvertTo-LambekLean -Name 'case' -Premises $Premises -Conclusions $Conclusion
             & $Prove $lean.Theorem | Should -BeTrue -Because $lean.Theorem
@@ -86,6 +95,8 @@ Describe 'A proof written for Lean' {
             @{ Name = 'more in another way'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|fort|name:rex|name:max)' }
             @{ Name = 'so, less so than one that is'; Premises = 'compare(more|grand|name:max|name:rex)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
             @{ Name = 'so, more so in another way'; Premises = 'compare(more|fort|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
+            @{ Name = 'one of two, said as the first'; Premises = 'category(is|name:rex|or:chat;chien)|'; Conclusion = 'category(is|name:rex|chien)' }
+            @{ Name = 'what holds in one of two only'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
         ) {
             $lean = ConvertTo-LambekLean -Name 'case' -Premises $Premises -Conclusions $Conclusion
             $proved = & $Prove $lean.Theorem
