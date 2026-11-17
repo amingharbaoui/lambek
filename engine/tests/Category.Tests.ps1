@@ -997,6 +997,33 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'A short sentence read in its language' {
+
+        It 'tells the language of a short sentence by how each language writes its words: <Text>' -ForEach @(
+            @{ Text = 'Rex è alto?'; Language = 'it' }
+            @{ Text = 'Max è alto'; Language = 'it' }
+            @{ Text = 'Rex no es alto'; Language = 'es' }
+            @{ Text = 'Rex es más alto que Max'; Language = 'es' }
+            @{ Text = 'alle Hunde bellen'; Language = 'de' }
+            @{ Text = 'Rex ist ein Hund'; Language = 'de' }
+        ) {
+            & (Get-Module Lambek) {
+                param($Text)
+                $script:LanguageHint = $null
+                Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Text $Text -Forms -Letters
+            } $Text | Should -Be $Language
+        }
+
+        It 'says nothing of a word no language writes, alone' {
+            & (Get-Module Lambek) { Get-LambekLanguageLikelihood -Text 'slt' } | Should -BeNullOrEmpty
+        }
+
+        It 'reasons in the language of short sentences told with nothing before them' {
+            Tell 'Max è alto', 'Rex è più alto di Max'
+            (Ask 'Rex è alto?') -join ' ' | Should -BeLike 'Sì*'
+        }
+    }
+
     Context 'The fewest sentences an answer rests on' {
 
         It 'rests on a thing told rather than on a way through several: <Name>' -ForEach @(

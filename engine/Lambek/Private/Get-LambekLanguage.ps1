@@ -10,11 +10,15 @@ function Get-LambekLanguage {
 
         # A tie told apart by the words the forms of each language hold (for the readers of general rules; the router
         # was measured without it)
-        [switch] $Forms
+        [switch] $Forms,
+
+        # With the forms and the text: how likely each language writes the words as typed (Get-LambekLanguageLikelihood),
+        # for the readers of general rules and comparisons only (the language of a chat was measured without it)
+        [switch] $Letters
     )
 
     # The frame language of the sentence: one clear winner, otherwise the language the chat is in, otherwise English
-    $scores = Get-LambekLanguageScore -Tokens $Tokens -Text $Text -Forms:$Forms
+    $scores = Get-LambekLanguageScore -Tokens $Tokens -Text $Text -Forms:$Forms -Letters:$Letters
     $best = ($scores.Values | Measure-Object -Maximum).Maximum
     # (some evidence: with the forms, the languages do not all score the same, and within a point of the best is a tie,
     # less than a word of evidence, as the chat weighs it; without them, a word some language holds)
@@ -92,15 +96,26 @@ function Get-LambekLanguageScore {
 
         # And what the forms of each language know of the words no small words hold (for the readers of general rules
         # and the language of a chat; the router was measured without it)
-        [switch] $Forms
+        [switch] $Forms,
+
+        # And, with the forms and the text, how likely each language writes the words as typed, instead (see
+        # Get-LambekLanguage)
+        [switch] $Letters
     )
 
     # Matrix Language Frame (Myers-Scotton): the small words of grammar (articles, prepositions, pronouns) come from the
     # language that frames the sentence, the content words may come from another. A small word counts two, any other
     # word of the language one; words every language shares count for none of them
-    $key = "languages`n$([bool] $Forms)`n" + ($Tokens -join "`n") + "`n" + $Text
+    $key = "languages`n$([bool] $Forms)`n$([bool] $Letters)`n" + ($Tokens -join "`n") + "`n" + $Text
     $kept = $null
     if ($script:ReadCache.TryGetValue($key, [ref] $kept)) { return $kept }
+    # With the forms, the letters and the text as typed: how likely each language writes the words of the sentence, as
+    # written, in log10 (Get-LambekLanguageLikelihood); a point is then ten times more likely. Nothing to read (only
+    # names): the small words below, as without them
+    if ($Forms -and $Letters -and $Text) {
+        $likely = Get-LambekLanguageLikelihood -Text $Text
+        if ($likely) { $script:ReadCache[$key] = $likely; return $likely }
+    }
     $lower = @($Tokens | ForEach-Object { $_.ToLowerInvariant() })
     $languages = @(Get-LambekAvailableLanguage)
     $lexicons = @{}
@@ -182,6 +197,47 @@ function Get-LambekLanguageScore {
         }
     }
     $script:ReadCache[$key] = $scores
+    return $scores
+}
+
+function Get-LambekLanguageLikelihood {
+    param([string] $Text)
+
+    # How likely each language writes the words of the sentence, as typed (with their accents), in log10: each word as
+    # often as its treebanks wrote it, and one they wrote seldom or never, when another language writes it, as its
+    # letters say (LambekLetters.Word), as if met 1000 times (chosen on the calibration sentences of bench/reasoning.json, where 10 to 10000 give the same
+    # within one sentence in 473). Names say nothing ("Rex", "Coco"; "Ist", "Tous" and "Hunde" do count). Paths, addresses and what is
+    # quoted say nothing either. $null when nothing is left to read, or a language has no forms model
+    $plain = $Text -replace '"[^"]*"|\u00AB[^\u00BB]*\u00BB|\u201C[^\u201D]*\u201D', ' '
+    $plain = $plain -replace '(?i)\b[a-z]:[\\/]\S*|\\\\\S+|(?<!\w)/\S+|https?://\S+|(?<!\w)~[\\/]\S*|(?<![\w.])\.[a-z0-9]{1,10}\b', ' '
+    $all = @([regex]::Matches($plain.Normalize([Text.NormalizationForm]::FormC), '\p{L}+') | ForEach-Object Value)
+    $languages = @(Get-LambekAvailableLanguage)
+    $letters = @{}
+    foreach ($language in $languages) {
+        $written = Get-LambekWrittenWord -Language $language
+        if (-not $written -or -not $written.PSObject.Properties['Letters'] -or -not $written.Letters) { return $null }
+        $letters[$language] = $written.Letters
+    }
+    $words = @(for ($i = 0; $i -lt $all.Count; $i++) {
+            $word = $all[$i]
+            # (with a capital: the first word, when some language writes it as a small word; any other, when some
+            # language writes it and none as a name: German nouns, never "Tom" or "Rosa")
+            if ([char]::IsUpper($word[0])) {
+                if ($i -eq 0 -and @($languages | Where-Object { $letters[$_].SmallCount($word) -gt 0 }).Count -eq 0) { continue }
+                if ($i -gt 0 -and @($languages | Where-Object { $letters[$_].IsName($word) }).Count -gt 0) { continue }
+            }
+            $word
+        })
+    # (a word no language writes says something only by its letters, with words some language writes beside it: alone,
+    # a slip or a short way of writing, "slt", says nothing, as without the forms)
+    $known = @($words | Where-Object { $word = $_; @($languages | Where-Object { $letters[$_].Count($word) -gt 0 }).Count -gt 0 })
+    if ($known.Count -eq 0) { return $null }
+    $scores = [ordered]@{}
+    foreach ($language in $languages) {
+        $sum = 0.0
+        foreach ($word in $words) { $sum += $letters[$language].Word($word, 1000) }
+        $scores[$language] = $sum
+    }
     return $scores
 }
 

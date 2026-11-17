@@ -12,7 +12,7 @@ function Resolve-LambekComparison {
     # language and the words it learned for "more", "less" and "than" (Dialogue.General.Comparing); every
     # sentence of the message must read as one, or nothing is taken
     if ($Text -notmatch '\p{L}') { return $null }
-    $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Forms
+    $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Text $Text -Forms -Letters
     $languages = @(@($detected) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $detected } | Sort-Object))
     foreach ($language in $languages) {
         if (-not (Get-LambekComparisonWord -Language $language)) { continue }
@@ -45,7 +45,7 @@ function Resolve-LambekComparisonDegree {
     # so is being so beyond some point, the same for both). Only a question alone, about one named, of one word said
     # of it; what was told of that one itself is left to the reasoning on kinds
     # (in the language the question reads in where something was told compared so, the one it seems in first)
-    $first = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Forms
+    $first = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Text $Text -Forms -Letters
     $detected = $null
     foreach ($language in @(@($first) + @(Get-LambekAvailableLanguage | Where-Object { $_ -ne $first } | Sort-Object))) {
         if (-not $language -or -not (Get-LambekComparisonWord -Language $language)) { continue }

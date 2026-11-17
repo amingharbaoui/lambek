@@ -1730,6 +1730,14 @@ public sealed class LambekFormCounts
 
     public static LambekFormCounts Load(string path) { return Of(LambekForms.Load(path, false)); }
 
+    // The counts, and the letters of the same words (LambekLetters), read once
+    public static LambekFormCounts Load(string path, out LambekLetters letters)
+    {
+        LambekForms forms = LambekForms.Load(path, false);
+        letters = LambekLetters.Of(forms);
+        return Of(forms);
+    }
+
     public static LambekFormCounts Of(LambekForms forms)
     {
         Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);

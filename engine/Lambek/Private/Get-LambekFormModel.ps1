@@ -42,7 +42,10 @@ function Get-LambekWrittenWord {
         if (Test-Path -LiteralPath $lexicon -PathType Leaf) {
             foreach ($form in [LambekLexicon]::Load([IO.Path]::GetFullPath($lexicon)).Forms.Keys) { [void] $bare.Add([LambekForms]::Bare($form)) }
         }
-        $known = [pscustomobject]@{ Counts = [LambekFormCounts]::Load([IO.Path]::GetFullPath($path)); Lexicon = $bare }
+        # (and the letters of the same words, as written, for a word that tells languages apart only by them: "e" with a grave accent)
+        $letters = $null
+        $counts = [LambekFormCounts]::Load([IO.Path]::GetFullPath($path), [ref] $letters)
+        $known = [pscustomobject]@{ Counts = $counts; Lexicon = $bare; Letters = $letters }
     }
     $script:WrittenWords[$Language] = $known
     return $known

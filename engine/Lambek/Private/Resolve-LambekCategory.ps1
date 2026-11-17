@@ -25,7 +25,7 @@ function Resolve-LambekCategory {
             if ($result) { return $result }
         }
     }
-    $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Forms
+    $detected = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text) -Text $Text -Forms -Letters
     # (the languages general rules were told in come first, after the one the message reads as when rules were told
     # in it: "Rex abbaia?" after "tutti i cani abbaiano" is Italian, whatever its few words alone say)
     # (and a language whose dialogue was learned, where what was told of someone is kept for the rules: "Rex e grande?"
