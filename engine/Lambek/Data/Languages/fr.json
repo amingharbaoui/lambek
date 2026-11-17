@@ -1999,6 +1999,7 @@
         "mais"
       ],
       "Or": ["ou"],
+      "Counting": { "AtLeast": ["au moins"], "AtMost": ["au plus"], "Exactly": ["exactement"] },
       "Comparing": {
         "More": ["plus"],
         "Less": ["moins"],

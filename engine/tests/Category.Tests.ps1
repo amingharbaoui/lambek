@@ -997,6 +997,41 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'How many of a kind are so' {
+
+        It 'answers how many from what was told: <Asked>' -ForEach @(
+            @{ Told = @('au moins trois chats sont noirs'); Asked = 'au moins deux chats sont-ils noirs ?'; Said = 'Oui.*au moins trois chats sont noirs*' }
+            @{ Told = @('au moins trois chats sont noirs'); Asked = 'au plus deux chats sont-ils noirs ?'; Said = 'Non.*' }
+            @{ Told = @('au plus deux chats sont noirs'); Asked = 'au moins trois chats sont-ils noirs ?'; Said = 'Non.*Au plus deux chats sont noirs.' }
+            @{ Told = @('au plus deux chats sont noirs'); Asked = 'au plus cinq chats sont-ils noirs ?'; Said = 'Oui.*' }
+            @{ Told = @('tous les siamois sont des chats', 'au moins trois siamois sont noirs'); Asked = 'au moins trois chats sont-ils noirs ?'; Said = 'Oui.*Tous les siamois sont des chats.' }
+            @{ Told = @('tous les siamois sont des chats', 'au plus deux chats sont noirs'); Asked = 'au moins trois siamois sont-ils noirs ?'; Said = 'Non.*' }
+            @{ Told = @('exactement deux chats sont noirs'); Asked = 'trois chats sont-ils noirs ?'; Said = 'Non.*' }
+            @{ Told = @('at least three dogs bark'); Asked = 'do at least two dogs bark?'; Said = 'Yes.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'never says yes or no when what was told does not say it: <Asked>' -ForEach @(
+            @{ Told = @('au moins trois chats sont noirs'); Asked = 'au moins quatre chats sont-ils noirs ?' }
+            @{ Told = @('au moins trois siamois sont noirs'); Asked = 'au moins trois chats sont-ils noirs ?' }
+            @{ Told = @('tous les siamois sont des chats', 'au moins trois chats sont noirs'); Asked = 'au moins trois siamois sont-ils noirs ?' }
+            @{ Told = @('au plus deux siamois sont noirs'); Asked = 'au moins trois chats sont-ils noirs ?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike '*peut être vrai ou faux*'
+        }
+
+        It 'keeps how many in the shape the checker reads' {
+            Tell 'tous les siamois sont des chats', 'au plus deux chats sont noirs'
+            $null = Ask 'au moins trois siamois sont-ils noirs ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('count(notleast|3|siamois|noir)')
+            $proof.Forms | Should -Be @('count(most|2|chat|noir)', 'category(all|siamois|chat)')
+        }
+    }
+
     Context 'A short sentence read in its language' {
 
         It 'tells the language of a short sentence by how each language writes its words: <Text>' -ForEach @(

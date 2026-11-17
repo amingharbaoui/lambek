@@ -21,6 +21,11 @@ Describe 'The checker of proofs' {
         @{ Name = 'so, more so than one that is'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|', 'category(is|name:tom|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
         @{ Name = 'not so, less so than one that is not'; Premises = 'compare(more|grand|name:rex|name:max)|', 'category(isnot|name:rex|grand)|'; Conclusion = 'category(isnot|name:max|grand)' }
         @{ Name = 'one of two, not the other'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(isnot|name:rex|chat)|'; Conclusion = 'category(is|name:rex|chien)' }
+        @{ Name = 'at least so many, of fewer'; Premises = 'count(least|3|chat|noir)|'; Conclusion = 'count(least|2|chat|noir)' }
+        @{ Name = 'at least so many of a narrower kind, of the wider'; Premises = 'count(least|3|siamois|noir)|', 'category(all|siamois|chat)|'; Conclusion = 'count(least|3|chat|noir)' }
+        @{ Name = 'at most so many, not at least more'; Premises = 'count(most|2|chat|noir)|', 'category(all|siamois|chat)|'; Conclusion = 'count(notleast|3|siamois|noir)' }
+        @{ Name = 'exactly so many, not more'; Premises = 'count(exactly|2|chat|noir)|'; Conclusion = 'count(notleast|3|chat|noir)' }
+        @{ Name = 'at least so many, more than fewer'; Premises = 'count(least|3|chat|noir)|'; Conclusion = 'count(notmost|2|chat|noir)' }
         @{ Name = 'what holds in each of two'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chat|animal)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
         @{ Name = 'a rule of one of two, and not the one'; Premises = 'category(all|chat|or:blanc;noir)|', 'category(is|name:tom|chat)|', 'category(isnot|name:tom|noir)|'; Conclusion = 'category(is|name:tom|blanc)' }
         @{ Name = 'one of two, asked of both'; Premises = 'category(is|name:rex|or:chat;chien)|'; Conclusion = 'category(is|name:rex|or:chat;chien)' }
@@ -46,6 +51,9 @@ Describe 'The checker of proofs' {
         @{ Name = 'so, less so than one that is'; Premises = 'compare(more|grand|name:max|name:rex)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
         @{ Name = 'so, more so in another way'; Premises = 'compare(more|fort|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
         @{ Name = 'one of two, said as the first'; Premises = 'category(is|name:rex|or:chat;chien)|'; Conclusion = 'category(is|name:rex|chien)' }
+        @{ Name = 'at least so many, of more'; Premises = 'count(least|3|chat|noir)|'; Conclusion = 'count(least|4|chat|noir)' }
+        @{ Name = 'at least so many of a wider kind, of the narrower'; Premises = 'count(least|3|chat|noir)|', 'category(all|siamois|chat)|'; Conclusion = 'count(least|3|siamois|noir)' }
+        @{ Name = 'at most so many of a narrower kind, of the wider'; Premises = 'count(most|2|siamois|noir)|', 'category(all|siamois|chat)|'; Conclusion = 'count(notleast|3|chat|noir)' }
         @{ Name = 'what holds in one of two only'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
         @{ Name = 'none of two, one of them left'; Premises = 'category(is|name:rex|chien)|', 'category(no|chien|chat)|'; Conclusion = 'category(isnot|name:rex|or:chat;cheval)' }
     ) {

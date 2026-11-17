@@ -511,6 +511,7 @@
         "niet"
       ],
       "Or": ["of"],
+      "Counting": { "AtLeast": ["minstens"], "AtMost": [], "Exactly": ["precies"] },
       "Comparing": {
         "More": ["meer"],
         "Less": ["minder"],

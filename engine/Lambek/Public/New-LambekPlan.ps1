@@ -89,6 +89,13 @@ function New-LambekPlan {
                     $reply = Confirm-LambekProof -Reply $compared.Reply -Language $compared.Language
                     return ConvertTo-LambekReplyPlan -Text $Text -Language $compared.Language -Reply $reply -Spoken
                 }
+                # "au moins trois chats sont noirs... au moins deux chats sont-ils noirs ?": how many of a kind are so
+                $counted = Resolve-LambekCount -Text $Text
+                if ($counted) {
+                    if (@($counted.Facts).Count -gt 0) { Add-LambekTold -Plan ([pscustomobject]@{ Steps = @($counted.Facts | ForEach-Object { [pscustomobject]@{ Statement = $_ } }) }) }
+                    $reply = Confirm-LambekProof -Reply $counted.Reply -Language $counted.Language
+                    return ConvertTo-LambekReplyPlan -Text $Text -Language $counted.Language -Reply $reply -Spoken
+                }
                 # "tous les chats de ma soeur sont noirs... Minou est-il noir ?": kept as told, and answered yes, no, or that it
                 # cannot be known, with what the answer rests on
                 $category = Resolve-LambekCategory -Text $Text

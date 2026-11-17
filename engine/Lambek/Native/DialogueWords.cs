@@ -190,4 +190,48 @@ public static class LambekDialogueWords
             .OrderByDescending(p => (double) p.Value * p.Value / seen[p.Key]).ThenBy(p => p.Key, StringComparer.Ordinal).FirstOrDefault();
         return best.Key;
     }
+
+    // The words of the other language met where some English words are, one after the other ("at least": "au moins",
+    // "mindestens"): among the runs of one to so many words of the other sentence, the one in the most short pairs with
+    // them, weighed by how often it is with them, as Aligned; a run is kept only when it says more than the words in it
+    // (a longer run wins over a shorter one in it only when it is with them nearly as often)
+    public static string AlignedRun(string[] english, string[] other, string asked, int most, int least, int longest)
+    {
+        string[] wanted = asked.ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        Dictionary<string, int> together = new Dictionary<string, int>(StringComparer.Ordinal);
+        Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (int i = 0; i < english.Length && i < other.Length; i++)
+        {
+            List<string> theirs = Word.Matches(other[i].ToLowerInvariant()).Cast<System.Text.RegularExpressions.Match>().Select(m => m.Value).ToList();
+            if (theirs.Count > longest) continue;
+            List<string> ours = Word.Matches(english[i].ToLowerInvariant()).Cast<System.Text.RegularExpressions.Match>().Select(m => m.Value).ToList();
+            bool has = false;
+            for (int k = 0; k + wanted.Length <= ours.Count && !has; k++)
+            {
+                has = true;
+                for (int j = 0; j < wanted.Length; j++) { if (ours[k + j] != wanted[j]) { has = false; break; } }
+            }
+            HashSet<string> runs = new HashSet<string>(StringComparer.Ordinal);
+            for (int k = 0; k < theirs.Count; k++)
+            {
+                for (int n = 1; n <= most && k + n <= theirs.Count; n++) { runs.Add(string.Join(" ", theirs.Skip(k).Take(n))); }
+            }
+            foreach (string run in runs)
+            {
+                int c; seen.TryGetValue(run, out c); seen[run] = c + 1;
+                if (has) { together.TryGetValue(run, out c); together[run] = c + 1; }
+            }
+        }
+        List<KeyValuePair<string, double>> scored = together.Where(p => p.Value >= least)
+            .Select(p => new KeyValuePair<string, double>(p.Key, (double) p.Value * p.Value / seen[p.Key])).ToList();
+        if (scored.Count == 0) { return null; }
+        KeyValuePair<string, double> best = scored.OrderByDescending(p => p.Value).ThenBy(p => p.Key, StringComparer.Ordinal).First();
+        // (a longer run holding the best one, with it nearly as often: "au moins" over "moins")
+        foreach (KeyValuePair<string, double> longer in scored.Where(p => p.Key.Split(' ').Length > best.Key.Split(' ').Length && (" " + p.Key + " ").Contains(" " + best.Key + " "))
+            .OrderByDescending(p => p.Key.Split(' ').Length).ThenByDescending(p => p.Value).ThenBy(p => p.Key, StringComparer.Ordinal))
+        {
+            if (together[longer.Key] >= 0.8 * together[best.Key]) { return longer.Key; }
+        }
+        return best.Key;
+    }
 }

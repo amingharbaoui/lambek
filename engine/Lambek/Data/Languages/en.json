@@ -1630,6 +1630,7 @@
         "but"
       ],
       "Or": ["or"],
+      "Counting": { "AtLeast": ["at least"], "AtMost": ["at most"], "Exactly": ["exactly"] },
       "Comparing": {
         "More": ["more"],
         "Less": ["less"],

@@ -643,6 +643,7 @@
         "nao"
       ],
       "Or": ["ou"],
+      "Counting": { "AtLeast": ["pelo menos"], "AtMost": ["no maximo"], "Exactly": ["exatamente"] },
       "Comparing": {
         "More": ["mais"],
         "Less": ["menos"],

@@ -741,6 +741,7 @@
         "nicht"
       ],
       "Or": ["oder"],
+      "Counting": { "AtLeast": ["mindestens"], "AtMost": ["hochstens"], "Exactly": ["genau"] },
       "Comparing": {
         "More": ["mehr"],
         "Less": ["weniger"],

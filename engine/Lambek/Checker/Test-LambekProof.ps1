@@ -26,6 +26,8 @@
       - what is more than one that is more than a third is more than the third, and what is more than another is not
         less than it (no one is more than itself)
       - one more so than one that is so is so; one less so than one that is not so is not (more grand than one grand)
+      - at least so many of a kind being something are at least as many of a wider kind being something wider; at
+        most so many, at most as many of a narrower kind being something narrower (count(least|3|chat|noir))
       - what holds in each of several kinds one is one of holds ("or:chat;chien": Rex is a dog or a cat, Rex is not a
         cat: Rex is a dog; every dog and every cat is an animal: Rex is an animal)
     A conclusion it cannot work out is refused; "some" and "not every" are not checked (it says so).
@@ -77,6 +79,13 @@ function ConvertFrom-LambekProofFact {
         $kind = @{ does = 'is'; doesnot = 'isnot' }[$kind] ?? $kind
         $set = { param($s) [string[]] @($s -split '\+' | Where-Object { $_ }) }
         return [pscustomobject]@{ Shape = 'category'; Kind = $kind; Usual = $usual; Who = $category.Groups['who'].Value; Atoms = (& $set $category.Groups['what'].Value); Subject = (& $set $category.Groups['who'].Value) }
+    }
+    $count = [regex]::Match($text, '^count\((?<way>least|most|exactly|notleast|notmost)\|(?<n>\d+)\|(?<s>[^|()]*)\|(?<p>[^|()]*)\)$')
+    if ($count.Success) {
+        return [pscustomobject]@{
+            Shape = 'count'; Way = $count.Groups['way'].Value; N = [long] $count.Groups['n'].Value
+            Subject = [string[]] @($count.Groups['s'].Value -split '\+' | Where-Object { $_ }); Atoms = [string[]] @($count.Groups['p'].Value -split '\+' | Where-Object { $_ })
+        }
     }
     $compare = [regex]::Match($text, '^compare\((?<kind>more|notmore)\|(?<of>[^|()]+)\|(?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
     if ($compare.Success) {
@@ -234,6 +243,24 @@ function Test-LambekProofOnce {
         if (-not $said) { return [pscustomobject]@{ Holds = $null; Reason = "not read: $conclusion" } }
         if ($said.Shape -eq 'told') {
             if (-not $told.Contains($said.Key)) { return [pscustomobject]@{ Holds = $false; Reason = "does not follow: $conclusion" } }
+            continue
+        }
+        if ($said.Shape -eq 'count') {
+            # (how many: at least so many of a narrower kind being something narrower are at least as many of the wider;
+            # at most so many of a wider kind being something wider, at most as many of the narrower; what is narrower is
+            # what the strict rules give, or a part of it)
+            $within = { param([string[]] $narrow, [string[]] $wide) & $subset $wide (& $close $narrow @()).Is }
+            $counts = @($facts | Where-Object { $_.Shape -eq 'count' })
+            $least = { param($n) @($counts | Where-Object { $_.Way -in 'least', 'exactly' -and $_.N -ge $n -and (& $within $_.Subject $said.Subject) -and (& $within $_.Atoms $said.Atoms) }).Count -gt 0 }
+            $most = { param($n) @($counts | Where-Object { $_.Way -in 'most', 'exactly' -and $_.N -le $n -and (& $within $said.Subject $_.Subject) -and (& $within $said.Atoms $_.Atoms) }).Count -gt 0 }
+            $holds = switch ($said.Way) {
+                'least' { & $least $said.N }
+                'most' { & $most $said.N }
+                'exactly' { (& $least $said.N) -and (& $most $said.N) }
+                'notleast' { $said.N -ge 1 -and (& $most ($said.N - 1)) }
+                'notmost' { & $least ($said.N + 1) }
+            }
+            if (-not $holds) { return [pscustomobject]@{ Holds = $false; Reason = "does not follow: $conclusion" } }
             continue
         }
         if ($said.Shape -eq 'compare') {

@@ -690,6 +690,7 @@
         "no"
       ],
       "Or": ["o"],
+      "Counting": { "AtLeast": ["al menos"], "AtMost": ["a lo sumo"], "Exactly": ["exactamente"] },
       "Comparing": {
         "More": ["mas"],
         "Less": ["menos"],

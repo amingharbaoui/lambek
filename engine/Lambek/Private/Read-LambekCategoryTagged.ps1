@@ -58,7 +58,17 @@ function Read-LambekCategoryTagged {
     # says not. A question is asked by its mark, an AUX first, or a pronoun after the verb ("aime-t-il"); one that asks
     # who, which or how many is left to the patterns. Read with the same parts as the patterns read, by
     # Read-LambekCategoryPart; nothing when a part does not read
-    param([string] $Sentence, [string] $Language, [switch] $Question, [switch] $Shape)
+    param(
+        [string] $Sentence,
+        [string] $Language,
+        [switch] $Question,
+        [switch] $Shape,
+
+        # Also read how many is said ("au moins trois", "au plus deux", "exactement deux"): the item says it in Count
+        # {Least; Most}; one said of at most so many is read (Kind "count"), and one asked of so many (Kind "askcount").
+        # Without it, at most is not read and so many asked is not, as "some" does not answer it
+        [switch] $Counting
+    )
 
     $model = Get-LambekFormModel -Language $Language
     $logic = Get-LambekLogicWord -Language $Language
@@ -175,6 +185,15 @@ function Read-LambekCategoryTagged {
         if (-not $known -and $capital -and ($r -gt 0 -or $upos[$r] -in 'VERB', 'AUX', 'X')) { $upos[$r] = 'PROPN' }
         elseif (-not $known -and $upos[$r] -notin 'NOUN', 'ADJ', 'PROPN') { return $null }
         if (-not ($who -and $r -eq 0) -and "|$($readings[$r].Feats)|" -match '\|PronType=(?:[A-Za-z]+,)*Int(?:,[A-Za-z]+)*\|') { return $null }
+    }
+    # (the words learned to say how many before a number are no verb, whatever the tagger guessed: "au moins trois",
+    # where "au" was read a verb at the head of a sentence)
+    $surface = [string[]] @(for ($r = 0; $r -lt $readings.Count; $r++) { if ($r -eq 0 -or $of[$r] -ne $of[$r - 1]) { ConvertTo-LambekNormalizedText -Text "$($written[$of[$r]])" } else { '' } })
+    for ($r = 0; $r -lt $readings.Count; $r++) {
+        $counted = Get-LambekCategoryCount -Readings $readings -At $r -Language $Language -Surface $surface
+        if (-not $counted) { continue }
+        for ($j = $r; $j -lt $counted.Next - 1; $j++) { if ($upos[$j] -in 'VERB', 'AUX', 'ADP', 'DET') { $upos[$j] = 'ADV' } }
+        break
     }
     $has = { param($r, $feature) "|$($readings[$r].Feats)|".Contains("|$feature|") }
     $negative = [bool[]]::new($readings.Count)
@@ -304,6 +323,7 @@ function Read-LambekCategoryTagged {
     $quantity = $null
     $quantifier = ''
     $implied = $false
+    $count = $null
     $q = $from
     while ($q -lt $readings.Count -and $negative[$q]) { $q++ }
     if ($q -lt $readings.Count -and $upos[$q] -notin 'NOUN', 'PROPN', 'VERB', 'AUX') {
@@ -326,6 +346,18 @@ function Read-LambekCategoryTagged {
             $implied = $true
             $from = $q + 2
         }
+        elseif ($null -ne ($counted = Get-LambekCategoryCount -Readings $readings -At $q -Language $Language -Surface $surface)) {
+            # (how many said with words learned before a number: "au moins trois", "au plus deux", "exactement deux".
+            # At least one said is some; at most, and so many asked, only for the reading of counts)
+            $least = $counted.Least
+            $most = $counted.Most
+            $onlyCounted = $Question -or $null -eq $least -or $least -lt 1
+            if ($onlyCounted -and -not $Counting) { return $null }
+            $quantity = 'some'
+            $implied = $true
+            $from = $counted.Next
+            $count = [pscustomobject]@{ Least = $least; Most = $most; Start = $counted.Start }
+        }
         elseif ($q + 1 -lt $readings.Count -and $upos[$q + 1] -in 'NOUN', 'ADJ') {
             # (a number of things, an article that says not which, or a word the tags say does not say which ("quelques",
             # "plusieurs", PronType=Ind): at least one, as "some" says. "trois chats sont noirs", "un Irlandais a recu le
@@ -336,7 +368,12 @@ function Read-LambekCategoryTagged {
                 $said = "$($readings[$q].Form)"
                 $numbers = (Get-LambekLexicon -Language $Language).Numbers
                 if ($said -match '^\d+$') { $count = [long] $said }
-                elseif ($numbers -and $numbers.ContainsKey($said.ToLowerInvariant()) -and "$($numbers[$said.ToLowerInvariant()])" -match '^\d+$') { $count = [long] "$($numbers[$said.ToLowerInvariant()])" }
+                elseif ($numbers) {
+                    # (as the dictionary writes it, with its accents or without)
+                    foreach ($spelled in @($said.ToLowerInvariant(), (ConvertTo-LambekNormalizedText -Text $said))) {
+                        if ($numbers.ContainsKey($spelled) -and "$($numbers[$spelled])" -match '^\d+$') { $count = [long] "$($numbers[$spelled])"; break }
+                    }
+                }
             }
             # (a word that says not which only in the plural: one said of one thing may say none, as "nessuna" or "nul"
             # do where a tagger reads them so; one that says it of several says there are some. Never a word that
@@ -350,7 +387,16 @@ function Read-LambekCategoryTagged {
                 $quantity = 'some'
                 $implied = $true
                 $from = $q + 1
+                if ($null -ne $count) { $count = [pscustomobject]@{ Least = $count; Most = $null; Start = $q } }
             }
+            elseif ($Counting -and $Question -and $null -ne $count -and $count -ge 2) {
+                # (asked of so many: "trois chats sont-ils noirs ?", for the reading of counts)
+                $quantity = 'some'
+                $implied = $true
+                $from = $q + 1
+                $count = [pscustomobject]@{ Least = $count; Most = $null; Start = $q }
+            }
+            else { $count = $null }
         }
     }
 
@@ -561,6 +607,17 @@ function Read-LambekCategoryTagged {
             $item.Written.Predicate = & $lower $helper
             $item.Written.Object = " $($readings[$main].Form)$($item.Written.Object)"
         }
+        if ($Counting -and $count -is [pscustomobject]) {
+            # (how many, for the reading of counts: what one is of, and what is said of them; and the sentence said as
+            # told, with its own words: "au moins deux chats sont noirs" of "au moins deux chats sont-ils noirs")
+            $verbWord = $(if ($null -ne $copula) { & $lower $copula } else { '' })
+            $told = @((& $text $count.Start $from), "$($item.Written.Subject)".Trim())
+            if ($item.Verb) { $told += "$($item.Written.Predicate)$($item.Written.Object)".Trim() } else { $told += @($verbWord, "$($item.Written.Predicate)".Trim()) }
+            $item | Add-Member -NotePropertyName Count -NotePropertyValue ([pscustomobject]@{ Least = $count.Least; Most = $count.Most }) -Force
+            $item | Add-Member -NotePropertyName Statement -NotePropertyValue ((@($told | Where-Object { $_ }) -join ' ') -replace '\s+', ' ') -Force
+            if ($asking) { $item.Kind = 'askcount' }
+            elseif ($null -ne $count.Most -and ($null -eq $count.Least -or $count.Least -lt 1)) { $item.Kind = 'count' }
+        }
         return $item
     }
     return $null
@@ -574,4 +631,51 @@ function Get-LambekNotWord {
     $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
     if (-not $general -or -not $general.Contains('Not')) { return }
     @($general['Not']) | Where-Object { $_ } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" }
+}
+
+function Get-LambekCategoryCount {
+    param([object[]] $Readings, [int] $At, [string] $Language, [string[]] $Surface)
+
+    # How many is said from a word on, with the words learned to say it before a number (Dialogue.General.Counting:
+    # AtLeast, AtMost, Exactly, where English says "at least", "at most", "exactly"), then the number (a NUM the
+    # language writes, or figures; "un" too, read as an article), then a noun or an adjective: {Least; Most; Next, the word after the number}. The
+    # words as written (Surface: the written word at the first reading of each, nothing at the others: "au" is read
+    # "a le"); without them, the readings
+    $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+    $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
+    if (-not $general -or -not $general.Contains('Counting')) { return $null }
+    if (-not $Surface) { $Surface = [string[]] @($Readings | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$($_.Form)" }) }
+    if ($At -ge $Surface.Count -or -not $Surface[$At]) { return $null }
+    $after = { param([int] $p) $p++; while ($p -lt $Surface.Count -and -not $Surface[$p]) { $p++ }; $p }
+    $numbers = (Get-LambekLexicon -Language $Language).Numbers
+    foreach ($way in 'AtLeast', 'AtMost', 'Exactly') {
+        foreach ($phrase in @($general['Counting'][$way])) {
+            $words = @((ConvertTo-LambekNormalizedText -Text "$phrase") -split ' ' | Where-Object { $_ })
+            if ($words.Count -eq 0) { continue }
+            $p = $At
+            $same = $true
+            foreach ($word in $words) {
+                if ($p -ge $Surface.Count -or $Surface[$p] -ne $word) { $same = $false; break }
+                $p = & $after $p
+            }
+            if (-not $same -or $p + 1 -ge $Readings.Count) { continue }
+            $said = "$($Readings[$p].Form)"
+            $value = $null
+            if ($said -match '^\d+$') { $value = [long] $said }
+            elseif ("$($Readings[$p].Upos)" -in 'NUM', 'DET' -and $numbers) {
+                # (as the dictionary writes it, with its accents or without: "tres" of "tres")
+                foreach ($spelled in @($said.ToLowerInvariant(), (ConvertTo-LambekNormalizedText -Text $said))) {
+                    if ($numbers.ContainsKey($spelled) -and "$($numbers[$spelled])" -match '^\d+$') { $value = [long] "$($numbers[$spelled])"; break }
+                }
+            }
+            if ($null -eq $value -or "$($Readings[$p + 1].Upos)" -notin 'NOUN', 'ADJ') { continue }
+            return [pscustomobject]@{
+                Least = $(if ($way -ne 'AtMost') { $value } else { $null })
+                Most = $(if ($way -ne 'AtLeast') { $value } else { $null })
+                Start = $At
+                Next = $p + 1
+            }
+        }
+    }
+    return $null
 }

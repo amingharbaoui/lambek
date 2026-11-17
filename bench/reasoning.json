@@ -1,8 +1,8 @@
 {
-  "Version": "1.8",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits). Written by hand, never learned from.",
+  "Version": "1.9",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "22a55258545169520aac16da30ae19f3c71e439e4dc01eaca28080be202b51fa",
+  "TestHash": "72663d4c05122ea9b247722283c948f0613e6c67901aab9c4ebbec71232a11ea",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -14919,6 +14919,1536 @@
             "Avoid": [
               "no.",
               "fior"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-count-fewer-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "au moins trois chats sont noirs"
+        },
+        {
+          "Text": "au moins deux chats sont-ils noirs ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-count-more-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "au moins trois chats sont noirs"
+        },
+        {
+          "Text": "au plus deux chats sont-ils noirs ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-count-most-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "au plus deux chats sont noirs"
+        },
+        {
+          "Text": "au moins trois chats sont-ils noirs ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-count-wider-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les siamois sont des chats"
+        },
+        {
+          "Text": "au moins trois siamois sont noirs"
+        },
+        {
+          "Text": "au moins trois chats sont-ils noirs ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-count-fewer-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "au moins quatre chiens sont grands"
+        },
+        {
+          "Text": "au moins trois chiens sont-ils grands ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-count-more-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "au moins quatre chiens sont grands"
+        },
+        {
+          "Text": "au plus trois chiens sont-ils grands ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-count-most-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "au plus deux chiens sont grands"
+        },
+        {
+          "Text": "au moins trois chiens sont-ils grands ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-count-wider-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les caniches sont des chiens"
+        },
+        {
+          "Text": "au moins deux caniches sont grands"
+        },
+        {
+          "Text": "au moins deux chiens sont-ils grands ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-count-fewer-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "at least three cats are black"
+        },
+        {
+          "Text": "are at least two cats black?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-count-more-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "at least three cats are black"
+        },
+        {
+          "Text": "are at most two cats black?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-count-most-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "at most two cats are black"
+        },
+        {
+          "Text": "are at least three cats black?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-count-wider-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "all kittens are cats"
+        },
+        {
+          "Text": "at least three kittens are black"
+        },
+        {
+          "Text": "are at least three cats black?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-count-fewer-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "at least four dogs are big"
+        },
+        {
+          "Text": "are at least three dogs big?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-count-more-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "at least four dogs are big"
+        },
+        {
+          "Text": "are at most three dogs big?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-count-most-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "at most two dogs are big"
+        },
+        {
+          "Text": "are at least three dogs big?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-count-wider-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "all poodles are dogs"
+        },
+        {
+          "Text": "at least two poodles are big"
+        },
+        {
+          "Text": "are at least two dogs big?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-count-fewer-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "mindestens drei Katzen sind schwarz"
+        },
+        {
+          "Text": "sind mindestens zwei Katzen schwarz?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-count-more-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "mindestens drei Katzen sind schwarz"
+        },
+        {
+          "Text": "sind höchstens zwei Katzen schwarz?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-count-most-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "höchstens zwei Katzen sind schwarz"
+        },
+        {
+          "Text": "sind mindestens drei Katzen schwarz?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-count-wider-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Kätzchen sind Katzen"
+        },
+        {
+          "Text": "mindestens drei Kätzchen sind schwarz"
+        },
+        {
+          "Text": "sind mindestens drei Katzen schwarz?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-count-fewer-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "mindestens vier Hunde sind groß"
+        },
+        {
+          "Text": "sind mindestens drei Hunde groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-count-more-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "mindestens vier Hunde sind groß"
+        },
+        {
+          "Text": "sind höchstens drei Hunde groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-count-most-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "höchstens zwei Hunde sind groß"
+        },
+        {
+          "Text": "sind mindestens drei Hunde groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-count-wider-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Pudel sind Hunde"
+        },
+        {
+          "Text": "mindestens zwei Pudel sind groß"
+        },
+        {
+          "Text": "sind mindestens zwei Hunde groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-count-fewer-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "al menos tres gatos son negros"
+        },
+        {
+          "Text": "¿son al menos dos gatos negros?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-count-more-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "al menos tres gatos son negros"
+        },
+        {
+          "Text": "¿son a lo sumo dos gatos negros?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-count-most-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "a lo sumo dos gatos son negros"
+        },
+        {
+          "Text": "¿son al menos tres gatos negros?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-count-wider-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los gatitos son gatos"
+        },
+        {
+          "Text": "al menos tres gatitos son negros"
+        },
+        {
+          "Text": "¿son al menos tres gatos negros?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-count-fewer-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "al menos cuatro perros son grandes"
+        },
+        {
+          "Text": "¿son al menos tres perros grandes?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-count-more-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "al menos cuatro perros son grandes"
+        },
+        {
+          "Text": "¿son a lo sumo tres perros grandes?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-count-most-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "a lo sumo dos perros son grandes"
+        },
+        {
+          "Text": "¿son al menos tres perros grandes?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-count-wider-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los caniches son perros"
+        },
+        {
+          "Text": "al menos dos caniches son grandes"
+        },
+        {
+          "Text": "¿son al menos dos perros grandes?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-count-fewer-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "minstens drie katten zijn zwart"
+        },
+        {
+          "Text": "zijn minstens twee katten zwart?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-count-more-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "minstens drie katten zijn zwart"
+        },
+        {
+          "Text": "zijn hoogstens twee katten zwart?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-count-most-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "hoogstens twee katten zijn zwart"
+        },
+        {
+          "Text": "zijn minstens drie katten zwart?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-count-wider-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "alle kittens zijn katten"
+        },
+        {
+          "Text": "minstens drie kittens zijn zwart"
+        },
+        {
+          "Text": "zijn minstens drie katten zwart?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-count-fewer-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "minstens vier honden zijn groot"
+        },
+        {
+          "Text": "zijn minstens drie honden groot?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-count-more-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "minstens vier honden zijn groot"
+        },
+        {
+          "Text": "zijn hoogstens drie honden groot?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-count-most-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "hoogstens twee honden zijn groot"
+        },
+        {
+          "Text": "zijn minstens drie honden groot?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-count-wider-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "alle poedels zijn honden"
+        },
+        {
+          "Text": "minstens twee poedels zijn groot"
+        },
+        {
+          "Text": "zijn minstens twee honden groot?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-count-fewer-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "pelo menos três gatos são pretos"
+        },
+        {
+          "Text": "pelo menos dois gatos são pretos?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-count-more-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "pelo menos três gatos são pretos"
+        },
+        {
+          "Text": "no máximo dois gatos são pretos?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-count-most-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "no máximo dois gatos são pretos"
+        },
+        {
+          "Text": "pelo menos três gatos são pretos?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-count-wider-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os gatinhos são gatos"
+        },
+        {
+          "Text": "pelo menos três gatinhos são pretos"
+        },
+        {
+          "Text": "pelo menos três gatos são pretos?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-count-fewer-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "pelo menos quatro cães são grandes"
+        },
+        {
+          "Text": "pelo menos três cães são grandes?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-count-more-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "pelo menos quatro cães são grandes"
+        },
+        {
+          "Text": "no máximo três cães são grandes?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-count-most-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "no máximo dois cães são grandes"
+        },
+        {
+          "Text": "pelo menos três cães são grandes?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-count-wider-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os poodles são cães"
+        },
+        {
+          "Text": "pelo menos dois poodles são grandes"
+        },
+        {
+          "Text": "pelo menos dois cães são grandes?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-count-fewer-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "almeno tre gatti sono neri"
+        },
+        {
+          "Text": "almeno due gatti sono neri?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-count-more-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "almeno tre gatti sono neri"
+        },
+        {
+          "Text": "al massimo due gatti sono neri?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-count-most-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "al massimo due gatti sono neri"
+        },
+        {
+          "Text": "almeno tre gatti sono neri?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-count-wider-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i gattini sono gatti"
+        },
+        {
+          "Text": "almeno tre gattini sono neri"
+        },
+        {
+          "Text": "almeno tre gatti sono neri?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-count-fewer-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "count-fewer"
+      ],
+      "Turns": [
+        {
+          "Text": "almeno quattro cani sono grandi"
+        },
+        {
+          "Text": "almeno tre cani sono grandi?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-count-more-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "count-more"
+      ],
+      "Turns": [
+        {
+          "Text": "almeno quattro cani sono grandi"
+        },
+        {
+          "Text": "al massimo tre cani sono grandi?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-count-most-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "count-most"
+      ],
+      "Turns": [
+        {
+          "Text": "al massimo due cani sono grandi"
+        },
+        {
+          "Text": "almeno tre cani sono grandi?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-count-wider-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "count-wider"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i barboncini sono cani"
+        },
+        {
+          "Text": "almeno due barboncini sono grandi"
+        },
+        {
+          "Text": "almeno due cani sono grandi?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
             ]
           }
         }

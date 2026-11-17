@@ -129,6 +129,14 @@ $general['Not'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $other
 # (the word that says one of them: the one met the most often where English says "or", among the words its treebanks
 # tag as conjunctions; never one of those that say both)
 $general['Or'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'or', (& $tagged '^CCONJ\|'), 20, 12) | Where-Object { $_ -and $_ -notin @($general['And']) })
+# (the words that say how many at least, at most and exactly, before a number: the run of one to three words met the
+# most often where English says "at least", "at most", "exactly" (LambekDialogueWords.AlignedRun); "at most" is rare,
+# so looked for in longer pairs and kept from three of them; none when nothing is found)
+$general['Counting'] = [ordered]@{
+    AtLeast = & $plain @([LambekDialogueWords]::AlignedRun($englishSide, $otherSide, 'at least', 3, 10, 12) | Where-Object { $_ })
+    AtMost = & $plain @([LambekDialogueWords]::AlignedRun($englishSide, $otherSide, 'at most', 3, 3, 20) | Where-Object { $_ })
+    Exactly = & $plain @([LambekDialogueWords]::AlignedRun($englishSide, $otherSide, 'exactly', 3, 10, 12) | Where-Object { $_ })
+}
 $general['Comparing'] = [ordered]@{
     More = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'more', $adverbs, 20, 12) | Where-Object { $_ })
     Less = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'less', $adverbs, 20, 12) | Where-Object { $_ })
