@@ -30,7 +30,7 @@ function Resolve-LambekCategory {
     # in it: "Rex abbaia?" after "tutti i cani abbaiano" is Italian, whatever its few words alone say)
     # (and a language whose dialogue was learned, where what was told of someone is kept for the rules: "Rex e grande?"
     # after "Rex e un cane. Lui e grande." is Italian, whatever "grande" says in Portuguese)
-    $kept = { param($l) @(Get-LambekCategoryKnown -Language $l -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot' -or ((Get-LambekLexicon -Language $l).Dialogue['Learned'] -and "$($_.Fact.Action)" -eq 'verb:category') }).Count -gt 0 }
+    $kept = { param($l) @(Get-LambekCategoryKnown -Language $l -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot', 'if' -or ((Get-LambekLexicon -Language $l).Dialogue['Learned'] -and "$($_.Fact.Action)" -eq 'verb:category') }).Count -gt 0 }
     $told = @(Get-LambekAvailableLanguage | Sort-Object | Where-Object { $_ -ne $detected -and (& $kept $_) })
     $own = & $kept $detected
     $languages = $(if ($own -or $told.Count -eq 0) { @($detected) + $told } else { $told + @($detected) })
@@ -468,6 +468,9 @@ function Read-LambekCategorySentence {
     # Read first by the tags of its words and the words of logic learned, the same in every language that has them
     # ("tous les appareils ont un capteur", "mon telephone a-t-il un capteur"); then by the patterns of the language
     if (-not $Listener -and -not $Imagined) {
+        # (a sentence with another inside it first: "si Rex est un chien, Rex aboie", "Alice croit que Rex est un chat")
+        $embedded = Read-LambekCategoryEmbedded -Sentence $Sentence -Language $Language -Question:$Question -Shape:$Shape
+        if ($embedded) { return $embedded }
         $tagged = Read-LambekCategoryTagged -Sentence $Sentence -Language $Language -Question:$Question -Shape:$Shape
         if ($tagged) { return $tagged }
     }
@@ -1074,7 +1077,12 @@ function Get-LambekCategoryLemma {
 function Get-LambekCategorySignature {
     param([pscustomobject] $Item)
 
-    # What a sentence says, the same whatever words said it: to see that a sentence said back reads the same
+    # What a sentence says, the same whatever words said it: to see that a sentence said back reads the same.
+    # A rule told with "si" says both its parts ("if|is~name:rex~chien|does~name:rex~v:aboyer"); what someone believes
+    # says who, and what is believed ("believe|name:alice|is~name:rex~chat")
+    $part = { param($i) "$((Get-LambekCategorySignature -Item $i) -replace '\|', '~')" }
+    if ($Item.Kind -eq 'if') { return "if|$(& $part $Item.If)|$(& $part $Item.Then)" }
+    if ($Item.Kind -in 'believe', 'askbelieve') { return "$($Item.Kind)|$($Item.Holder.Individual.Key)|$(& $part $Item.Content)" }
     $who = ''
     if ($Item.Individual) { $who = $Item.Individual.Key }
     elseif ($Item.Subject) { $who = ($Item.Subject.Atoms -join '+') }
@@ -1222,7 +1230,9 @@ function ConvertTo-LambekCategoryClause {
 function ConvertTo-LambekCategoryStatement {
     param([pscustomobject] $Item, [hashtable] $Atoms)
 
-    # A sentence as clauses (see Category.cs): every one of a kind, one named, or one imagined for "certains"
+    # A sentence as clauses (see Category.cs): every one of a kind, one named, or one imagined for "certains".
+    # What someone believes says nothing of what is so: no clause
+    if ($Item.Kind -in 'believe', 'askbelieve') { return [LambekCategoryStatement]::new() }
     $table = $Atoms
     $index = { param($atom) if (-not $table.ContainsKey($atom)) { $table[$atom] = $table.Count + 1 }; [int] $table[$atom] }
     $s = @(); if ($Item.Subject) { $s = @($Item.Subject.Atoms | ForEach-Object { & $index $_ }) }
@@ -1239,6 +1249,24 @@ function ConvertTo-LambekCategoryStatement {
         'somenot' { $w = $statement.AddWitness(); foreach ($atom in $s) { $statement.AddToWitness($w, [int[]] @($atom)) }; foreach ($clause in $notP) { $statement.AddToWitness($w, $clause) } }
         { $_ -in 'is', 'does' } { foreach ($clause in $p) { $statement.AddNamed($Item.Individual.Key, $clause) } }
         { $_ -in 'isnot', 'doesnot' } { foreach ($clause in $notP) { $statement.AddNamed($Item.Individual.Key, $clause) } }
+        'if' {
+            # Not the condition, or what follows from it: each clause of the one with each clause of the other; about one
+            # named, a clause of that one; about two, a clause that ties them
+            $sides = foreach ($side in @([pscustomobject]@{ Item = $Item.If; Not = $true }, [pscustomobject]@{ Item = $Item.Then; Not = $false })) {
+                $negated = $side.Item.Kind -in 'isnot', 'doesnot'
+                $clauses = ConvertTo-LambekCategoryClause -Atoms @($side.Item.Predicate.Atoms) -Index $index -Not:($side.Not -ne $negated)
+                , [pscustomobject]@{ Key = $side.Item.Individual.Key; Clauses = $clauses }
+            }
+            foreach ($a in $sides[0].Clauses) {
+                foreach ($b in $sides[1].Clauses) {
+                    if ($sides[0].Key -eq $sides[1].Key) { $statement.AddNamed($sides[0].Key, [int[]] (@($a) + @($b) | Select-Object -Unique)) }
+                    else {
+                        $names = [string[]] (@(@($a) | ForEach-Object { $sides[0].Key }) + @(@($b) | ForEach-Object { $sides[1].Key }))
+                        $statement.AddLinked($names, [int[]] (@($a) + @($b)))
+                    }
+                }
+            }
+        }
     }
     return $statement
 }
@@ -1391,6 +1419,11 @@ function Resolve-LambekCategoryMessage {
     $asks = @($shapes | Where-Object { "$_".StartsWith('ask') })
     if ($asks.Count -gt 1) { return $null }
     $general = @($shapes | Where-Object { $_ -in $quantified }).Count -gt 0
+    # (rules told with "si" are rules too, for what is asked after them)
+    $rules = @($quantified) + @('if')
+    # (a sentence with another inside it is read here, as nothing else reads it: "si Rex est un chien, Rex aboie",
+    # "Alice croit que Rex est un chat", "Alice sait que Rex est un chien", "Alice croit-elle que Tom est noir ?")
+    $embedded = @($shapes | Where-Object { $_ -in 'if', 'believe', 'know', 'askbelieve' }).Count -gt 0
     # (one question whether someone is something may be answered from what was told of that one alone: "Tom est-il un chat ?")
     $individual = $asks.Count -eq 1 -and $asks[0] -eq 'askis'
     # A language whose dialogue is learned has no memory of its own yet: what is told of someone is kept here, for the
@@ -1405,7 +1438,8 @@ function Resolve-LambekCategoryMessage {
     # (one of several kinds said, "Rex est un chien ou un chat": read here, as nothing else reads it)
     $or = @(Get-LambekDisjunctionWord -Language $Language)
     if ($or.Count -gt 0 -and @($Sentences | Where-Object { @("$($_.Text)" -split '\s+' | Where-Object { (ConvertTo-LambekNormalizedText -Text $_) -in $or }).Count -gt 0 }).Count -gt 0) { $individual = $true }
-    if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
+    if ($embedded) { $individual = $true }
+    if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $rules }).Count -eq 0) { return $null }
 
     # Each sentence read, with the dictionary: every one must read, or nothing is taken. A pronoun stands for one told
     # of before it, here or before
@@ -1421,6 +1455,8 @@ function Resolve-LambekCategoryMessage {
     }
     finally { $script:CategoryMessage = $null }
     $known = @(Get-LambekCategoryKnown -Language $Language)
+    # "Alice croit-elle que Tom est noir ?": answered from what Alice believes alone
+    if (@($items | Where-Object { $_.Item.Kind -eq 'askbelieve' }).Count -gt 0) { return Resolve-LambekCategoryBelief -Items $items -Known $known -Language $Language }
     # (the shape of a sentence only said what it may be: what it is read as says whether it is general)
     $general = @($items | Where-Object { $_.Item.Kind -in $quantified }).Count -gt 0
     # Without any general rule, only a question whether someone is a kind of thing ("Tom est-il un chat ?"), about someone
@@ -1447,15 +1483,16 @@ function Resolve-LambekCategoryMessage {
         }
     }
     if ($several) { $about = $true }
+    if ($embedded) { $about = $true }
     # (one said to be one of several kinds, "Rex est un chien ou un chat": kept here, as nothing else reads it)
     if (@($items | Where-Object { $_.Item.Predicate -and @($_.Item.Predicate.Atoms | Where-Object { "$_".StartsWith('or:') }).Count -gt 0 }).Count -gt 0) { $about = $true }
-    if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $quantified }).Count -eq 0) { return $null }
+    if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $rules }).Count -eq 0) { return $null }
     # A message with no general rule is taken only when it is about what a rule told is about: "all dogs are animals"
     # was told, "Rex is a dog" and "is Rex an animal?" are for it, "my cat is called Luna" and "do I take the bus?" are
     # for the memory, which keeps what was told as it was said (and the rules told with "if")
     if (-not $general -and -not $about) {
         $ruled = [System.Collections.Generic.HashSet[string]]::new()
-        foreach ($entry in @($known | Where-Object { $_.Item.Kind -in $quantified })) {
+        foreach ($entry in @($known | Where-Object { $_.Item.Kind -in $rules })) {
             foreach ($part in $entry.Item.Subject, $entry.Item.Predicate) { if ($part) { foreach ($atom in @($part.Atoms)) { foreach ($one in (Get-LambekCategoryAtomPart -Atom "$atom")) { [void] $ruled.Add($one) } } } }
         }
         foreach ($entry in $items) {
@@ -1471,9 +1508,14 @@ function Resolve-LambekCategoryMessage {
     # What is told in the message is kept as told
     $facts = @(foreach ($entry in $items) { if (-not $entry.Item.Kind.StartsWith('ask')) { ConvertTo-LambekCategoryFact -Sentence $entry.Sentence -Item $entry.Item -Language $Language } })
     $premises = [System.Collections.Generic.List[object]]::new()
-    foreach ($entry in $known) { $premises.Add($entry) }
+    # (what someone believes is no premise of what is so)
+    foreach ($entry in $known) { if ($entry.Item.Kind -ne 'believe') { $premises.Add($entry) } }
     $k = 0
-    foreach ($entry in $items) { if (-not $entry.Item.Kind.StartsWith('ask')) { $premises.Add([pscustomobject]@{ Fact = $facts[$k]; Item = $entry.Item }); $k++ } }
+    foreach ($entry in $items) {
+        if ($entry.Item.Kind.StartsWith('ask')) { continue }
+        if ($entry.Item.Kind -ne 'believe') { $premises.Add([pscustomobject]@{ Fact = $facts[$k]; Item = $entry.Item }) }
+        $k++
+    }
     # What the words say by themselves: "le cerisier" is a cerisier, "this shape" a shape. Never told, so never cited
     # as told: a proof keeps it apart, as what the answer assumes
     foreach ($implied in @(Get-LambekCategoryImplied -Items (@($premises | ForEach-Object { $_.Item }) + @($items | ForEach-Object { $_.Item })) -Language $Language)) {

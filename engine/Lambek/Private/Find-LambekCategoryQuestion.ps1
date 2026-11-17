@@ -7,6 +7,7 @@ function Find-LambekCategoryQuestion {
 
         # What was told, each with its reading, and the same as clauses (see Category.cs)
         [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
         [object[]] $Premises,
 
         [Parameter(Mandatory)]

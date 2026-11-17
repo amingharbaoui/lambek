@@ -57,6 +57,7 @@ Describe 'A proof written for Lean' {
         @{ Name = 'some'; Premises = 'category(some|oiseau|v:voler)|'; Conclusion = 'category(some|oiseau|v:voler)' }
         @{ Name = 'no conclusion'; Premises = 'category(all|homme|mortel)|'; Conclusion = @() }
         @{ Name = 'a rule supposed'; Premises = 'category(usual:all|oiseau|v:voler)|'; Conclusion = 'category(usual:all|oiseau|v:voler)' }
+        @{ Name = 'what one believes'; Premises = 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(believe|name:alice|is~name:tom~chat)' }
     ) {
         $lean = ConvertTo-LambekLean -Name 'x' -Premises $Premises -Conclusions $Conclusion
         $lean.Theorem | Should -BeNullOrEmpty
@@ -80,6 +81,9 @@ Describe 'A proof written for Lean' {
             @{ Name = 'one of two, not the other'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(isnot|name:rex|chat)|'; Conclusion = 'category(is|name:rex|chien)' }
             @{ Name = 'what holds in each of two'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chat|animal)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
             @{ Name = 'a rule of one of two, and not the one'; Premises = 'category(all|chat|or:blanc;noir)|', 'category(is|name:tom|chat)|', 'category(isnot|name:tom|noir)|'; Conclusion = 'category(is|name:tom|blanc)' }
+            @{ Name = 'a rule told with if about one named'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
+            @{ Name = 'a rule told with if, the other way'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(doesnot|name:rex|v:aboyer)|'; Conclusion = 'category(isnot|name:rex|chien)' }
+            @{ Name = 'a rule told with if, from one to another'; Premises = 'category(if|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
         ) {
             $lean = ConvertTo-LambekLean -Name 'case' -Premises $Premises -Conclusions $Conclusion
             & $Prove $lean.Theorem | Should -BeTrue -Because $lean.Theorem
@@ -97,6 +101,7 @@ Describe 'A proof written for Lean' {
             @{ Name = 'so, more so in another way'; Premises = 'compare(more|fort|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
             @{ Name = 'one of two, said as the first'; Premises = 'category(is|name:rex|or:chat;chien)|'; Conclusion = 'category(is|name:rex|chien)' }
             @{ Name = 'what holds in one of two only'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
+            @{ Name = 'a rule told with if, from what follows'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(does|name:rex|v:aboyer)|'; Conclusion = 'category(is|name:rex|chien)' }
         ) {
             $lean = ConvertTo-LambekLean -Name 'case' -Premises $Premises -Conclusions $Conclusion
             $proved = & $Prove $lean.Theorem

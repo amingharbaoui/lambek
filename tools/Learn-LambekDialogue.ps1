@@ -11,8 +11,10 @@
     - The word that says whose ("von"), from the sentences translated from English: the preposition met the most often
       where English says "of"; and the words that join two things and say both ("und", "sondern"), the conjunctions
       met the most often where English says "and" and "but"; and the words that compare, met where it says "more",
-      "less" and "than". The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from
-      its words of logic (<language>.logic).
+      "less" and "than"; and the words that tell what someone believes or knows ("glauben", "wissen", "dass"), met
+      where it says "believe", "think", "know" and "that", and the word of a condition ("wenn"), where it says "if".
+      The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from its words
+      of logic (<language>.logic).
     - What it answers, from the sentences translated from English (Tatoeba): "Yes." is "Ja.", "No." is "Nein.",
       "I don't know." is "Ich weiss nicht.", "I understand." is "Ich verstehe.", "Why?" is "Warum?" Short answers, the
       proof after them: a sentence that is not said in the translated sentences is not said.
@@ -137,6 +139,24 @@ $general['Counting'] = [ordered]@{
     AtMost = & $plain @([LambekDialogueWords]::AlignedRun($englishSide, $otherSide, 'at most', 3, 3, 20) | Where-Object { $_ })
     Exactly = & $plain @([LambekDialogueWords]::AlignedRun($englishSide, $otherSide, 'exactly', 3, 10, 12) | Where-Object { $_ })
 }
+# (the words that tell what someone believes or knows: the verbs met the most often where English says "believe",
+# "think", "know", among the words its treebanks tag as verbs, kept as their lemmas; the word met the most often where
+# it says "that", and the one where it says "if", among those they tag as conjunctions of a clause)
+[string[]] $verbs = & $tagged '^VERB\|'
+[string[]] $clauses = & $tagged '^SCONJ\|'
+$lemmas = {
+    param([string[]] $asked)
+    @(foreach ($word in $asked) {
+            $form = [LambekDialogueWords]::Aligned($englishSide, $otherSide, $word, $verbs, 20, 12)
+            if ($form) { $model.LemmaFor($form, 'VERB') }
+        })
+}
+$general['Attitudes'] = [ordered]@{
+    Believing = & $plain (& $lemmas 'believe', 'believes', 'think', 'thinks')
+    Knowing = & $plain (& $lemmas 'know', 'knows')
+    That = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'that', $clauses, 20, 12) | Where-Object { $_ })
+}
+$general['Conditions'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'if', $clauses, 20, 12) | Where-Object { $_ })
 $general['Comparing'] = [ordered]@{
     More = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'more', $adverbs, 20, 12) | Where-Object { $_ })
     Less = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'less', $adverbs, 20, 12) | Where-Object { $_ })

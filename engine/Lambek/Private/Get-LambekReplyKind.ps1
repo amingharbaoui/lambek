@@ -121,7 +121,8 @@ function Get-LambekMessageOutcome {
         }
         return $true
     }
-    $avoided = @(@($asked['Avoid']) | Where-Object { $_ } | Where-Object { $plain.Contains((ConvertTo-LambekBenchText -Text $_)) })
+    # (what must not be said is looked for where a word starts: "no." is not said in "bueno.")
+    $avoided = @(@($asked['Avoid']) | Where-Object { $_ } | Where-Object { [regex]::IsMatch($plain, '(?<!\p{L})' + [regex]::Escape((ConvertTo-LambekBenchText -Text $_))) })
     $acted = @($Turn.Actions)
 
     switch ($asked['Reply']) {

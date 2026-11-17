@@ -153,13 +153,13 @@ function Read-LambekCategoryTagged {
     # which or how many ("quel", "combien", "what"): those are questions of another kind
     # (the names told in the conversation: "Rex" told as one is a name when it comes back, whatever the tagger guessed)
     # (and the words told: a word the dictionary gives more than one lemma is read with the one told, "come" is the
-    # "comer" of "comen" told before, not "comar")
+    # "comer" of "comen" told before, not "comar"; in either part of a rule told with "si" too, kind~who~what)
     $names = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $said = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     foreach ($thing in @($script:Told)) {
         if (-not $thing -or -not $thing.PSObject.Properties['Core']) { continue }
-        foreach ($match in [regex]::Matches("$($thing.Core)", 'name:([\p{L}-]+)(?=[|+)])')) { [void] $names.Add($match.Groups[1].Value) }
-        foreach ($match in [regex]::Matches("$($thing.Core)", '(?<=[|+>]|\|v:)[\p{L}-]+(?=[|+>)])')) { [void] $said.Add($match.Value) }
+        foreach ($match in [regex]::Matches("$($thing.Core)", 'name:([\p{L}-]+)(?=[|+)>~])')) { [void] $names.Add($match.Groups[1].Value) }
+        foreach ($match in [regex]::Matches("$($thing.Core)", '(?<=[|+>~]|[|~]v:)[\p{L}-]+(?=[|+>~)])')) { [void] $said.Add($match.Value) }
     }
     if ($said.Count -gt 0 -and $model.Lexicon) {
         foreach ($reading in $readings) {

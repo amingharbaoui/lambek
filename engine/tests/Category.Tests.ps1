@@ -1032,6 +1032,73 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'A sentence inside another' {
+
+        It 'reasons with a rule told with if about named ones: <Asked>' -ForEach @(
+            @{ Told = @('si Rex est un chien, Rex aboie', 'Rex est un chien'); Asked = 'Rex aboie-t-il ?'; Said = 'Oui*si Rex est un chien, Rex aboie*' }
+            @{ Told = @('si Rex est un chien, Rex aboie', "Rex n'aboie pas"); Asked = 'Rex est-il un chien ?'; Said = 'Non*' }
+            @{ Told = @('Rex aboie si Rex est un chien', 'Rex est un chien'); Asked = 'Rex aboie-t-il ?'; Said = 'Oui*' }
+            @{ Told = @('si Rex est un chien, Max est un chat', 'Rex est un chien'); Asked = 'Max est-il un chat ?'; Said = 'Oui*' }
+            @{ Told = @('si Rex est un chien, Max est un chat', "Max n'est pas un chat"); Asked = 'Rex est-il un chien ?'; Said = 'Non*' }
+            @{ Told = @('wenn Rex ein Hund ist, bellt Rex', 'Rex ist ein Hund'); Asked = 'bellt Rex?'; Said = 'Ja.*' }
+            @{ Told = @('if Rex is a dog, Max is a cat', 'Rex is a dog'); Asked = 'is Max a cat?'; Said = 'Yes*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'concludes nothing from a rule told with if whose condition was not told' {
+            Tell 'si Rex est un chien, Rex aboie'
+            (Ask 'Rex aboie-t-il ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            Tell 'Rex aboie'
+            (Ask 'Rex est-il un chien ?') -join ' ' | Should -Not -BeLike 'Oui*'
+        }
+
+        It 'keeps what someone believes apart from what is so' {
+            Tell 'Alice croit que Rex est un chat'
+            $said = (Ask 'Rex est-il un chat ?') -join ' '
+            $said | Should -Not -BeLike 'Oui*'
+            $said | Should -Not -BeLike 'Non*'
+        }
+
+        It 'answers what someone believes from what that one believes alone: <Asked>' -ForEach @(
+            @{ Told = @('Alice croit que tous les chats sont noirs', 'Alice croit que Tom est un chat'); Asked = 'Alice croit-elle que Tom est noir ?'; Said = 'Oui : Alice croit que Tom est noir.*' }
+            @{ Told = @('Alice croit que aucun chat n''est noir', 'Alice croit que Tom est un chat'); Asked = 'Alice croit-elle que Tom est noir ?'; Said = 'Non.*' }
+            @{ Told = @('Alice believes that all cats are black', 'Alice believes that Tom is a cat'); Asked = 'does Alice believe that Tom is black?'; Said = 'Yes: Alice believes that Tom is black.*' }
+            @{ Told = @('Alice glaubt, dass alle Katzen schwarz sind', 'Alice glaubt, dass Tom eine Katze ist'); Asked = 'glaubt Alice, dass Tom schwarz ist?'; Said = 'Ja.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'never takes what is so, nor what another believes, for what one believes: <Asked>' -ForEach @(
+            @{ Told = @('tous les chats sont noirs', 'Alice croit que Tom est un chat'); Asked = 'Alice croit-elle que Tom est noir ?' }
+            @{ Told = @('Paul croit que tous les chats sont noirs', 'Alice croit que Tom est un chat'); Asked = 'Alice croit-elle que Tom est noir ?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike '*peut être vrai ou faux*'
+        }
+
+        It 'takes what someone knows as so' {
+            Tell 'Alice sait que Rex est un chien'
+            (Ask 'Rex est-il un chien ?') -join ' ' | Should -BeLike 'Oui*Alice sait que Rex est un chien*'
+            (Ask 'Alice croit-elle que Rex est un chien ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'keeps a rule told with if and what one believes in the shapes the checker reads' {
+            Tell 'si Rex est un chien, Rex aboie', "Rex n'aboie pas"
+            $null = Ask 'Rex est-il un chien ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('category(isnot|name:rex|chien)')
+            $proof.Forms | Should -Be @('category(if|is~name:rex~chien|does~name:rex~v:aboyer)', 'category(doesnot|name:rex|v:aboyer)')
+            Tell 'Alice croit que tous les chats sont noirs', 'Alice croit que Tom est un chat'
+            $null = Ask 'Alice croit-elle que Tom est noir ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('category(believe|name:alice|is~name:tom~noir)')
+            $proof.Forms | Should -Be @('category(believe|name:alice|all~chat~noir)', 'category(believe|name:alice|is~name:tom~chat)')
+        }
+    }
+
     Context 'A short sentence read in its language' {
 
         It 'tells the language of a short sentence by how each language writes its words: <Text>' -ForEach @(

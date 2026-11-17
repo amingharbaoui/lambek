@@ -26,6 +26,11 @@ Describe 'The checker of proofs' {
         @{ Name = 'at most so many, not at least more'; Premises = 'count(most|2|chat|noir)|', 'category(all|siamois|chat)|'; Conclusion = 'count(notleast|3|siamois|noir)' }
         @{ Name = 'exactly so many, not more'; Premises = 'count(exactly|2|chat|noir)|'; Conclusion = 'count(notleast|3|chat|noir)' }
         @{ Name = 'at least so many, more than fewer'; Premises = 'count(least|3|chat|noir)|'; Conclusion = 'count(notmost|2|chat|noir)' }
+        @{ Name = 'a rule told with if about one named'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
+        @{ Name = 'a rule told with if, the other way'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(doesnot|name:rex|v:aboyer)|'; Conclusion = 'category(isnot|name:rex|chien)' }
+        @{ Name = 'a rule told with if, from one to another'; Premises = 'category(if|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
+        @{ Name = 'a rule told with if, through what a kind is'; Premises = 'category(if|is~name:rex~animal|does~name:rex~v:manger)|', 'category(all|chien|animal)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(does|name:rex|v:manger)' }
+        @{ Name = 'what one believes, from what that one believes'; Premises = 'category(believe|name:alice|all~chat~noir)|', 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(believe|name:alice|is~name:tom~noir)' }
         @{ Name = 'what holds in each of two'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chat|animal)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
         @{ Name = 'a rule of one of two, and not the one'; Premises = 'category(all|chat|or:blanc;noir)|', 'category(is|name:tom|chat)|', 'category(isnot|name:tom|noir)|'; Conclusion = 'category(is|name:tom|blanc)' }
         @{ Name = 'one of two, asked of both'; Premises = 'category(is|name:rex|or:chat;chien)|'; Conclusion = 'category(is|name:rex|or:chat;chien)' }
@@ -54,6 +59,12 @@ Describe 'The checker of proofs' {
         @{ Name = 'at least so many, of more'; Premises = 'count(least|3|chat|noir)|'; Conclusion = 'count(least|4|chat|noir)' }
         @{ Name = 'at least so many of a wider kind, of the narrower'; Premises = 'count(least|3|chat|noir)|', 'category(all|siamois|chat)|'; Conclusion = 'count(least|3|siamois|noir)' }
         @{ Name = 'at most so many of a narrower kind, of the wider'; Premises = 'count(most|2|siamois|noir)|', 'category(all|siamois|chat)|'; Conclusion = 'count(notleast|3|chat|noir)' }
+        @{ Name = 'a rule told with if whose condition was not told'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
+        @{ Name = 'a rule told with if, from what follows'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(does|name:rex|v:aboyer)|'; Conclusion = 'category(is|name:rex|chien)' }
+        @{ Name = 'a rule told with if, about another'; Premises = 'category(if|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:rex|chat)' }
+        @{ Name = 'what one believes, from what is so'; Premises = 'category(all|chat|noir)|', 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(believe|name:alice|is~name:tom~noir)' }
+        @{ Name = 'what one believes, from what another believes'; Premises = 'category(believe|name:paul|all~chat~noir)|', 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(believe|name:alice|is~name:tom~noir)' }
+        @{ Name = 'what is so, from what one believes'; Premises = 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(is|name:tom|chat)' }
         @{ Name = 'what holds in one of two only'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
         @{ Name = 'none of two, one of them left'; Premises = 'category(is|name:rex|chien)|', 'category(no|chien|chat)|'; Conclusion = 'category(isnot|name:rex|or:chat;cheval)' }
     ) {

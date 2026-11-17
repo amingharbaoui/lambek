@@ -644,6 +644,7 @@
       ],
       "Or": ["ou"],
       "Counting": { "AtLeast": ["pelo menos"], "AtMost": ["no maximo"], "Exactly": ["exatamente"] },
+      "Attitudes": { "Believing": ["achar", "acreditar", "pensar"], "Knowing": ["sabar", "saber"], "That": ["que"] },
       "Comparing": {
         "More": ["mais"],
         "Less": ["menos"],
@@ -655,7 +656,7 @@
       "WhyAlone": [
         "por que"
       ],
-      "Conditions": [],
+      "Conditions": ["se"],
       "Then": [],
       "Elide": {},
       "Doing": [],

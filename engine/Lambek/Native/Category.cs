@@ -3,10 +3,11 @@
 // Each property is an atom; each sentence gives clauses:
 // - a rule about every one ("tous", "aucun") is a clause every individual must keep;
 // - a sentence about one named individual is a clause that individual must keep;
-// - "certains" brings an individual of its own, imagined, that no name ever stands for.
-// Individuals share nothing but the rules about every one, so the sentences can all be true together exactly when
-// each individual, alone, can be given properties that keep its clauses and the rules: a small search for each,
-// complete, never a guess. A conclusion follows when adding its opposite leaves no way for everything to be true;
+// - "certains" brings an individual of its own, imagined, that no name ever stands for;
+// - "si Rex est un chien, Max est un chat" is a clause that ties two named individuals together.
+// Individuals share nothing but the rules about every one and the clauses that tie them, so the sentences can all be
+// true together exactly when each individual, alone or with those it is tied to, can be given properties that keep
+// its clauses and the rules: a small search for each, complete, never a guess. A conclusion follows when adding its opposite leaves no way for everything to be true;
 // the smallest set of sentences that still leaves none is what the answer rests on.
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,8 @@ public sealed class LambekCategoryStatement
     public Dictionary<string, List<int[]>> Named = new Dictionary<string, List<int[]>>(StringComparer.Ordinal);
     // Individuals of their own ("certains"), each with its clauses
     public List<List<int[]>> Witnesses = new List<List<int[]>>();
+    // Clauses about several named individuals at once: each literal with the name of the one it is about
+    public List<KeyValuePair<string, int>[]> Linked = new List<KeyValuePair<string, int>[]>();
 
     public void AddEvery(int[] clause) { Every.Add(clause); }
 
@@ -38,6 +41,15 @@ public sealed class LambekCategoryStatement
     }
 
     public void AddToWitness(int witness, int[] clause) { Witnesses[witness].Add(clause); }
+
+    // A clause about named individuals: names[i] is the one literals[i] is about
+    public void AddLinked(string[] names, int[] literals)
+    {
+        if (names == null) { throw new ArgumentNullException(nameof(names)); }
+        if (literals == null) { throw new ArgumentNullException(nameof(literals)); }
+        if (names.Length != literals.Length) { throw new ArgumentException("one name for each literal", nameof(names)); }
+        Linked.Add(names.Select((name, i) => new KeyValuePair<string, int>(name, literals[i])).ToArray());
+    }
 }
 
 // What an answer rests on: the sentences, whether no fewer could give it (Least), and how far that was checked: no
@@ -67,7 +79,48 @@ public static class LambekCategories
                 list.AddRange(pair.Value);
             }
         }
-        foreach (List<int[]> own in named.Values) { if (!Keeps(own, every)) { return false; } }
+        List<KeyValuePair<string, int>[]> linked = new List<KeyValuePair<string, int>[]>();
+        foreach (LambekCategoryStatement s in statements) { linked.AddRange(s.Linked); }
+        foreach (KeyValuePair<string, int>[] clause in linked)
+        {
+            foreach (KeyValuePair<string, int> literal in clause) { if (!named.ContainsKey(literal.Key)) { named[literal.Key] = new List<int[]>(); } }
+        }
+        // Those tied together are searched together: each one's atoms apart from the others' (offset by its place)
+        Dictionary<string, string> group = named.Keys.ToDictionary(k => k, k => k, StringComparer.Ordinal);
+        Func<string, string> root = null;
+        root = k => group[k] == k ? k : (group[k] = root(group[k]));
+        foreach (KeyValuePair<string, int>[] clause in linked)
+        {
+            for (int i = 1; i < clause.Length; i++) { group[root(clause[i].Key)] = root(clause[0].Key); }
+        }
+        foreach (IGrouping<string, string> together in named.Keys.OrderBy(k => k, StringComparer.Ordinal).GroupBy(root))
+        {
+            string[] members = together.ToArray();
+            if (members.Length == 1 && !linked.Any(c => c.Any(l => l.Key == members[0])))
+            {
+                if (!Keeps(named[members[0]], every)) { return false; }
+                continue;
+            }
+            int width = 1;
+            foreach (int[] c in every) { foreach (int l in c) { width = Math.Max(width, Math.Abs(l)); } }
+            foreach (string m in members) { foreach (int[] c in named[m]) { foreach (int l in c) { width = Math.Max(width, Math.Abs(l)); } } }
+            foreach (KeyValuePair<string, int>[] c in linked) { foreach (KeyValuePair<string, int> l in c) { width = Math.Max(width, Math.Abs(l.Value)); } }
+            Dictionary<string, int> place = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int i = 0; i < members.Length; i++) { place[members[i]] = i * width; }
+            Func<int, int, int> shift = (literal, offset) => literal > 0 ? literal + offset : literal - offset;
+            List<int[]> clauses = new List<int[]>();
+            foreach (string m in members)
+            {
+                foreach (int[] c in named[m]) { clauses.Add(c.Select(l => shift(l, place[m])).ToArray()); }
+                foreach (int[] c in every) { clauses.Add(c.Select(l => shift(l, place[m])).ToArray()); }
+            }
+            foreach (KeyValuePair<string, int>[] c in linked)
+            {
+                if (!place.ContainsKey(c[0].Key)) { continue; }
+                clauses.Add(c.Select(l => shift(l.Value, place[l.Key])).ToArray());
+            }
+            if (!Search(clauses, new Dictionary<int, bool>())) { return false; }
+        }
         foreach (LambekCategoryStatement s in statements)
         {
             foreach (List<int[]> own in s.Witnesses) { if (!Keeps(own, every)) { return false; } }
@@ -122,11 +175,13 @@ public static class LambekCategories
             foreach (int[] c in s.Every) { foreach (int l in c) { words.Add(Math.Abs(l)); } }
             foreach (KeyValuePair<string, List<int[]>> p in s.Named) { names.Add(p.Key); foreach (int[] c in p.Value) { foreach (int l in c) { words.Add(Math.Abs(l)); } } }
             foreach (List<int[]> w in s.Witnesses) { foreach (int[] c in w) { foreach (int l in c) { words.Add(Math.Abs(l)); } } }
+            foreach (KeyValuePair<string, int>[] c in s.Linked) { foreach (KeyValuePair<string, int> l in c) { names.Add(l.Key); words.Add(Math.Abs(l.Value)); } }
         };
         Func<LambekCategoryStatement, bool> touches = s =>
             s.Every.Any(c => c.Any(l => words.Contains(Math.Abs(l)))) ||
             s.Named.Any(p => names.Contains(p.Key) || p.Value.Any(c => c.Any(l => words.Contains(Math.Abs(l))))) ||
-            s.Witnesses.Any(w => w.Any(c => c.Any(l => words.Contains(Math.Abs(l)))));
+            s.Witnesses.Any(w => w.Any(c => c.Any(l => words.Contains(Math.Abs(l))))) ||
+            s.Linked.Any(c => c.Any(l => names.Contains(l.Key) || words.Contains(Math.Abs(l.Value))));
         if (extra != null) { mark(extra); }
         foreach (int i in found) { mark(statements[i]); }
         HashSet<int> pool = new HashSet<int>();

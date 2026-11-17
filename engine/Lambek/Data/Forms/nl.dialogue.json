@@ -512,6 +512,7 @@
       ],
       "Or": ["of"],
       "Counting": { "AtLeast": ["minstens"], "AtMost": [], "Exactly": ["precies"] },
+      "Attitudes": { "Believing": ["denken", "geloven"], "Knowing": ["weten"], "That": ["dat"] },
       "Comparing": {
         "More": ["meer"],
         "Less": ["minder"],
@@ -523,7 +524,7 @@
       "WhyAlone": [
         "waarom"
       ],
-      "Conditions": [],
+      "Conditions": ["als"],
       "Then": [],
       "Elide": {},
       "Doing": [],

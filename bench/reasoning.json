@@ -1,8 +1,8 @@
 {
-  "Version": "1.9",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "2.0",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "72663d4c05122ea9b247722283c948f0613e6c67901aab9c4ebbec71232a11ea",
+  "TestHash": "8589a69b4fca8cb9660c0218914072e86309bc25e5f4911e46a3c27b1eb2a77b",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -16442,6 +16442,2314 @@
         },
         {
           "Text": "almeno due cani sono grandi?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-if-then-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "si Rex est un chien, Rex aboie"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex aboie-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-if-back-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "si Rex est un chien, Rex aboie"
+        },
+        {
+          "Text": "Rex n'aboie pas"
+        },
+        {
+          "Text": "Rex est-il un chien ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-if-two-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "si Rex est un chien, Max est un chat"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Max est-il un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-believe-only-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice croit que Rex est un chat"
+        },
+        {
+          "Text": "Rex est-il un chat ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-believe-what-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice croit que tous les chats sont noirs"
+        },
+        {
+          "Text": "Alice croit que Tom est un chat"
+        },
+        {
+          "Text": "Alice croit-elle que Tom est noir ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-know-so-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice sait que Rex est un chien"
+        },
+        {
+          "Text": "Rex est-il un chien ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-if-then-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "si Tom est un chat, Tom miaule"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "Tom miaule-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-if-back-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "si Tom est un chat, Tom miaule"
+        },
+        {
+          "Text": "Tom ne miaule pas"
+        },
+        {
+          "Text": "Tom est-il un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-if-two-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "si Léo est un oiseau, Nemo est un poisson"
+        },
+        {
+          "Text": "Léo est un oiseau"
+        },
+        {
+          "Text": "Nemo est-il un poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-believe-only-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul pense que Nemo est un requin"
+        },
+        {
+          "Text": "Nemo est-il un requin ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-believe-what-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul pense que tous les chiens sont gentils"
+        },
+        {
+          "Text": "Paul pense que Rex est un chien"
+        },
+        {
+          "Text": "Paul pense-t-il que Rex est gentil ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-know-so-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul sait que Tom est un chat"
+        },
+        {
+          "Text": "Tom est-il un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-if-then-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "if Rex is a dog, Rex barks"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "does Rex bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-if-back-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "if Rex is a dog, Rex barks"
+        },
+        {
+          "Text": "Rex does not bark"
+        },
+        {
+          "Text": "is Rex a dog?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-if-two-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "if Rex is a dog, Max is a cat"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "is Max a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-believe-only-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice believes that Rex is a cat"
+        },
+        {
+          "Text": "is Rex a cat?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-believe-what-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice believes that all cats are black"
+        },
+        {
+          "Text": "Alice believes that Tom is a cat"
+        },
+        {
+          "Text": "does Alice believe that Tom is black?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-know-so-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice knows that Rex is a dog"
+        },
+        {
+          "Text": "is Rex a dog?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-if-then-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "if Tom is a cat, Tom meows"
+        },
+        {
+          "Text": "Tom is a cat"
+        },
+        {
+          "Text": "does Tom meow?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-if-back-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "if Tom is a cat, Tom meows"
+        },
+        {
+          "Text": "Tom does not meow"
+        },
+        {
+          "Text": "is Tom a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-if-two-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "if Leo is a bird, Nemo is a fish"
+        },
+        {
+          "Text": "Leo is a bird"
+        },
+        {
+          "Text": "is Nemo a fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-believe-only-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul thinks that Nemo is a shark"
+        },
+        {
+          "Text": "is Nemo a shark?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-believe-what-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul thinks that all dogs are kind"
+        },
+        {
+          "Text": "Paul thinks that Rex is a dog"
+        },
+        {
+          "Text": "does Paul think that Rex is kind?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-know-so-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul knows that Tom is a cat"
+        },
+        {
+          "Text": "is Tom a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-if-then-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "wenn Rex ein Hund ist, bellt Rex"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "bellt Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-if-back-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "wenn Rex ein Hund ist, bellt Rex"
+        },
+        {
+          "Text": "Rex bellt nicht"
+        },
+        {
+          "Text": "ist Rex ein Hund?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-if-two-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "wenn Rex ein Hund ist, ist Max eine Katze"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "ist Max eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-believe-only-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice glaubt, dass Rex eine Katze ist"
+        },
+        {
+          "Text": "ist Rex eine Katze?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-believe-what-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice glaubt, dass alle Katzen schwarz sind"
+        },
+        {
+          "Text": "Alice glaubt, dass Tom eine Katze ist"
+        },
+        {
+          "Text": "glaubt Alice, dass Tom schwarz ist?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-know-so-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice weiß, dass Rex ein Hund ist"
+        },
+        {
+          "Text": "ist Rex ein Hund?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-if-then-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "wenn Tom eine Katze ist, miaut Tom"
+        },
+        {
+          "Text": "Tom ist eine Katze"
+        },
+        {
+          "Text": "miaut Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-if-back-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "wenn Tom eine Katze ist, miaut Tom"
+        },
+        {
+          "Text": "Tom miaut nicht"
+        },
+        {
+          "Text": "ist Tom eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-if-two-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "wenn Leo ein Vogel ist, ist Nemo ein Fisch"
+        },
+        {
+          "Text": "Leo ist ein Vogel"
+        },
+        {
+          "Text": "ist Nemo ein Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-believe-only-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul denkt, dass Nemo ein Hai ist"
+        },
+        {
+          "Text": "ist Nemo ein Hai?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-believe-what-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul denkt, dass alle Hunde lieb sind"
+        },
+        {
+          "Text": "Paul denkt, dass Rex ein Hund ist"
+        },
+        {
+          "Text": "denkt Paul, dass Rex lieb ist?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-know-so-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul weiß, dass Tom eine Katze ist"
+        },
+        {
+          "Text": "ist Tom eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-if-then-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "si Rex es un perro, Rex ladra"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿ladra Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-if-back-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "si Rex es un perro, Rex ladra"
+        },
+        {
+          "Text": "Rex no ladra"
+        },
+        {
+          "Text": "¿es Rex un perro?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-if-two-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "si Rex es un perro, Max es un gato"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿es Max un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-believe-only-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Alicia cree que Rex es un gato"
+        },
+        {
+          "Text": "¿es Rex un gato?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-believe-what-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Alicia cree que todos los gatos son negros"
+        },
+        {
+          "Text": "Alicia cree que Tom es un gato"
+        },
+        {
+          "Text": "¿cree Alicia que Tom es negro?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-know-so-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Alicia sabe que Rex es un perro"
+        },
+        {
+          "Text": "¿es Rex un perro?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-if-then-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "si Tom es un gato, Tom maúlla"
+        },
+        {
+          "Text": "Tom es un gato"
+        },
+        {
+          "Text": "¿maúlla Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-if-back-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "si Tom es un gato, Tom maúlla"
+        },
+        {
+          "Text": "Tom no maúlla"
+        },
+        {
+          "Text": "¿es Tom un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-if-two-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "si Leo es un pájaro, Nemo es un pez"
+        },
+        {
+          "Text": "Leo es un pájaro"
+        },
+        {
+          "Text": "¿es Nemo un pez?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-believe-only-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo piensa que Nemo es un tiburón"
+        },
+        {
+          "Text": "¿es Nemo un tiburón?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-believe-what-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo piensa que todos los perros son buenos"
+        },
+        {
+          "Text": "Pablo piensa que Rex es un perro"
+        },
+        {
+          "Text": "¿piensa Pablo que Rex es bueno?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-know-so-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo sabe que Tom es un gato"
+        },
+        {
+          "Text": "¿es Tom un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-if-then-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "als Rex een hond is, blaft Rex"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "blaft Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-if-back-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "als Rex een hond is, blaft Rex"
+        },
+        {
+          "Text": "Rex blaft niet"
+        },
+        {
+          "Text": "is Rex een hond?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-if-two-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "als Rex een hond is, is Max een kat"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "is Max een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-believe-only-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice gelooft dat Rex een kat is"
+        },
+        {
+          "Text": "is Rex een kat?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-believe-what-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice gelooft dat alle katten zwart zijn"
+        },
+        {
+          "Text": "Alice gelooft dat Tom een kat is"
+        },
+        {
+          "Text": "gelooft Alice dat Tom zwart is?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-know-so-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice weet dat Rex een hond is"
+        },
+        {
+          "Text": "is Rex een hond?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-if-then-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "als Tom een kat is, miauwt Tom"
+        },
+        {
+          "Text": "Tom is een kat"
+        },
+        {
+          "Text": "miauwt Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-if-back-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "als Tom een kat is, miauwt Tom"
+        },
+        {
+          "Text": "Tom miauwt niet"
+        },
+        {
+          "Text": "is Tom een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-if-two-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "als Leo een vogel is, is Nemo een vis"
+        },
+        {
+          "Text": "Leo is een vogel"
+        },
+        {
+          "Text": "is Nemo een vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-believe-only-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul denkt dat Nemo een haai is"
+        },
+        {
+          "Text": "is Nemo een haai?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-believe-what-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul denkt dat alle honden lief zijn"
+        },
+        {
+          "Text": "Paul denkt dat Rex een hond is"
+        },
+        {
+          "Text": "denkt Paul dat Rex lief is?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-know-so-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul weet dat Tom een kat is"
+        },
+        {
+          "Text": "is Tom een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-if-then-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "se Rex é um cão, Rex late"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex late?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-if-back-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "se Rex é um cão, Rex late"
+        },
+        {
+          "Text": "Rex não late"
+        },
+        {
+          "Text": "Rex é um cão?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-if-two-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "se Rex é um cão, Max é um gato"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Max é um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-believe-only-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice acredita que Rex é um gato"
+        },
+        {
+          "Text": "Rex é um gato?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-believe-what-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice acredita que todos os gatos são pretos"
+        },
+        {
+          "Text": "Alice acredita que Tom é um gato"
+        },
+        {
+          "Text": "Alice acredita que Tom é preto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-know-so-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice sabe que Rex é um cão"
+        },
+        {
+          "Text": "Rex é um cão?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-if-then-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "se Tom é um gato, Tom mia"
+        },
+        {
+          "Text": "Tom é um gato"
+        },
+        {
+          "Text": "Tom mia?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-if-back-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "se Tom é um gato, Tom mia"
+        },
+        {
+          "Text": "Tom não mia"
+        },
+        {
+          "Text": "Tom é um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-if-two-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "se Leo é um pássaro, Nemo é um peixe"
+        },
+        {
+          "Text": "Leo é um pássaro"
+        },
+        {
+          "Text": "Nemo é um peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-believe-only-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo pensa que Nemo é um tubarão"
+        },
+        {
+          "Text": "Nemo é um tubarão?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-believe-what-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo pensa que todos os cães são bons"
+        },
+        {
+          "Text": "Paulo pensa que Rex é um cão"
+        },
+        {
+          "Text": "Paulo pensa que Rex é bom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-know-so-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo sabe que Tom é um gato"
+        },
+        {
+          "Text": "Tom é um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-if-then-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "se Rex è un cane, Rex abbaia"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex abbaia?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-if-back-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "se Rex è un cane, Rex abbaia"
+        },
+        {
+          "Text": "Rex non abbaia"
+        },
+        {
+          "Text": "Rex è un cane?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-if-two-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "se Rex è un cane, Max è un gatto"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Max è un gatto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-believe-only-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice crede che Rex sia un gatto"
+        },
+        {
+          "Text": "Rex è un gatto?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-believe-what-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice crede che tutti i gatti siano neri"
+        },
+        {
+          "Text": "Alice crede che Tom sia un gatto"
+        },
+        {
+          "Text": "Alice crede che Tom sia nero?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-know-so-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Alice sa che Rex è un cane"
+        },
+        {
+          "Text": "Rex è un cane?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-if-then-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "if-then"
+      ],
+      "Turns": [
+        {
+          "Text": "se Tom è un gatto, Tom miagola"
+        },
+        {
+          "Text": "Tom è un gatto"
+        },
+        {
+          "Text": "Tom miagola?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-if-back-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "if-back"
+      ],
+      "Turns": [
+        {
+          "Text": "se Tom è un gatto, Tom miagola"
+        },
+        {
+          "Text": "Tom non miagola"
+        },
+        {
+          "Text": "Tom è un gatto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-if-two-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "if-two"
+      ],
+      "Turns": [
+        {
+          "Text": "se Leo è un uccello, Nemo è un pesce"
+        },
+        {
+          "Text": "Leo è un uccello"
+        },
+        {
+          "Text": "Nemo è un pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-believe-only-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "believe-only"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo pensa che Nemo sia uno squalo"
+        },
+        {
+          "Text": "Nemo è uno squalo?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-believe-what-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "believe-what"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo pensa che tutti i cani siano buoni"
+        },
+        {
+          "Text": "Paolo pensa che Rex sia un cane"
+        },
+        {
+          "Text": "Paolo pensa che Rex sia buono?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-know-so-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "know-so"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo sa che Tom è un gatto"
+        },
+        {
+          "Text": "Tom è un gatto?",
           "Expect": {
             "Reply": "answer",
             "Contains": [

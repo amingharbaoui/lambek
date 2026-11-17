@@ -718,6 +718,7 @@
       ],
       "Or": ["o"],
       "Counting": { "AtLeast": ["almeno"], "AtMost": ["al massimo"], "Exactly": ["esattamente"] },
+      "Attitudes": { "Believing": ["credere", "pensare"], "Knowing": ["sapere"], "That": ["che"] },
       "Comparing": {
         "More": ["piu"],
         "Less": ["meno"],
@@ -729,7 +730,7 @@
       "WhyAlone": [
         "perche"
       ],
-      "Conditions": [],
+      "Conditions": ["se"],
       "Then": [],
       "Elide": {},
       "Doing": [],

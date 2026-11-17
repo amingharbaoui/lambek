@@ -1631,6 +1631,7 @@
       ],
       "Or": ["or"],
       "Counting": { "AtLeast": ["at least"], "AtMost": ["at most"], "Exactly": ["exactly"] },
+      "Attitudes": { "Believing": ["believe", "think"], "Knowing": ["know"], "That": ["that"] },
       "Comparing": {
         "More": ["more"],
         "Less": ["less"],

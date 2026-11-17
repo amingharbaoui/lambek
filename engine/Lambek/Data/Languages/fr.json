@@ -2000,6 +2000,7 @@
       ],
       "Or": ["ou"],
       "Counting": { "AtLeast": ["au moins"], "AtMost": ["au plus"], "Exactly": ["exactement"] },
+      "Attitudes": { "Believing": ["croire", "penser"], "Knowing": ["savoir"], "That": ["que"] },
       "Comparing": {
         "More": ["plus"],
         "Less": ["moins"],

@@ -31,6 +31,7 @@ function Resolve-LambekCategoryUsual {
         [pscustomobject] $Ask,
 
         [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
         [object[]] $Premises,
 
         [Parameter(Mandatory)]
