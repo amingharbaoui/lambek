@@ -407,17 +407,9 @@
       "los"
     ],
     "Times": {
-      "yesterday": "",
-      "today": "",
-      "this morning": "",
-      "last night": "",
-      "last week": "",
-      "last month": "",
-      "last year": "",
-      "earlier": "",
-      "just now": "",
-      "tomorrow": "",
-      "next week": ""
+      "ayer": "day:-1",
+      "hoy": "day:0",
+      "manana": "day:1"
     },
     "Forget": [],
     "Asked": [
@@ -692,6 +684,7 @@
       "Or": ["o"],
       "Counting": { "AtLeast": ["al menos"], "AtMost": ["a lo sumo"], "Exactly": ["exactamente"] },
       "Attitudes": { "Believing": ["creer", "pensar"], "Knowing": ["saber"], "That": ["que"] },
+      "Time": { "Before": ["antes"], "After": ["despues de", "tras"] },
       "Comparing": {
         "More": ["mas"],
         "Less": ["menos"],

@@ -130,7 +130,11 @@ function Read-LambekComparison {
     # "Rex est plus grand que Max", "Rex is taller than Max", "ist Rex groesser als Max?": who is more, who is less, and
     # of what (the lemma of the adjective). Asked with the verb first ("is Rex taller than Max") or after it
     # ("Rex est-il plus grand que Max"); one said with "moins" or "less" is the other way round. Nothing when the
-    # sentence says not, or when either side is not one named
+    # sentence says not, or when either side is not one named.
+    # One thing done before or after another, or on a day counted from today, is read here too
+    # (Read-LambekComparisonTime): "Rex est arrive avant Max", "Rex est arrive hier"
+    $timed = Read-LambekComparisonTime -Sentence $Sentence -Language $Language -Question:$Question
+    if ($timed) { return $timed }
     $words = Get-LambekComparisonWord -Language $Language
     $model = Get-LambekFormModel -Language $Language
     $logic = Get-LambekLogicWord -Language $Language
@@ -269,7 +273,9 @@ function Read-LambekComparison {
 function Get-LambekComparisonForm {
     param([pscustomobject] $Item, [switch] $Not)
 
-    # The shape the checker reads: compare(more|grand|name:rex|name:max), "notmore" for what is not more
+    # The shape the checker reads: compare(more|grand|name:rex|name:max), "notmore" for what is not more; one done on
+    # a day, date(time:arriver|name:rex|2026-10-18)
+    if ($Item.Kind -in 'dated', 'askdated') { return "date($($Item.Of)|$($Item.Who.Key)|$($Item.Day))" }
     return "compare($(if ($Not) { 'notmore' } else { 'more' })|$($Item.Of)|$($Item.Greater.Key)|$($Item.Smaller.Key))"
 }
 
@@ -285,6 +291,12 @@ function Get-LambekComparisonKnown {
         if ($fact.PSObject.Properties['Replaced'] -and $fact.Replaced) { continue }
         # (what was kept as a thing one is, or a rule about kinds, says no one is more than another)
         if ($fact.PSObject.Properties['Core'] -and "$($fact.Core)".StartsWith('category(')) { continue }
+        # (one done on a day is read as it was kept, with its day: "hier" said on the day it was told)
+        $dated = $(if ($fact.PSObject.Properties['Core']) { [regex]::Match("$($fact.Core)", '^date\((?<of>[^|()]+)\|(?<who>[^|()]+)\|(?<day>[^|()]+)\)') })
+        if ($dated -and $dated.Success) {
+            [pscustomobject]@{ Fact = $fact; Item = [pscustomobject]@{ Kind = 'dated'; Of = $dated.Groups['of'].Value; Who = [pscustomobject]@{ Key = $dated.Groups['who'].Value }; Day = $dated.Groups['day'].Value; Said = "$($fact.Text)"; Several = $false } }
+            continue
+        }
         foreach ($read in @(Read-LambekComparison -Sentence (("$($fact.Text)".Trim()) -replace '[.!;]+\s*$', '') -Language $Language | Where-Object { $_ })) {
             # (a sentence of several kept once for each two: each read back as the two it was kept for)
             if ($read.Kind -ne 'compare') { continue }
@@ -298,8 +310,21 @@ function Find-LambekComparisonPath {
     param([object[]] $Known, [string] $Of, [string] $From, [string] $To)
 
     # The things told that lead from one more to another less, one after the other: what is more than one that is
-    # more than a third is more than the third. The shortest way, found breadth first; nothing when there is none
-    $edges = @($Known | Where-Object { $_.Item.Of -eq $Of })
+    # more than a third is more than the third. The shortest way, found breadth first; nothing when there is none.
+    # One done on a day before the day another did it did it before: a step of the two things told (Steps)
+    $edges = [System.Collections.Generic.List[object]]::new()
+    foreach ($entry in @($Known | Where-Object { $_.Item.Of -eq $Of -and $_.Item.Kind -eq 'compare' })) { $edges.Add($entry) }
+    # (asked before, the one of the earlier day first; asked after, the one of the later day)
+    $timed = [regex]::Match($Of, '^time:(?<way>before|after):(?<done>.+)$')
+    $days = @(if ($timed.Success) { $Known | Where-Object { $_.Item.Kind -eq 'dated' -and $_.Item.Of -eq "time:$($timed.Groups['done'].Value)" } })
+    foreach ($early in $days) {
+        foreach ($late in $days) {
+            if ([string]::CompareOrdinal("$($early.Item.Day)", "$($late.Item.Day)") -ge 0 -or "$($early.Item.Who.Key)" -eq "$($late.Item.Who.Key)") { continue }
+            $first = $(if ($timed.Groups['way'].Value -eq 'before') { $early } else { $late })
+            $second = $(if ($timed.Groups['way'].Value -eq 'before') { $late } else { $early })
+            $edges.Add([pscustomobject]@{ Fact = $early.Fact; Steps = @($early, $late); Item = [pscustomobject]@{ Kind = 'compare'; Of = $Of; Greater = $first.Item.Who; Smaller = $second.Item.Who } })
+        }
+    }
     $came = @{ $From = $null }
     $queue = [System.Collections.Generic.Queue[string]]::new()
     $queue.Enqueue($From)
@@ -352,13 +377,13 @@ function Resolve-LambekComparisonMessage {
 
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
     $say = (Get-LambekLexicon -Language $Language).Dialogue.Say
-    $asks = @($Items | Where-Object { $_.Item.Kind -eq 'askcompare' })
+    $asks = @($Items | Where-Object { $_.Item.Kind -in 'askcompare', 'askdated' })
     # (one question, the last sentence; asked of several, one for each two)
     if (@($asks | Where-Object { -not [object]::ReferenceEquals($_.Sentence, $Items[-1].Sentence) }).Count -gt 0) { return $null }
-    $facts = @(foreach ($entry in $Items) { if ($entry.Item.Kind -eq 'compare') { ConvertTo-LambekComparisonFact -Sentence $entry.Sentence -Item $entry.Item -Language $Language } })
+    $facts = @(foreach ($entry in $Items) { if ($entry.Item.Kind -in 'compare', 'dated') { ConvertTo-LambekComparisonFact -Sentence $entry.Sentence -Item $entry.Item -Language $Language } })
     $known = @(Get-LambekComparisonKnown -Language $Language)
     $k = 0
-    $now = @(foreach ($entry in $Items) { if ($entry.Item.Kind -eq 'compare') { [pscustomobject]@{ Fact = $facts[$k]; Item = $entry.Item }; $k++ } })
+    $now = @(foreach ($entry in $Items) { if ($entry.Item.Kind -in 'compare', 'dated') { [pscustomobject]@{ Fact = $facts[$k]; Item = $entry.Item }; $k++ } })
     $all = @($known) + @($now)
     $lines = [System.Collections.Generic.List[string]]::new()
     # (with a capital only where the answer starts a sentence with it: "Ja. Rex ist", "Oui : le chat est")
@@ -378,7 +403,8 @@ function Resolve-LambekComparisonMessage {
         # (a sentence of several said back once)
         $once = @(Select-LambekComparisonOnce -Items $facts -Key { param($f) "$($f.Joined)" })
         $lines.Add(($say[$shape] -f (@($once | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
-        foreach ($entry in $now) {
+        # (one done before another and after it is no clash: one may do it more than once)
+        foreach ($entry in @($now | Where-Object { $_.Item.Kind -eq 'compare' -and -not "$($_.Item.Of)".StartsWith('time:') })) {
             $back = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)"
             if ($back) {
                 $lines.Add($data['Clash'])
@@ -393,8 +419,8 @@ function Resolve-LambekComparisonMessage {
     $said = ConvertTo-LambekOtherSide -Text $ask.Said -Language $Language -Register 'vous'
     if (-not $said) { $said = $ask.Said }
     $said = $said.Trim().TrimEnd('.')
-    # (each thing told said once, even when the way goes through two of one sentence)
-    $once = { param($path) @(Select-LambekComparisonOnce -Items @($path) -Key { param($s) "$($s.Fact.Joined)|$($s.Fact.Text)|$(Get-LambekComparisonForm -Item $s.Item)" }) }
+    # (each thing told said once, even when the way goes through two of one sentence; a step from two days, both)
+    $once = { param($path) @(Select-LambekComparisonOnce -Items @(foreach ($s in @($path)) { if ($s.PSObject.Properties['Steps']) { $s.Steps } else { $s } }) -Key { param($s) "$($s.Fact.Joined)|$($s.Fact.Text)|$(Get-LambekComparisonForm -Item $s.Item)" }) }
     $listed = {
         param($path)
         $shown = @{}
@@ -439,6 +465,20 @@ function Resolve-LambekComparisonMessage {
         $lines.Add(($data['Unknown'] -f ($say['Quote'] -f $said)))
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
+    if ($ask.Kind -eq 'askdated') {
+        # Done on that day: yes when it was told so; else it may be true or false (one may do a thing on many days)
+        $same = @($all | Where-Object { $_.Item.Kind -eq 'dated' -and $_.Item.Of -eq $ask.Of -and "$($_.Item.Who.Key)" -eq "$($ask.Who.Key)" -and $_.Item.Day -eq $ask.Day } | Select-Object -First 1)
+        if ($same.Count -gt 0) {
+            $lines.Add(($data['Yes'] -f (& $sentence $said)))
+            if ($data['Because']) { $lines.Add($data['Because']) }
+            & $listed $same
+            & $proof $same ([string[]] @(Get-LambekComparisonForm -Item $ask))
+            return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+        }
+        Set-LambekLastProof
+        $lines.Add(($data['Unknown'] -f ($say['Quote'] -f $said)))
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+    }
     $yes = Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Greater.Key)" -To "$($ask.Smaller.Key)"
     if ($yes) {
         $lines.Add(($data['Yes'] -f (& $sentence $said)))
@@ -447,8 +487,9 @@ function Resolve-LambekComparisonMessage {
         & $proof $yes (Get-LambekComparisonForm -Item $ask)
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
-    # (what is more than another is not less than it: the way the other way round says no)
-    $no = Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Smaller.Key)" -To "$($ask.Greater.Key)"
+    # (what is more than another is not less than it: the way the other way round says no; never of what is done
+    # before or after another, which one may do more than once)
+    $no = $(if ("$($ask.Of)".StartsWith('time:')) { $null } else { Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Smaller.Key)" -To "$($ask.Greater.Key)" })
     if ($no) {
         # (no, said as what holds: the other is the one that is more)
         $back = ConvertTo-LambekOtherSide -Text $ask.Back -Language $Language -Register 'vous'

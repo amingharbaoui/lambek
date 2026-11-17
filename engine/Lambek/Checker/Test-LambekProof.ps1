@@ -11,7 +11,9 @@
       category(all|chat|animal)        every cat is an animal ("no", and "usual:all"/"usual:no" for what holds
       category(no|poisson|mammifere)   "normalement"); a kind of several words is written chat+soeur
       category(is|name:tom|chat)       Tom is a cat ("isnot": Tom is not; "does"/"doesnot" for a verb, v:voler)
-      compare(more|grand|name:rex|name:max)  Rex is more grand than Max ("notmore" in a conclusion: is not)
+      compare(more|grand|name:rex|name:max)  Rex is more grand than Max ("notmore" in a conclusion: is not); of what
+                                             is done, compare(more|time:before:arriver|...): Rex arrived before Max
+      date(time:arriver|name:rex|2026-10-18) Rex arrived on that day
       if(cond(X), then(Y))|            a rule told with if: when X was told, Y follows
       category(if|is~name:rex~chien|does~name:rex~v:aboyer)  if Rex is a dog, Rex barks (of one named, or two)
       category(believe|name:alice|is~name:tom~chat)          Alice believes that Tom is a cat
@@ -28,7 +30,8 @@
         is not a dog)
       - what one believes follows from what that one believes alone, by the same rules
       - what is more than one that is more than a third is more than the third, and what is more than another is not
-        less than it (no one is more than itself)
+        less than it (no one is more than itself); one done on an earlier day than another is done before it, and
+        the other after it
       - one more so than one that is so is so; one less so than one that is not so is not (more grand than one grand)
       - at least so many of a kind being something are at least as many of a wider kind being something wider; at
         most so many, at most as many of a narrower kind being something narrower (count(least|3|chat|noir))
@@ -108,6 +111,9 @@ function ConvertFrom-LambekProofFact {
             Subject = [string[]] @($count.Groups['s'].Value -split '\+' | Where-Object { $_ }); Atoms = [string[]] @($count.Groups['p'].Value -split '\+' | Where-Object { $_ })
         }
     }
+    # One done on a day: date(time:arriver|name:rex|2026-10-18)
+    $date = [regex]::Match($text, '^date\((?<of>[^|()]+)\|(?<who>[^|()]+)\|(?<day>\d{4}-\d{2}-\d{2})\)$')
+    if ($date.Success) { return [pscustomobject]@{ Shape = 'date'; Of = $date.Groups['of'].Value; Who = $date.Groups['who'].Value; Day = $date.Groups['day'].Value } }
     $compare = [regex]::Match($text, '^compare\((?<kind>more|notmore)\|(?<of>[^|()]+)\|(?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
     if ($compare.Success) {
         return [pscustomobject]@{ Shape = 'compare'; Kind = $compare.Groups['kind'].Value; Of = $compare.Groups['of'].Value; A = $compare.Groups['a'].Value; B = $compare.Groups['b'].Value }
@@ -318,6 +324,17 @@ function Test-LambekProofOnce {
         if ($said.Shape -eq 'compare') {
             # (more than: every one reached from the one that is more, by what was told is more than what)
             $more = @($facts | Where-Object { $_.Shape -eq 'compare' -and $_.Kind -eq 'more' -and $_.Of -eq $said.Of })
+            # (one done on a day before the day another did it is before it, and the other after it: of
+            # time:before:arriver, from date(time:arriver|...))
+            $timed = [regex]::Match($said.Of, '^time:(?<way>before|after):(?<done>.+)$')
+            $days = @(if ($timed.Success) { $facts | Where-Object { $_.Shape -eq 'date' -and $_.Of -eq "time:$($timed.Groups['done'].Value)" } })
+            foreach ($early in $days) {
+                foreach ($late in $days) {
+                    if ([string]::CompareOrdinal($early.Day, $late.Day) -ge 0 -or $early.Who -eq $late.Who) { continue }
+                    $edge = $(if ($timed.Groups['way'].Value -eq 'before') { [pscustomobject]@{ A = $early.Who; B = $late.Who } } else { [pscustomobject]@{ A = $late.Who; B = $early.Who } })
+                    $more = @($more) + @($edge)
+                }
+            }
             $reach = {
                 param([string] $from, [string] $to)
                 $seen = [System.Collections.Generic.HashSet[string]]::new()
@@ -334,6 +351,11 @@ function Test-LambekProofOnce {
             }
             $holds = $(if ($said.Kind -eq 'more') { & $reach $said.A $said.B } else { & $reach $said.B $said.A })
             if (-not $holds) { return [pscustomobject]@{ Holds = $false; Reason = "does not follow: $conclusion" } }
+            continue
+        }
+        if ($said.Shape -eq 'date') {
+            # (done on that day: told so)
+            if (@($facts | Where-Object { $_.Shape -eq 'date' -and $_.Of -eq $said.Of -and $_.Who -eq $said.Who -and $_.Day -eq $said.Day }).Count -eq 0) { return [pscustomobject]@{ Holds = $false; Reason = "does not follow: $conclusion" } }
             continue
         }
         if ($said.Shape -eq 'belief') {

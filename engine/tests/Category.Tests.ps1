@@ -1099,6 +1099,48 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'One thing done before another, and on a day' {
+
+        It 'answers before and after from what was told: <Asked>' -ForEach @(
+            @{ Told = @('Rex est arrivé avant Max', 'Max est arrivé avant Tom'); Asked = 'Rex est-il arrivé avant Tom ?'; Said = 'Oui : Rex est arrivé avant Tom.*' }
+            @{ Told = @('Rex est arrivé après Max', 'Max est arrivé après Tom'); Asked = 'Rex est-il arrivé après Tom ?'; Said = 'Oui*' }
+            @{ Told = @('Rex est arrivé hier', "Max est arrivé aujourd'hui"); Asked = 'Rex est-il arrivé avant Max ?'; Said = 'Oui*Rex est arrivé hier*' }
+            @{ Told = @('Rex est arrivé hier'); Asked = 'Rex est-il arrivé hier ?'; Said = 'Oui*' }
+            @{ Told = @('Rex arrived yesterday', 'Max arrived today'); Asked = 'did Max arrive after Rex?'; Said = 'Yes*' }
+            @{ Told = @('Rex ist vor Max angekommen', 'Max ist vor Tom angekommen'); Asked = 'ist Rex vor Tom angekommen?'; Said = 'Ja.*' }
+            @{ Told = @('gestern hat Rex gegessen'); Asked = 'hat Rex gestern gegessen?'; Said = 'Ja.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'never says yes or no when what was told does not say it, nor after from before: <Asked>' -ForEach @(
+            @{ Told = @('Rex est arrivé hier'); Asked = "Rex est-il arrivé aujourd'hui ?" }
+            @{ Told = @('Rex est arrivé hier'); Asked = 'Max est-il arrivé hier ?' }
+            @{ Told = @('Rex est arrivé avant Max', 'Rex est arrivé avant Tom'); Asked = 'Max est-il arrivé avant Tom ?' }
+            @{ Told = @('Rex a nagé avant Max'); Asked = 'Max a-t-il nagé après Rex ?' }
+            @{ Told = @('Rex a nagé avant Max'); Asked = 'Max a-t-il nagé avant Rex ?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike '*peut être vrai ou faux*'
+        }
+
+        It 'keeps what is done on a day with the day it was told on' {
+            Tell 'Rex est arrivé hier'
+            & (Get-Module Lambek) { $script:Now = [datetime] '2026-10-07 10:00' }
+            (Ask 'Rex est-il arrivé hier ?') -join ' ' | Should -BeLike '*peut être vrai ou faux*'
+            (Ask 'Rex est-il arrivé avant Max ?') -join ' ' | Should -BeLike '*peut être vrai ou faux*'
+        }
+
+        It 'keeps before and on a day in the shapes the checker reads' {
+            Tell 'Rex est arrivé hier', "Max est arrivé aujourd'hui"
+            $null = Ask 'Rex est-il arrivé avant Max ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('compare(more|time:before:arriver|name:rex|name:max)')
+            $proof.Forms | Should -Be @('date(time:arriver|name:rex|2026-10-05)', 'date(time:arriver|name:max|2026-10-06)')
+        }
+    }
+
     Context 'A short sentence read in its language' {
 
         It 'tells the language of a short sentence by how each language writes its words: <Text>' -ForEach @(

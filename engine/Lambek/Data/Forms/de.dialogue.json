@@ -430,17 +430,9 @@
       "die"
     ],
     "Times": {
-      "yesterday": "",
-      "today": "",
-      "this morning": "",
-      "last night": "",
-      "last week": "",
-      "last month": "",
-      "last year": "",
-      "earlier": "",
-      "just now": "",
-      "tomorrow": "",
-      "next week": ""
+      "gestern": "day:-1",
+      "heute": "day:0",
+      "morgen": "day:1"
     },
     "Forget": [],
     "Asked": [
@@ -743,6 +735,7 @@
       "Or": ["oder"],
       "Counting": { "AtLeast": ["mindestens"], "AtMost": ["hochstens"], "Exactly": ["genau"] },
       "Attitudes": { "Believing": ["denken", "glauben"], "Knowing": ["wissen"], "That": ["dass"] },
+      "Time": { "Before": ["bevor", "vor"], "After": ["nach", "nach dem"] },
       "Comparing": {
         "More": ["mehr"],
         "Less": ["weniger"],

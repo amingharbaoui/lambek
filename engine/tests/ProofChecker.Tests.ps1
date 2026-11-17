@@ -30,6 +30,10 @@ Describe 'The checker of proofs' {
         @{ Name = 'a rule told with if, the other way'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(doesnot|name:rex|v:aboyer)|'; Conclusion = 'category(isnot|name:rex|chien)' }
         @{ Name = 'a rule told with if, from one to another'; Premises = 'category(if|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
         @{ Name = 'a rule told with if, through what a kind is'; Premises = 'category(if|is~name:rex~animal|does~name:rex~v:manger)|', 'category(all|chien|animal)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(does|name:rex|v:manger)' }
+        @{ Name = 'one done before another, through a third'; Premises = 'compare(more|time:before:arriver|name:rex|name:max)|', 'compare(more|time:before:arriver|name:max|name:tom)|'; Conclusion = 'compare(more|time:before:arriver|name:rex|name:tom)' }
+        @{ Name = 'one done a day before another'; Premises = 'date(time:arriver|name:rex|2026-10-05)|', 'date(time:arriver|name:max|2026-10-06)|'; Conclusion = 'compare(more|time:before:arriver|name:rex|name:max)' }
+        @{ Name = 'one done a day after another'; Premises = 'date(time:arriver|name:rex|2026-10-05)|', 'date(time:arriver|name:max|2026-10-06)|'; Conclusion = 'compare(more|time:after:arriver|name:max|name:rex)' }
+        @{ Name = 'one done on the day told'; Premises = 'date(time:arriver|name:rex|2026-10-05)|'; Conclusion = 'date(time:arriver|name:rex|2026-10-05)' }
         @{ Name = 'what one believes, from what that one believes'; Premises = 'category(believe|name:alice|all~chat~noir)|', 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(believe|name:alice|is~name:tom~noir)' }
         @{ Name = 'what holds in each of two'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chat|animal)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
         @{ Name = 'a rule of one of two, and not the one'; Premises = 'category(all|chat|or:blanc;noir)|', 'category(is|name:tom|chat)|', 'category(isnot|name:tom|noir)|'; Conclusion = 'category(is|name:tom|blanc)' }
@@ -62,6 +66,9 @@ Describe 'The checker of proofs' {
         @{ Name = 'a rule told with if whose condition was not told'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
         @{ Name = 'a rule told with if, from what follows'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(does|name:rex|v:aboyer)|'; Conclusion = 'category(is|name:rex|chien)' }
         @{ Name = 'a rule told with if, about another'; Premises = 'category(if|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:rex|chat)' }
+        @{ Name = 'one done a day after another, said before'; Premises = 'date(time:arriver|name:rex|2026-10-06)|', 'date(time:arriver|name:max|2026-10-05)|'; Conclusion = 'compare(more|time:before:arriver|name:rex|name:max)' }
+        @{ Name = 'one done on another day'; Premises = 'date(time:arriver|name:rex|2026-10-05)|'; Conclusion = 'date(time:arriver|name:rex|2026-10-06)' }
+        @{ Name = 'one done on a day, of another thing done'; Premises = 'date(time:arriver|name:rex|2026-10-05)|', 'date(time:partir|name:max|2026-10-06)|'; Conclusion = 'compare(more|time:before:arriver|name:rex|name:max)' }
         @{ Name = 'what one believes, from what is so'; Premises = 'category(all|chat|noir)|', 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(believe|name:alice|is~name:tom~noir)' }
         @{ Name = 'what one believes, from what another believes'; Premises = 'category(believe|name:paul|all~chat~noir)|', 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(believe|name:alice|is~name:tom~noir)' }
         @{ Name = 'what is so, from what one believes'; Premises = 'category(believe|name:alice|is~name:tom~chat)|'; Conclusion = 'category(is|name:tom|chat)' }

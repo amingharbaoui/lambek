@@ -390,17 +390,9 @@
       "os"
     ],
     "Times": {
-      "yesterday": "",
-      "today": "",
-      "this morning": "",
-      "last night": "",
-      "last week": "",
-      "last month": "",
-      "last year": "",
-      "earlier": "",
-      "just now": "",
-      "tomorrow": "",
-      "next week": ""
+      "ontem": "day:-1",
+      "hoje": "day:0",
+      "amanha": "day:1"
     },
     "Forget": [],
     "Asked": "que",
@@ -645,6 +637,7 @@
       "Or": ["ou"],
       "Counting": { "AtLeast": ["pelo menos"], "AtMost": ["no maximo"], "Exactly": ["exatamente"] },
       "Attitudes": { "Believing": ["achar", "acreditar", "pensar"], "Knowing": ["sabar", "saber"], "That": ["que"] },
+      "Time": { "Before": ["antes"], "After": ["apos", "depois"] },
       "Comparing": {
         "More": ["mais"],
         "Less": ["menos"],

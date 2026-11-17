@@ -323,17 +323,9 @@
       "het"
     ],
     "Times": {
-      "yesterday": "",
-      "today": "",
-      "this morning": "",
-      "last night": "",
-      "last week": "",
-      "last month": "",
-      "last year": "",
-      "earlier": "",
-      "just now": "",
-      "tomorrow": "",
-      "next week": ""
+      "gisteren": "day:-1",
+      "vandaag": "day:0",
+      "morgen": "day:1"
     },
     "Forget": [],
     "Asked": [
@@ -513,6 +505,7 @@
       "Or": ["of"],
       "Counting": { "AtLeast": ["minstens"], "AtMost": [], "Exactly": ["precies"] },
       "Attitudes": { "Believing": ["denken", "geloven"], "Knowing": ["weten"], "That": ["dat"] },
+      "Time": { "Before": ["voor", "voordat"], "After": ["na"] },
       "Comparing": {
         "More": ["meer"],
         "Less": ["minder"],

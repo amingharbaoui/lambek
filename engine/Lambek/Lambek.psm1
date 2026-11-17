@@ -138,6 +138,8 @@ $script:CategoryLemmas = $null
 $script:CategoryReadings = $null
 # The words that put one sentence inside another in each language ("si", "croire", "que")
 $script:CategoryEmbeddingWords = $null
+# The words of time in each language ("avant", "hier")
+$script:TimeWords = $null
 # How many meanings of a word the dictionary is asked about, and how far up its kinds are followed
 $script:CategoryCircleSenses = 6
 $script:CategoryCircleHops = 12

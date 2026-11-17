@@ -409,17 +409,9 @@
       "le"
     ],
     "Times": {
-      "yesterday": "",
-      "today": "",
-      "this morning": "",
-      "last night": "",
-      "last week": "",
-      "last month": "",
-      "last year": "",
-      "earlier": "",
-      "just now": "",
-      "tomorrow": "",
-      "next week": ""
+      "ieri": "day:-1",
+      "oggi": "day:0",
+      "domani": "day:1"
     },
     "Forget": [],
     "Asked": "cos",
@@ -719,6 +711,7 @@
       "Or": ["o"],
       "Counting": { "AtLeast": ["almeno"], "AtMost": ["al massimo"], "Exactly": ["esattamente"] },
       "Attitudes": { "Believing": ["credere", "pensare"], "Knowing": ["sapere"], "That": ["che"] },
+      "Time": { "Before": ["prima"], "After": ["dopo"] },
       "Comparing": {
         "More": ["piu"],
         "Less": ["meno"],

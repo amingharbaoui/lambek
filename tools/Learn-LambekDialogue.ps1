@@ -12,7 +12,8 @@
       where English says "of"; and the words that join two things and say both ("und", "sondern"), the conjunctions
       met the most often where English says "and" and "but"; and the words that compare, met where it says "more",
       "less" and "than"; and the words that tell what someone believes or knows ("glauben", "wissen", "dass"), met
-      where it says "believe", "think", "know" and "that", and the word of a condition ("wenn"), where it says "if".
+      where it says "believe", "think", "know" and "that", and the word of a condition ("wenn"), where it says "if";
+      and the words of time ("vor", "nach", "gestern"), where it says "before", "after", "yesterday", "today", "tomorrow".
       The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from its words
       of logic (<language>.logic).
     - What it answers, from the sentences translated from English (Tatoeba): "Yes." is "Ja.", "No." is "Nein.",
@@ -157,6 +158,20 @@ $general['Attitudes'] = [ordered]@{
     That = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'that', $clauses, 20, 12) | Where-Object { $_ })
 }
 $general['Conditions'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'if', $clauses, 20, 12) | Where-Object { $_ })
+# (the words that put one thing done before or after another: the run of words met the most often where English says
+# "before", "after", and the preposition, never the one that says whose ("de", "di"); and the days counted from today,
+# met where it says "yesterday", "today", "tomorrow")
+[string[]] $prepositions = & $tagged '^ADP\|'
+$apart = { param($words) @($words | Where-Object { $_ -and $_ -notin $of }) }
+$general['Time'] = [ordered]@{
+    Before = & $plain (& $apart @([LambekDialogueWords]::AlignedRun($englishSide, $otherSide, 'before', 2, 10, 12), [LambekDialogueWords]::Aligned($englishSide, $otherSide, 'before', $prepositions, 20, 12)))
+    After = & $plain (& $apart @([LambekDialogueWords]::AlignedRun($englishSide, $otherSide, 'after', 2, 10, 12), [LambekDialogueWords]::Aligned($englishSide, $otherSide, 'after', $prepositions, 20, 12)))
+}
+$dialogue['Times'] = [ordered]@{}
+foreach ($day in @(@('yesterday', -1), @('today', 0), @('tomorrow', 1))) {
+    $said = [LambekDialogueWords]::AlignedRun($englishSide, $otherSide, $day[0], 2, 10, 12)
+    if ($said) { $dialogue['Times'][(@(& $plain @($said))[0])] = "day:$($day[1])" }
+}
 $general['Comparing'] = [ordered]@{
     More = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'more', $adverbs, 20, 12) | Where-Object { $_ })
     Less = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'less', $adverbs, 20, 12) | Where-Object { $_ })
