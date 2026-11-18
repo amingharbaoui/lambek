@@ -1099,6 +1099,33 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'Which of two kinds one is' {
+
+        It 'says which one when one follows and the other does not: <Asked>' -ForEach @(
+            @{ Told = @('Rex est un chien'); Asked = 'Rex est-il un chien ou un chat ?'; Said = 'Rex est un chien.*Rex est un chien*' }
+            @{ Told = @('Rex est un chien ou un chat', "Rex n'est pas un chat"); Asked = 'Rex est-il un chien ou un chat ?'; Said = 'Rex est un chien.*' }
+            @{ Told = @('tous les chats sont noirs', 'Tom est un chat'); Asked = 'Tom est-il noir ou blanc ?'; Said = 'Tom est noir.*' }
+            @{ Told = @('Rex is a dog'); Asked = 'is Rex a dog or a cat?'; Said = 'Rex is a dog.*' }
+            @{ Told = @('Rex es un perro'); Asked = '¿es Rex un perro o un gato?'; Said = 'Rex es un perro.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'does not say which when it may be either' {
+            Tell 'Rex est un chien ou un chat'
+            (Ask 'Rex est-il un chien ou un chat ?') -join ' ' | Should -BeLike 'Oui : Rex est un chien ou un chat.*'
+        }
+
+        It 'keeps the one that follows as what the checker reads' {
+            Tell 'Rex est un chien ou un chat', "Rex n'est pas un chat"
+            $null = Ask 'Rex est-il un chien ou un chat ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('category(is|name:rex|chien)')
+            $proof.Forms | Should -Be @('category(is|name:rex|or:chat;chien)', 'category(isnot|name:rex|chat)')
+        }
+    }
+
     Context 'One thing done before another, and on a day' {
 
         It 'answers before and after from what was told: <Asked>' -ForEach @(

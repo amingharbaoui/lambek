@@ -1307,6 +1307,60 @@ function Get-LambekCategoryOpposite {
     return $o
 }
 
+function Resolve-LambekCategoryWhich {
+    param(
+        [pscustomobject] $Ask,
+        [LambekCategoryStatement[]] $Statements,
+        [hashtable] $Atoms,
+        [string[]] $Keys,
+        [string] $Individual,
+        [string] $Language
+    )
+
+    # Of one asked to be one of several kinds ("Rex est-il un chien ou un chat ?", "is Tom black or white?"): each kind
+    # alone, with the words that said it ("un chien"); the one that follows when no other does, said as a sentence
+    # ("Rex est un chien."), with the sentences it rests on (Support). Nothing when none, or more than one, follows, or
+    # when the words of each cannot be told apart
+    if ($Ask.Kind -notin 'askis', 'askdoes' -or -not $Ask.Individual -or -not $Ask.Predicate) { return $null }
+    $either = @($Ask.Predicate.Atoms | Where-Object { "$_".StartsWith('or:') })
+    if ($either.Count -ne 1) { return $null }
+    $rest = @($Ask.Predicate.Atoms | Where-Object { $_ -ne $either[0] })
+    # (the words of each, read again to know which kind they say)
+    $or = @(Get-LambekDisjunctionWord -Language $Language)
+    $pieces = [System.Collections.Generic.List[string]]::new()
+    $piece = [System.Collections.Generic.List[string]]::new()
+    foreach ($word in @("$($Ask.Written.Predicate)".Trim() -split '\s+' | Where-Object { $_ })) {
+        if ((ConvertTo-LambekNormalizedText -Text $word) -in $or) { $pieces.Add(($piece -join ' ')); $piece.Clear() } else { $piece.Add($word) }
+    }
+    $pieces.Add(($piece -join ' '))
+    $written = @{}
+    $kinds = @($either[0].Substring(3) -split ';')
+    foreach ($said in $pieces) {
+        # (said with its article, "un chien", or bare, "noir"; else the one whose words hold each of its kinds, "un gato"
+        # for gato, when the words read alone give another lemma, "gata")
+        $term = ConvertTo-LambekCategoryTerm -Text $said -Language $Language
+        if (-not $term) { $term = ConvertTo-LambekCategoryTerm -Text $said -Language $Language -Bare }
+        if ($term -and (@($term.Atoms | Sort-Object) -join '&') -in $kinds) { $written[(@($term.Atoms | Sort-Object) -join '&')] = $said; continue }
+        $plain = ConvertTo-LambekNormalizedText -Text $said
+        $holding = @($kinds | Where-Object { $kind = $_; @($kind -split '&' | Where-Object { -not $plain.Contains((ConvertTo-LambekNormalizedText -Text $_)) }).Count -eq 0 })
+        if ($holding.Count -ne 1) { return $null }
+        $written[$holding[0]] = $said
+    }
+    $found = [System.Collections.Generic.List[object]]::new()
+    foreach ($one in $kinds) {
+        if (-not $written.ContainsKey($one)) { return $null }
+        $alone = $Ask.PSObject.Copy()
+        $alone.Predicate = [pscustomobject]@{ Atoms = @(@($rest) + @($one -split '&')) }
+        $alone.Written = [pscustomobject]@{ Subject = $Ask.Written.Subject; Predicate = $written[$one]; Object = $Ask.Written.Object }
+        $least = [LambekCategories]::Shortest($Statements, (Get-LambekCategoryOpposite -Item $alone -Atoms $Atoms -Individual $Individual), $Keys, [LambekCategories]::DefaultBudget)
+        if ($least) { $found.Add([pscustomobject]@{ Item = $alone; Support = @($least.Indices); Least = $least }) }
+    }
+    if ($found.Count -ne 1) { return $null }
+    $sentence = Get-LambekCategorySentence -Item $found[0].Item -Shape 'is' -Language $Language
+    if (-not $sentence) { return $null }
+    return [pscustomobject]@{ Item = $found[0].Item; Support = $found[0].Support; Least = $found[0].Least; Line = "$($sentence.Substring(0, 1).ToUpperInvariant())$($sentence.Substring(1))." }
+}
+
 function Get-LambekCategorySentence {
     param(
         [pscustomobject] $Item,
@@ -1694,6 +1748,16 @@ function Resolve-LambekCategoryMessage {
     $individual = ''
     if ($ask.Individual) { $individual = $ask.Individual.Key }
     $keys = [string[]] @($premises | ForEach-Object { Get-LambekCategorySignature -Item $_.Item })
+    # "Rex est-il un chien ou un chat ?" asks which: when one of them follows and the other does not, the one that does
+    # is said alone ("Rex est un chien."), with what it rests on; else it is asked whether either holds, as below
+    $which = Resolve-LambekCategoryWhich -Ask $ask -Statements $statements -Atoms $atoms -Keys $keys -Individual $individual -Language $Language
+    if ($which) {
+        $least = $which.Least
+        $lines.Add($which.Line)
+        & $because ([int[]] $which.Support)
+        & $proof ([int[]] $which.Support) @(Get-LambekCategoryConclusion -Item $which.Item -Shape 'is')
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
+    }
     $least = [LambekCategories]::Shortest($statements, (Get-LambekCategoryOpposite -Item $ask -Atoms $atoms -Individual $individual), $keys, [LambekCategories]::DefaultBudget)
     $yes = $null
     if ($least) { $yes = $least.Indices }

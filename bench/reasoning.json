@@ -1,8 +1,8 @@
 {
-  "Version": "2.1",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "2.2",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "c823ce1f97208603edf823f9fc6343e18e2dad4d7cf6bd33503a7ea10c407c51",
+  "TestHash": "586ad555468c7a8f1b12f69d536cd50c760d4eb4c3eeb49804302b27e6e7bfbe",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -20982,6 +20982,1428 @@
           "Text": "Leo è partito ieri?",
           "Expect": {
             "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-which-told-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex est-il un chien ou un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex est un chien."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-which-ruled-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chats sont noirs"
+        },
+        {
+          "Text": "Tom est un chat"
+        },
+        {
+          "Text": "Tom est-il noir ou blanc ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Tom est noir."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-which-not-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est un chien ou un chat"
+        },
+        {
+          "Text": "Rex n'est pas un chat"
+        },
+        {
+          "Text": "Rex est-il un chien ou un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex est un chien."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-which-either-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est un chien ou un chat"
+        },
+        {
+          "Text": "Rex est-il un chien ou un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-which-told-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Léo est un oiseau"
+        },
+        {
+          "Text": "Léo est-il un oiseau ou un poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Léo est un oiseau."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-which-ruled-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens sont gentils"
+        },
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "Rex est-il gentil ou méchant ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex est gentil."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-which-not-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Léo est un oiseau ou un poisson"
+        },
+        {
+          "Text": "Léo n'est pas un poisson"
+        },
+        {
+          "Text": "Léo est-il un oiseau ou un poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Léo est un oiseau."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-which-either-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Léo est un oiseau ou un poisson"
+        },
+        {
+          "Text": "Léo est-il un oiseau ou un poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-which-told-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "is Rex a dog or a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex is a dog."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-which-ruled-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "all cats are black"
+        },
+        {
+          "Text": "Tom is a cat"
+        },
+        {
+          "Text": "is Tom black or white?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Tom is black."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-which-not-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is a dog or a cat"
+        },
+        {
+          "Text": "Rex is not a cat"
+        },
+        {
+          "Text": "is Rex a dog or a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex is a dog."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-which-either-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is a dog or a cat"
+        },
+        {
+          "Text": "is Rex a dog or a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-which-told-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is a bird"
+        },
+        {
+          "Text": "is Leo a bird or a fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo is a bird."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-which-ruled-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs are kind"
+        },
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "is Rex kind or mean?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex is kind."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-which-not-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is a bird or a fish"
+        },
+        {
+          "Text": "Leo is not a fish"
+        },
+        {
+          "Text": "is Leo a bird or a fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo is a bird."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-which-either-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is a bird or a fish"
+        },
+        {
+          "Text": "is Leo a bird or a fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-which-told-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "ist Rex ein Hund oder eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex ist ein Hund."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-which-ruled-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Katzen sind schwarz"
+        },
+        {
+          "Text": "Tom ist eine Katze"
+        },
+        {
+          "Text": "ist Tom schwarz oder weiß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Tom ist schwarz."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-which-not-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist ein Hund oder eine Katze"
+        },
+        {
+          "Text": "Rex ist keine Katze"
+        },
+        {
+          "Text": "ist Rex ein Hund oder eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex ist ein Hund."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-which-either-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist ein Hund oder eine Katze"
+        },
+        {
+          "Text": "ist Rex ein Hund oder eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-which-told-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo ist ein Vogel"
+        },
+        {
+          "Text": "ist Leo ein Vogel oder ein Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo ist ein Vogel."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-which-ruled-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde sind lieb"
+        },
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "ist Rex lieb oder böse?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex ist lieb."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-which-not-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo ist ein Vogel oder ein Fisch"
+        },
+        {
+          "Text": "Leo ist kein Fisch"
+        },
+        {
+          "Text": "ist Leo ein Vogel oder ein Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo ist ein Vogel."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-which-either-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo ist ein Vogel oder ein Fisch"
+        },
+        {
+          "Text": "ist Leo ein Vogel oder ein Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-which-told-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿es Rex un perro o un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex es un perro."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-which-ruled-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los gatos son negros"
+        },
+        {
+          "Text": "Tom es un gato"
+        },
+        {
+          "Text": "¿es Tom negro o blanco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Tom es negro."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-which-not-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es un perro o un gato"
+        },
+        {
+          "Text": "Rex no es un gato"
+        },
+        {
+          "Text": "¿es Rex un perro o un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex es un perro."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-which-either-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es un perro o un gato"
+        },
+        {
+          "Text": "¿es Rex un perro o un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-which-told-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo es un pájaro"
+        },
+        {
+          "Text": "¿es Leo un pájaro o un pez?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo es un pájaro."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-which-ruled-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros son buenos"
+        },
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "¿es Rex bueno o malo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex es bueno."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-which-not-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo es un pájaro o un pez"
+        },
+        {
+          "Text": "Leo no es un pez"
+        },
+        {
+          "Text": "¿es Leo un pájaro o un pez?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo es un pájaro."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-which-either-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo es un pájaro o un pez"
+        },
+        {
+          "Text": "¿es Leo un pájaro o un pez?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-which-told-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "is Rex een hond of een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex is een hond."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-which-ruled-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "alle katten zijn zwart"
+        },
+        {
+          "Text": "Tom is een kat"
+        },
+        {
+          "Text": "is Tom zwart of wit?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Tom is zwart."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-which-not-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is een hond of een kat"
+        },
+        {
+          "Text": "Rex is geen kat"
+        },
+        {
+          "Text": "is Rex een hond of een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex is een hond."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-which-either-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is een hond of een kat"
+        },
+        {
+          "Text": "is Rex een hond of een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-which-told-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is een vogel"
+        },
+        {
+          "Text": "is Leo een vogel of een vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo is een vogel."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-which-ruled-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden zijn lief"
+        },
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "is Rex lief of stout?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex is lief."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-which-not-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is een vogel of een vis"
+        },
+        {
+          "Text": "Leo is geen vis"
+        },
+        {
+          "Text": "is Leo een vogel of een vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo is een vogel."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-which-either-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is een vogel of een vis"
+        },
+        {
+          "Text": "is Leo een vogel of een vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-which-told-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex é um cão ou um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex é um cão."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-which-ruled-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os gatos são pretos"
+        },
+        {
+          "Text": "Tom é um gato"
+        },
+        {
+          "Text": "Tom é preto ou branco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Tom é preto."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-which-not-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é um cão ou um gato"
+        },
+        {
+          "Text": "Rex não é um gato"
+        },
+        {
+          "Text": "Rex é um cão ou um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex é um cão."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-which-either-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é um cão ou um gato"
+        },
+        {
+          "Text": "Rex é um cão ou um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-which-told-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo é um pássaro"
+        },
+        {
+          "Text": "Leo é um pássaro ou um peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo é um pássaro."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-which-ruled-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães são bons"
+        },
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "Rex é bom ou mau?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex é bom."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-which-not-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo é um pássaro ou um peixe"
+        },
+        {
+          "Text": "Leo não é um peixe"
+        },
+        {
+          "Text": "Leo é um pássaro ou um peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo é um pássaro."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-which-either-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo é um pássaro ou um peixe"
+        },
+        {
+          "Text": "Leo é um pássaro ou um peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-which-told-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex è un cane o un gatto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex è un cane."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-which-ruled-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i gatti sono neri"
+        },
+        {
+          "Text": "Tom è un gatto"
+        },
+        {
+          "Text": "Tom è nero o bianco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Tom è nero."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-which-not-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è un cane o un gatto"
+        },
+        {
+          "Text": "Rex non è un gatto"
+        },
+        {
+          "Text": "Rex è un cane o un gatto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex è un cane."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-which-either-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è un cane o un gatto"
+        },
+        {
+          "Text": "Rex è un cane o un gatto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-which-told-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "which-told"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo è un uccello"
+        },
+        {
+          "Text": "Leo è un uccello o un pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo è un uccello."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-which-ruled-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "which-ruled"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani sono buoni"
+        },
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "Rex è buono o cattivo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Rex è buono."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-which-not-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "which-not"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo è un uccello o un pesce"
+        },
+        {
+          "Text": "Leo non è un pesce"
+        },
+        {
+          "Text": "Leo è un uccello o un pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "Leo è un uccello."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-which-either-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "which-either"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo è un uccello o un pesce"
+        },
+        {
+          "Text": "Leo è un uccello o un pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
           }
         }
       ]
