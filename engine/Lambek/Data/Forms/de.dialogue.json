@@ -733,6 +733,8 @@
         "nicht"
       ],
       "Or": ["oder"],
+      "Neither": ["weder"],
+      "Nor": ["noch"],
       "Counting": { "AtLeast": ["mindestens"], "AtMost": ["hochstens"], "Exactly": ["genau"] },
       "Attitudes": { "Believing": ["denken", "glauben"], "Knowing": ["wissen"], "That": ["dass"] },
       "Time": { "Before": ["bevor", "vor"], "After": ["nach", "nach dem"] },

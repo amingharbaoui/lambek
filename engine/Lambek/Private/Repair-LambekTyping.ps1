@@ -80,6 +80,8 @@ function Repair-LambekTyping {
                 # (nor a word of the dictionary the language learned its words from: "ladra" of "ladrar")
                 $forms = Get-LambekFormModel -Language $other
                 if ($forms -and $forms.Lexicon -and $forms.Lexicon.Forms.ContainsKey($lower)) { return $word }
+                # (nor a word the language was learned to talk with: "noch" of "noch ... noch")
+                if ((Get-LambekDialogueWord -Language $other).Contains($plain)) { return $word }
             }
             if ($capital) { return (Repair-LambekCapital -Word $word -Index $match.Index -Text $Text -Language $Language -Lexicon $lexicon -Changes $changes -Shift $shift) }
             $near = @($dictionary.Near($lower, $Language, 1))
@@ -161,8 +163,34 @@ function Test-LambekKnownWord {
         if ($words -and @($words.Lemmas($Word, $other)).Count -gt 0) { return $true }
         $forms = Get-LambekFormModel -Language $other
         if ($forms -and $forms.Lexicon -and $forms.Lexicon.Forms.ContainsKey($Word.ToLowerInvariant())) { return $true }
+        if ((Get-LambekDialogueWord -Language $other).Contains($plain)) { return $true }
     }
     return $false
+}
+
+function Get-LambekDialogueWord {
+    # The words a language whose dialogue was learned talks with in its general reading (Dialogue.General: "oder",
+    # "nicht", "noch"), each alone and plain; none for a language whose dialogue is written, whose words are its own
+    param([string] $Language)
+
+    if ($null -eq $script:DialogueWords) { $script:DialogueWords = @{} }
+    if ($script:DialogueWords.ContainsKey($Language)) { return , $script:DialogueWords[$Language] }
+    $found = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+    if ($dialogue -and $dialogue['Learned'] -and $dialogue['General']) {
+        $pending = [System.Collections.Generic.Stack[object]]::new()
+        $pending.Push($dialogue['General'])
+        while ($pending.Count -gt 0) {
+            $value = $pending.Pop()
+            if ($value -is [string]) {
+                foreach ($word in ((ConvertTo-LambekNormalizedText -Text $value).ToLowerInvariant() -split '\s+')) { if ($word -match '^\p{L}+$') { [void] $found.Add($word) } }
+            }
+            elseif ($value -is [System.Collections.IDictionary]) { foreach ($key in $value.Keys) { $pending.Push($value[$key]) } }
+            elseif ($value -is [System.Collections.IEnumerable]) { foreach ($item in $value) { $pending.Push($item) } }
+        }
+    }
+    $script:DialogueWords[$Language] = $found
+    return , $found
 }
 
 function Repair-LambekSpacing {

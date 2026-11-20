@@ -171,6 +171,113 @@ function Get-LambekDisjunctionWord {
     @($general['Or']) | Where-Object { $_ } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" }
 }
 
+function Get-LambekNeitherWord {
+    param([string] $Language)
+
+    # The two words that say not of both, learned where English says "neither ... nor" (General.Neither and
+    # General.Nor: "ni ... ni", "weder ... noch"); nothing for a language that has none learned
+    $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+    $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
+    if (-not $general -or -not $general.Contains('Nor')) { return $null }
+    $plain = { param($list) @(@($list) | Where-Object { $_ } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" }) }
+    $nor = @(& $plain $general['Nor'])
+    if ($nor.Count -eq 0) { return $null }
+    $neither = @(if ($general.Contains('Neither')) { & $plain $general['Neither'] })
+    return [pscustomobject]@{ Neither = $neither; Nor = $nor }
+}
+
+function Split-LambekCategoryNeither {
+    param([string] $Text, [string] $Language)
+
+    # One sentence that says not of two things with the words learned where English says "neither ... nor", as two
+    # sentences that each say not: "Rex n'est ni un chat ni un oiseau" is "Rex n'est un chat" and "Rex n'est un
+    # oiseau", each read as saying not; "Rex is neither a cat nor a bird", "Rex is a cat" and "Rex is a bird".
+    #   The second thing is the words after "nor" up to the first of the same part of speech as the last of the first
+    #   ("un oiseau" for "un chat"); the first, the words after "neither", or, when the language says only "nor" ("vlees
+    #   noch vis"), the words before it of the same parts of speech as the second.
+    #   Each sentence must read as saying not ("isnot", "doesnot", "no"), both the same way. When what is left does not
+    #   say it ("Rex is a cat"), the word of the language that says not is put where "neither" was ("Rex is not a
+    #   cat"), or before or after the verb when "neither" opened the sentence ("cats not fly"): the first that reads so.
+    # Never a question; nothing when the words are not there once each, or a part does not read so
+    $marks = Get-LambekNeitherWord -Language $Language
+    $model = Get-LambekFormModel -Language $Language
+    if (-not $marks -or -not $model) { return }
+    $words = @($Text.Trim() -split '\s+' | Where-Object { $_ })
+    $plain = @($words | ForEach-Object { (ConvertTo-LambekNormalizedText -Text "$_").ToLowerInvariant() })
+    $all = @(@($marks.Neither) + @($marks.Nor))
+    $at = @(for ($i = 0; $i -lt $plain.Count; $i++) { if ($plain[$i] -in $all) { $i } })
+    if ($at.Count -eq 2 -and $plain[$at[0]] -in $marks.Neither -and $plain[$at[1]] -in $marks.Nor -and $at[1] -gt $at[0] + 1) { $first = $at[0]; $nor = $at[1] }
+    elseif ($at.Count -eq 1 -and $plain[$at[0]] -in $marks.Nor -and $at[0] -gt 0) { $first = -1; $nor = $at[0] }
+    else { return }
+    if ($nor -ge $words.Count - 1) { return }
+    $tags = @($model.Read([string[]] $words))
+    if ($tags.Count -ne $words.Count) { return }
+    $upos = @($tags | ForEach-Object { "$($_.Upos)" })
+    # (the two things, from where each starts to where it ends)
+    $found = $null
+    $content = 'NOUN', 'PROPN', 'ADJ', 'VERB', 'ADV', 'NUM'
+    if ($first -ge 0) {
+        # (a word of the same part of speech, or, when there is none, any word that says something for one that does,
+        # whatever the tagger made of each: "viande" tagged a verb, "poisson" a noun)
+        $last = $upos[$nor - 1]
+        for ($end = $nor + 1; $end -lt $words.Count -and -not $found; $end++) {
+            if ($upos[$end] -eq $last) { $found = @(($first + 1), ($nor - 1), ($nor + 1), $end) }
+        }
+        for ($end = $nor + 1; $end -lt $words.Count -and -not $found -and $last -in $content; $end++) {
+            if ($upos[$end] -in $content) { $found = @(($first + 1), ($nor - 1), ($nor + 1), $end) }
+        }
+    }
+    else {
+        for ($end = $nor + 1; $end -lt $words.Count -and -not $found; $end++) {
+            if ($upos[$end] -notin $content) { continue }
+            $length = $end - $nor
+            $start = $nor - $length
+            if ($start -lt 1) { break }
+            if ((@($upos[$start..($nor - 1)]) -join ' ') -ceq (@($upos[($nor + 1)..$end]) -join ' ')) { $found = @($start, ($nor - 1), ($nor + 1), $end) }
+        }
+    }
+    if (-not $found) { return }
+    $before = $(if ($first -ge 0) { $first } else { $found[0] })
+    $prefix = @(if ($before -gt 0) { $words[0..($before - 1)] })
+    $one = @($words[$found[0]..$found[1]])
+    $other = @($words[$found[2]..$found[3]])
+    $suffix = @(if ($found[3] -lt $words.Count - 1) { $words[($found[3] + 1)..($words.Count - 1)] })
+    $suffixTags = @(if ($found[3] -lt $words.Count - 1) { $upos[($found[3] + 1)..($words.Count - 1)] })
+    $read = {
+        param([string[]] $head, [string[]] $tail)
+        $sentences = @(((@($head) + $one + @($tail)) -join ' '), ((@($head) + $other + @($tail)) -join ' '))
+        $kinds = @(foreach ($sentence in $sentences) {
+                $r = Read-LambekCategorySentence -Sentence $sentence -Language $Language -Strict
+                if ($r -and $r.Kind -in 'isnot', 'doesnot', 'no') { $r.Kind } else { '' }
+            })
+        if ($kinds[0] -and $kinds[0] -eq $kinds[1]) { return $sentences }
+    }
+    # (what is left says not itself: "Rex n'est un chat", "los gatos no vuelan")
+    $said = & $read $prefix $suffix
+    if ($said) { return $said }
+    # (or with the word that says not, where "neither" was, or about the verb when "neither" opened the sentence)
+    $not = @(Get-LambekNotWord -Language $Language)
+    if ($not.Count -eq 0) {
+        $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+        if ($dialogue -and $dialogue['General'] -and $dialogue['General'].Contains('Negations')) { $not = @(@($dialogue['General']['Negations']) | Where-Object { $_ } | Select-Object -First 1) }
+    }
+    if ($not.Count -eq 0) { return }
+    if ($prefix.Count -gt 0) {
+        $said = & $read (@($prefix) + @($not[0])) $suffix
+        if ($said) { return $said }
+        return
+    }
+    $verb = @(for ($k = 0; $k -lt $suffixTags.Count; $k++) { if ($suffixTags[$k] -in 'VERB', 'AUX') { $k } })
+    if ($verb.Count -eq 0) { return }
+    $v = $verb[0]
+    $front = @(if ($v -gt 0) { $suffix[0..($v - 1)] })
+    $back = @(if ($v -lt $suffix.Count - 1) { $suffix[($v + 1)..($suffix.Count - 1)] })
+    $said = & $read @() (@($front) + @($not[0]) + @($suffix[$v]) + @($back))
+    if ($said) { return $said }
+    $said = & $read @() (@($front) + @($suffix[$v]) + @($not[0]) + @($back))
+    if ($said) { return $said }
+}
+
 function Split-LambekCategoryCoordination {
     param([object[]] $Sentences, [string] $Language)
 
@@ -178,6 +285,19 @@ function Split-LambekCategoryCoordination {
     # "oder", which say one of them)
     $joins = @(Get-LambekConjunctionWord -Language $Language | ForEach-Object { [regex]::Escape("$_") })
     foreach ($sentence in $Sentences) {
+        # A sentence that says not of two things ("Rex n'est ni un chat ni un oiseau"): two sentences that each say
+        # not, said back as it was said, once
+        if (-not $sentence.Question) {
+            $neither = @(Split-LambekCategoryNeither -Text $sentence.Text -Language $Language)
+            if ($neither.Count -eq 2) {
+                $split = @(Split-LambekCategorySentence -Text (($neither | ForEach-Object { "$_." }) -join ' ') -Language $Language)
+                if ($split.Count -eq 2) {
+                    foreach ($part in $split) { $part | Add-Member -NotePropertyName Joined -NotePropertyValue $sentence.Original -Force }
+                    $split
+                    continue
+                }
+            }
+        }
         # A sentence told with two kinds or two things said of the same ("tous les chats et les chiens sont des
         # animaux", "tous les chats sont noirs et gentils", "tous les chiens aboient et mordent"): two sentences
         if (-not $sentence.Question -and $joins.Count -gt 0) {
@@ -342,7 +462,11 @@ function Split-LambekCategorySentence {
     # The sentences of the message, each as written, in its plain form, and whether it asks. A sentence with anything
     # but words (a number, a path, a file) is no general rule: the whole message is left to the rest of Lambek
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
-    $lead = @($data['Lead'] | Where-Object { $_ } | ForEach-Object { [regex]::Escape("$_") })
+    # (a word that opens a sentence only to join it to the one before: "et", "aber"; never the first of the two words
+    # that say not of both, "weder", "ni", which belongs to the sentence)
+    $marks = Get-LambekNeitherWord -Language $Language
+    $neither = @(if ($marks) { $marks.Neither })
+    $lead = @($data['Lead'] | Where-Object { $_ -and (ConvertTo-LambekNormalizedText -Text "$_").ToLowerInvariant() -notin $neither } | ForEach-Object { [regex]::Escape("$_") })
     # (the words that take back what was told, the longest first: "non, en fait", "I was wrong")
     $taking = @($data['Corrections'] | Where-Object { $_ } | Sort-Object { -"$_".Length }, { "$_" } | ForEach-Object { [regex]::Escape("$_") -replace '\\ ', '\s+' })
     $sentences = [System.Collections.Generic.List[object]]::new()

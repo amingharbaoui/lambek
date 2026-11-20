@@ -1999,6 +1999,8 @@
         "mais"
       ],
       "Or": ["ou"],
+      "Neither": ["ni"],
+      "Nor": ["ni"],
       "Counting": { "AtLeast": ["au moins"], "AtMost": ["au plus"], "Exactly": ["exactement"] },
       "Attitudes": { "Believing": ["croire", "penser"], "Knowing": ["savoir"], "That": ["que"] },
       "Time": { "Before": ["avant"], "After": ["apres"] },

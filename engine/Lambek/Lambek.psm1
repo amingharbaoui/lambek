@@ -131,6 +131,7 @@ $script:ProblemTrigger = $null
 # The shapes of general rules in each language, the base forms of their words, and the sentences told read as them
 $script:CategoryWords = $null
 $script:LogicWords = $null
+$script:DialogueWords = $null
 $script:CategorySupport = $null
 $script:CategoryResolving = $false
 $script:CategoryMessage = $null

@@ -503,6 +503,8 @@
         "niet"
       ],
       "Or": ["of"],
+      "Neither": ["noch"],
+      "Nor": ["noch"],
       "Counting": { "AtLeast": ["minstens"], "AtMost": [], "Exactly": ["precies"] },
       "Attitudes": { "Believing": ["denken", "geloven"], "Knowing": ["weten"], "That": ["dat"] },
       "Time": { "Before": ["voor", "voordat"], "After": ["na"] },

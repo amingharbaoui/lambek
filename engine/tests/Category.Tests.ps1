@@ -1126,6 +1126,55 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'Neither one thing nor the other' {
+
+        It 'reads what is said not of two things at once: <Asked>' -ForEach @(
+            @{ Told = @("Rex n'est ni un chat ni un oiseau"); Asked = 'Rex est-il un oiseau ?'; Said = "Non : Rex n'est pas un oiseau.*Rex n'est ni un chat ni un oiseau.*" }
+            @{ Told = @("Rex n'est ni un chat ni un oiseau"); Asked = 'Rex est-il un chat ?'; Said = "Non : Rex n'est pas un chat.*" }
+            @{ Told = @('Ni les chats ni les chiens ne volent', 'Tom est un chien'); Asked = 'Tom vole-t-il ?'; Said = 'Normalement non*' }
+            @{ Told = @('Rex is neither a cat nor a bird'); Asked = 'is Rex a cat?'; Said = 'No: Rex is not a cat.*' }
+            @{ Told = @('Neither cats nor dogs fly', 'Tom is a dog'); Asked = 'does Tom fly?'; Said = 'Normally no*' }
+            @{ Told = @('Rex ist weder eine Katze noch ein Vogel'); Asked = 'ist Rex ein Vogel?'; Said = 'Nein.*' }
+            @{ Told = @('Rex no es ni un gato ni un pájaro'); Asked = '¿es Rex un pájaro?'; Said = 'No.*' }
+            @{ Told = @('Rex não é nem um gato nem um pássaro'); Asked = 'Rex é um gato?'; Said = 'Não.*' }
+            @{ Told = @('Rex non è né un gatto né un uccello'); Asked = 'Rex è un uccello?'; Said = 'No.*' }
+            @{ Told = @('Rex is noch een kat noch een vogel'); Asked = 'is Rex een kat?'; Said = 'Nee.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'does not suppose what it has no words to say is only supposed' {
+            Tell 'Weder Katzen noch Hunde fliegen', 'Tom ist ein Hund'
+            (Ask 'fliegt Tom?') -join ' ' | Should -BeLike 'Ich wei*nicht*'
+        }
+
+        It 'says it back once, as it was said' {
+            (Ask "Rex n'est ni un chat ni un oiseau.") -join ' ' | Should -BeLike "C'est noté. Rex n'est ni un chat ni un oiseau.*"
+        }
+
+        It 'makes two sentences that say not, with the words learned of the language: <Text>' -ForEach @(
+            @{ Language = 'fr'; Text = "Rex n'est ni un chat ni un oiseau"; Parts = @("Rex n'est un chat", "Rex n'est un oiseau") }
+            @{ Language = 'en'; Text = 'Rex is neither a cat nor a bird'; Parts = @('Rex is not a cat', 'Rex is not a bird') }
+            @{ Language = 'de'; Text = 'Weder Katzen noch Hunde fliegen'; Parts = @('Katzen fliegen nicht', 'Hunde fliegen nicht') }
+            @{ Language = 'es'; Text = 'Ni los gatos ni los perros vuelan'; Parts = @('los gatos no vuelan', 'los perros no vuelan') }
+            @{ Language = 'nl'; Text = 'Rex is noch een kat noch een vogel'; Parts = @('Rex is niet een kat', 'Rex is niet een vogel') }
+        ) {
+            $parts = & (Get-Module Lambek) { param($t, $l) @(Split-LambekCategoryNeither -Text $t -Language $l) } $Text $Language
+            $parts | Should -Be $Parts
+        }
+
+        It 'makes nothing of a sentence where the words do not say not of both: <Text>' -ForEach @(
+            @{ Language = 'de'; Text = 'Rex ist noch ein Welpe' }
+            @{ Language = 'fr'; Text = 'Rex est un chat ni' }
+            @{ Language = 'fr'; Text = "ni Rex n'est un chat" }
+            @{ Language = 'en'; Text = 'Rex is a cat and a dog' }
+        ) {
+            $parts = & (Get-Module Lambek) { param($t, $l) @(Split-LambekCategoryNeither -Text $t -Language $l) } $Text $Language
+            $parts.Count | Should -Be 0
+        }
+    }
+
     Context 'One thing done before another, and on a day' {
 
         It 'answers before and after from what was told: <Asked>' -ForEach @(

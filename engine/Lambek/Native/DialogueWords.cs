@@ -234,4 +234,38 @@ public static class LambekDialogueWords
         }
         return best.Key;
     }
+
+    // The two words of the other language met where two English words are said together, the first before the second
+    // ("neither ... nor": "weder ... noch", "ni ... ni"): among the words given, the pair, in the order said, in the most
+    // short pairs with them, weighed by how often it is with them, as Aligned; the same word twice when the language
+    // says it twice. Null when no pair is with them so often
+    public static string[] AlignedPair(string[] english, string[] other, string first, string second, IEnumerable<string> words, int least, int longest)
+    {
+        HashSet<string> candidates = new HashSet<string>(words, StringComparer.Ordinal);
+        Dictionary<string, int> together = new Dictionary<string, int>(StringComparer.Ordinal);
+        Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (int i = 0; i < english.Length && i < other.Length; i++)
+        {
+            List<string> theirs = Word.Matches(other[i].ToLowerInvariant()).Cast<System.Text.RegularExpressions.Match>().Select(m => m.Value).ToList();
+            if (theirs.Count > longest) continue;
+            List<string> found = theirs.Where(w => candidates.Contains(w)).ToList();
+            if (found.Count < 2) continue;
+            List<string> ours = Word.Matches(english[i].ToLowerInvariant()).Cast<System.Text.RegularExpressions.Match>().Select(m => m.Value).ToList();
+            int at = ours.IndexOf(first);
+            bool has = at >= 0 && ours.LastIndexOf(second) > at;
+            HashSet<string> pairs = new HashSet<string>(StringComparer.Ordinal);
+            for (int j = 0; j < found.Count; j++)
+            {
+                for (int k = j + 1; k < found.Count; k++) { pairs.Add(found[j] + " " + found[k]); }
+            }
+            foreach (string pair in pairs)
+            {
+                int c; seen.TryGetValue(pair, out c); seen[pair] = c + 1;
+                if (has) { together.TryGetValue(pair, out c); together[pair] = c + 1; }
+            }
+        }
+        KeyValuePair<string, int> best = together.Where(p => p.Value >= least)
+            .OrderByDescending(p => (double) p.Value * p.Value / seen[p.Key]).ThenBy(p => p.Key, StringComparer.Ordinal).FirstOrDefault();
+        return best.Key == null ? null : best.Key.Split(' ');
+    }
 }

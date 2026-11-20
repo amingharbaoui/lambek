@@ -1,8 +1,8 @@
 {
-  "Version": "2.2",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "2.3",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "586ad555468c7a8f1b12f69d536cd50c760d4eb4c3eeb49804302b27e6e7bfbe",
+  "TestHash": "e017e1cd5c42a8e9a9eff1ade345369a82a0fa40ae647b2ce167df2c2c509d01",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -22404,6 +22404,1030 @@
             "Avoid": [
               "no."
             ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-neither-first-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max n'est ni un chat ni un cheval"
+        },
+        {
+          "Text": "Max est-il un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-neither-second-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Max n'est ni un chat ni un cheval"
+        },
+        {
+          "Text": "Max est-il un cheval ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-neither-other-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Max n'est ni un chat ni un cheval"
+        },
+        {
+          "Text": "Max est-il un chien ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-neither-first-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Léo n'est ni un poisson ni un lapin"
+        },
+        {
+          "Text": "Léo est-il un poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-neither-second-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Léo n'est ni un poisson ni un lapin"
+        },
+        {
+          "Text": "Léo est-il un lapin ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-neither-other-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Léo n'est ni un poisson ni un lapin"
+        },
+        {
+          "Text": "Léo est-il un oiseau ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-neither-first-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is neither a cat nor a horse"
+        },
+        {
+          "Text": "is Max a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-neither-second-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is neither a cat nor a horse"
+        },
+        {
+          "Text": "is Max a horse?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-neither-other-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is neither a cat nor a horse"
+        },
+        {
+          "Text": "is Max a dog?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-neither-first-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is neither a fish nor a rabbit"
+        },
+        {
+          "Text": "is Leo a fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-neither-second-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is neither a fish nor a rabbit"
+        },
+        {
+          "Text": "is Leo a rabbit?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no:|no.|no,"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-neither-other-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is neither a fish nor a rabbit"
+        },
+        {
+          "Text": "is Leo a bird?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-neither-first-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max ist weder eine Katze noch ein Pferd"
+        },
+        {
+          "Text": "ist Max eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-neither-second-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Max ist weder eine Katze noch ein Pferd"
+        },
+        {
+          "Text": "ist Max ein Pferd?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-neither-other-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Max ist weder eine Katze noch ein Pferd"
+        },
+        {
+          "Text": "ist Max ein Hund?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-neither-first-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo ist weder ein Fisch noch ein Kaninchen"
+        },
+        {
+          "Text": "ist Leo ein Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-neither-second-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo ist weder ein Fisch noch ein Kaninchen"
+        },
+        {
+          "Text": "ist Leo ein Kaninchen?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-neither-other-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo ist weder ein Fisch noch ein Kaninchen"
+        },
+        {
+          "Text": "ist Leo ein Vogel?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-neither-first-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max no es ni un gato ni un caballo"
+        },
+        {
+          "Text": "¿es Max un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-neither-second-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Max no es ni un gato ni un caballo"
+        },
+        {
+          "Text": "¿es Max un caballo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-neither-other-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Max no es ni un gato ni un caballo"
+        },
+        {
+          "Text": "¿es Max un perro?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-neither-first-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo no es ni un pez ni un conejo"
+        },
+        {
+          "Text": "¿es Leo un pez?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-neither-second-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo no es ni un pez ni un conejo"
+        },
+        {
+          "Text": "¿es Leo un conejo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-neither-other-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo no es ni un pez ni un conejo"
+        },
+        {
+          "Text": "¿es Leo un pájaro?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-neither-first-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is noch een kat noch een paard"
+        },
+        {
+          "Text": "is Max een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-neither-second-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is noch een kat noch een paard"
+        },
+        {
+          "Text": "is Max een paard?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-neither-other-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is noch een kat noch een paard"
+        },
+        {
+          "Text": "is Max een hond?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-neither-first-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is noch een vis noch een konijn"
+        },
+        {
+          "Text": "is Leo een vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-neither-second-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is noch een vis noch een konijn"
+        },
+        {
+          "Text": "is Leo een konijn?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-neither-other-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo is noch een vis noch een konijn"
+        },
+        {
+          "Text": "is Leo een vogel?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-neither-first-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max não é nem um gato nem um cavalo"
+        },
+        {
+          "Text": "Max é um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-neither-second-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Max não é nem um gato nem um cavalo"
+        },
+        {
+          "Text": "Max é um cavalo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-neither-other-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Max não é nem um gato nem um cavalo"
+        },
+        {
+          "Text": "Max é um cão?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-neither-first-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo não é nem um peixe nem um coelho"
+        },
+        {
+          "Text": "Leo é um peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-neither-second-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo não é nem um peixe nem um coelho"
+        },
+        {
+          "Text": "Leo é um coelho?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-neither-other-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo não é nem um peixe nem um coelho"
+        },
+        {
+          "Text": "Leo é um pássaro?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-neither-first-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Max non è né un gatto né un cavallo"
+        },
+        {
+          "Text": "Max è un gatto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-neither-second-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Max non è né un gatto né un cavallo"
+        },
+        {
+          "Text": "Max è un cavallo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-neither-other-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Max non è né un gatto né un cavallo"
+        },
+        {
+          "Text": "Max è un cane?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-neither-first-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "neither-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo non è né un pesce né un coniglio"
+        },
+        {
+          "Text": "Leo è un pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-neither-second-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "neither-second"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo non è né un pesce né un coniglio"
+        },
+        {
+          "Text": "Leo è un coniglio?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-neither-other-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "neither-other"
+      ],
+      "Turns": [
+        {
+          "Text": "Leo non è né un pesce né un coniglio"
+        },
+        {
+          "Text": "Leo è un uccello?",
+          "Expect": {
+            "Reply": "abstain"
           }
         }
       ]

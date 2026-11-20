@@ -682,6 +682,8 @@
         "no"
       ],
       "Or": ["o"],
+      "Neither": ["ni"],
+      "Nor": ["ni"],
       "Counting": { "AtLeast": ["al menos"], "AtMost": ["a lo sumo"], "Exactly": ["exactamente"] },
       "Attitudes": { "Believing": ["creer", "pensar"], "Knowing": ["saber"], "That": ["que"] },
       "Time": { "Before": ["antes"], "After": ["despues de", "tras"] },

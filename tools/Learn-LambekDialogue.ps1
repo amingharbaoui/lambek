@@ -13,7 +13,8 @@
       met the most often where English says "and" and "but"; and the words that compare, met where it says "more",
       "less" and "than"; and the words that tell what someone believes or knows ("glauben", "wissen", "dass"), met
       where it says "believe", "think", "know" and "that", and the word of a condition ("wenn"), where it says "if";
-      and the words of time ("vor", "nach", "gestern"), where it says "before", "after", "yesterday", "today", "tomorrow".
+      and the words of time ("vor", "nach", "gestern"), where it says "before", "after", "yesterday", "today", "tomorrow";
+      and the two words that say not of both ("weder ... noch"), where it says "neither ... nor".
       The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from its words
       of logic (<language>.logic).
     - What it answers, from the sentences translated from English (Tatoeba): "Yes." is "Ja.", "No." is "Nein.",
@@ -132,6 +133,12 @@ $general['Not'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $other
 # (the word that says one of them: the one met the most often where English says "or", among the words its treebanks
 # tag as conjunctions; never one of those that say both)
 $general['Or'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'or', (& $tagged '^CCONJ\|'), 20, 12) | Where-Object { $_ -and $_ -notin @($general['And']) })
+# (the two words that say not of both: the pair met the most often where English says "neither" and then "nor", among
+# the words its treebanks tag as conjunctions or adverbs, in the order said: "weder ... noch", "ni ... ni"; none when
+# no pair is met so often)
+[string[]] $pair = [LambekDialogueWords]::AlignedPair($englishSide, $otherSide, 'neither', 'nor', (& $tagged '^(CCONJ|ADV)\|'), 5, 20)
+$general['Neither'] = & $plain @(if ($pair) { $pair[0] })
+$general['Nor'] = & $plain @(if ($pair) { $pair[1] })
 # (the words that say how many at least, at most and exactly, before a number: the run of one to three words met the
 # most often where English says "at least", "at most", "exactly" (LambekDialogueWords.AlignedRun); "at most" is rare,
 # so looked for in longer pairs and kept from three of them; none when nothing is found)

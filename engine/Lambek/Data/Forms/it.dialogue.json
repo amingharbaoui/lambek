@@ -709,6 +709,8 @@
         "non"
       ],
       "Or": ["o"],
+      "Neither": ["ne"],
+      "Nor": ["ne"],
       "Counting": { "AtLeast": ["almeno"], "AtMost": ["al massimo"], "Exactly": ["esattamente"] },
       "Attitudes": { "Believing": ["credere", "pensare"], "Knowing": ["sapere"], "That": ["che"] },
       "Time": { "Before": ["prima"], "After": ["dopo"] },
