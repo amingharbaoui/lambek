@@ -2007,7 +2007,9 @@
       "Comparing": {
         "More": ["plus"],
         "Less": ["moins"],
-        "Than": ["que", "qu"]
+        "Than": ["que", "qu"],
+        "As": ["aussi"],
+        "Like": ["que", "qu"]
       },
       "Causes": [
         "parce que",

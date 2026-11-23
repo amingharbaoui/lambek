@@ -76,6 +76,12 @@ Describe 'A proof written for Lean' {
             @{ Name = 'what one is not, from what its kind is'; Premises = 'category(all|chat|noir)|', 'category(isnot|speaker|noir)|'; Conclusion = 'category(isnot|speaker|chat)' }
             @{ Name = 'more than a third, through a second'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
             @{ Name = 'not more than the one more than it'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(notmore|grand|name:tom|name:rex)' }
+            @{ Name = 'as much as one more than a third'; Premises = 'compare(atleast|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
+            @{ Name = 'as much as one as much as a third'; Premises = 'compare(atleast|grand|name:rex|name:max)|', 'compare(atleast|grand|name:max|name:tom)|'; Conclusion = 'compare(atleast|grand|name:rex|name:tom)' }
+            @{ Name = 'as much, being more'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(atleast|grand|name:rex|name:max)' }
+            @{ Name = 'not more than one as much as it'; Premises = 'compare(atleast|grand|name:rex|name:max)|'; Conclusion = 'compare(notmore|grand|name:max|name:rex)' }
+            @{ Name = 'not as much as one more than it'; Premises = 'compare(more|grand|name:max|name:rex)|'; Conclusion = 'compare(notatleast|grand|name:rex|name:max)' }
+            @{ Name = 'so, as much as one that is'; Premises = 'compare(atleast|grand|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
             @{ Name = 'so, more so than one that is'; Premises = 'compare(more|grand|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
             @{ Name = 'not so, less so than one that is not'; Premises = 'compare(more|grand|name:rex|name:max)|', 'category(isnot|name:rex|grand)|'; Conclusion = 'category(isnot|name:max|grand)' }
             @{ Name = 'one of two, not the other'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(isnot|name:rex|chat)|'; Conclusion = 'category(is|name:rex|chien)' }
@@ -101,6 +107,9 @@ Describe 'A proof written for Lean' {
             @{ Name = 'what the narrower kind rules out'; Premises = 'category(usual:all|oiseau|v:voler)|', 'category(usual:no|pingouin|v:voler)|', 'category(all|pingouin|oiseau)|', 'category(is|name:pingu|pingouin)|'; Conclusion = 'category(usual:is|name:pingu|v:voler)' }
             @{ Name = 'more, the other way round'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:max|name:rex)' }
             @{ Name = 'more in another way'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|fort|name:rex|name:max)' }
+            @{ Name = 'more, being only as much'; Premises = 'compare(atleast|grand|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:rex|name:max)' }
+            @{ Name = 'not as much, the other being only as much'; Premises = 'compare(atleast|grand|name:max|name:rex)|'; Conclusion = 'compare(notatleast|grand|name:rex|name:max)' }
+            @{ Name = 'as much, the other way round'; Premises = 'compare(atleast|grand|name:rex|name:max)|'; Conclusion = 'compare(atleast|grand|name:max|name:rex)' }
             @{ Name = 'so, less so than one that is'; Premises = 'compare(more|grand|name:max|name:rex)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
             @{ Name = 'so, more so in another way'; Premises = 'compare(more|fort|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
             @{ Name = 'one of two, said as the first'; Premises = 'category(is|name:rex|or:chat;chien)|'; Conclusion = 'category(is|name:rex|chien)' }

@@ -99,7 +99,7 @@ function Resolve-LambekComparisonDegree {
         if (-not $shown.ContainsKey($line)) { $shown[$line] = $true; $lines.Add($line) }
     }
     Set-LambekLastProof -Facts $facts -Conclusion @(Get-LambekCategoryConclusion -Item $ask -Shape $shape) `
-        -Forms @(@($steps | ForEach-Object { (Get-LambekComparisonForm -Item $_.Item) -replace '^compare\((more|notmore)\|[^|]*\|', "compare(`$1|$atom|" }) + @("category($(Get-LambekCategorySignature -Item $found.Said.Item))"))
+        -Forms @(@($steps | ForEach-Object { (Get-LambekComparisonForm -Item $_.Item) -replace '^compare\((more|notmore|atleast|notatleast)\|[^|]*\|', "compare(`$1|$atom|" }) + @("category($(Get-LambekCategorySignature -Item $found.Said.Item))"))
     return [pscustomobject]@{ Language = $detected; Reply = ($lines -join "`n"); Facts = @() }
 }
 
@@ -114,14 +114,16 @@ function Select-LambekComparisonOnce {
 function Get-LambekComparisonWord {
     param([string] $Language)
 
-    # The words of a language that say more, less and than (Dialogue.General.Comparing); nothing when it has none
+    # The words of a language that say more, less and than (Dialogue.General.Comparing), and the two that say as much
+    # ("aussi ... que", "as ... as": As and Like); nothing when it has none
     $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
     $general = $(if ($dialogue -and $dialogue['General']) { $dialogue['General'] } else { $null })
     if (-not $general -or -not $general.Contains('Comparing')) { return $null }
     $words = $general['Comparing']
     if (-not $words -or -not $words['Than'] -or @($words['Than']).Count -eq 0) { return $null }
     $plain = { param($list) @(@($list) | Where-Object { $_ } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" }) }
-    return [pscustomobject]@{ More = (& $plain $words['More']); Less = (& $plain $words['Less']); Than = (& $plain $words['Than']) }
+    $get = { param($key) $(if ($words.Contains($key)) { & $plain $words[$key] } else { @() }) }
+    return [pscustomobject]@{ More = (& $plain $words['More']); Less = (& $plain $words['Less']); Than = (& $plain $words['Than']); As = @(& $get 'As'); Like = @(& $get 'Like') }
 }
 
 function Read-LambekComparison {
@@ -176,7 +178,11 @@ function Read-LambekComparison {
     # (nothing said not: "Rex n'est pas plus grand que Max" says less than it seems)
     $not = @(Get-LambekNotWord -Language $Language)
     if (@($readings | Where-Object { "|$($_.Feats)|" -match '\|(Polarity|PronType)=Neg\|' -or (ConvertTo-LambekNormalizedText -Text "$($_.Form)") -in $not }).Count -gt 0) { return $null }
-    $than = @(for ($i = 0; $i -lt $plain.Count; $i++) { if ($plain[$i] -in $words.Than) { $i } })
+    # (as much as another: "aussi grand que", "as tall as", "so gross wie": the word of as much, one adjective, the word
+    # that comes after it; at least as much, so one may be more)
+    $like = @(for ($i = 3; $i -lt $plain.Count - 1; $i++) { if ($plain[$i] -in $words.Like -and $plain[$i - 2] -in $words.As) { $i } })
+    $equal = $like.Count -eq 1
+    $than = @(if ($equal) { $like } else { for ($i = 0; $i -lt $plain.Count; $i++) { if ($plain[$i] -in $words.Than) { $i } } })
     if ($than.Count -ne 1 -or $than[0] -lt 2 -or $than[0] -ge $tokens.Count - 1) { return $null }
     $t = $than[0]
     # How it is compared: "plus grand", "more beautiful", or one adjective said in its comparative ("taller", "groesser")
@@ -198,7 +204,8 @@ function Read-LambekComparison {
     }
     $more = $null
     $start = $adjective
-    if ($plain[$adjective - 1] -in $words.More) { $more = $true; $start = $adjective - 1 }
+    if ($equal) { $more = $true; $start = $adjective - 1 }
+    elseif ($plain[$adjective - 1] -in $words.More) { $more = $true; $start = $adjective - 1 }
     elseif ($plain[$adjective - 1] -in $words.Less) { $more = $false; $start = $adjective - 1 }
     elseif ("|$feats|" -match '\|Degree=Cmp\|') { $more = $true }
     if ($null -eq $more) { return $null }
@@ -265,6 +272,8 @@ function Read-LambekComparison {
                 # (and the other way round, for an answer no: "Rex est plus grand que Tom" when "Tom" was asked of)
                 Back    = ((@($other) + @($verb) + @($tokens[$start..$t]) + @($who)) -join ' ')
                 Several = ($ones.Count * $twos.Count) -gt 1
+                # (as much as: at least as much, "atleast")
+                Equal   = $equal
             }
         }
     }
@@ -273,10 +282,11 @@ function Read-LambekComparison {
 function Get-LambekComparisonForm {
     param([pscustomobject] $Item, [switch] $Not)
 
-    # The shape the checker reads: compare(more|grand|name:rex|name:max), "notmore" for what is not more; one done on
-    # a day, date(time:arriver|name:rex|2026-10-18)
+    # The shape the checker reads: compare(more|grand|name:rex|name:max), "notmore" for what is not more; as much as,
+    # compare(atleast|grand|name:rex|name:max), "notatleast"; one done on a day, date(time:arriver|name:rex|2026-10-18)
     if ($Item.Kind -in 'dated', 'askdated') { return "date($($Item.Of)|$($Item.Who.Key)|$($Item.Day))" }
-    return "compare($(if ($Not) { 'notmore' } else { 'more' })|$($Item.Of)|$($Item.Greater.Key)|$($Item.Smaller.Key))"
+    $how = $(if ($Item.PSObject.Properties['Equal'] -and $Item.Equal) { 'atleast' } else { 'more' })
+    return "compare($(if ($Not) { "not$how" } else { $how })|$($Item.Of)|$($Item.Greater.Key)|$($Item.Smaller.Key))"
 }
 
 function Get-LambekComparisonKnown {
@@ -307,10 +317,19 @@ function Get-LambekComparisonKnown {
 }
 
 function Find-LambekComparisonPath {
-    param([object[]] $Known, [string] $Of, [string] $From, [string] $To)
+    param(
+        [object[]] $Known,
+        [string] $Of,
+        [string] $From,
+        [string] $To,
+        # (more, not only as much: a way with at least one step that says more)
+        [switch] $Strict
+    )
 
     # The things told that lead from one more to another less, one after the other: what is more than one that is
     # more than a third is more than the third. The shortest way, found breadth first; nothing when there is none.
+    # A step may say as much ("aussi grand que": at least as much): a way of such steps only says as much, and says
+    # more as soon as one of its steps does (-Strict asks for that).
     # One done on a day before the day another did it did it before: a step of the two things told (Steps)
     $edges = [System.Collections.Generic.List[object]]::new()
     foreach ($entry in @($Known | Where-Object { $_.Item.Of -eq $Of -and $_.Item.Kind -eq 'compare' })) { $edges.Add($entry) }
@@ -325,21 +344,25 @@ function Find-LambekComparisonPath {
             $edges.Add([pscustomobject]@{ Fact = $early.Fact; Steps = @($early, $late); Item = [pscustomobject]@{ Kind = 'compare'; Of = $Of; Greater = $first.Item.Who; Smaller = $second.Item.Who } })
         }
     }
-    $came = @{ $From = $null }
+    # (each one reached, with whether a step that says more was on the way: "name:max|1")
+    $more = { param($edge) -not ($edge.Item.PSObject.Properties['Equal'] -and $edge.Item.Equal) }
+    $start = "$From|0"
+    $came = @{ $start = $null }
     $queue = [System.Collections.Generic.Queue[string]]::new()
-    $queue.Enqueue($From)
+    $queue.Enqueue($start)
     while ($queue.Count -gt 0) {
-        $at = $queue.Dequeue()
-        if ($at -eq $To) {
+        $state = $queue.Dequeue()
+        $at, $flag = $state -split '\|(?=[01]$)'
+        if ($at -eq $To -and ($flag -eq '1' -or -not $Strict)) {
             $path = [System.Collections.Generic.List[object]]::new()
-            $step = $To
-            while ($null -ne $came[$step]) { $path.Insert(0, $came[$step]); $step = "$($came[$step].Item.Greater.Key)" }
+            $step = $state
+            while ($null -ne $came[$step]) { $path.Insert(0, $came[$step].Edge); $step = $came[$step].From }
             return , $path.ToArray()
         }
         foreach ($edge in @($edges | Where-Object { "$($_.Item.Greater.Key)" -eq $at })) {
-            $next = "$($edge.Item.Smaller.Key)"
+            $next = "$($edge.Item.Smaller.Key)|$(if ($flag -eq '1' -or (& $more $edge)) { '1' } else { '0' })"
             if ($came.ContainsKey($next)) { continue }
-            $came[$next] = $edge
+            $came[$next] = [pscustomobject]@{ Edge = $edge; From = $state }
             $queue.Enqueue($next)
         }
     }
@@ -375,6 +398,11 @@ function ConvertTo-LambekComparisonFact {
 function Resolve-LambekComparisonMessage {
     param([object[]] $Items, [string] $Language)
 
+    # (one said as much as another: at least as much; more is asked a way with a step that says more, and as much is
+    # gone back on only by such a way, the other way round)
+    $equal = { param($item) [bool] ($item.PSObject.Properties['Equal'] -and $item.Equal) }
+    $strict = { param($path) @($path | Where-Object { -not ($_.Item.PSObject.Properties['Equal'] -and $_.Item.Equal) }).Count -gt 0 }
+
     $data = (Get-LambekCategoryVocabulary -Language $Language).Data
     $say = (Get-LambekLexicon -Language $Language).Dialogue.Say
     $asks = @($Items | Where-Object { $_.Item.Kind -in 'askcompare', 'askdated' })
@@ -405,7 +433,7 @@ function Resolve-LambekComparisonMessage {
         $lines.Add(($say[$shape] -f (@($once | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
         # (one done before another and after it is no clash: one may do it more than once)
         foreach ($entry in @($now | Where-Object { $_.Item.Kind -eq 'compare' -and -not "$($_.Item.Of)".StartsWith('time:') })) {
-            $back = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)"
+            $back = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)" -Strict:(& $equal $entry.Item)
             if ($back) {
                 $lines.Add($data['Clash'])
                 foreach ($step in @(Select-LambekComparisonOnce -Items @(@($back) + @($entry)) -Key { param($s) "$($s.Fact.Joined)|$($s.Fact.Text)" })) { $lines.Add("- $(Format-LambekFact -Fact $step.Fact -Language $Language -Register 'vous' -Bare)") }
@@ -440,7 +468,7 @@ function Resolve-LambekComparisonMessage {
         $path = [System.Collections.Generic.List[object]]::new()
         $each = $true
         foreach ($entry in $asks) {
-            $way = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Greater.Key)" -To "$($entry.Item.Smaller.Key)"
+            $way = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Greater.Key)" -To "$($entry.Item.Smaller.Key)" -Strict:(-not (& $equal $entry.Item))
             if (-not $way) { $each = $false; break }
             foreach ($step in $way) { $path.Add($step) }
         }
@@ -453,7 +481,7 @@ function Resolve-LambekComparisonMessage {
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
         }
         foreach ($entry in $asks) {
-            $no = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)"
+            $no = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)" -Strict:(& $equal $entry.Item)
             if (-not $no) { continue }
             $lines.Add($data['NoShort'])
             if ($data['Because']) { $lines.Add($data['Because']) }
@@ -479,7 +507,7 @@ function Resolve-LambekComparisonMessage {
         $lines.Add(($data['Unknown'] -f ($say['Quote'] -f $said)))
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
-    $yes = Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Greater.Key)" -To "$($ask.Smaller.Key)"
+    $yes = Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Greater.Key)" -To "$($ask.Smaller.Key)" -Strict:(-not (& $equal $ask))
     if ($yes) {
         $lines.Add(($data['Yes'] -f (& $sentence $said)))
         if ($data['Because']) { $lines.Add($data['Because']) }
@@ -489,12 +517,16 @@ function Resolve-LambekComparisonMessage {
     }
     # (what is more than another is not less than it: the way the other way round says no; never of what is done
     # before or after another, which one may do more than once)
-    $no = $(if ("$($ask.Of)".StartsWith('time:')) { $null } else { Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Smaller.Key)" -To "$($ask.Greater.Key)" })
+    $no = $(if ("$($ask.Of)".StartsWith('time:')) { $null } else { Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Smaller.Key)" -To "$($ask.Greater.Key)" -Strict:(& $equal $ask) })
     if ($no) {
-        # (no, said as what holds: the other is the one that is more)
-        $back = ConvertTo-LambekOtherSide -Text $ask.Back -Language $Language -Register 'vous'
-        if (-not $back) { $back = $ask.Back }
-        $lines.Add(($data['No'] -f (& $sentence $back.Trim().TrimEnd('.'))))
+        # (no, said as what holds: the other is the one that is more; only "no" when what holds is not that, the other
+        # only as much, or as much asked of)
+        if (-not (& $equal $ask) -and (& $strict $no)) {
+            $back = ConvertTo-LambekOtherSide -Text $ask.Back -Language $Language -Register 'vous'
+            if (-not $back) { $back = $ask.Back }
+            $lines.Add(($data['No'] -f (& $sentence $back.Trim().TrimEnd('.'))))
+        }
+        else { $lines.Add($data['NoShort']) }
         if ($data['Because']) { $lines.Add($data['Because']) }
         & $listed $no
         & $proof $no (Get-LambekComparisonForm -Item $ask -Not)

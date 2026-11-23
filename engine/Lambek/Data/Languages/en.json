@@ -1638,7 +1638,9 @@
       "Comparing": {
         "More": ["more"],
         "Less": ["less"],
-        "Than": ["than"]
+        "Than": ["than"],
+        "As": ["as"],
+        "Like": ["as"]
       },
       "Causes": [
         "because"

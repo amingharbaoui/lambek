@@ -18,6 +18,12 @@ Describe 'The checker of proofs' {
         @{ Name = 'a rule with a condition in the negative'; Premises = 'if(cond(not(pleuvoir(agent("il")))), then(prendre(agent(speaker), object("le velo"))))|', 'not(pleuvoir(agent("il")))|'; Conclusion = 'prendre(agent(speaker), object("le velo"))|' }
         @{ Name = 'one more than another, through a third'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
         @{ Name = 'one not more than the one more than it'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(notmore|grand|name:tom|name:rex)' }
+        @{ Name = 'as much as one more than a third'; Premises = 'compare(atleast|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
+        @{ Name = 'as much as one as much as a third'; Premises = 'compare(atleast|grand|name:rex|name:max)|', 'compare(atleast|grand|name:max|name:tom)|'; Conclusion = 'compare(atleast|grand|name:rex|name:tom)' }
+        @{ Name = 'as much, being more'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(atleast|grand|name:rex|name:max)' }
+        @{ Name = 'not more than one as much as it'; Premises = 'compare(atleast|grand|name:rex|name:max)|'; Conclusion = 'compare(notmore|grand|name:max|name:rex)' }
+        @{ Name = 'not as much as one more than it'; Premises = 'compare(more|grand|name:max|name:rex)|'; Conclusion = 'compare(notatleast|grand|name:rex|name:max)' }
+        @{ Name = 'so, as much as one that is'; Premises = 'compare(atleast|grand|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
         @{ Name = 'so, more so than one that is'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|', 'category(is|name:tom|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
         @{ Name = 'not so, less so than one that is not'; Premises = 'compare(more|grand|name:rex|name:max)|', 'category(isnot|name:rex|grand)|'; Conclusion = 'category(isnot|name:max|grand)' }
         @{ Name = 'one of two, not the other'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(isnot|name:rex|chat)|'; Conclusion = 'category(is|name:rex|chien)' }
@@ -61,6 +67,9 @@ Describe 'The checker of proofs' {
         @{ Name = 'a condition in the negative, from its opposite'; Premises = 'if(cond(not(pleuvoir(agent("il")))), then(prendre(agent(speaker), object("le velo"))))|', 'pleuvoir(agent("il"))|'; Conclusion = 'prendre(agent(speaker), object("le velo"))|' }
         @{ Name = 'more, the other way round'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:max|name:rex)' }
         @{ Name = 'more in another way'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|fort|name:rex|name:max)' }
+        @{ Name = 'more, being only as much'; Premises = 'compare(atleast|grand|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:rex|name:max)' }
+        @{ Name = 'not as much, the other being only as much'; Premises = 'compare(atleast|grand|name:max|name:rex)|'; Conclusion = 'compare(notatleast|grand|name:rex|name:max)' }
+        @{ Name = 'as much, the other way round'; Premises = 'compare(atleast|grand|name:rex|name:max)|'; Conclusion = 'compare(atleast|grand|name:max|name:rex)' }
         @{ Name = 'a way broken in the middle'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:paul|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
         @{ Name = 'so, less so than one that is'; Premises = 'compare(more|grand|name:max|name:rex)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
         @{ Name = 'so, more so in another way'; Premises = 'compare(more|fort|name:rex|name:max)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }

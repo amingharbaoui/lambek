@@ -511,7 +511,9 @@
       "Comparing": {
         "More": ["meer"],
         "Less": ["minder"],
-        "Than": ["dan"]
+        "Than": ["dan"],
+        "As": ["zo"],
+        "Like": ["als"]
       },
       "Causes": [],
       "Impersonal": [],

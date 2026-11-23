@@ -1,8 +1,8 @@
 {
-  "Version": "2.4",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "2.5",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run; version 2.5 added one said as much as another, at least as much: more than a third through one more, as much through two, never more the other way round, and not more from as much alone, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "f4b4d4e02b8aa00f2984ac4c813eacad2407001879e57be20e2efcb26abc6b37",
+  "TestHash": "51c0ea09f11cc335e6658555bb2f6677b451cc83b7f98b37ae4f95db92413ad0",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -24990,6 +24990,1486 @@
         },
         {
           "Text": "Leo è un pesce?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-equal-more-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est aussi grand que Max"
+        },
+        {
+          "Text": "Max est plus grand que Tom"
+        },
+        {
+          "Text": "Rex est-il plus grand que Tom ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-equal-chain-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est aussi grand que Max"
+        },
+        {
+          "Text": "Max est aussi grand que Tom"
+        },
+        {
+          "Text": "Rex est-il aussi grand que Tom ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-equal-back-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est aussi grand que Max"
+        },
+        {
+          "Text": "Max est-il plus grand que Rex ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-equal-open-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est aussi grand que Max"
+        },
+        {
+          "Text": "Rex est-il plus grand que Max ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-equal-more-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est aussi fort que Marc"
+        },
+        {
+          "Text": "Marc est plus fort que Luc"
+        },
+        {
+          "Text": "Paul est-il plus fort que Luc ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-equal-chain-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est aussi fort que Marc"
+        },
+        {
+          "Text": "Marc est aussi fort que Luc"
+        },
+        {
+          "Text": "Paul est-il aussi fort que Luc ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-equal-back-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est aussi fort que Marc"
+        },
+        {
+          "Text": "Marc est-il plus fort que Paul ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui :",
+              "oui.",
+              "oui,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-equal-open-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est aussi fort que Marc"
+        },
+        {
+          "Text": "Paul est-il plus fort que Marc ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-equal-more-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is as tall as Max"
+        },
+        {
+          "Text": "Max is taller than Tom"
+        },
+        {
+          "Text": "is Rex taller than Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-equal-chain-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is as tall as Max"
+        },
+        {
+          "Text": "Max is as tall as Tom"
+        },
+        {
+          "Text": "is Rex as tall as Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-equal-back-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is as tall as Max"
+        },
+        {
+          "Text": "is Max taller than Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-equal-open-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is as tall as Max"
+        },
+        {
+          "Text": "is Rex taller than Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-equal-more-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is as strong as Mark"
+        },
+        {
+          "Text": "Mark is stronger than Luke"
+        },
+        {
+          "Text": "is Paul stronger than Luke?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-equal-chain-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is as strong as Mark"
+        },
+        {
+          "Text": "Mark is as strong as Luke"
+        },
+        {
+          "Text": "is Paul as strong as Luke?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-equal-back-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is as strong as Mark"
+        },
+        {
+          "Text": "is Mark stronger than Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no"
+            ],
+            "Avoid": [
+              "yes:",
+              "yes.",
+              "yes,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-equal-open-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is as strong as Mark"
+        },
+        {
+          "Text": "is Paul stronger than Mark?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-equal-more-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist so groß wie Max"
+        },
+        {
+          "Text": "Max ist größer als Tom"
+        },
+        {
+          "Text": "ist Rex größer als Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-equal-chain-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist so groß wie Max"
+        },
+        {
+          "Text": "Max ist so groß wie Tom"
+        },
+        {
+          "Text": "ist Rex so groß wie Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-equal-back-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist so groß wie Max"
+        },
+        {
+          "Text": "ist Max größer als Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-equal-open-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist so groß wie Max"
+        },
+        {
+          "Text": "ist Rex größer als Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-equal-more-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist so stark wie Mark"
+        },
+        {
+          "Text": "Mark ist stärker als Lukas"
+        },
+        {
+          "Text": "ist Paul stärker als Lukas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-equal-chain-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist so stark wie Mark"
+        },
+        {
+          "Text": "Mark ist so stark wie Lukas"
+        },
+        {
+          "Text": "ist Paul so stark wie Lukas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-equal-back-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist so stark wie Mark"
+        },
+        {
+          "Text": "ist Mark stärker als Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-equal-open-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist so stark wie Mark"
+        },
+        {
+          "Text": "ist Paul stärker als Mark?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-equal-more-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es tan alto como Max"
+        },
+        {
+          "Text": "Max es más alto que Tom"
+        },
+        {
+          "Text": "¿es Rex más alto que Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-equal-chain-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es tan alto como Max"
+        },
+        {
+          "Text": "Max es tan alto como Tom"
+        },
+        {
+          "Text": "¿es Rex tan alto como Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-equal-back-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es tan alto como Max"
+        },
+        {
+          "Text": "¿es Max más alto que Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-equal-open-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es tan alto como Max"
+        },
+        {
+          "Text": "¿es Rex más alto que Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-equal-more-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo es tan fuerte como Marcos"
+        },
+        {
+          "Text": "Marcos es más fuerte que Lucas"
+        },
+        {
+          "Text": "¿es Pablo más fuerte que Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-equal-chain-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo es tan fuerte como Marcos"
+        },
+        {
+          "Text": "Marcos es tan fuerte como Lucas"
+        },
+        {
+          "Text": "¿es Pablo tan fuerte como Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-equal-back-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo es tan fuerte como Marcos"
+        },
+        {
+          "Text": "¿es Marcos más fuerte que Pablo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-equal-open-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo es tan fuerte como Marcos"
+        },
+        {
+          "Text": "¿es Pablo más fuerte que Marcos?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-equal-more-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is zo groot als Max"
+        },
+        {
+          "Text": "Max is groter dan Tom"
+        },
+        {
+          "Text": "is Rex groter dan Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-equal-chain-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is zo groot als Max"
+        },
+        {
+          "Text": "Max is zo groot als Tom"
+        },
+        {
+          "Text": "is Rex zo groot als Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-equal-back-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is zo groot als Max"
+        },
+        {
+          "Text": "is Max groter dan Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-equal-open-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is zo groot als Max"
+        },
+        {
+          "Text": "is Rex groter dan Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-equal-more-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is zo sterk als Mark"
+        },
+        {
+          "Text": "Mark is sterker dan Luuk"
+        },
+        {
+          "Text": "is Paul sterker dan Luuk?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-equal-chain-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is zo sterk als Mark"
+        },
+        {
+          "Text": "Mark is zo sterk als Luuk"
+        },
+        {
+          "Text": "is Paul zo sterk als Luuk?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-equal-back-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is zo sterk als Mark"
+        },
+        {
+          "Text": "is Mark sterker dan Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee."
+            ],
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-equal-open-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is zo sterk als Mark"
+        },
+        {
+          "Text": "is Paul sterker dan Mark?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-equal-more-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é tão alto quanto Max"
+        },
+        {
+          "Text": "Max é mais alto que Tom"
+        },
+        {
+          "Text": "Rex é mais alto que Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-equal-chain-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é tão alto quanto Max"
+        },
+        {
+          "Text": "Max é tão alto quanto Tom"
+        },
+        {
+          "Text": "Rex é tão alto quanto Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-equal-back-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é tão alto quanto Max"
+        },
+        {
+          "Text": "Max é mais alto que Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-equal-open-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é tão alto quanto Max"
+        },
+        {
+          "Text": "Rex é mais alto que Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-equal-more-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo é tão forte quanto Marcos"
+        },
+        {
+          "Text": "Marcos é mais forte que Lucas"
+        },
+        {
+          "Text": "Paulo é mais forte que Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-equal-chain-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo é tão forte quanto Marcos"
+        },
+        {
+          "Text": "Marcos é tão forte quanto Lucas"
+        },
+        {
+          "Text": "Paulo é tão forte quanto Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-equal-back-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo é tão forte quanto Marcos"
+        },
+        {
+          "Text": "Marcos é mais forte que Paulo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao."
+            ],
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-equal-open-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo é tão forte quanto Marcos"
+        },
+        {
+          "Text": "Paulo é mais forte que Marcos?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-equal-more-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è tanto alto quanto Max"
+        },
+        {
+          "Text": "Max è più alto di Tom"
+        },
+        {
+          "Text": "Rex è più alto di Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-equal-chain-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è tanto alto quanto Max"
+        },
+        {
+          "Text": "Max è tanto alto quanto Tom"
+        },
+        {
+          "Text": "Rex è tanto alto quanto Tom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-equal-back-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è tanto alto quanto Max"
+        },
+        {
+          "Text": "Max è più alto di Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-equal-open-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è tanto alto quanto Max"
+        },
+        {
+          "Text": "Rex è più alto di Max?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-equal-more-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "equal-more"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo è tanto forte quanto Marco"
+        },
+        {
+          "Text": "Marco è più forte di Luca"
+        },
+        {
+          "Text": "Paolo è più forte di Luca?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-equal-chain-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "equal-chain"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo è tanto forte quanto Marco"
+        },
+        {
+          "Text": "Marco è tanto forte quanto Luca"
+        },
+        {
+          "Text": "Paolo è tanto forte quanto Luca?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-equal-back-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "equal-back"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo è tanto forte quanto Marco"
+        },
+        {
+          "Text": "Marco è più forte di Paolo?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no."
+            ],
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-equal-open-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "equal-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo è tanto forte quanto Marco"
+        },
+        {
+          "Text": "Paolo è più forte di Marco?",
           "Expect": {
             "Reply": "abstain"
           }

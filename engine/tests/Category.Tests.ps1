@@ -1336,6 +1336,49 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'One said to be as much as another' {
+
+        It 'reasons from as much as, which is at least as much: <Asked>' -ForEach @(
+            @{ Told = @('Rex est aussi grand que Max', 'Max est plus grand que Tom'); Asked = 'Rex est-il plus grand que Tom ?'; Said = 'Oui : Rex est plus grand que Tom.*Rex est aussi grand que Max*' }
+            @{ Told = @('Rex est aussi grand que Max', 'Max est aussi grand que Tom'); Asked = 'Rex est-il aussi grand que Tom ?'; Said = 'Oui : Rex est aussi grand que Tom.*' }
+            @{ Told = @('Rex est plus grand que Max'); Asked = 'Rex est-il aussi grand que Max ?'; Said = 'Oui : Rex est aussi grand que Max.*' }
+            @{ Told = @('Rex est aussi grand que Max'); Asked = 'Max est-il plus grand que Rex ?'; Said = 'Non.*Rex est aussi grand que Max*' }
+            @{ Told = @('Max est plus grand que Rex'); Asked = 'Rex est-il aussi grand que Max ?'; Said = 'Non.*Max est plus grand que Rex*' }
+            @{ Told = @('Max est grand', 'Rex est aussi grand que Max'); Asked = 'Rex est-il grand ?'; Said = 'Oui : Rex est grand.*' }
+            @{ Told = @('Rex is as tall as Max', 'Max is taller than Tom'); Asked = 'is Rex taller than Tom?'; Said = 'Yes: Rex is taller than Tom.*' }
+            @{ Told = @('Rex ist so groß wie Max', 'Max ist größer als Tom'); Asked = 'ist Rex größer als Tom?'; Said = 'Ja. Rex ist größer als Tom.*' }
+            @{ Told = @('Rex es tan alto como Max', 'Max es más alto que Tom'); Asked = '¿es Rex más alto que Tom?'; Said = 'Sí. Rex es más alto que Tom.*' }
+            @{ Told = @('Rex is zo groot als Max', 'Max is groter dan Tom'); Asked = 'is Rex groter dan Tom?'; Said = 'Ja. Rex is groter dan Tom.*' }
+            @{ Told = @('Rex é tão alto quanto Max', 'Max é mais alto que Tom'); Asked = 'Rex é mais alto que Tom?'; Said = 'Sim. Rex é mais alto que Tom.*' }
+            @{ Told = @('Rex è tanto alto quanto Max', 'Max è più alto di Tom'); Asked = 'Rex è più alto di Tom?'; Said = 'Sì. Rex è più alto di Tom.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'does not take as much for more' {
+            Tell 'Rex est aussi grand que Max'
+            (Ask 'Rex est-il plus grand que Max ?') -join ' ' | Should -BeLike 'Je ne peux pas le conclure*'
+        }
+
+        It 'says when as much goes back on more' {
+            Tell 'Max est plus grand que Rex'
+            (Ask 'Rex est aussi grand que Max') -join ' ' | Should -BeLike '*Attention*Max est plus grand que Rex*Rex est aussi grand que Max*'
+        }
+
+        It 'keeps it in the shape the checker reads' {
+            Tell 'Rex est aussi grand que Max', 'Max est plus grand que Tom'
+            $null = Ask 'Rex est-il plus grand que Tom ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Forms | Should -Be @('compare(atleast|grand|name:rex|name:max)', 'compare(more|grand|name:max|name:tom)')
+        }
+
+        It 'reads "aussi" alone as before, not as much as' {
+            $read = & (Get-Module Lambek) { Read-LambekComparison -Sentence 'Rex est aussi un chien' -Language 'fr' }
+            $read | Should -BeNullOrEmpty
+        }
+    }
+
     Context 'One said to be more than another' {
 
         It 'follows more from one to the next, and says what it rests on' {

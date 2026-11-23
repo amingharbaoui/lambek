@@ -690,7 +690,9 @@
       "Comparing": {
         "More": ["mas"],
         "Less": ["menos"],
-        "Than": ["que"]
+        "Than": ["que"],
+        "As": ["tan"],
+        "Like": ["como"]
       },
       "Causes": [],
       "Impersonal": [],

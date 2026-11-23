@@ -14,7 +14,8 @@
       "less" and "than"; and the words that tell what someone believes or knows ("glauben", "wissen", "dass"), met
       where it says "believe", "think", "know" and "that", and the word of a condition ("wenn"), where it says "if";
       and the words of time ("vor", "nach", "gestern"), where it says "before", "after", "yesterday", "today", "tomorrow";
-      and the two words that say not of both ("weder ... noch"), where it says "neither ... nor".
+      and the two words that say not of both ("weder ... noch"), where it says "neither ... nor"; and the two that say
+      as much ("so ... wie"), where it says "as ... as".
       The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from its words
       of logic (<language>.logic).
     - What it answers, from the sentences translated from English (Tatoeba): "Yes." is "Ja.", "No." is "Nein.",
@@ -121,22 +122,22 @@ $general['Negations'] = & $plain $lists['Negations']
 $general['Conjunctions'] = & $plain $lists['Conjunctions']
 # (those that say both: the one met the most often where English says "and", and where it says "but"; never the one
 # where it says "or", which says one of them)
-$general['And'] = & $plain @(foreach ($word in 'and', 'but') { [LambekDialogueWords]::Aligned($englishSide, $otherSide, $word, [string[]] $lists['Conjunctions'], 20, 12) } | Where-Object { $_ } | Select-Object -Unique)
+$general['And'] = & $plain @($(foreach ($word in 'and', 'but') { [LambekDialogueWords]::Aligned($englishSide, $otherSide, $word, [string[]] $lists['Conjunctions'], 20, 12) }) | Where-Object { $_ } | Select-Object -Unique)
 # (the words that compare: those met the most often where English says "more" and "less", among the words its
 # treebanks tag as adverbs, and where it says "than", among those they tag as prepositions or conjunctions)
 $tagged = { param($pattern) [string[]] @($model.Tags.Keys | Where-Object { @($model.Tags[$_] | Where-Object { "$_" -match $pattern }).Count -gt 0 } | Sort-Object) }
-$adverbs = & $tagged '^ADV\|'
-$links = & $tagged '^(ADP|SCONJ|CCONJ)\|'
+[string[]] $adverbs = & $tagged '^ADV\|'
+[string[]] $links = & $tagged '^(ADP|SCONJ|CCONJ)\|'
 # (the word that says not: the one met the most often where English says "not", among the words its treebanks tag as
 # adverbs or particles; some treebanks do not mark it Polarity=Neg, "niet")
-$general['Not'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'not', (& $tagged '^(ADV|PART)\|'), 20, 12) | Where-Object { $_ })
+$general['Not'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'not', ([string[]] (& $tagged '^(ADV|PART)\|')), 20, 12) | Where-Object { $_ })
 # (the word that says one of them: the one met the most often where English says "or", among the words its treebanks
 # tag as conjunctions; never one of those that say both)
-$general['Or'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'or', (& $tagged '^CCONJ\|'), 20, 12) | Where-Object { $_ -and $_ -notin @($general['And']) })
+$general['Or'] = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'or', ([string[]] (& $tagged '^CCONJ\|')), 20, 12) | Where-Object { $_ -and $_ -notin @($general['And']) })
 # (the two words that say not of both: the pair met the most often where English says "neither" and then "nor", among
 # the words its treebanks tag as conjunctions or adverbs, in the order said: "weder ... noch", "ni ... ni"; none when
 # no pair is met so often)
-[string[]] $pair = [LambekDialogueWords]::AlignedPair($englishSide, $otherSide, 'neither', 'nor', (& $tagged '^(CCONJ|ADV)\|'), 5, 20)
+[string[]] $pair = [LambekDialogueWords]::AlignedPair($englishSide, $otherSide, 'neither', 'nor', ([string[]] (& $tagged '^(CCONJ|ADV)\|')), 5, 20)
 $general['Neither'] = & $plain @(if ($pair) { $pair[0] })
 $general['Nor'] = & $plain @(if ($pair) { $pair[1] })
 # (the words that say how many at least, at most and exactly, before a number: the run of one to three words met the
@@ -179,10 +180,17 @@ foreach ($day in @(@('yesterday', -1), @('today', 0), @('tomorrow', 1))) {
     $said = [LambekDialogueWords]::AlignedRun($englishSide, $otherSide, $day[0], 2, 10, 12)
     if ($said) { $dialogue['Times'][(@(& $plain @($said))[0])] = "day:$($day[1])" }
 }
+# (and the two that say as much: the pair met the most often where English says "as" and then "as" again, "as tall
+# as", among the words its treebanks tag as adverbs, prepositions or conjunctions, never one that says not ("non"
+# before "come" is met where English says "not as tall as"), in the order said: "so ... wie", "tanto ... quanto")
+[string[]] $saidNot = @([string[]] (& $tagged '(Polarity|PronType)=Neg')) + @($general['Not'])
+[string[]] $equal = [LambekDialogueWords]::AlignedPair($englishSide, $otherSide, 'as', 'as', [string[]] @(& $tagged '^(ADV|ADP|SCONJ|CCONJ)\|' | Where-Object { $_ -notin $saidNot }), 5, 20)
 $general['Comparing'] = [ordered]@{
     More = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'more', $adverbs, 20, 12) | Where-Object { $_ })
     Less = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'less', $adverbs, 20, 12) | Where-Object { $_ })
     Than = & $plain @([LambekDialogueWords]::Aligned($englishSide, $otherSide, 'than', $links, 20, 12) | Where-Object { $_ })
+    As = & $plain @(if ($equal) { $equal[0] })
+    Like = & $plain @(if ($equal) { $equal[1] })
 }
 $general['NounLinks'] = & $plain $ofForms
 foreach ($name in 'Speakers', 'Addressee', 'Articles', 'Determiners') { if ($dialogue.Contains($name)) { $dialogue[$name] = $general[$(if ($name -eq 'Articles') { 'Determiners' } else { $name })] } }

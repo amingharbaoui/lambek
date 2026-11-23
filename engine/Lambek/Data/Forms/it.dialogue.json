@@ -717,7 +717,9 @@
       "Comparing": {
         "More": ["piu"],
         "Less": ["meno"],
-        "Than": ["di"]
+        "Than": ["di"],
+        "As": ["tanto"],
+        "Like": ["quanto"]
       },
       "Causes": [],
       "Impersonal": [],

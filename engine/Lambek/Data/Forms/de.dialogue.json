@@ -741,7 +741,9 @@
       "Comparing": {
         "More": ["mehr"],
         "Less": ["weniger"],
-        "Than": ["als"]
+        "Than": ["als"],
+        "As": ["so"],
+        "Like": ["wie"]
       },
       "Causes": [],
       "Impersonal": [],

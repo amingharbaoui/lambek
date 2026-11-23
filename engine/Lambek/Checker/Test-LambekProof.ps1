@@ -12,6 +12,7 @@
       category(no|poisson|mammifere)   "normalement"); a kind of several words is written chat+soeur
       category(is|name:tom|chat)       Tom is a cat ("isnot": Tom is not; "does"/"doesnot" for a verb, v:voler)
       compare(more|grand|name:rex|name:max)  Rex is more grand than Max ("notmore" in a conclusion: is not); of what
+      compare(atleast|grand|name:rex|name:max)  Rex is as grand as Max, at least ("notatleast" in a conclusion: is not)
                                              is done, compare(more|time:before:arriver|...): Rex arrived before Max
       date(time:arriver|name:rex|2026-10-18) Rex arrived on that day
       if(cond(X), then(Y))|            a rule told with if: when X was told, Y follows
@@ -124,7 +125,7 @@ function ConvertFrom-LambekProofFact {
     # One done on a day: date(time:arriver|name:rex|2026-10-18)
     $date = [regex]::Match($text, '^date\((?<of>[^|()]+)\|(?<who>[^|()]+)\|(?<day>\d{4}-\d{2}-\d{2})\)$')
     if ($date.Success) { return [pscustomobject]@{ Shape = 'date'; Of = $date.Groups['of'].Value; Who = $date.Groups['who'].Value; Day = $date.Groups['day'].Value } }
-    $compare = [regex]::Match($text, '^compare\((?<kind>more|notmore)\|(?<of>[^|()]+)\|(?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
+    $compare = [regex]::Match($text, '^compare\((?<kind>more|notmore|atleast|notatleast)\|(?<of>[^|()]+)\|(?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
     if ($compare.Success) {
         return [pscustomobject]@{ Shape = 'compare'; Kind = $compare.Groups['kind'].Value; Of = $compare.Groups['of'].Value; A = $compare.Groups['a'].Value; B = $compare.Groups['b'].Value }
     }
@@ -187,7 +188,8 @@ function Test-LambekProofOnce {
     $kinds = @($facts | Where-Object { $_.Shape -eq 'category' })
     # One more so than one told to be so is so; one less so than one told not to be is not (being so is being so
     # beyond some point, the same for both): what was told one is, and is not, of one word, carried along "more"
-    $compared = @($facts | Where-Object { $_.Shape -eq 'compare' -and $_.Kind -eq 'more' })
+    # (as much as: at least as much, so the same goes)
+    $compared = @($facts | Where-Object { $_.Shape -eq 'compare' -and $_.Kind -in 'more', 'atleast' })
     if ($compared.Count -gt 0) {
         $said = [System.Collections.Generic.List[object]]::new()
         foreach ($fact in @($kinds | Where-Object { -not $_.Usual -and $_.Kind -in 'is', 'isnot' -and @($_.Atoms).Count -eq 1 })) { $said.Add($fact) }
@@ -358,8 +360,9 @@ function Test-LambekProofOnce {
             continue
         }
         if ($said.Shape -eq 'compare') {
-            # (more than: every one reached from the one that is more, by what was told is more than what)
-            $more = @($facts | Where-Object { $_.Shape -eq 'compare' -and $_.Kind -eq 'more' -and $_.Of -eq $said.Of })
+            # (more than: every one reached from the one that is more, by what was told is more than what, or as much
+            # as what, with at least one step that says more; as much as: by any of them)
+            $more = @($facts | Where-Object { $_.Shape -eq 'compare' -and $_.Kind -in 'more', 'atleast' -and $_.Of -eq $said.Of })
             # (one done on a day before the day another did it is before it, and the other after it: of
             # time:before:arriver, from date(time:arriver|...))
             $timed = [regex]::Match($said.Of, '^time:(?<way>before|after):(?<done>.+)$')
@@ -367,25 +370,34 @@ function Test-LambekProofOnce {
             foreach ($early in $days) {
                 foreach ($late in $days) {
                     if ([string]::CompareOrdinal($early.Day, $late.Day) -ge 0 -or $early.Who -eq $late.Who) { continue }
-                    $edge = $(if ($timed.Groups['way'].Value -eq 'before') { [pscustomobject]@{ A = $early.Who; B = $late.Who } } else { [pscustomobject]@{ A = $late.Who; B = $early.Who } })
+                    $edge = $(if ($timed.Groups['way'].Value -eq 'before') { [pscustomobject]@{ Kind = 'more'; A = $early.Who; B = $late.Who } } else { [pscustomobject]@{ Kind = 'more'; A = $late.Who; B = $early.Who } })
                     $more = @($more) + @($edge)
                 }
             }
             $reach = {
-                param([string] $from, [string] $to)
+                param([string] $from, [string] $to, [bool] $strictly)
+                # (each one reached, with whether a step that says more was on the way)
                 $seen = [System.Collections.Generic.HashSet[string]]::new()
-                $todo = [System.Collections.Generic.Queue[string]]::new()
-                $todo.Enqueue($from)
+                $todo = [System.Collections.Generic.Queue[object]]::new()
+                $todo.Enqueue(@($from, $false))
                 while ($todo.Count -gt 0) {
-                    $at = $todo.Dequeue()
+                    $at, $past = $todo.Dequeue()
                     foreach ($fact in @($more | Where-Object { $_.A -eq $at })) {
-                        if ($fact.B -eq $to) { return $true }
-                        if ($seen.Add($fact.B)) { $todo.Enqueue($fact.B) }
+                        $now = $past -or $fact.Kind -eq 'more'
+                        if ($fact.B -eq $to -and ($now -or -not $strictly)) { return $true }
+                        if ($seen.Add("$($fact.B)|$now")) { $todo.Enqueue(@($fact.B, $now)) }
                     }
                 }
                 return $false
             }
-            $holds = $(if ($said.Kind -eq 'more') { & $reach $said.A $said.B } else { & $reach $said.B $said.A })
+            # (more: a way there that says more; not more: any way back; as much: any way there; not as much: a way
+            # back that says more)
+            $holds = switch ($said.Kind) {
+                'more' { & $reach $said.A $said.B $true }
+                'notmore' { & $reach $said.B $said.A $false }
+                'atleast' { & $reach $said.A $said.B $false }
+                'notatleast' { & $reach $said.B $said.A $true }
+            }
             if (-not $holds) { return [pscustomobject]@{ Holds = $false; Reason = "does not follow: $conclusion" } }
             continue
         }
