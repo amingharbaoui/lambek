@@ -29,6 +29,8 @@
                                        with /\)
       category(if|is~name:rex~chien|does~name:max~v:dormir)
                                        (k0 c0) -> (k1 c1): a rule told with if about named ones
+      category(or|is~name:rex~chien|is~name:max~chat)
+                                       (k0 c0) \/ (k1 c1): one of two things told with or
       if(cond(X), then(Y))|            X -> Y, each thing told a proposition of its own
       X|                               X
     "some" and "not every" are not written: $null comes back, with the reason.
@@ -66,8 +68,9 @@ function ConvertTo-LambekLean {
             if ($usual) { $kind = $kind.Substring(6) }
             # (what one does is written like what one is: its verb is a kind, v:voler)
             $kind = @{ does = 'is'; doesnot = 'isnot' }[$kind] ?? $kind
-            # (a rule told with if about named ones, each part kind~who~what: written as an implication)
-            if ($kind -eq 'if') {
+            # (a rule told with if about named ones, each part kind~who~what: written as an implication; one of two
+            # things told with or, as a disjunction)
+            if ($kind -in 'if', 'or') {
                 $part = {
                     param([string] $s)
                     $bits = @($s -split '~')
@@ -77,7 +80,7 @@ function ConvertTo-LambekLean {
                 $if = & $part $match.Groups['who'].Value
                 $then = & $part $match.Groups['what'].Value
                 if (-not $if -or -not $then -or $if.Kind -notin 'is', 'isnot' -or $then.Kind -notin 'is', 'isnot') { return $null }
-                return [pscustomobject]@{ Shape = 'named-if'; If = $if; Then = $then }
+                return [pscustomobject]@{ Shape = "named-$kind"; If = $if; Then = $then }
             }
             return [pscustomobject]@{
                 Shape = 'category'; Kind = $kind; Usual = $usual; Who = $match.Groups['who'].Value
@@ -163,6 +166,10 @@ function ConvertTo-LambekLean {
             'named-if' {
                 $side = { param($part) $said = & $all $part.Atoms (& $one $part.Who); if ($part.Kind -eq 'is') { "($said)" } else { "(Not ($said))" } }
                 $hypotheses.Add("$(& $side $fact.If) -> $(& $side $fact.Then)")
+            }
+            'named-or' {
+                $side = { param($part) $said = & $all $part.Atoms (& $one $part.Who); if ($part.Kind -eq 'is') { "($said)" } else { "(Not ($said))" } }
+                $hypotheses.Add("$(& $side $fact.If) \/ $(& $side $fact.Then)")
             }
             'category' {
                 $says = $(if ($fact.Kind -in 'all', 'is') { & $all $fact.Atoms 'x' } else { "Not ($(& $all $fact.Atoms 'x'))" })

@@ -76,7 +76,8 @@ function Read-LambekCategoryEmbedded {
     #   condition (If) and what follows from it (Then), each about one named, the same or another;
     #   "Alice croit que Rex est un chat": what Alice believes, kind "believe", kept apart from what is so (Content);
     #   "Alice sait que Rex est un chien": what is so, read as the sentence inside, with who knows it (Holder);
-    #   "Alice croit-elle que Tom est noir ?": asked of what Alice believes, kind "askbelieve".
+    #   "Alice croit-elle que Tom est noir ?": asked of what Alice believes, kind "askbelieve";
+    #   "Rex est un chien ou Max est un chat": one of two things told of ones named, kind "or".
     # Each part must read as a sentence of its own; otherwise nothing is read
     $words = Get-LambekCategoryEmbeddingWord -Language $Language
     $tokens = @($Sentence -split '\s+' | Where-Object { $_ })
@@ -133,6 +134,29 @@ function Read-LambekCategoryEmbedded {
                 # (what it is about, for what reads the kinds a message speaks of)
                 $rule.Predicate = [pscustomobject]@{ Atoms = @(@($condition.Predicate.Atoms) + @($then.Predicate.Atoms) | Select-Object -Unique) }
                 return $rule
+            }
+        }
+    }
+
+    # One of two things told of ones named, joined by the word learned where English says "or" (General.Or): "Rex est
+    # un chien ou Max est un chat", "Rex aboie ou Max dort", kind "or", with both sentences (Either). Each part must read
+    # as a sentence of its own about one named ("Rex est un chien ou un chat" is one sentence: its second part does not)
+    if (-not $Question) {
+        $or = @(Get-LambekDisjunctionWord -Language $Language)
+        $at = @(for ($i = 2; $i -le $tokens.Count - 3; $i++) { if ($plain[$i] -in $or) { $i } })
+        if ($at.Count -eq 1) {
+            $i = $at[0]
+            $first = Read-LambekCategoryClause -Sentence ($tokens[0..($i - 1)] -join ' ').TrimEnd(',') -Language $Language
+            $second = $(if ($first) { Read-LambekCategoryClause -Sentence ($tokens[($i + 1)..($tokens.Count - 1)] -join ' ') -Language $Language })
+            # ("Rex est un chien ou il dort": the one the first part is about)
+            if ($second -and $second.PSObject.Properties['Pronoun'] -and $second.Pronoun -and $first.Individual) { $second.Individual = $first.Individual }
+            $parts = @($first, $second)
+            if (@($parts | Where-Object { -not $_ -or $_.Kind -notin $named -or -not $_.Individual -or -not "$($_.Individual.Key)".StartsWith('name:') }).Count -eq 0) {
+                if ($Shape) { return [pscustomobject]@{ Kind = 'or' } }
+                $either = & $item 'or'
+                $either | Add-Member -NotePropertyName Either -NotePropertyValue $parts
+                $either.Predicate = [pscustomobject]@{ Atoms = @(@($first.Predicate.Atoms) + @($second.Predicate.Atoms) | Select-Object -Unique) }
+                return $either
             }
         }
     }

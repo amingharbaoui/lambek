@@ -1175,6 +1175,57 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'One of two things told of ones named' {
+
+        It 'reasons from one of two sentences joined by or: <Asked>' -ForEach @(
+            @{ Told = @('Rex est un chien ou Max est un chat', "Rex n'est pas un chien"); Asked = 'Max est-il un chat ?'; Said = 'Oui : Max est un chat.*Rex est un chien ou Max est un chat*' }
+            @{ Told = @("Rex n'est pas un chien ou Max est un chat", 'Rex est un chien'); Asked = 'Max est-il un chat ?'; Said = 'Oui : Max est un chat.*' }
+            @{ Told = @('tous les chiens aboient', 'Rex est un chien ou Max est un chat', "Max n'est pas un chat"); Asked = 'Rex aboie-t-il ?'; Said = 'Oui : Rex aboie.*' }
+            @{ Told = @('Rex est un chien ou Rex est un chat', 'tous les chiens sont des animaux', 'tous les chats sont des animaux'); Asked = 'Rex est-il un animal ?'; Said = 'Oui : Rex est un animal.*' }
+            @{ Told = @('Rex is a dog or Max is a cat', 'Rex is not a dog'); Asked = 'is Max a cat?'; Said = 'Yes: Max is a cat.*' }
+            @{ Told = @('Rex barks or Max sleeps', 'Max does not sleep'); Asked = 'does Rex bark?'; Said = 'Yes: Rex does bark.*' }
+            @{ Told = @('Rex ist ein Hund oder Max ist eine Katze', 'Max ist keine Katze'); Asked = 'ist Rex ein Hund?'; Said = 'Ja. Rex ist ein Hund.*' }
+            @{ Told = @('Rex es un perro o Max es un gato', 'Rex no es un perro'); Asked = '¿Max es un gato?'; Said = 'Sí. Max es un gato.*' }
+            @{ Told = @('Rex is een hond of Max is een kat', 'Rex is geen hond'); Asked = 'is Max een kat?'; Said = 'Ja. Max is een kat.*' }
+            @{ Told = @('Rex é um cão ou Max é um gato', 'Rex não é um cão'); Asked = 'Max é um gato?'; Said = 'Sim. Max é um gato.*' }
+            @{ Told = @('Rex è un cane o Max è un gatto', 'Rex non è un cane'); Asked = 'Max è un gatto?'; Said = 'Sì. Max è un gatto.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'reasons from two things done, in a chat in the language they are told in' {
+            # (alone, "Rex aboie ou Max dort" reads as German by its letters, "dort"; the chat says it is French)
+            & (Get-Module Lambek) { $script:LanguageHint = 'fr' }
+            try {
+                Tell 'Rex aboie ou Max dort', 'Max ne dort pas'
+                (Ask 'Rex aboie-t-il ?') -join ' ' | Should -BeLike 'Oui : Rex aboie.*'
+            }
+            finally { & (Get-Module Lambek) { $script:LanguageHint = $null } }
+        }
+
+        It 'does not conclude what only one of the two would give: <Asked>' -ForEach @(
+            @{ Told = @('Rex est un chien ou Max est un chat'); Asked = 'Max est-il un chat ?' }
+            @{ Told = @('Rex est un chien ou Max est un chat', "Rex n'est pas un chien"); Asked = 'Rex est-il un chien ?' }
+            @{ Told = @('Rex est un chien ou Max est un chien', 'tous les chiens aboient'); Asked = 'Rex aboie-t-il ?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -BeLike 'Oui*'
+        }
+
+        It 'keeps it in the shape the checker reads' {
+            Tell 'Rex est un chien ou Max est un chat', "Rex n'est pas un chien"
+            $null = Ask 'Max est-il un chat ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Forms | Should -Be @('category(or|is~name:rex~chien|is~name:max~chat)', 'category(isnot|name:rex|chien)')
+        }
+
+        It 'reads one sentence with or between two kinds as before, not as two sentences' {
+            $read = & (Get-Module Lambek) { Read-LambekCategoryEmbedded -Sentence 'Rex est un chien ou un chat' -Language 'fr' }
+            $read | Should -BeNullOrEmpty
+        }
+    }
+
     Context 'One thing done before another, and on a day' {
 
         It 'answers before and after from what was told: <Asked>' -ForEach @(

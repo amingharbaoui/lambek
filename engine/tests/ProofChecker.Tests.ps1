@@ -29,6 +29,11 @@ Describe 'The checker of proofs' {
         @{ Name = 'a rule told with if about one named'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
         @{ Name = 'a rule told with if, the other way'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(doesnot|name:rex|v:aboyer)|'; Conclusion = 'category(isnot|name:rex|chien)' }
         @{ Name = 'a rule told with if, from one to another'; Premises = 'category(if|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
+        @{ Name = 'one of two told with or, not the first'; Premises = 'category(or|is~name:rex~chien|is~name:max~chat)|', 'category(isnot|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
+        @{ Name = 'one of two told with or, not the second'; Premises = 'category(or|does~name:rex~v:aboyer|does~name:max~v:dormir)|', 'category(doesnot|name:max|v:dormir)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
+        @{ Name = 'one of two told with or, said not'; Premises = 'category(or|isnot~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
+        @{ Name = 'one of two told with or, through a rule'; Premises = 'category(all|chien|v:aboyer)|', 'category(or|is~name:rex~chien|is~name:max~chat)|', 'category(isnot|name:max|chat)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
+        @{ Name = 'what holds in each of two told with or'; Premises = 'category(or|is~name:rex~chien|is~name:rex~chat)|', 'category(all|chien|animal)|', 'category(all|chat|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
         @{ Name = 'a rule told with if, through what a kind is'; Premises = 'category(if|is~name:rex~animal|does~name:rex~v:manger)|', 'category(all|chien|animal)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(does|name:rex|v:manger)' }
         @{ Name = 'one done before another, through a third'; Premises = 'compare(more|time:before:arriver|name:rex|name:max)|', 'compare(more|time:before:arriver|name:max|name:tom)|'; Conclusion = 'compare(more|time:before:arriver|name:rex|name:tom)' }
         @{ Name = 'one done a day before another'; Premises = 'date(time:arriver|name:rex|2026-10-05)|', 'date(time:arriver|name:max|2026-10-06)|'; Conclusion = 'compare(more|time:before:arriver|name:rex|name:max)' }
@@ -66,6 +71,10 @@ Describe 'The checker of proofs' {
         @{ Name = 'a rule told with if whose condition was not told'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
         @{ Name = 'a rule told with if, from what follows'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(does|name:rex|v:aboyer)|'; Conclusion = 'category(is|name:rex|chien)' }
         @{ Name = 'a rule told with if, about another'; Premises = 'category(if|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:rex|chat)' }
+        @{ Name = 'one of two told with or, neither ruled out'; Premises = 'category(or|is~name:rex~chien|is~name:max~chat)|'; Conclusion = 'category(is|name:max|chat)' }
+        @{ Name = 'one of two told with or, the one ruled out'; Premises = 'category(or|is~name:rex~chien|is~name:max~chat)|', 'category(isnot|name:rex|chien)|'; Conclusion = 'category(is|name:rex|chien)' }
+        @{ Name = 'one of two told with or, of the other one'; Premises = 'category(or|is~name:rex~chien|is~name:max~chien)|', 'category(all|chien|v:aboyer)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
+        @{ Name = 'one of two told with or, the first told'; Premises = 'category(or|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
         @{ Name = 'one done a day after another, said before'; Premises = 'date(time:arriver|name:rex|2026-10-06)|', 'date(time:arriver|name:max|2026-10-05)|'; Conclusion = 'compare(more|time:before:arriver|name:rex|name:max)' }
         @{ Name = 'one done on another day'; Premises = 'date(time:arriver|name:rex|2026-10-05)|'; Conclusion = 'date(time:arriver|name:rex|2026-10-06)' }
         @{ Name = 'one done on a day, of another thing done'; Premises = 'date(time:arriver|name:rex|2026-10-05)|', 'date(time:partir|name:max|2026-10-06)|'; Conclusion = 'compare(more|time:before:arriver|name:rex|name:max)' }

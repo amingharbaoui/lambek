@@ -30,7 +30,7 @@ function Resolve-LambekCategory {
     # in it: "Rex abbaia?" after "tutti i cani abbaiano" is Italian, whatever its few words alone say)
     # (and a language whose dialogue was learned, where what was told of someone is kept for the rules: "Rex e grande?"
     # after "Rex e un cane. Lui e grande." is Italian, whatever "grande" says in Portuguese)
-    $kept = { param($l) @(Get-LambekCategoryKnown -Language $l -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot', 'if' -or ((Get-LambekLexicon -Language $l).Dialogue['Learned'] -and "$($_.Fact.Action)" -eq 'verb:category') }).Count -gt 0 }
+    $kept = { param($l) @(Get-LambekCategoryKnown -Language $l -Shape | Where-Object { $_.Item.Kind -in 'all', 'no', 'some', 'somenot', 'if', 'or' -or ((Get-LambekLexicon -Language $l).Dialogue['Learned'] -and "$($_.Fact.Action)" -eq 'verb:category') }).Count -gt 0 }
     $told = @(Get-LambekAvailableLanguage | Sort-Object | Where-Object { $_ -ne $detected -and (& $kept $_) })
     $own = & $kept $detected
     $languages = $(if ($own -or $told.Count -eq 0) { @($detected) + $told } else { $told + @($detected) })
@@ -1202,10 +1202,12 @@ function Get-LambekCategorySignature {
     param([pscustomobject] $Item)
 
     # What a sentence says, the same whatever words said it: to see that a sentence said back reads the same.
-    # A rule told with "si" says both its parts ("if|is~name:rex~chien|does~name:rex~v:aboyer"); what someone believes
+    # A rule told with "si" says both its parts ("if|is~name:rex~chien|does~name:rex~v:aboyer"), and so does one of two
+    # things told with "ou" ("or|is~name:rex~chien|is~name:max~chat"); what someone believes
     # says who, and what is believed ("believe|name:alice|is~name:rex~chat")
     $part = { param($i) "$((Get-LambekCategorySignature -Item $i) -replace '\|', '~')" }
     if ($Item.Kind -eq 'if') { return "if|$(& $part $Item.If)|$(& $part $Item.Then)" }
+    if ($Item.Kind -eq 'or') { return "or|$(& $part $Item.Either[0])|$(& $part $Item.Either[1])" }
     if ($Item.Kind -in 'believe', 'askbelieve') { return "$($Item.Kind)|$($Item.Holder.Individual.Key)|$(& $part $Item.Content)" }
     $who = ''
     if ($Item.Individual) { $who = $Item.Individual.Key }
@@ -1373,10 +1375,12 @@ function ConvertTo-LambekCategoryStatement {
         'somenot' { $w = $statement.AddWitness(); foreach ($atom in $s) { $statement.AddToWitness($w, [int[]] @($atom)) }; foreach ($clause in $notP) { $statement.AddToWitness($w, $clause) } }
         { $_ -in 'is', 'does' } { foreach ($clause in $p) { $statement.AddNamed($Item.Individual.Key, $clause) } }
         { $_ -in 'isnot', 'doesnot' } { foreach ($clause in $notP) { $statement.AddNamed($Item.Individual.Key, $clause) } }
-        'if' {
+        { $_ -in 'if', 'or' } {
             # Not the condition, or what follows from it: each clause of the one with each clause of the other; about one
-            # named, a clause of that one; about two, a clause that ties them
-            $sides = foreach ($side in @([pscustomobject]@{ Item = $Item.If; Not = $true }, [pscustomobject]@{ Item = $Item.Then; Not = $false })) {
+            # named, a clause of that one; about two, a clause that ties them. One of two things told ("Rex est un chien
+            # ou Max est un chat") is the same with the first part as it was told
+            $pair = $(if ($Item.Kind -eq 'if') { @([pscustomobject]@{ Item = $Item.If; Not = $true }, [pscustomobject]@{ Item = $Item.Then; Not = $false }) } else { @([pscustomobject]@{ Item = $Item.Either[0]; Not = $false }, [pscustomobject]@{ Item = $Item.Either[1]; Not = $false }) })
+            $sides = foreach ($side in $pair) {
                 $negated = $side.Item.Kind -in 'isnot', 'doesnot'
                 $clauses = ConvertTo-LambekCategoryClause -Atoms @($side.Item.Predicate.Atoms) -Index $index -Not:($side.Not -ne $negated)
                 , [pscustomobject]@{ Key = $side.Item.Individual.Key; Clauses = $clauses }
@@ -1598,10 +1602,10 @@ function Resolve-LambekCategoryMessage {
     if ($asks.Count -gt 1) { return $null }
     $general = @($shapes | Where-Object { $_ -in $quantified }).Count -gt 0
     # (rules told with "si" are rules too, for what is asked after them)
-    $rules = @($quantified) + @('if')
+    $rules = @($quantified) + @('if', 'or')
     # (a sentence with another inside it is read here, as nothing else reads it: "si Rex est un chien, Rex aboie",
     # "Alice croit que Rex est un chat", "Alice sait que Rex est un chien", "Alice croit-elle que Tom est noir ?")
-    $embedded = @($shapes | Where-Object { $_ -in 'if', 'believe', 'know', 'askbelieve' }).Count -gt 0
+    $embedded = @($shapes | Where-Object { $_ -in 'if', 'or', 'believe', 'know', 'askbelieve' }).Count -gt 0
     # (one question whether someone is something may be answered from what was told of that one alone: "Tom est-il un chat ?")
     $individual = $asks.Count -eq 1 -and $asks[0] -eq 'askis'
     # A language whose dialogue is learned has no memory of its own yet: what is told of someone is kept here, for the

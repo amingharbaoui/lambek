@@ -1,8 +1,8 @@
 {
-  "Version": "2.3",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "2.4",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "e017e1cd5c42a8e9a9eff1ade345369a82a0fa40ae647b2ce167df2c2c509d01",
+  "TestHash": "f4b4d4e02b8aa00f2984ac4c813eacad2407001879e57be20e2efcb26abc6b37",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -23426,6 +23426,1570 @@
         },
         {
           "Text": "Leo è un uccello?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-either-first-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est un chien ou Max est un chat"
+        },
+        {
+          "Text": "Rex n'est pas un chien"
+        },
+        {
+          "Text": "Max est-il un chat ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-either-does-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex aboie ou Max dort"
+        },
+        {
+          "Text": "Max ne dort pas"
+        },
+        {
+          "Text": "Rex aboie-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-either-rule-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les chiens aboient"
+        },
+        {
+          "Text": "Rex est un chien ou Max est un chat"
+        },
+        {
+          "Text": "Max n'est pas un chat"
+        },
+        {
+          "Text": "Rex aboie-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-either-open-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est un chien ou Max est un chat"
+        },
+        {
+          "Text": "Max est-il un chat ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-either-first-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco est un oiseau ou Léo est un poisson"
+        },
+        {
+          "Text": "Coco n'est pas un oiseau"
+        },
+        {
+          "Text": "Léo est-il un poisson ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-either-does-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco chante ou Léo nage"
+        },
+        {
+          "Text": "Léo ne nage pas"
+        },
+        {
+          "Text": "Coco chante-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-either-rule-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "tous les oiseaux volent"
+        },
+        {
+          "Text": "Coco est un oiseau ou Léo est un poisson"
+        },
+        {
+          "Text": "Léo n'est pas un poisson"
+        },
+        {
+          "Text": "Coco vole-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non :",
+              "non.",
+              "non,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-either-open-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco est un oiseau ou Léo est un poisson"
+        },
+        {
+          "Text": "Léo est-il un poisson ?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-either-first-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is a dog or Max is a cat"
+        },
+        {
+          "Text": "Rex is not a dog"
+        },
+        {
+          "Text": "is Max a cat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-either-does-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex barks or Max sleeps"
+        },
+        {
+          "Text": "Max does not sleep"
+        },
+        {
+          "Text": "does Rex bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-either-rule-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "all dogs bark"
+        },
+        {
+          "Text": "Rex is a dog or Max is a cat"
+        },
+        {
+          "Text": "Max is not a cat"
+        },
+        {
+          "Text": "does Rex bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-either-open-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is a dog or Max is a cat"
+        },
+        {
+          "Text": "is Max a cat?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-either-first-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco is a bird or Leo is a fish"
+        },
+        {
+          "Text": "Coco is not a bird"
+        },
+        {
+          "Text": "is Leo a fish?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-either-does-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco sings or Leo swims"
+        },
+        {
+          "Text": "Leo does not swim"
+        },
+        {
+          "Text": "does Coco sing?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-either-rule-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "all birds fly"
+        },
+        {
+          "Text": "Coco is a bird or Leo is a fish"
+        },
+        {
+          "Text": "Leo is not a fish"
+        },
+        {
+          "Text": "does Coco fly?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no:",
+              "no.",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-either-open-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco is a bird or Leo is a fish"
+        },
+        {
+          "Text": "is Leo a fish?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-either-first-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist ein Hund oder Max ist eine Katze"
+        },
+        {
+          "Text": "Rex ist kein Hund"
+        },
+        {
+          "Text": "ist Max eine Katze?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-either-does-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex bellt oder Max schläft"
+        },
+        {
+          "Text": "Max schläft nicht"
+        },
+        {
+          "Text": "bellt Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-either-rule-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Hunde bellen"
+        },
+        {
+          "Text": "Rex ist ein Hund oder Max ist eine Katze"
+        },
+        {
+          "Text": "Max ist keine Katze"
+        },
+        {
+          "Text": "bellt Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-either-open-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist ein Hund oder Max ist eine Katze"
+        },
+        {
+          "Text": "ist Max eine Katze?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-either-first-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco ist ein Vogel oder Leo ist ein Fisch"
+        },
+        {
+          "Text": "Coco ist kein Vogel"
+        },
+        {
+          "Text": "ist Leo ein Fisch?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-either-does-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco singt oder Leo schwimmt"
+        },
+        {
+          "Text": "Leo schwimmt nicht"
+        },
+        {
+          "Text": "singt Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-either-rule-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "alle Vögel fliegen"
+        },
+        {
+          "Text": "Coco ist ein Vogel oder Leo ist ein Fisch"
+        },
+        {
+          "Text": "Leo ist kein Fisch"
+        },
+        {
+          "Text": "fliegt Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-either-open-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco ist ein Vogel oder Leo ist ein Fisch"
+        },
+        {
+          "Text": "ist Leo ein Fisch?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-either-first-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es un perro o Max es un gato"
+        },
+        {
+          "Text": "Rex no es un perro"
+        },
+        {
+          "Text": "¿es Max un gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-either-does-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ladra o Max duerme"
+        },
+        {
+          "Text": "Max no duerme"
+        },
+        {
+          "Text": "¿ladra Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-either-rule-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los perros ladran"
+        },
+        {
+          "Text": "Rex es un perro o Max es un gato"
+        },
+        {
+          "Text": "Max no es un gato"
+        },
+        {
+          "Text": "¿ladra Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-either-open-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es un perro o Max es un gato"
+        },
+        {
+          "Text": "¿es Max un gato?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-either-first-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco es un pájaro o Leo es un pez"
+        },
+        {
+          "Text": "Coco no es un pájaro"
+        },
+        {
+          "Text": "¿es Leo un pez?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-either-does-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco canta o Leo nada"
+        },
+        {
+          "Text": "Leo no nada"
+        },
+        {
+          "Text": "¿canta Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-either-rule-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "todos los pájaros vuelan"
+        },
+        {
+          "Text": "Coco es un pájaro o Leo es un pez"
+        },
+        {
+          "Text": "Leo no es un pez"
+        },
+        {
+          "Text": "¿vuela Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-either-open-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco es un pájaro o Leo es un pez"
+        },
+        {
+          "Text": "¿es Leo un pez?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-either-first-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is een hond of Max is een kat"
+        },
+        {
+          "Text": "Rex is geen hond"
+        },
+        {
+          "Text": "is Max een kat?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-either-does-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex blaft of Max slaapt"
+        },
+        {
+          "Text": "Max slaapt niet"
+        },
+        {
+          "Text": "blaft Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-either-rule-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "alle honden blaffen"
+        },
+        {
+          "Text": "Rex is een hond of Max is een kat"
+        },
+        {
+          "Text": "Max is geen kat"
+        },
+        {
+          "Text": "blaft Rex?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-either-open-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is een hond of Max is een kat"
+        },
+        {
+          "Text": "is Max een kat?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-either-first-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco is een vogel of Leo is een vis"
+        },
+        {
+          "Text": "Coco is geen vogel"
+        },
+        {
+          "Text": "is Leo een vis?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-either-does-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco zingt of Leo zwemt"
+        },
+        {
+          "Text": "Leo zwemt niet"
+        },
+        {
+          "Text": "zingt Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-either-rule-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "alle vogels vliegen"
+        },
+        {
+          "Text": "Coco is een vogel of Leo is een vis"
+        },
+        {
+          "Text": "Leo is geen vis"
+        },
+        {
+          "Text": "vliegt Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-either-open-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco is een vogel of Leo is een vis"
+        },
+        {
+          "Text": "is Leo een vis?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-either-first-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é um cão ou Max é um gato"
+        },
+        {
+          "Text": "Rex não é um cão"
+        },
+        {
+          "Text": "Max é um gato?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-either-does-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex late ou Max dorme"
+        },
+        {
+          "Text": "Max não dorme"
+        },
+        {
+          "Text": "Rex late?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-either-rule-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os cães latem"
+        },
+        {
+          "Text": "Rex é um cão ou Max é um gato"
+        },
+        {
+          "Text": "Max não é um gato"
+        },
+        {
+          "Text": "Rex late?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-either-open-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é um cão ou Max é um gato"
+        },
+        {
+          "Text": "Max é um gato?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-either-first-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco é um pássaro ou Leo é um peixe"
+        },
+        {
+          "Text": "Coco não é um pássaro"
+        },
+        {
+          "Text": "Leo é um peixe?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-either-does-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco canta ou Leo nada"
+        },
+        {
+          "Text": "Leo não nada"
+        },
+        {
+          "Text": "Coco canta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-either-rule-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "todos os pássaros voam"
+        },
+        {
+          "Text": "Coco é um pássaro ou Leo é um peixe"
+        },
+        {
+          "Text": "Leo não é um peixe"
+        },
+        {
+          "Text": "Coco voa?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-either-open-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco é um pássaro ou Leo é um peixe"
+        },
+        {
+          "Text": "Leo é um peixe?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-either-first-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è un cane o Max è un gatto"
+        },
+        {
+          "Text": "Rex non è un cane"
+        },
+        {
+          "Text": "Max è un gatto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-either-does-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex abbaia o Max dorme"
+        },
+        {
+          "Text": "Max non dorme"
+        },
+        {
+          "Text": "Rex abbaia?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-either-rule-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti i cani abbaiano"
+        },
+        {
+          "Text": "Rex è un cane o Max è un gatto"
+        },
+        {
+          "Text": "Max non è un gatto"
+        },
+        {
+          "Text": "Rex abbaia?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-either-open-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è un cane o Max è un gatto"
+        },
+        {
+          "Text": "Max è un gatto?",
+          "Expect": {
+            "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-either-first-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "either-first"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco è un uccello o Leo è un pesce"
+        },
+        {
+          "Text": "Coco non è un uccello"
+        },
+        {
+          "Text": "Leo è un pesce?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-either-does-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "either-does"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco canta o Leo nuota"
+        },
+        {
+          "Text": "Leo non nuota"
+        },
+        {
+          "Text": "Coco canta?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-either-rule-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "either-rule"
+      ],
+      "Turns": [
+        {
+          "Text": "tutti gli uccelli volano"
+        },
+        {
+          "Text": "Coco è un uccello o Leo è un pesce"
+        },
+        {
+          "Text": "Leo non è un pesce"
+        },
+        {
+          "Text": "Coco vola?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-either-open-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "either-open"
+      ],
+      "Turns": [
+        {
+          "Text": "Coco è un uccello o Leo è un pesce"
+        },
+        {
+          "Text": "Leo è un pesce?",
           "Expect": {
             "Reply": "abstain"
           }

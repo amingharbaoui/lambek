@@ -84,6 +84,10 @@ Describe 'A proof written for Lean' {
             @{ Name = 'a rule told with if about one named'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
             @{ Name = 'a rule told with if, the other way'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(doesnot|name:rex|v:aboyer)|'; Conclusion = 'category(isnot|name:rex|chien)' }
             @{ Name = 'a rule told with if, from one to another'; Premises = 'category(if|is~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
+            @{ Name = 'one of two told with or, not the first'; Premises = 'category(or|is~name:rex~chien|is~name:max~chat)|', 'category(isnot|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
+            @{ Name = 'one of two told with or, not the second'; Premises = 'category(or|does~name:rex~v:aboyer|does~name:max~v:dormir)|', 'category(doesnot|name:max|v:dormir)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
+            @{ Name = 'one of two told with or, said not'; Premises = 'category(or|isnot~name:rex~chien|is~name:max~chat)|', 'category(is|name:rex|chien)|'; Conclusion = 'category(is|name:max|chat)' }
+            @{ Name = 'one of two told with or, through a rule'; Premises = 'category(all|chien|v:aboyer)|', 'category(or|is~name:rex~chien|is~name:max~chat)|', 'category(isnot|name:max|chat)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
         ) {
             $lean = ConvertTo-LambekLean -Name 'case' -Premises $Premises -Conclusions $Conclusion
             & $Prove $lean.Theorem | Should -BeTrue -Because $lean.Theorem
@@ -102,6 +106,9 @@ Describe 'A proof written for Lean' {
             @{ Name = 'one of two, said as the first'; Premises = 'category(is|name:rex|or:chat;chien)|'; Conclusion = 'category(is|name:rex|chien)' }
             @{ Name = 'what holds in one of two only'; Premises = 'category(is|name:rex|or:chat;chien)|', 'category(all|chien|animal)|'; Conclusion = 'category(is|name:rex|animal)' }
             @{ Name = 'a rule told with if, from what follows'; Premises = 'category(if|is~name:rex~chien|does~name:rex~v:aboyer)|', 'category(does|name:rex|v:aboyer)|'; Conclusion = 'category(is|name:rex|chien)' }
+            @{ Name = 'one of two told with or, neither ruled out'; Premises = 'category(or|is~name:rex~chien|is~name:max~chat)|'; Conclusion = 'category(is|name:max|chat)' }
+            @{ Name = 'one of two told with or, the one ruled out'; Premises = 'category(or|is~name:rex~chien|is~name:max~chat)|', 'category(isnot|name:rex|chien)|'; Conclusion = 'category(is|name:rex|chien)' }
+            @{ Name = 'one of two told with or, of the other one'; Premises = 'category(or|is~name:rex~chien|is~name:max~chien)|', 'category(all|chien|v:aboyer)|'; Conclusion = 'category(does|name:rex|v:aboyer)' }
         ) {
             $lean = ConvertTo-LambekLean -Name 'case' -Premises $Premises -Conclusions $Conclusion
             $proved = & $Prove $lean.Theorem

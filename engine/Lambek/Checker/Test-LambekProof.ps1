@@ -16,6 +16,7 @@
       date(time:arriver|name:rex|2026-10-18) Rex arrived on that day
       if(cond(X), then(Y))|            a rule told with if: when X was told, Y follows
       category(if|is~name:rex~chien|does~name:rex~v:aboyer)  if Rex is a dog, Rex barks (of one named, or two)
+      category(or|is~name:rex~chien|is~name:max~chat)        Rex is a dog or Max is a cat
       category(believe|name:alice|is~name:tom~chat)          Alice believes that Tom is a cat
       X|                               a thing told, as it is held (what follows the last bar is its day)
     and what an answer may conclude: one of those facts, or "usual:is"/"usual:isnot" about someone, for what is only
@@ -37,6 +38,8 @@
         most so many, at most as many of a narrower kind being something narrower (count(least|3|chat|noir))
       - what holds in each of several kinds one is one of holds ("or:chat;chien": Rex is a dog or a cat, Rex is not a
         cat: Rex is a dog; every dog and every cat is an animal: Rex is an animal)
+      - what holds in each of two things told with or holds; a case that cannot be with the rest is no case (Rex is a
+        dog or Max is a cat, Rex is not a dog: Max is a cat)
     A conclusion it cannot work out is refused; "some" and "not every" are not checked (it says so).
     Test-LambekCalculation works out again a sum an answer shows ("2 + 3 = 5").
 .EXAMPLE
@@ -93,6 +96,13 @@ function ConvertFrom-LambekProofFact {
             if (-not $if -or -not $then -or $if.Kind -notin 'is', 'isnot' -or $then.Kind -notin 'is', 'isnot') { return $null }
             return [pscustomobject]@{ Shape = 'ruleif'; If = $if; Then = $then }
         }
+        # One of two things told of named ones, each as kind~who~what: "or|is~name:rex~chien|is~name:max~chat"; each
+        # part kept as the fact it says
+        if ($kind -eq 'or') {
+            $sides = @($category.Groups['who'].Value, $category.Groups['what'].Value)
+            if (@($sides | Where-Object { $p = & $part $_; -not $p -or $p.Kind -notin 'is', 'isnot' }).Count -gt 0) { return $null }
+            return [pscustomobject]@{ Shape = 'ruleor'; Parts = [string[]] @($sides | ForEach-Object { "category($($_ -replace '~', '|'))" }) }
+        }
         # What one believes, the fact believed as kind~who~what: "believe|name:alice|is~name:rex~chat"
         if ($kind -eq 'believe') {
             return [pscustomobject]@{ Shape = 'belief'; Who = $category.Groups['who'].Value; Inner = "category($($category.Groups['what'].Value -replace '~', '|'))" }
@@ -137,7 +147,12 @@ function ConvertFrom-LambekProofFact {
 }
 
 function Test-LambekProofOnce {
-    param([string[]] $Premises, [string[]] $Conclusions)
+    param(
+        [string[]] $Premises,
+        [string[]] $Conclusions,
+        # One case of a thing told with or: when what is told cannot all hold, the case is closed
+        [switch] $Case
+    )
 
     # (a premise in a shape it does not read: nothing is checked, it says so)
     $facts = [System.Collections.Generic.List[object]]::new()
@@ -147,6 +162,19 @@ function Test-LambekProofOnce {
         $facts.Add($fact)
     }
     $facts = @($facts)
+    # One of two things told with or: what follows in each case follows (each case is the rest with that part told)
+    for ($i = 0; $i -lt $facts.Count; $i++) {
+        if ($facts[$i].Shape -ne 'ruleor') { continue }
+        $rest = @(for ($j = 0; $j -lt $Premises.Count; $j++) { if ($j -ne $i) { $Premises[$j] } })
+        $unsure = $false
+        foreach ($side in $facts[$i].Parts) {
+            $verdict = Test-LambekProofOnce -Premises ([string[]] @(@($rest) + @($side))) -Conclusions $Conclusions -Case
+            if ($verdict.Holds -eq $false) { return $verdict }
+            if ($null -eq $verdict.Holds) { $unsure = $true }
+        }
+        if ($unsure) { return [pscustomobject]@{ Holds = $null; Reason = "not checked: $($Conclusions -join ', ')" } }
+        return [pscustomobject]@{ Holds = $true; Reason = '' }
+    }
     $told = [System.Collections.Generic.HashSet[string]]::new()
     $rules = @($facts | Where-Object Shape -EQ 'if')
     foreach ($fact in @($facts | Where-Object Shape -EQ 'told')) { [void] $told.Add($fact.Key) }
@@ -233,6 +261,14 @@ function Test-LambekProofOnce {
                 if ((& $holds (& $flipped $rule.Then)) -and -not (& $known $back)) { $kinds = @($kinds) + @(& $add $back); $more = $true }
             }
         } while ($more)
+    }
+
+    # (a case of a thing told with or that cannot be with the rest: one named is, and is not, the same)
+    if ($Case) {
+        foreach ($who in @($kinds | Where-Object { -not $_.Usual -and $_.Kind -in 'is', 'isnot' } | ForEach-Object { $_.Who } | Select-Object -Unique)) {
+            $state = & $individual $who
+            if (@($state.IsNot | Where-Object { & $subset $_ $state.Is }).Count -gt 0) { return [pscustomobject]@{ Holds = $true; Reason = '' } }
+        }
     }
 
     # What is supposed of one: each rule that holds normalement and starts from what it is, unless what it says is
