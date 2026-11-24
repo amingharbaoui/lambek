@@ -1135,6 +1135,49 @@ function Get-LambekCategoryCircle {
     }
 }
 
+function Get-LambekCategoryContrary {
+    param([object[]] $Items, [string] $Language)
+
+    # Two words the dictionaries say are each other's contrary (learned, Data/Forms/<language>.antonyms: Wiktionary and
+    # the wordnet agreeing, each the other's only contrary): nothing is both, so told "Rex est petit", "Rex est-il
+    # grand ?" is no. Only for two words both said in the conversation, and never when what was told already ties them
+    # (someone told both, or a rule told about the two): the dictionaries fill a gap, never take the place of a sentence
+    $pairs = (Get-LambekAntonym -Language $Language).Pairs
+    if ($pairs.Count -eq 0) { return }
+    $words = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $said = @{}
+    $tied = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($item in $Items) {
+        foreach ($side in @($(if ($item.PSObject.Properties['Subject']) { $item.Subject }), $(if ($item.PSObject.Properties['Predicate']) { $item.Predicate }))) {
+            if ($side) { foreach ($atom in @($side.Atoms)) { if ("$atom") { foreach ($one in (Get-LambekCategoryAtomPart -Atom "$atom")) { [void] $words.Add("$one") } } } }
+        }
+        if ($item.Kind -eq 'is' -and $item.Individual -and $item.Predicate) {
+            $who = "$($item.Individual.Key)"
+            if (-not $said.ContainsKey($who)) { $said[$who] = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal) }
+            foreach ($atom in @($item.Predicate.Atoms)) { if ("$atom") { [void] $said[$who].Add("$atom") } }
+        }
+        if ($item.Kind -in 'all', 'no', 'some', 'somenot' -and $item.Subject -and $item.Predicate) {
+            foreach ($a in @($item.Subject.Atoms)) { foreach ($b in @($item.Predicate.Atoms)) { [void] $tied.Add("$a`t$b"); [void] $tied.Add("$b`t$a") } }
+        }
+    }
+    $named = (Get-LambekAntonym -Language $Language).Source
+    $seen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($word in @($words | Sort-Object -CaseSensitive)) {
+        $other = $null
+        if (-not $pairs.TryGetValue($word, [ref] $other) -or -not $words.Contains($other)) { continue }
+        $first, $second = @($word, $other) | Sort-Object -CaseSensitive
+        if (-not $seen.Add("$first`t$second") -or $tied.Contains("$first`t$second")) { continue }
+        if (@($said.Values | Where-Object { $_.Contains($first) -and $_.Contains($second) }).Count -gt 0) { continue }
+        [pscustomobject]@{
+            Kind = 'no'; Quantifier = ''; Individual = $null; Verb = $false; Member = $false; Default = $false
+            Subject = [pscustomobject]@{ Atoms = @($first) }
+            Predicate = [pscustomobject]@{ Atoms = @($second) }
+            Written = [pscustomobject]@{ Subject = $first; Predicate = $second; Object = '' }
+            Contrary = [pscustomobject]@{ Of = $first; Other = $second; From = [pscustomobject]@{ Kind = 'dictionary'; Name = $named; Id = "$first<>$second" } }
+        }
+    }
+}
+
 function Format-LambekCategoryCircle {
     param([pscustomobject] $Circle, [string] $Language)
 
@@ -1666,6 +1709,17 @@ function Resolve-LambekCategoryMessage {
     }
     if ($several) { $about = $true }
     if ($embedded) { $about = $true }
+    # (how someone is, asked of the contrary of what that one was told to be, "Rex est petit", "Rex est-il grand ?":
+    # kept here, where the contraries learned are read, not by the memory, which only says what was told)
+    if (-not $about -and $asked.Count -eq 1) {
+        $pairs = (Get-LambekAntonym -Language $Language).Pairs
+        $who = $asked[0].Item.Individual.Key
+        $contraries = @(foreach ($atom in @($asked[0].Item.Predicate.Atoms)) { $other = $null; if ($pairs.TryGetValue("$atom", [ref] $other)) { $other } })
+        if ($contraries.Count -gt 0) {
+            $told = @(@($known) + @($items) | Where-Object { $_.Item.Kind -eq 'is' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who -and $_.Item.Predicate } | ForEach-Object { $_.Item.Predicate.Atoms })
+            if (@($told | Where-Object { "$_" -in $contraries }).Count -gt 0) { $about = $true }
+        }
+    }
     # (one said to be one of several kinds, "Rex est un chien ou un chat": kept here, as nothing else reads it)
     if (@($items | Where-Object { $_.Item.Predicate -and @($_.Item.Predicate.Atoms | Where-Object { "$_".StartsWith('or:') }).Count -gt 0 }).Count -gt 0) { $about = $true }
     if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $rules }).Count -eq 0) { return $null }
@@ -1708,6 +1762,11 @@ function Resolve-LambekCategoryMessage {
     foreach ($circle in @(Get-LambekCategoryCircle -Items (@($premises | ForEach-Object { $_.Item }) + @($items | ForEach-Object { $_.Item })) -Language $Language)) {
         $premises.Add([pscustomobject]@{ Fact = $null; Item = $circle })
     }
+    # And what the dictionaries say is the contrary of a word ("petit" of "grand"): nothing is both. Never told either,
+    # said with the dictionaries named
+    foreach ($contrary in @(Get-LambekCategoryContrary -Items (@($premises | ForEach-Object { $_.Item }) + @($items | ForEach-Object { $_.Item })) -Language $Language)) {
+        $premises.Add([pscustomobject]@{ Fact = $null; Item = $contrary })
+    }
     # What a correction takes back ("non, en fait Tom est un chien") no longer counts, nor anything that follows from it:
     # the answers are worked out again from what is still told. The journal keeps both, and it is said what was replaced
     $takenBack = [System.Collections.Generic.List[string]]::new()
@@ -1723,10 +1782,12 @@ function Resolve-LambekCategoryMessage {
     }
     $atoms = @{}
     $statements = [LambekCategoryStatement[]] @($premises | ForEach-Object { ConvertTo-LambekCategoryStatement -Item $_.Item -Atoms $atoms })
+    # (what the dictionaries said: a kind a word is, or the contrary of a word)
+    $fromBook = { param($item) ($item.PSObject.Properties['Circle'] -and $item.Circle) -or ($item.PSObject.Properties['Contrary'] -and $item.Contrary) }
     # What was told comes before what the dictionary says: a kind it gives that makes the sentences told contradict each
     # other is left out ("Nemo est un dauphin", "Nemo n'est pas un poisson": a dauphin is a poisson in one sense only)
     while (-not [LambekCategories]::Satisfiable($statements)) {
-        $book = @([LambekCategories]::Smallest($statements, $null) | Where-Object { -not $premises[$_].Fact -and $premises[$_].Item.PSObject.Properties['Circle'] -and $premises[$_].Item.Circle } | Sort-Object -Descending)
+        $book = @([LambekCategories]::Smallest($statements, $null) | Where-Object { -not $premises[$_].Fact -and (& $fromBook $premises[$_].Item) } | Sort-Object -Descending)
         if ($book.Count -eq 0) { break }
         foreach ($i in $book) { $premises.RemoveAt($i) }
         $atoms = @{}
@@ -1735,7 +1796,15 @@ function Resolve-LambekCategoryMessage {
     $listed = { param([int[]] $indices) @(foreach ($i in $indices) { if ($premises[$i].Fact) { "- $(Format-LambekFact -Fact $premises[$i].Fact -Language $Language -Register 'vous' -Bare)" } }) }
     # What the dictionary says is no thing told: it is said after them, on its own, so nothing is put in the user's mouth
     $saidOf = { param($item) $item.PSObject.Properties['Circle'] -and $item.Circle }
-    $read = { param([int[]] $indices) @(foreach ($i in $indices) { if (-not $premises[$i].Fact -and (& $saidOf $premises[$i].Item)) { Format-LambekCategoryCircle -Circle $premises[$i].Item.Circle -Language $Language } }) }
+    $contraryOf = { param($item) $item.PSObject.Properties['Contrary'] -and $item.Contrary }
+    $read = {
+        param([int[]] $indices)
+        @(foreach ($i in $indices) {
+                if ($premises[$i].Fact) { continue }
+                if (& $saidOf $premises[$i].Item) { Format-LambekCategoryCircle -Circle $premises[$i].Item.Circle -Language $Language }
+                elseif (& $contraryOf $premises[$i].Item) { Format-LambekComparisonContrary -Contrary $premises[$i].Item.Contrary -Language $Language }
+            })
+    }
     # Where each thing assumed comes from: the dictionary, by its name, or the words themselves ("le cerisier")
     $from = {
         param([int[]] $indices)
@@ -1743,6 +1812,7 @@ function Resolve-LambekCategoryMessage {
             if ($premises[$i].Fact) { continue }
             $item = $premises[$i].Item
             if (& $saidOf $item) { [pscustomobject]@{ Kind = 'dictionary'; Name = (Get-LambekDictionarySource -Language $Language); Id = "$($item.Circle.Under)<$($item.Circle.Above)" } }
+            elseif (& $contraryOf $item) { $item.Contrary.From }
             else { [pscustomobject]@{ Kind = 'words'; Name = ''; Id = '' } }
         }
     }

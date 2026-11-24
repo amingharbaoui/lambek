@@ -1365,6 +1365,36 @@ Describe 'General rules told in words' {
             (Ask 'Rex est plus grand que Max') -join ' ' | Should -BeLike '*Attention*'
         }
 
+        It 'says no to the contrary of what one was told to be: <Asked>' -ForEach @(
+            @{ Told = @('Rex est petit'); Asked = 'Rex est-il grand ?'; Said = "Non : Rex n'est pas grand.*Rex est petit*le contraire de*" }
+            @{ Told = @('Rex est grand'); Asked = 'Rex est-il petit ?'; Said = "Non : Rex n'est pas petit.*" }
+            @{ Told = @('tous les chats sont petits', 'Tom est un chat'); Asked = 'Tom est-il grand ?'; Said = "Non : Tom n'est pas grand.*Tous les chats sont petits*" }
+            @{ Told = @('Rex ist klein'); Asked = 'ist Rex groß?'; Said = 'Nein.*Rex ist klein*' }
+            @{ Told = @('Rex é baixo'); Asked = 'Rex é alto?'; Said = 'Não.*Rex é baixo*' }
+            @{ Told = @('Rex è basso'); Asked = 'Rex è alto?'; Said = 'No.*Rex è basso*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'does not take not so for the contrary: <Asked>' -ForEach @(
+            @{ Told = @("Rex n'est pas petit"); Asked = 'Rex est-il grand ?' }
+            @{ Told = @('Rex est petit'); Asked = 'Max est-il grand ?' }
+        ) {
+            Tell $Told
+            $said = (Ask $Asked) -join ' '
+            $said | Should -Not -BeLike 'Oui*'
+            $said | Should -Not -BeLike 'Non*'
+        }
+
+        It 'keeps the contrary of a kind apart, as the checker reads it' {
+            Tell 'Rex est petit'
+            $null = Ask 'Rex est-il grand ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Forms | Should -Be @('category(is|name:rex|petit)')
+            $proof.Assumed | Should -Be @('category(no|grand|petit)')
+        }
+
         It 'learns a contrary only where it is the only one: <Word>' -ForEach @(
             @{ Language = 'fr'; Word = 'grand'; Contrary = 'petit' }
             @{ Language = 'fr'; Word = 'petit'; Contrary = 'grand' }
