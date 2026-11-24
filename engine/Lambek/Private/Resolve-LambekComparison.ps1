@@ -60,7 +60,10 @@ function Resolve-LambekComparisonDegree {
         # (the word as the reasoning on kinds keeps it, "op:fast" for one its dictionary does not know apart)
         $atom = "$($atoms[0])"
         $of = $atom -replace '^op:', ''
-        $compared = @($known | Where-Object { $_.Item.Of -eq $of })
+        # (and what was compared with its contrary: "plus petit" for "grand")
+        $contrary = $null
+        $other = $(if ((Get-LambekAntonym -Language $language).Pairs.TryGetValue($of, [ref] $contrary)) { $contrary } else { $null })
+        $compared = @($known | Where-Object { $_.Item.Of -eq $of -or ($other -and $_.Item.Of -eq $other) })
         if ($compared.Count -gt 0) { $detected = $language; break }
     }
     if (-not $detected) { return $null }
@@ -74,7 +77,7 @@ function Resolve-LambekComparisonDegree {
     $ways = [System.Collections.Generic.List[object]]::new()
     foreach ($one in $said) {
         $other = "$($one.Item.Individual.Key)"
-        $path = $(if ($one.Item.Kind -eq 'is') { Find-LambekComparisonPath -Known $compared -Of $of -From $who -To $other } else { Find-LambekComparisonPath -Known $compared -Of $of -From $other -To $who })
+        $path = $(if ($one.Item.Kind -eq 'is') { Find-LambekComparisonPath -Known $compared -Of $of -From $who -To $other -Language $detected } else { Find-LambekComparisonPath -Known $compared -Of $of -From $other -To $who -Language $detected })
         if ($path) { $ways.Add([pscustomobject]@{ Kind = $one.Item.Kind; Path = $path; Said = $one }) }
     }
     $yes = @($ways | Where-Object Kind -EQ 'is' | Sort-Object { @($_.Path).Count } | Select-Object -First 1)
@@ -98,8 +101,13 @@ function Resolve-LambekComparisonDegree {
         $line = "- $(Format-LambekFact -Fact $fact -Language $detected -Register 'vous' -Bare)"
         if (-not $shown.ContainsKey($line)) { $shown[$line] = $true; $lines.Add($line) }
     }
+    # (a contrary the way goes through, said after what was told, from the dictionaries named)
+    $contraries = @(Get-LambekComparisonContrary -Path $steps -Language $detected)
+    foreach ($one in $contraries) { $lines.Add((Format-LambekComparisonContrary -Contrary $one -Language $detected)) }
+    # (each step as the checker reads it, of the word asked; one told with the contrary, as it was told)
     Set-LambekLastProof -Facts $facts -Conclusion @(Get-LambekCategoryConclusion -Item $ask -Shape $shape) `
-        -Forms @(@($steps | ForEach-Object { (Get-LambekComparisonForm -Item $_.Item) -replace '^compare\((more|notmore|atleast|notatleast)\|[^|]*\|', "compare(`$1|$atom|" }) + @("category($(Get-LambekCategorySignature -Item $found.Said.Item))"))
+        -Forms @(@($steps | ForEach-Object { if ($_.PSObject.Properties['Turned']) { Get-LambekComparisonStepForm -Step $_ } else { (Get-LambekComparisonForm -Item $_.Item) -replace '^compare\((more|notmore|atleast|notatleast)\|[^|]*\|', "compare(`$1|$atom|" } }) + @("category($(Get-LambekCategorySignature -Item $found.Said.Item))")) `
+        -Assumed @($contraries | ForEach-Object { $_.Form }) -AssumedFrom @($contraries | ForEach-Object { $_.From })
     return [pscustomobject]@{ Language = $detected; Reply = ($lines -join "`n"); Facts = @() }
 }
 
@@ -316,6 +324,63 @@ function Get-LambekComparisonKnown {
     }
 }
 
+function Get-LambekAntonym {
+    param([string] $Language)
+
+    # The adjectives of a language that say the contrary of each other, learned (tools/Learn-LambekAntonyms.ps1,
+    # Data/Forms/<language>.antonyms: two sources agreeing, each the only contrary of the other): "petit" for "grand"
+    # and "grand" for "petit", and the sources named; loaded once, nothing when there are none
+    if ($null -eq $script:LearnedAntonyms) { $script:LearnedAntonyms = @{} }
+    if ($script:LearnedAntonyms.ContainsKey($Language)) { return $script:LearnedAntonyms[$Language] }
+    $pairs = [System.Collections.Generic.Dictionary[string, string]]::new([StringComparer]::Ordinal)
+    $sources = [System.Collections.Generic.List[string]]::new()
+    $path = Join-Path $PSScriptRoot "../Data/Forms/$Language.antonyms"
+    if (Test-Path -LiteralPath $path -PathType Leaf) {
+        foreach ($line in [IO.File]::ReadAllLines([IO.Path]::GetFullPath($path), [Text.Encoding]::UTF8)) {
+            if ($line.StartsWith('#source ')) { $sources.Add(($line.Substring(8) -split ',')[0].Trim()); continue }
+            if (-not $line -or $line.StartsWith('#')) { continue }
+            $a, $b = $line.Split("`t")
+            if ($a -and $b) { $pairs[$a] = $b; $pairs[$b] = $a }
+        }
+    }
+    $found = [pscustomobject]@{ Pairs = $pairs; Source = (@($sources | Where-Object { $_ }) -join ', ') }
+    $script:LearnedAntonyms[$Language] = $found
+    return $found
+}
+
+function Get-LambekComparisonContrary {
+    param([object[]] $Path, [string] $Language)
+
+    # The contraries a way of comparing goes through ("Rex est plus petit que Max" asked as "plus grand"): each once, as
+    # the checker reads it, antonym(grand|petit) (the two in the order of their letters), and where it comes from
+    $named = (Get-LambekAntonym -Language $Language).Source
+    $seen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($step in @($Path)) {
+        if (-not $step -or -not $step.PSObject.Properties['Turned']) { continue }
+        $pair = @("$($step.Item.Of)", "$($step.Turned.Of)") | Sort-Object -CaseSensitive
+        $form = "antonym($($pair[0])|$($pair[1]))"
+        if ($seen.Add($form)) { [pscustomobject]@{ Form = $form; Of = "$($step.Item.Of)"; Other = "$($step.Turned.Of)"; From = [pscustomobject]@{ Kind = 'dictionary'; Name = $named; Id = "$($pair[0])<>$($pair[1])" } } }
+    }
+}
+
+function Format-LambekComparisonContrary {
+    param([pscustomobject] $Contrary, [string] $Language)
+
+    # What the dictionaries say, said plainly: a language that has learned no sentence for it names the two words alone
+    $data = (Get-LambekCategoryVocabulary -Language $Language).Data
+    $named = $Contrary.From.Name
+    if ($data.Contains('Contrary') -and "$($data['Contrary'])") { return ($data['Contrary'] -f $Contrary.Other, $Contrary.Of, $named) }
+    return "$($Contrary.Other) <> $($Contrary.Of) ($named)"
+}
+
+function Get-LambekComparisonStepForm {
+    param([pscustomobject] $Step)
+
+    # The shape the checker reads of one step of a way: as it was told, also when it was told with the contrary word
+    if ($Step.PSObject.Properties['Turned']) { return Get-LambekComparisonForm -Item $Step.Turned }
+    return Get-LambekComparisonForm -Item $Step.Item
+}
+
 function Find-LambekComparisonPath {
     param(
         [object[]] $Known,
@@ -323,7 +388,9 @@ function Find-LambekComparisonPath {
         [string] $From,
         [string] $To,
         # (more, not only as much: a way with at least one step that says more)
-        [switch] $Strict
+        [switch] $Strict,
+        # (the language, whose contraries a step may be told with: "plus petit" read the other way round)
+        [string] $Language
     )
 
     # The things told that lead from one more to another less, one after the other: what is more than one that is
@@ -333,6 +400,19 @@ function Find-LambekComparisonPath {
     # One done on a day before the day another did it did it before: a step of the two things told (Steps)
     $edges = [System.Collections.Generic.List[object]]::new()
     foreach ($entry in @($Known | Where-Object { $_.Item.Of -eq $Of -and $_.Item.Kind -eq 'compare' })) { $edges.Add($entry) }
+    # One told more of the contrary ("Rex est plus petit que Max") is less of it, the other way round (Max is more grand
+    # than Rex): a step turned, which keeps what was told (Turned)
+    $contrary = $null
+    if ($Language -and (Get-LambekAntonym -Language $Language).Pairs.TryGetValue($Of, [ref] $contrary)) {
+        foreach ($entry in @($Known | Where-Object { $_.Item.Of -eq $contrary -and $_.Item.Kind -eq 'compare' })) {
+            $turned = [pscustomobject]@{
+                Kind = 'compare'; Of = $Of; Greater = $entry.Item.Smaller; Smaller = $entry.Item.Greater
+                Said = $entry.Item.Said; Back = $entry.Item.Back; Several = $entry.Item.Several
+                Equal = [bool] ($entry.Item.PSObject.Properties['Equal'] -and $entry.Item.Equal)
+            }
+            $edges.Add([pscustomobject]@{ Fact = $entry.Fact; Item = $turned; Turned = $entry.Item })
+        }
+    }
     # (asked before, the one of the earlier day first; asked after, the one of the later day)
     $timed = [regex]::Match($Of, '^time:(?<way>before|after):(?<done>.+)$')
     $days = @(if ($timed.Success) { $Known | Where-Object { $_.Item.Kind -eq 'dated' -and $_.Item.Of -eq "time:$($timed.Groups['done'].Value)" } })
@@ -433,7 +513,7 @@ function Resolve-LambekComparisonMessage {
         $lines.Add(($say[$shape] -f (@($once | ForEach-Object { Format-LambekFact -Fact $_ -Language $Language -Register 'vous' }) -join ' ')))
         # (one done before another and after it is no clash: one may do it more than once)
         foreach ($entry in @($now | Where-Object { $_.Item.Kind -eq 'compare' -and -not "$($_.Item.Of)".StartsWith('time:') })) {
-            $back = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)" -Strict:(& $equal $entry.Item)
+            $back = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)" -Strict:(& $equal $entry.Item) -Language $Language
             if ($back) {
                 $lines.Add($data['Clash'])
                 foreach ($step in @(Select-LambekComparisonOnce -Items @(@($back) + @($entry)) -Key { param($s) "$($s.Fact.Joined)|$($s.Fact.Text)" })) { $lines.Add("- $(Format-LambekFact -Fact $step.Fact -Language $Language -Register 'vous' -Bare)") }
@@ -460,7 +540,11 @@ function Resolve-LambekComparisonMessage {
     $proof = {
         param($path, [string[]] $concluded)
         $steps = & $once $path
-        Set-LambekLastProof -Facts @($steps | ForEach-Object { $_.Fact }) -Conclusion $concluded -Forms @($steps | ForEach-Object { Get-LambekComparisonForm -Item $_.Item })
+        # (a contrary the way goes through: said after what was told, and kept apart, from the dictionaries named)
+        $contraries = @(Get-LambekComparisonContrary -Path $steps -Language $Language)
+        foreach ($one in $contraries) { $lines.Add((Format-LambekComparisonContrary -Contrary $one -Language $Language)) }
+        Set-LambekLastProof -Facts @($steps | ForEach-Object { $_.Fact }) -Conclusion $concluded -Forms @($steps | ForEach-Object { Get-LambekComparisonStepForm -Step $_ }) `
+            -Assumed @($contraries | ForEach-Object { $_.Form }) -AssumedFrom @($contraries | ForEach-Object { $_.From })
     }
     if ($asks.Count -gt 1) {
         # Asked of several at once ("Rex et Max sont-ils plus grands que Tom ?"): yes when it holds for each two, no
@@ -468,7 +552,7 @@ function Resolve-LambekComparisonMessage {
         $path = [System.Collections.Generic.List[object]]::new()
         $each = $true
         foreach ($entry in $asks) {
-            $way = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Greater.Key)" -To "$($entry.Item.Smaller.Key)" -Strict:(-not (& $equal $entry.Item))
+            $way = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Greater.Key)" -To "$($entry.Item.Smaller.Key)" -Strict:(-not (& $equal $entry.Item)) -Language $Language
             if (-not $way) { $each = $false; break }
             foreach ($step in $way) { $path.Add($step) }
         }
@@ -481,7 +565,7 @@ function Resolve-LambekComparisonMessage {
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
         }
         foreach ($entry in $asks) {
-            $no = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)" -Strict:(& $equal $entry.Item)
+            $no = Find-LambekComparisonPath -Known $all -Of $entry.Item.Of -From "$($entry.Item.Smaller.Key)" -To "$($entry.Item.Greater.Key)" -Strict:(& $equal $entry.Item) -Language $Language
             if (-not $no) { continue }
             $lines.Add($data['NoShort'])
             if ($data['Because']) { $lines.Add($data['Because']) }
@@ -507,7 +591,7 @@ function Resolve-LambekComparisonMessage {
         $lines.Add(($data['Unknown'] -f ($say['Quote'] -f $said)))
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
-    $yes = Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Greater.Key)" -To "$($ask.Smaller.Key)" -Strict:(-not (& $equal $ask))
+    $yes = Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Greater.Key)" -To "$($ask.Smaller.Key)" -Strict:(-not (& $equal $ask)) -Language $Language
     if ($yes) {
         $lines.Add(($data['Yes'] -f (& $sentence $said)))
         if ($data['Because']) { $lines.Add($data['Because']) }
@@ -517,7 +601,7 @@ function Resolve-LambekComparisonMessage {
     }
     # (what is more than another is not less than it: the way the other way round says no; never of what is done
     # before or after another, which one may do more than once)
-    $no = $(if ("$($ask.Of)".StartsWith('time:')) { $null } else { Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Smaller.Key)" -To "$($ask.Greater.Key)" -Strict:(& $equal $ask) })
+    $no = $(if ("$($ask.Of)".StartsWith('time:')) { $null } else { Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Smaller.Key)" -To "$($ask.Greater.Key)" -Strict:(& $equal $ask) -Language $Language })
     if ($no) {
         # (no, said as what holds: the other is the one that is more; only "no" when what holds is not that, the other
         # only as much, or as much asked of)

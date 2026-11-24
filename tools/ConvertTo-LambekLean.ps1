@@ -24,6 +24,7 @@
                                        r0 y z -> r0 x z; forall x y, r0 x y -> Not (r0 y x)); and one more so than one
                                        that is so is so (forall x y, r0 x y -> k0 y -> k0 x) when "grand" is a kind
                                        here ("notmore": Not (r0 c0 c1))
+      antonym(grand|petit)                  forall x y, r0 x y <-> r1 y x, r0 "more grand than", r1 "more petit than"
       compare(atleast|grand|name:rex|name:max)
                                        e0 c0 c1, with e0 "as grand as, at least": it goes on, more makes it,
                                        it goes on with more, and never back against more
@@ -91,6 +92,8 @@ function ConvertTo-LambekLean {
                 Atoms = [string[]] @($match.Groups['what'].Value -split '\+' | Where-Object { $_ })
             }
         }
+        $contrary = [regex]::Match($text, '^antonym\((?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
+        if ($contrary.Success) { return [pscustomobject]@{ Shape = 'antonym'; A = $contrary.Groups['a'].Value; B = $contrary.Groups['b'].Value } }
         $compare = [regex]::Match($text, '^compare\((?<kind>more|notmore|atleast|notatleast)\|(?<of>[^|()]+)\|(?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
         if ($compare.Success) {
             return [pscustomobject]@{ Shape = 'compare'; Kind = $compare.Groups['kind'].Value; Of = $compare.Groups['of'].Value; A = $compare.Groups['a'].Value; B = $compare.Groups['b'].Value }
@@ -234,6 +237,15 @@ function ConvertTo-LambekLean {
                 $assumed.Add("Not ($($exception[$rule]) $x)")
             }
         }
+    }
+
+    # Two words that say the contrary of each other: more so of the one is less so of the other, the other way round,
+    # and as much so the same
+    foreach ($pair in @($facts | Where-Object Shape -EQ 'antonym')) {
+        $ra = & $order $pair.A
+        $rb = & $order $pair.B
+        $hypotheses.Add("forall x y, $ra x y <-> $rb y x")
+        if ($named.Contains("e|$($pair.A)") -or $named.Contains("e|$($pair.B)")) { $hypotheses.Add("forall x y, $(& $equal $pair.A) x y <-> $(& $equal $pair.B) y x") }
     }
 
     # Being more so: a strict order, and one more so than one that is so is so, for a kind of the same word

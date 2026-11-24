@@ -18,6 +18,10 @@ Describe 'The checker of proofs' {
         @{ Name = 'a rule with a condition in the negative'; Premises = 'if(cond(not(pleuvoir(agent("il")))), then(prendre(agent(speaker), object("le velo"))))|', 'not(pleuvoir(agent("il")))|'; Conclusion = 'prendre(agent(speaker), object("le velo"))|' }
         @{ Name = 'one more than another, through a third'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
         @{ Name = 'one not more than the one more than it'; Premises = 'compare(more|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(notmore|grand|name:tom|name:rex)' }
+        @{ Name = 'more of the contrary, the other way round'; Premises = 'compare(more|petit|name:rex|name:max)|', 'antonym(grand|petit)|'; Conclusion = 'compare(more|grand|name:max|name:rex)' }
+        @{ Name = 'more through the contrary and a third'; Premises = 'compare(more|petit|name:rex|name:max)|', 'compare(more|petit|name:max|name:tom)|', 'antonym(grand|petit)|'; Conclusion = 'compare(more|grand|name:tom|name:rex)' }
+        @{ Name = 'not more of the contrary'; Premises = 'compare(more|grand|name:rex|name:max)|', 'antonym(grand|petit)|'; Conclusion = 'compare(notmore|petit|name:rex|name:max)' }
+        @{ Name = 'so, more so than one that is, through the contrary'; Premises = 'compare(more|petit|name:max|name:rex)|', 'antonym(grand|petit)|', 'category(is|name:max|grand)|'; Conclusion = 'category(is|name:rex|grand)' }
         @{ Name = 'as much as one more than a third'; Premises = 'compare(atleast|grand|name:rex|name:max)|', 'compare(more|grand|name:max|name:tom)|'; Conclusion = 'compare(more|grand|name:rex|name:tom)' }
         @{ Name = 'as much as one as much as a third'; Premises = 'compare(atleast|grand|name:rex|name:max)|', 'compare(atleast|grand|name:max|name:tom)|'; Conclusion = 'compare(atleast|grand|name:rex|name:tom)' }
         @{ Name = 'as much, being more'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(atleast|grand|name:rex|name:max)' }
@@ -67,6 +71,8 @@ Describe 'The checker of proofs' {
         @{ Name = 'a condition in the negative, from its opposite'; Premises = 'if(cond(not(pleuvoir(agent("il")))), then(prendre(agent(speaker), object("le velo"))))|', 'pleuvoir(agent("il"))|'; Conclusion = 'prendre(agent(speaker), object("le velo"))|' }
         @{ Name = 'more, the other way round'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:max|name:rex)' }
         @{ Name = 'more in another way'; Premises = 'compare(more|grand|name:rex|name:max)|'; Conclusion = 'compare(more|fort|name:rex|name:max)' }
+        @{ Name = 'more of the contrary, the same way round'; Premises = 'compare(more|petit|name:rex|name:max)|', 'antonym(grand|petit)|'; Conclusion = 'compare(more|grand|name:rex|name:max)' }
+        @{ Name = 'more of another word, no contrary told'; Premises = 'compare(more|petit|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:max|name:rex)' }
         @{ Name = 'more, being only as much'; Premises = 'compare(atleast|grand|name:rex|name:max)|'; Conclusion = 'compare(more|grand|name:rex|name:max)' }
         @{ Name = 'not as much, the other being only as much'; Premises = 'compare(atleast|grand|name:max|name:rex)|'; Conclusion = 'compare(notatleast|grand|name:rex|name:max)' }
         @{ Name = 'as much, the other way round'; Premises = 'compare(atleast|grand|name:rex|name:max)|'; Conclusion = 'compare(atleast|grand|name:max|name:rex)' }

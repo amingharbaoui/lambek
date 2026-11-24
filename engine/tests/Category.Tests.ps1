@@ -1336,6 +1336,47 @@ Describe 'General rules told in words' {
         }
     }
 
+    Context 'One compared with the contrary word' {
+
+        It 'reads more of the contrary the other way round: <Asked>' -ForEach @(
+            @{ Told = @('Rex est plus petit que Max'); Asked = 'Max est-il plus grand que Rex ?'; Said = "Oui : Max est plus grand que Rex.*Rex est plus petit que Max*le contraire de*" }
+            @{ Told = @('Rex est plus petit que Max', 'Max est plus petit que Tom'); Asked = 'Tom est-il plus grand que Rex ?'; Said = 'Oui : Tom est plus grand que Rex.*' }
+            @{ Told = @('Rex est plus grand que Max'); Asked = 'Rex est-il plus petit que Max ?'; Said = 'Non : Max est plus petit que Rex.*' }
+            @{ Told = @('Max est grand', 'Max est plus petit que Rex'); Asked = 'Rex est-il grand ?'; Said = 'Oui : Rex est grand.*' }
+            @{ Told = @('Rex ist kleiner als Max'); Asked = 'ist Max größer als Rex?'; Said = 'Ja. Max ist größer als Rex.*' }
+            @{ Told = @('Rex es más bajo que Max'); Asked = '¿es Max más alto que Rex?'; Said = 'Sí. Max es más alto que Rex.*' }
+            @{ Told = @('Rex é mais baixo que Max'); Asked = 'Max é mais alto que Rex?'; Said = 'Sim. Max é mais alto que Rex.*' }
+            @{ Told = @('Rex è più basso di Max'); Asked = 'Max è più alto di Rex?'; Said = 'Sì. Max è più alto di Rex.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'keeps the contrary apart, as the checker reads it' {
+            Tell 'Rex est plus petit que Max'
+            $null = Ask 'Max est-il plus grand que Rex ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Forms | Should -Be @('compare(more|petit|name:rex|name:max)')
+            $proof.Assumed | Should -Be @('antonym(grand|petit)')
+        }
+
+        It 'says when the contrary goes back on what was told' {
+            Tell 'Rex est plus petit que Max'
+            (Ask 'Rex est plus grand que Max') -join ' ' | Should -BeLike '*Attention*'
+        }
+
+        It 'learns a contrary only where it is the only one: <Word>' -ForEach @(
+            @{ Language = 'fr'; Word = 'grand'; Contrary = 'petit' }
+            @{ Language = 'fr'; Word = 'petit'; Contrary = 'grand' }
+            @{ Language = 'fr'; Word = 'vieux'; Contrary = $null }
+            @{ Language = 'en'; Word = 'short'; Contrary = $null }
+        ) {
+            $pairs = & (Get-Module Lambek) { param($l) (Get-LambekAntonym -Language $l).Pairs } $Language
+            $found = $null
+            if ($pairs.TryGetValue($Word, [ref] $found)) { $found | Should -Be $Contrary } else { $Contrary | Should -BeNullOrEmpty }
+        }
+    }
+
     Context 'One said to be as much as another' {
 
         It 'reasons from as much as, which is at least as much: <Asked>' -ForEach @(
@@ -1436,11 +1477,16 @@ Describe 'General rules told in words' {
         It 'never says one is so from one less so, or from another way of being more: <Asked>' -ForEach @(
             @{ Told = 'Max est grand', 'Max est plus grand que Rex'; Asked = 'Rex est-il grand ?' }
             @{ Told = 'Max est grand', 'Rex est plus fort que Max'; Asked = 'Rex est-il grand ?' }
-            @{ Told = 'Max est petit', 'Rex est moins grand que Max'; Asked = 'Rex est-il petit ?' }
         ) {
             Tell $Told
             (Ask $Asked) -join ' ' | Should -Not -BeLike 'Oui*'
             (Ask $Asked) -join ' ' | Should -Not -BeLike 'Non*'
+        }
+
+        It 'says one is so from one less so of the contrary, only from the contrary learned, and says where it comes from' {
+            # (no contrary guessed: "petit" and "grand" are each other's only contrary in Wiktionary and the wordnet)
+            Tell 'Max est petit', 'Rex est moins grand que Max'
+            (Ask 'Rex est-il petit ?') -join ' ' | Should -BeLike "Oui : Rex est petit.*Rex est moins grand que Max*Max est petit*d'après les dictionnaires*contraire*"
         }
 
         It 'reads less the other way' {

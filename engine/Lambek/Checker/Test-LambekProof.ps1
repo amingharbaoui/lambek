@@ -13,6 +13,7 @@
       category(is|name:tom|chat)       Tom is a cat ("isnot": Tom is not; "does"/"doesnot" for a verb, v:voler)
       compare(more|grand|name:rex|name:max)  Rex is more grand than Max ("notmore" in a conclusion: is not); of what
       compare(atleast|grand|name:rex|name:max)  Rex is as grand as Max, at least ("notatleast" in a conclusion: is not)
+      antonym(grand|petit)                   "grand" and "petit" say the contrary of each other (from the dictionaries)
                                              is done, compare(more|time:before:arriver|...): Rex arrived before Max
       date(time:arriver|name:rex|2026-10-18) Rex arrived on that day
       if(cond(X), then(Y))|            a rule told with if: when X was told, Y follows
@@ -125,6 +126,9 @@ function ConvertFrom-LambekProofFact {
     # One done on a day: date(time:arriver|name:rex|2026-10-18)
     $date = [regex]::Match($text, '^date\((?<of>[^|()]+)\|(?<who>[^|()]+)\|(?<day>\d{4}-\d{2}-\d{2})\)$')
     if ($date.Success) { return [pscustomobject]@{ Shape = 'date'; Of = $date.Groups['of'].Value; Who = $date.Groups['who'].Value; Day = $date.Groups['day'].Value } }
+    # (two words that say the contrary of each other, from the dictionaries: antonym(grand|petit))
+    $contrary = [regex]::Match($text, '^antonym\((?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
+    if ($contrary.Success) { return [pscustomobject]@{ Shape = 'antonym'; A = $contrary.Groups['a'].Value; B = $contrary.Groups['b'].Value } }
     $compare = [regex]::Match($text, '^compare\((?<kind>more|notmore|atleast|notatleast)\|(?<of>[^|()]+)\|(?<a>[^|()]+)\|(?<b>[^|()]+)\)$')
     if ($compare.Success) {
         return [pscustomobject]@{ Shape = 'compare'; Kind = $compare.Groups['kind'].Value; Of = $compare.Groups['of'].Value; A = $compare.Groups['a'].Value; B = $compare.Groups['b'].Value }
@@ -163,6 +167,14 @@ function Test-LambekProofOnce {
         $facts.Add($fact)
     }
     $facts = @($facts)
+    # One more so of a word is less so of its contrary, the other way round (Rex more petit than Max: Max more grand
+    # than Rex): each thing compared said again of the contrary
+    foreach ($pair in @($facts | Where-Object { $_.Shape -eq 'antonym' })) {
+        $turned = foreach ($fact in @($facts | Where-Object { $_.Shape -eq 'compare' -and $_.Kind -in 'more', 'atleast' -and $_.Of -in $pair.A, $pair.B })) {
+            [pscustomobject]@{ Shape = 'compare'; Kind = $fact.Kind; Of = $(if ($fact.Of -eq $pair.A) { $pair.B } else { $pair.A }); A = $fact.B; B = $fact.A }
+        }
+        $facts = @(@($facts) + @($turned))
+    }
     # One of two things told with or: what follows in each case follows (each case is the rest with that part told)
     for ($i = 0; $i -lt $facts.Count; $i++) {
         if ($facts[$i].Shape -ne 'ruleor') { continue }

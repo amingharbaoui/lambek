@@ -161,6 +161,8 @@ $script:Alphabets = $null
 $script:WrittenWords = $null
 # The small words each language writes, learned from its treebanks (Get-LambekLearnedSmallWord), loaded once
 $script:LearnedSmallWords = $null
+# The contraries of each language, learned (Data/Forms/<language>.antonyms), loaded once
+$script:LearnedAntonyms = $null
 $script:SpeechFusion = $null
 $script:SpeechFrames = $null
 $script:SpeechReadings = $null
