@@ -152,6 +152,24 @@ function Get-LambekSingular {
     # (what comes before the verb, read with it for the verb to be read in its place: "zijn" after a name is "are")
     param([string] $Text, [string] $Language, [string] $Before)
 
+    # (a word that says not before the verb, as the forms model reads it or as learned, is kept as it is, the verb after it said in
+    # the singular: "non abbaiano" -> "non abbaia", "n'aboient pas" -> "n'aboie pas")
+    $negation = [regex]::Match($Text, "^(?<word>\p{L}+)(?<cut>['\u2019])?(?<space>\s+)?(?=\p{L})")
+    if ($negation.Success -and ($negation.Groups['cut'].Success -or $negation.Groups['space'].Success)) {
+        $model = Get-LambekFormModel -Language $Language
+        $said = $negation.Groups['word'].Value + $negation.Groups['cut'].Value
+        $read = @()
+        if ($model) { $read = @($model.Read([string[]] @($said))) }
+        # (or the word learned for "not", General.Not, where the treebank does not mark it: "non", "nao")
+        $dialogue = (Get-LambekLexicon -Language $Language).Dialogue
+        $not = @($(if ($dialogue -and $dialogue['General']) { @($dialogue['General']['Not']) | Where-Object { $_ } | ForEach-Object { ConvertTo-LambekNormalizedText -Text "$_" } }))
+        if (($read.Count -eq 1 -and "|$($read[0].Feats)|" -match '\|Polarity=Neg\|') -or (ConvertTo-LambekNormalizedText -Text $negation.Groups['word'].Value) -in $not) {
+            $rest = $Text.Substring($negation.Length)
+            $one = Get-LambekSingular -Text $rest -Language $Language -Before $Before
+            if ($one -cne $rest) { return $Text.Substring(0, $negation.Length) + $one }
+            return $Text
+        }
+    }
     # The first word of the predicate, a verb in the plural, said in the singular: "live" -> "lives", "habitent" -> "habite"
     $match = [regex]::Match($Text, '^\p{L}+')
     if (-not $match.Success) { return $Text }

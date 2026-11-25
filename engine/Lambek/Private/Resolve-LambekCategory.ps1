@@ -324,6 +324,25 @@ function Split-LambekCategoryCoordination {
         if ($sentence.Question -or $joins.Count -eq 0 -or $sentence.Text -notmatch "(?i)(^|\s)($($joins -join '|'))(\s|$)" -or
             (Read-LambekCategorySentence -Sentence $sentence.Text -Language $Language)) { $sentence; continue }
         [string[]] $parts = Split-LambekCoordination -Text $sentence.Original -Language $Language
+        # (two named, joined, which the reader of plain sentences does not split, "Rex e Max non abbaiano": each name
+        # with what follows them, as it was said, when the reader here reads each part about that name)
+        if ($parts.Count -le 1) {
+            $named = [regex]::Match($sentence.Text, "^(?<one>\p{Lu}\p{L}*)\s+(?:$($joins -join '|'))\s+(?<two>\p{Lu}\p{L}*)\s+(?<rest>\S.*)$")
+            if ($named.Success) {
+                $each = @(foreach ($who in $named.Groups['one'].Value, $named.Groups['two'].Value) {
+                        # (said of one, the verb in the singular when that reads too: "Rex non abbaia")
+                        $rest = $named.Groups['rest'].Value
+                        $key = ConvertTo-LambekCategoryIndividual -Text $who -Language $Language
+                        $found = $null
+                        foreach ($text in @("$who $(Get-LambekSingular -Text $rest -Language $Language -Before $who)", "$who $rest")) {
+                            $one = Read-LambekCategorySentence -Sentence $text -Language $Language
+                            if ($one -and $key -and $one.PSObject.Properties['Individual'] -and $one.Individual -and "$($one.Individual.Key)" -eq "$($key.Key)") { $found = $text; break }
+                        }
+                        if ($found) { $found }
+                    })
+                if ($each.Count -eq 2) { [string[]] $parts = $each }
+            }
+        }
         $split = @()
         if ($parts.Count -gt 1) { $split = @(Split-LambekCategorySentence -Text (($parts | ForEach-Object { "$_." }) -join ' ') -Language $Language) }
         $read = @($split | Where-Object { -not $_.Question -and (Read-LambekCategorySentence -Sentence $_.Text -Language $Language -Shape) })
@@ -2048,6 +2067,9 @@ function Resolve-LambekCategoryMessage {
     if ($embedded) { $individual = $true }
     # (asked of each one of a group, "aboient-ils ?": read here, where the group was kept)
     if (@($Sentences | Where-Object { $_.PSObject.Properties['Each'] -and $_.Each }).Count -gt 0) { $individual = $true }
+    # (whether someone does something, when what someone does was kept here, told with other things: "Rex et Max
+    # aboient", "Rex is a dog. Rex barks."; the memory holds it only as one of them)
+    if ($asks.Count -eq 1 -and $asks[0] -eq 'askdoes' -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { "$($_.Fact.Action)" -eq 'verb:category' -and $_.Item.Kind -in 'does', 'doesnot' }).Count -gt 0) { $individual = $true }
     if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $rules }).Count -eq 0) { return $null }
 
     # Each sentence read, with the dictionary: every one must read, or nothing is taken. A pronoun stands for one told
@@ -2082,6 +2104,12 @@ function Resolve-LambekCategoryMessage {
     if ($asked.Count -eq 1 -and -not $about) {
         $who = $asked[0].Item.Individual.Key
         $about = @($known | Where-Object { "$($_.Fact.Action)" -eq 'verb:category' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who }).Count -gt 0
+    }
+    # (and what someone does, the same: "Rex et Max aboient", then "Rex aboie-t-il ?")
+    $doing = @($items | Where-Object { $_.Item.Kind -eq 'askdoes' -and $_.Item.PSObject.Properties['Individual'] -and $_.Item.Individual })
+    if ($doing.Count -eq 1 -and -not $about) {
+        $who = $doing[0].Item.Individual.Key
+        $about = @($known | Where-Object { "$($_.Fact.Action)" -eq 'verb:category' -and $_.Item.Kind -in 'does', 'doesnot' -and $_.Item.PSObject.Properties['Individual'] -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who }).Count -gt 0
     }
     # (in a dialogue learned, about anything told before or now: a question alone, with nothing told, is not one)
     if ((Get-LambekLexicon -Language $Language).Dialogue['Learned'] -and (@($known).Count -gt 0 -or @($items | Where-Object { -not $_.Item.Kind.StartsWith('ask') }).Count -gt 0)) { $about = $true }

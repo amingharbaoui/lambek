@@ -1716,4 +1716,32 @@ Describe 'General rules told in words' {
             & (Get-Module Lambek) { ConvertTo-LambekPlainSentence -Text 'Rex est un chien. Rex aboie-t-il ?' } | Should -Be 'Rex est un chien. est-ce que Rex aboie ?'
         }
     }
+
+    Context 'What someone was told to do, asked again' {
+
+        It 'answers from what was told of each: <Asked>' -ForEach @(
+            @{ Told = @('Rex et Max aboient'); Asked = 'Rex aboie-t-il ?'; Said = 'Oui : Rex aboie.*' }
+            @{ Told = @("Rex et Max n'aboient pas"); Asked = 'Rex aboie-t-il ?'; Said = "Non : Rex n'aboie pas.*" }
+            @{ Told = @('Rex is a dog. Rex barks.'); Asked = 'Does Rex bark?'; Said = 'Yes: Rex does bark.*' }
+            @{ Told = @('Rex e Max non abbaiano'); Asked = 'Rex abbaia?'; Said = 'No.*Rex non abbaia*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'says neither yes nor no of what was not told: <Asked>' -ForEach @(
+            @{ Told = @('Rex et Max aboient'); Asked = 'Rex dort-il ?' }
+            @{ Told = @('Rex is a dog. Rex barks.'); Asked = 'Does Rex sleep?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -Match '^(Oui|Non|Yes|No)\b'
+        }
+
+        It 'says the verb of each in the singular after a word that says not: <Text>' -ForEach @(
+            @{ Language = 'fr'; Text = "n'aboient pas"; Said = "n'aboie pas" }
+            @{ Language = 'it'; Text = 'non abbaiano'; Said = 'non abbaia' }
+        ) {
+            & (Get-Module Lambek) { param($t, $l) Get-LambekSingular -Text $t -Language $l -Before 'Max' } $Text $Language | Should -Be $Said
+        }
+    }
 }
