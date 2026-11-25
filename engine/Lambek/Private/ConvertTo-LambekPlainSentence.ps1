@@ -17,14 +17,15 @@ function ConvertTo-LambekPlainSentence {
 
     # "Paul est-il grand ?", "ma soeur habite-t-elle a Lyon ?": a question said with the verb before a pronoun that
     # repeats the one named, said plain ("est-ce que Paul est grand ?"); only after a name or someone said with whose or
-    # which it is, never after a word that asks ("ou habite-t-il ?" is left as it was)
+    # which it is, never after a word that asks ("ou habite-t-il ?" is left as it was). In a message of several
+    # sentences, only the last one, the others kept as they were ("Rex est un chien. Rex aboie-t-il ?")
     if ($Text -match '\p{L}-(?:t-)?\p{L}+(?:\s|[?!.]|$)') {
         $language = Get-LambekLanguage -Tokens @(Get-LambekLanguageToken -Text $Text)
         $dialogue = (Get-LambekLexicon -Language $language).Dialogue
         $general = $(if ($dialogue) { $dialogue['General'] })
         if ($general -and $general['Inverted'] -and @($general['Pronouns']).Count -gt 0) {
             $pronouns = (@($general['Pronouns']) | Where-Object { $_ } | ForEach-Object { [regex]::Escape("$_") }) -join '|'
-            $inverted = [regex]::Match($Text, "^(?<subject>.+?)\s+(?<verb>\p{L}+)-(?:t-)?(?:$pronouns)(?<rest>(?:\s[^?!.]*)?)(?<mark>\s*[?!.]*\s*)$")
+            $inverted = [regex]::Match($Text, "^(?<before>(?:.*[.!?]\s+)?)(?<subject>[^.!?]+?)\s+(?<verb>\p{L}+)-(?:t-)?(?:$pronouns)(?<rest>(?:\s[^?!.]*)?)(?<mark>\s*[?!.]*\s*)$")
             if ($inverted.Success) {
                 $subject = $inverted.Groups['subject'].Value.Trim()
                 $first = ConvertTo-LambekNormalizedText -Text (@($subject -split '\s+')[0] -replace "['\u2019].*$", '')
@@ -35,7 +36,7 @@ function ConvertTo-LambekPlainSentence {
                 $verb = $inverted.Groups['verb'].Value
                 $isVerb = $dictionary -and @($dictionary.Lemmas((ConvertTo-LambekNormalizedText -Text $verb), $language) | Where-Object { $_.Pos -eq 'v' }).Count -gt 0
                 if (($named -or $said) -and $isVerb) {
-                    return "$($general['Inverted']) $subject $verb$($inverted.Groups['rest'].Value)$($inverted.Groups['mark'].Value)"
+                    return "$($inverted.Groups['before'].Value)$($general['Inverted']) $subject $verb$($inverted.Groups['rest'].Value)$($inverted.Groups['mark'].Value)"
                 }
             }
         }

@@ -384,9 +384,17 @@ function Get-LambekCategoryGroupPronoun {
     for ($i = 0; $i -lt $plain.Count; $i++) {
         $word = $plain[$i]
         $joined = $false
+        $elided = ''
         $read = $tags[$i]
+        # (the part after an apostrophe: "qu'ils", the word before it cut short, kept as it was written)
+        if ($word -match "^(?<cut>\p{L}+['\u2019])(?<rest>\p{L}+)$") {
+            $elided = $Matches['cut']
+            $alone = @($model.Read([string[]] @($Matches['rest'])))
+            if ($alone.Count -ne 1) { continue }
+            $read = $alone[0]
+        }
         # (the last part of a word joined with "-": "aboient-ils", "sont-ils")
-        if ($word -match '^[\p{L}]+(?:-[\p{L}]+)+$') {
+        elseif ($word -match '^[\p{L}]+(?:-[\p{L}]+)+$') {
             $last = ($word -split '-')[-1]
             $alone = @($model.Read([string[]] @($last)))
             if ($alone.Count -ne 1) { continue }
@@ -402,7 +410,7 @@ function Get-LambekCategoryGroupPronoun {
         # (the one who does, never the one done to: "ils", "they", not "les", "them")
         if ($feats -match '\|Case=([\w,]+)\|' -and $Matches[1] -notmatch '(^|,)Nom(,|$)') { continue }
         if (-not $joined -and $i -gt 0 -and $word -cmatch '^\p{Lu}') { continue }
-        $found += [pscustomobject]@{ At = $i; Joined = $joined; Gender = $(if ($feats -match '\|Gender=(\w+)\|') { $Matches[1] } else { '' }) }
+        $found += [pscustomobject]@{ At = $i; Joined = $joined; Elided = $elided; Gender = $(if ($feats -match '\|Gender=(\w+)\|') { $Matches[1] } else { '' }) }
     }
     # (one only: two say which is not said)
     if ($found.Count -ne 1) { return $null }
@@ -475,7 +483,7 @@ function Expand-LambekCategoryGroup {
             if ($fits) {
                 if (-not $sentence.Question) {
                     # (told of the group: the group in the pronoun's place, then split as any two told together)
-                    if ($pronoun.Joined) { $out.Add($sentence); continue }
+                    if ($pronoun.Joined -or $pronoun.Elided) { $out.Add($sentence); continue }
                     $names = @($group.Members | ForEach-Object { "$($_.Written)" })
                     $both = (@($names | Select-Object -SkipLast 1) -join ', ') + " $($group.Join) $($names[-1])"
                     $text = @(for ($i = 0; $i -lt $words.Count; $i++) { if ($i -eq $pronoun.At) { $both } else { $words[$i] } }) -join ' '
@@ -494,7 +502,7 @@ function Expand-LambekCategoryGroup {
                 $keys = @($group.Members | ForEach-Object { "$($_.Key)" })
                 $together = (@($names | Select-Object -SkipLast 1) -join ', ') + " $($group.Join) $($names[-1])"
                 $asked = @(foreach ($member in $group.Members) {
-                        $one = @(for ($i = 0; $i -lt $words.Count; $i++) { if ($i -eq $pronoun.At -and -not $pronoun.Joined) { "$($member.Written)" } else { $words[$i] } })
+                        $one = @(for ($i = 0; $i -lt $words.Count; $i++) { if ($i -eq $pronoun.At -and -not $pronoun.Joined) { "$($pronoun.Elided)$($member.Written)" } else { $words[$i] } })
                         if ($pronoun.Joined) { $one[0] = $one[0].Substring(0, 1).ToLowerInvariant() + $one[0].Substring(1); $one = @("$($member.Written)") + $one }
                         , $one
                     })
@@ -785,6 +793,28 @@ function Get-LambekCategoryVocabulary {
     return $words
 }
 
+function ConvertTo-LambekCategoryList {
+    param([string] $Text, [string] $Language)
+
+    # "Rex, Max et Tom sont des chiens" is "Rex et Max et Tom sont des chiens": the commas of a list of names ended by a
+    # word that joins (General.And, learned) say that word. Each one listed is written with a capital; the one that
+    # opens the sentence is one only when the forms model reads it a name there
+    if ($Text -notmatch ',') { return $Text }
+    $joins = @(Get-LambekConjunctionWord -Language $Language)
+    if ($joins.Count -eq 0) { return $Text }
+    $words = (@($joins) | ForEach-Object { [regex]::Escape("$_") }) -join '|'
+    $list = [regex]::Match($Text, "(?<![\p{L}])(?<names>\p{Lu}[\p{L}-]*(?:\s*,\s*\p{Lu}[\p{L}-]*)+)\s+(?<join>$words)\s+\p{Lu}[\p{L}-]*(?![\p{L}])")
+    if (-not $list.Success) { return $Text }
+    if ($list.Index -eq 0) {
+        $model = Get-LambekFormModel -Language $Language
+        if (-not $model) { return $Text }
+        $tags = @($model.Read([string[]] @(($Text -replace ',', ' ').Trim() -split '\s+')))
+        if ($tags.Count -eq 0 -or "$($tags[0].Upos)" -ne 'PROPN') { return $Text }
+    }
+    $names = [regex]::Replace($list.Groups['names'].Value, '\s*,\s*', " $($list.Groups['join'].Value) ")
+    return $Text.Substring(0, $list.Groups['names'].Index) + $names + $Text.Substring($list.Groups['names'].Index + $list.Groups['names'].Length)
+}
+
 function Split-LambekCategorySentence {
     param([string] $Text, [string] $Language)
 
@@ -825,6 +855,10 @@ function Split-LambekCategorySentence {
                 continue
             }
         }
+        # (a list of names, "Rex, Max et Tom": its commas say what the word joining the last two says, "Rex et Max et
+        # Tom"; its first word opening the sentence only when the forms model reads it a name, never "Normalement, Rex
+        # et Max")
+        $plain = ConvertTo-LambekCategoryList -Text $plain -Language $Language
         # (a comma only marks a pause: "normalement, les oiseaux volent")
         $plain = (($plain -replace ',', ' ') -replace '\s+', ' ').Trim()
         # (a name may have figures in it, "the XR-200", "le PC-6082"; a figure alone is a number, for the rest of Lambek)

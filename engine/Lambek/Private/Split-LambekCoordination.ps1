@@ -106,6 +106,25 @@ function Split-LambekCoordination {
             if ((& $read $clauses[0]) -and (& $read $clauses[1])) { return , [string[]] $clauses }
         }
     }
+    # "Rex, Max et Tom sont des chiens" (the commas read as "et": "Rex et Max et Tom ..."): the first side does not
+    # read, the second is itself several who share the verb; the first goes with the first of them as two would
+    # ("Rex et Max sont des chiens": "Rex est des chiens"), then with each of the others ("Max", "Tom")
+    if (-not $first) {
+        [string[]] $several = Split-LambekCoordination -Text $right -Language $Language
+        if ($several.Count -ge 2) {
+            $names = @($right -split '\s+')
+            $own = @($several[0] -split '\s+')
+            # (the first of them, as it opens both the second side and its own part)
+            # (what they share as the second side says it, "are dogs", or as its first part says it, "is dogs")
+            if ($names.Count -gt 0 -and $own.Count -gt 1 -and $own[0] -ceq $names[0] -and $names.Count -ge $own.Count) {
+                $join = $match.Value.Trim().TrimStart(',').Trim()
+                foreach ($shared in @((@($names | Select-Object -Last ($own.Count - 1)) -join ' '), (@($own | Select-Object -Skip 1) -join ' '))) {
+                    [string[]] $pair = Split-LambekCoordination -Text "$left $join $($names[0]) $shared" -Language $Language
+                    if ($pair.Count -eq 2 -and $pair[1] -ceq $several[0]) { return , [string[]] (@($pair[0]) + $several) }
+                }
+            }
+        }
+    }
     # "Rex en Max zijn honden": neither side reads, the verb in the plural ("zijn" is also "his"). When, said in the
     # singular after the name that opens the second side, both sides read ("Rex is honden", "Max is honden"), each name
     # takes the verb and what follows it as they were said ("Rex zijn honden", "Max zijn honden")

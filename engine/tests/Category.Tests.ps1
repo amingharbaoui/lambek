@@ -1679,4 +1679,41 @@ Describe 'General rules told in words' {
             & (Get-Module Lambek) { @('es', 'pt', 'it') | ForEach-Object { Get-LambekSubjectDropped -Language $_ } } | Should -Not -Contain $false
         }
     }
+
+    Context 'Several named in a list, "qu ils", and a question told with what it follows from' {
+
+        It 'reads three or more named in a list as each one: <Asked>' -ForEach @(
+            @{ Told = @('Rex, Max et Bello sont des chiens', 'tous les chiens aboient'); Asked = 'Aboient-ils ?'; Said = 'Oui : Rex, Max et Bello aboient.*' }
+            @{ Told = @('Rex, Max et Bello sont des chiens', 'tous les chiens aboient'); Asked = 'Bello aboie-t-il ?'; Said = 'Oui*Bello aboie*' }
+            @{ Told = @('Rex, Max y Bello son perros', 'todos los perros ladran'); Asked = '¿Ladran?'; Said = 'Sí. Rex, Max y Bello ladran.*' }
+            @{ Told = @('Rex, Max und Bello sind Hunde', 'alle Hunde bellen'); Asked = 'Bellen sie?'; Said = 'Ja. Rex, Max und Bello bellen.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'keeps a comma after a word that opens the sentence a pause, not a list' {
+            & (Get-Module Lambek) { ConvertTo-LambekCategoryList -Text 'Normalement, Rex et Max dorment' -Language fr } | Should -Be 'Normalement, Rex et Max dorment'
+            & (Get-Module Lambek) { ConvertTo-LambekCategoryList -Text 'Rex, Max et Bello sont des chiens' -Language fr } | Should -Be 'Rex et Max et Bello sont des chiens'
+        }
+
+        It 'reads the pronoun after an apostrophe: <Asked>' -ForEach @(
+            @{ Told = @('Marie et Paul sont des étudiants', 'tous les étudiants travaillent'); Asked = "Est-ce qu'ils travaillent ?"; Said = 'Oui : Marie et Paul travaillent.*' }
+            @{ Told = @('Marie et Anne sont des étudiantes', 'toutes les étudiantes travaillent'); Asked = "Est-ce qu'elles travaillent ?"; Said = 'Oui : Marie et Anne travaillent.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'answers a question asked in the message that told what it follows from: <Asked>' -ForEach @(
+            @{ Asked = 'Rex est un chien. Tous les chiens aboient. Rex aboie-t-il ?'; Said = 'Oui, Rex aboie*' }
+            @{ Asked = 'Rex is a dog. All dogs bark. Does Rex bark?'; Said = 'Yes, Rex does bark*' }
+        ) {
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'keeps the other sentences as they were when it says the last one plain' {
+            & (Get-Module Lambek) { ConvertTo-LambekPlainSentence -Text 'Rex est un chien. Rex aboie-t-il ?' } | Should -Be 'Rex est un chien. est-ce que Rex aboie ?'
+        }
+    }
 }
