@@ -35,6 +35,7 @@ function Resolve-LambekCategory {
     $own = & $kept $detected
     $languages = $(if ($own -or $told.Count -eq 0) { @($detected) + $told } else { $told + @($detected) })
     $languages = @($languages) + @(Get-LambekAvailableLanguage | Where-Object { $_ -notin $languages } | Sort-Object)
+    $keeping = @($told)
     foreach ($language in $languages) {
         $words = Get-LambekCategoryVocabulary -Language $language
         if (-not $words) { continue }
@@ -43,6 +44,18 @@ function Resolve-LambekCategory {
         # Two names told together ("Rex en Max zijn honden"), in the language the message reads as: a sentence that
         # does not read whole is told name by name, when each part reads (Split-LambekCoordination)
         if ($language -eq $detected) { $sentences = @(Split-LambekCategoryCoordination -Sentences $sentences -Language $language) }
+        # "ils", "they" for the ones told of together ("Rex et Max sont des chiens. Ils aboient."), and a question of
+        # two named at once ("Rex et Max aboient-ils ?"): asked of each, each answered
+        if ($language -eq $detected -or $language -in $keeping) { $sentences = @(Expand-LambekCategoryGroup -Sentences $sentences -Language $language) }
+        $each = @($sentences | Where-Object { $_.PSObject.Properties['Each'] -and $_.Each })
+        if ($each.Count -ge 2 -and [object]::ReferenceEquals($each[-1], $sentences[-1]) -and @($sentences | Where-Object { $_.Question }).Count -eq $each.Count) {
+            $told = @($sentences | Where-Object { -not $_.Question })
+            $answers = @(foreach ($one in $each) { Resolve-LambekCategoryMessage -Sentences (@($told) + @($one)) -Language $language })
+            if ($answers.Count -eq $each.Count -and @($answers | Where-Object { -not $_ }).Count -eq 0) {
+                return [pscustomobject]@{ Language = $language; Reply = (Join-LambekCategoryEach -Replies @($answers | ForEach-Object { "$($_.Reply)" }) -Each $each); Facts = $answers[0].Facts }
+            }
+            continue
+        }
         # A question of two things at once ("tous les chats sont-ils noirs et gentils ?"): each asked, each answered
         $asked = @($sentences | Where-Object { $_.Question })
         $joins = @(Get-LambekConjunctionWord -Language $language | ForEach-Object { [regex]::Escape("$_") })
@@ -321,10 +334,208 @@ function Split-LambekCategoryCoordination {
             if (@($kinds | Where-Object { $_ -notin 'is', 'isnot' }).Count -eq 0) {
                 foreach ($part in $split) { $part | Add-Member -NotePropertyName Joined -NotePropertyValue $sentence.Original -Force }
             }
+            # (the ones told of together, which "ils" or "they" may stand for after: Expand-LambekCategoryGroup)
+            foreach ($part in $split) { $part | Add-Member -NotePropertyName Group -NotePropertyValue $sentence.Original -Force }
             $split
         }
         else { $sentence }
     }
+}
+
+function Join-LambekCategoryEach {
+    param([string[]] $Replies, [object[]] $Each)
+
+    # The answers asked of each one of a group, said once when they say the same of each ("Oui : Rex et Max
+    # aboient.", with every reason once), one after the other otherwise
+    $first = @(for ($k = 0; $k -lt $Replies.Count; $k++) {
+            $lines = @("$($Replies[$k])" -split "`n")
+            $name = [regex]::Escape("$($Each[$k].Member)")
+            if ($lines[0] -notmatch "(?<![\p{L}])$name(?![\p{L}])") { '' } else { [regex]::Replace($lines[0], "(?<![\p{L}])$name(?![\p{L}])", "`u{1}", 1) }
+        })
+    if (@($first | Select-Object -Unique).Count -ne 1 -or -not $first[0]) { return ($Replies -join "`n") }
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $lines.Add($first[0].Replace("`u{1}", "$($Each[0].Together)"))
+    # (only where what follows the group is the question's own word, said of several as it was asked: "Rex et Max
+    # aboient"; one the answer puts of its own, "Rex and Max does bark", is said of each, "Yes: Rex does bark.")
+    $before = @(($first[0].Substring(0, $first[0].IndexOf([char] 1)) + "$($Each[0].Together)") -split '\s+' | Where-Object { $_ })
+    $words = @($lines[0] -split '\s+' | Where-Object { $_ })
+    $asked = @("$($Each[0].Text)" -split '[\s-]+' | Where-Object { $_ } | ForEach-Object { $_.ToLowerInvariant() })
+    if ($before.Count -ge $words.Count) { return ($Replies -join "`n") }
+    $next = ($words[$before.Count] -replace '[\p{P}-[''\-]]+$', '').ToLowerInvariant()
+    if ($next -notin $asked) { return ($Replies -join "`n") }
+    foreach ($reply in $Replies) { foreach ($line in @("$reply" -split "`n" | Select-Object -Skip 1)) { if (-not $lines.Contains($line)) { $lines.Add($line) } } }
+    return ($lines -join "`n")
+}
+
+function Get-LambekCategoryGroupPronoun {
+    param([string[]] $Words, [string] $Language)
+
+    # Where a pronoun of the third person in the plural stands in a sentence ("ils aboient", "aboient-ils", "do they
+    # bark"), as the forms model reads it: the word, and whether it is joined to the one before it ("-ils"). One
+    # read without a number is plural when the verb it goes with is ("zij blaffen"). One written with a capital
+    # inside the sentence is said to the listener ("Sind Sie"), never of others
+    $model = Get-LambekFormModel -Language $Language
+    if (-not $model -or $Words.Count -eq 0) { return $null }
+    $plain = @($Words | ForEach-Object { $_ -replace '^-+', '' })
+    $tags = @($model.Read([string[]] $plain))
+    if ($tags.Count -ne $plain.Count) { return $null }
+    $plural = @($tags | Where-Object { "$($_.Upos)" -in 'VERB', 'AUX' -and "|$($_.Feats)|" -match '\|Number=Plur\|' }).Count -gt 0
+    $found = @()
+    for ($i = 0; $i -lt $plain.Count; $i++) {
+        $word = $plain[$i]
+        $joined = $false
+        $read = $tags[$i]
+        # (the last part of a word joined with "-": "aboient-ils", "sont-ils")
+        if ($word -match '^[\p{L}]+(?:-[\p{L}]+)+$') {
+            $last = ($word -split '-')[-1]
+            $alone = @($model.Read([string[]] @($last)))
+            if ($alone.Count -ne 1) { continue }
+            $read = $alone[0]
+            $joined = $true
+        }
+        if ("$($read.Upos)" -ne 'PRON') { continue }
+        $feats = "|$($read.Feats)|"
+        if ($feats -notmatch '\|Person=3\|' -or $feats -notmatch '\|PronType=Prs\|') { continue }
+        # (or the word said next to it is plural, the verb it goes with: "blaffen zij", read as a noun or not)
+        $next = @(foreach ($j in ($i - 1), ($i + 1)) { if ($j -ge 0 -and $j -lt $tags.Count -and "$($tags[$j].Upos)" -notin 'PRON', 'DET', 'PROPN' -and "|$($tags[$j].Feats)|" -match '\|Number=Plur\|') { $j } })
+        if ($feats -match '\|Number=Sing\|' -or ($feats -notmatch '\|Number=Plur\|' -and -not $plural -and $next.Count -eq 0)) { continue }
+        # (the one who does, never the one done to: "ils", "they", not "les", "them")
+        if ($feats -match '\|Case=([\w,]+)\|' -and $Matches[1] -notmatch '(^|,)Nom(,|$)') { continue }
+        if (-not $joined -and $i -gt 0 -and $word -cmatch '^\p{Lu}') { continue }
+        $found += [pscustomobject]@{ At = $i; Joined = $joined; Gender = $(if ($feats -match '\|Gender=(\w+)\|') { $Matches[1] } else { '' }) }
+    }
+    # (one only: two say which is not said)
+    if ($found.Count -ne 1) { return $null }
+    return $found[0]
+}
+
+function Get-LambekCategoryGroupOf {
+    param([object[]] $Read, [string] $Language)
+
+    # The ones a group told together is made of, each as written ("Rex", "ma soeur"), with the word that joined them
+    # and the gender of what was said of them: two different ones at least, none the user
+    $model = Get-LambekFormModel -Language $Language
+    $members = [System.Collections.Generic.List[object]]::new()
+    $genders = [System.Collections.Generic.List[string]]::new()
+    foreach ($item in $Read) {
+        if (-not $item -or -not $item.PSObject.Properties['Individual'] -or -not $item.Individual -or "$($item.Individual.Key)" -eq 'speaker') { return $null }
+        if (@($members | Where-Object { "$($_.Key)" -eq "$($item.Individual.Key)" }).Count -eq 0) { $members.Add($item.Individual) }
+        $said = "$($item.Written.Predicate) $($item.Written.Object)".Trim()
+        if ($said -and $model) { foreach ($tag in @($model.ReadText($said))) { if ("|$($tag.Feats)|" -match '\|Gender=(\w+)\|') { $genders.Add($Matches[1]) } } }
+    }
+    if ($members.Count -lt 2) { return $null }
+    return [pscustomobject]@{ Members = @($members); Genders = @($genders | Select-Object -Unique) }
+}
+
+function Expand-LambekCategoryGroup {
+    param([object[]] $Sentences, [string] $Language)
+
+    # "Rex et Max sont des chiens. Ils aboient.": "ils", "they", "sie" stand for the ones told of together last, here
+    # or before; what is told of them is told of each ("Rex et Max aboient", split as any two told together), what is
+    # asked of them is asked of each ("Rex aboie-t-il ?", "Max aboie-t-il ?"), marked Each. A question of two named at
+    # once ("Rex et Max aboient-ils ?", "do Rex and Max bark?") that does not read whole is asked of each the same way.
+    # A pronoun whose gender says none of the group ("elles" of what was said "des chiens"), or with no group told,
+    # stands for no one
+    $joins = @(Get-LambekConjunctionWord -Language $Language)
+    if ($joins.Count -eq 0) { return $Sentences }
+    $pattern = "(?i)^(?:$(@($joins | ForEach-Object { [regex]::Escape("$_") }) -join '|'))$"
+    # (the word that joined them, as it was said: "et", not "mais")
+    $joinOf = { param($text) $said = @("$text" -split '\s+' | Where-Object { $_ -match $pattern }); $(if ($said.Count -gt 0) { $said[0] } else { $joins[0] }) }
+    # (the group told last before the message: the things told together last, read again)
+    $group = $null
+    $known = @(Get-LambekCategoryKnown -Language $Language | Where-Object { $_.Fact.PSObject.Properties['Group'] -and $_.Fact.Group })
+    if ($known.Count -gt 0) {
+        $last = "$($known[-1].Fact.Group)"
+        $group = Get-LambekCategoryGroupOf -Read @($known | Where-Object { "$($_.Fact.Group)" -eq $last } | ForEach-Object { $_.Item }) -Language $Language
+        if ($group) { $group | Add-Member -NotePropertyName Join -NotePropertyValue (& $joinOf $last) }
+    }
+    $out = [System.Collections.Generic.List[object]]::new()
+    for ($s = 0; $s -lt $Sentences.Count; $s++) {
+        $sentence = $Sentences[$s]
+        # (a group told here: the sentences split from one sentence, one after the other)
+        if ($sentence.PSObject.Properties['Group'] -and $sentence.Group -and -not $sentence.Question) {
+            $together = @($Sentences | Where-Object { $_.PSObject.Properties['Group'] -and "$($_.Group)" -eq "$($sentence.Group)" })
+            if ([object]::ReferenceEquals($together[0], $sentence)) {
+                $read = @($together | ForEach-Object { Read-LambekCategorySentence -Sentence $_.Text -Language $Language })
+                $here = Get-LambekCategoryGroupOf -Read $read -Language $Language
+                if ($here) { $here | Add-Member -NotePropertyName Join -NotePropertyValue (& $joinOf $sentence.Group); $group = $here }
+            }
+            $out.Add($sentence)
+            continue
+        }
+        $words = @($sentence.Text.Trim() -split '\s+' | Where-Object { $_ })
+        $pronoun = Get-LambekCategoryGroupPronoun -Words $words -Language $Language
+        $asked = @()
+        $names = @()
+        $keys = @()
+        $together = ''
+        if ($pronoun -and $group) {
+            $genders = @($group.Genders)
+            $fits = -not (($pronoun.Gender -eq 'Fem' -and 'Masc' -in $genders) -or ($pronoun.Gender -eq 'Masc' -and $genders.Count -eq 1 -and $genders[0] -eq 'Fem'))
+            if ($fits) {
+                if (-not $sentence.Question) {
+                    # (told of the group: the group in the pronoun's place, then split as any two told together)
+                    if ($pronoun.Joined) { $out.Add($sentence); continue }
+                    $names = @($group.Members | ForEach-Object { "$($_.Written)" })
+                    $both = (@($names | Select-Object -SkipLast 1) -join ', ') + " $($group.Join) $($names[-1])"
+                    $text = @(for ($i = 0; $i -lt $words.Count; $i++) { if ($i -eq $pronoun.At) { $both } else { $words[$i] } }) -join ' '
+                    $text = $text.Substring(0, 1).ToUpperInvariant() + $text.Substring(1)
+                    $split = @(Split-LambekCategorySentence -Text "$text." -Language $Language)
+                    $parts = @(Split-LambekCategoryCoordination -Sentences $split -Language $Language)
+                    if ($parts.Count -ge 2 -and @($parts | Where-Object { $_.PSObject.Properties['Group'] }).Count -eq $parts.Count) {
+                        foreach ($part in $parts) { $out.Add($part) }
+                        continue
+                    }
+                    $out.Add($sentence)
+                    continue
+                }
+                # (asked of each: in the pronoun's place, or before the word it is joined to, "Rex aboient-ils")
+                $names = @($group.Members | ForEach-Object { "$($_.Written)" })
+                $keys = @($group.Members | ForEach-Object { "$($_.Key)" })
+                $together = (@($names | Select-Object -SkipLast 1) -join ', ') + " $($group.Join) $($names[-1])"
+                $asked = @(foreach ($member in $group.Members) {
+                        $one = @(for ($i = 0; $i -lt $words.Count; $i++) { if ($i -eq $pronoun.At -and -not $pronoun.Joined) { "$($member.Written)" } else { $words[$i] } })
+                        if ($pronoun.Joined) { $one[0] = $one[0].Substring(0, 1).ToLowerInvariant() + $one[0].Substring(1); $one = @("$($member.Written)") + $one }
+                        , $one
+                    })
+            }
+        }
+        elseif ($sentence.Question) {
+            # (two named, joined: "Rex et Max", "Rex and Max", even where the whole reads some other way, "bellen Rex
+            # und Max" as barking at Max; each part asked alone must be about the one named)
+            $at = @(for ($i = 1; $i -lt $words.Count - 1; $i++) { if ($words[$i] -match $pattern -and $words[$i - 1] -cmatch '^\p{Lu}\p{L}*$' -and $words[$i + 1] -cmatch '^\p{Lu}\p{L}*$') { $i } })
+            if ($at.Count -eq 1) {
+                $i = $at[0]
+                $asked = @(
+                    , @(for ($k = 0; $k -lt $words.Count; $k++) { if ($k -ne $i -and $k -ne $i + 1) { $words[$k] } })
+                    , @(for ($k = 0; $k -lt $words.Count; $k++) { if ($k -ne $i - 1 -and $k -ne $i) { $words[$k] } })
+                )
+                $names = @($words[$i - 1], $words[$i + 1])
+                $together = "$($words[$i - 1]) $($words[$i]) $($words[$i + 1])"
+                $keys = @(foreach ($k in ($i - 1), ($i + 1)) { $who = ConvertTo-LambekCategoryIndividual -Text $words[$k] -Language $Language; if ($who -and "$($who.Key)" -like 'name:*') { "$($who.Key)" } else { '-' } })
+            }
+        }
+        if ($asked.Count -ge 2) {
+            # (the first word with a capital only because it opens the question is written small, "do Rex bark": never
+            # the name itself)
+            $asked = @(for ($k = 0; $k -lt $asked.Count; $k++) {
+                    $one = @($asked[$k])
+                    if ($one[0] -cne $names[$k] -and $one[0] -cmatch '^\p{Lu}') { $one[0] = $one[0].Substring(0, 1).ToLowerInvariant() + $one[0].Substring(1) }
+                    $one -join ' '
+                })
+            # (each read alone, about the one it is asked of)
+            $about = @(for ($k = 0; $k -lt $asked.Count; $k++) {
+                    $read = Read-LambekCategorySentence -Sentence $asked[$k] -Language $Language -Question
+                    if ($read -and $read.PSObject.Properties['Individual'] -and $read.Individual -and "$($read.Individual.Key)" -eq $keys[$k]) { $k }
+                })
+            if ($about.Count -eq $asked.Count) {
+                foreach ($k in 0..($asked.Count - 1)) { $out.Add([pscustomobject]@{ Original = "$($asked[$k]) ?"; Text = $asked[$k]; Question = $true; Correcting = $false; Each = $true; Member = $names[$k]; Together = $together }) }
+                continue
+            }
+        }
+        $out.Add($sentence)
+    }
+    return @($out)
 }
 
 function Find-LambekCategoryReplaced {
@@ -727,7 +938,7 @@ function Read-LambekCategoryPart {
         # (asked of "il", "he", or told of it after the one it stands for in the same message: the one it stands for,
         # said by its name)
         if (-not $item.Individual -and (($Values.ContainsKey('asked') -and $Values['asked']) -or $null -ne $script:CategoryMessage)) {
-            $item.Individual = Resolve-LambekCategoryPronoun -Text $Values['n'] -Language $Language
+            $item.Individual = Resolve-LambekCategoryPronoun -Text $Values['n'] -Language $Language -Verb $(if ($Values.ContainsKey('v')) { "$($Values['v'])" } else { '' })
             if ($item.Individual) {
                 $item.Written.Subject = "$($item.Individual.Written)"
                 $item | Add-Member -NotePropertyName Pronoun -NotePropertyValue $Values['n'].Trim()
@@ -961,7 +1172,7 @@ function ConvertTo-LambekCategoryTerm {
 }
 
 function Resolve-LambekCategoryPronoun {
-    param([string] $Text, [string] $Language)
+    param([string] $Text, [string] $Language, [string] $Verb)
 
     # Who a pronoun of the third person stands for in a question ("aime-t-il le lait", "does he like milk"): the one
     # told of last whose gender and number agree with it, as the forms model reads them, the pronoun's own and those
@@ -980,6 +1191,11 @@ function Resolve-LambekCategoryPronoun {
     $feature = { param($text, $name) if ($text -match "\|$name=(\w+)\|") { $Matches[1] } else { '' } }
     $gender = & $feature $feats 'Gender'
     $number = & $feature $feats 'Number'
+    # (one read without a number is as many as the verb said with it: "blaffen zij" is "they", "blaft zij" "she")
+    if (-not $number -and $Verb) {
+        $with = @($model.Read([string[]] @(@($Verb.Trim() -split '\s+')[0], $words[0])))
+        if ($with.Count -eq 2 -and "|$($with[0].Feats)|" -match '\|Number=Plur\|') { $number = 'Plur' }
+    }
     # (one told of is never "ils" or "they": several are, which the rules read here do not keep together)
     if ($number -eq 'Plur') { return $null }
     $script:CategoryResolving = $true
@@ -999,7 +1215,10 @@ function Resolve-LambekCategoryPronoun {
         if ($number -and $plural.Count -eq 1 -and $plural[0] -ne $number) { continue }
         if ($null -eq $found) { $found = $item.Individual; $from = $known[$i].Fact; continue }
         # (another one, agreeing too, told in the same sentence: which is not said)
-        if ([object]::ReferenceEquals($known[$i].Fact, $from) -and "$($item.Individual.Key)" -ne "$($found.Key)") { return $null }
+        # (or in the same sentence told of both, "Rex en Max zijn honden": kept as two, told together)
+        $group = { param($f) if ($f -and $f.PSObject.Properties['Group'] -and $f.Group) { "$($f.Group)" } else { '' } }
+        $together = (& $group $known[$i].Fact) -and (& $group $known[$i].Fact) -eq (& $group $from)
+        if (([object]::ReferenceEquals($known[$i].Fact, $from) -or $together) -and "$($item.Individual.Key)" -ne "$($found.Key)") { return $null }
         break
     }
     return $found
@@ -1329,6 +1548,7 @@ function ConvertTo-LambekCategoryFact {
         Form       = "category($signature)"
     }
     if ($Sentence.PSObject.Properties['Joined'] -and $Sentence.Joined) { $fact | Add-Member -NotePropertyName Joined -NotePropertyValue "$($Sentence.Joined)" }
+    if ($Sentence.PSObject.Properties['Group'] -and $Sentence.Group) { $fact | Add-Member -NotePropertyName Group -NotePropertyValue "$($Sentence.Group)" }
     return $fact
 }
 
@@ -1664,6 +1884,8 @@ function Resolve-LambekCategoryMessage {
     $or = @(Get-LambekDisjunctionWord -Language $Language)
     if ($or.Count -gt 0 -and @($Sentences | Where-Object { @("$($_.Text)" -split '\s+' | Where-Object { (ConvertTo-LambekNormalizedText -Text $_) -in $or }).Count -gt 0 }).Count -gt 0) { $individual = $true }
     if ($embedded) { $individual = $true }
+    # (asked of each one of a group, "aboient-ils ?": read here, where the group was kept)
+    if (@($Sentences | Where-Object { $_.PSObject.Properties['Each'] -and $_.Each }).Count -gt 0) { $individual = $true }
     if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $rules }).Count -eq 0) { return $null }
 
     # Each sentence read, with the dictionary: every one must read, or nothing is taken. A pronoun stands for one told
@@ -1720,6 +1942,8 @@ function Resolve-LambekCategoryMessage {
             if (@($told | Where-Object { "$_" -in $contraries }).Count -gt 0) { $about = $true }
         }
     }
+    # (asked of each one of a group, "aboient-ils ?": read here, where the group was kept, as nothing else reads it)
+    if (@($items | Where-Object { $_.Sentence.PSObject.Properties['Each'] -and $_.Sentence.Each }).Count -gt 0) { $about = $true }
     # (one said to be one of several kinds, "Rex est un chien ou un chat": kept here, as nothing else reads it)
     if (@($items | Where-Object { $_.Item.Predicate -and @($_.Item.Predicate.Atoms | Where-Object { "$_".StartsWith('or:') }).Count -gt 0 }).Count -gt 0) { $about = $true }
     if (-not $general -and -not $about -and @($known | Where-Object { $_.Item.Kind -in $rules }).Count -eq 0) { return $null }

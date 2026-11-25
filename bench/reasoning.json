@@ -1,8 +1,8 @@
 {
-  "Version": "2.7",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run; version 2.5 added one said as much as another, at least as much: more than a third through one more, as much through two, never more the other way round, and not more from as much alone, to both splits, written before they were run; version 2.6 added one compared with the contrary word: more of the other the other way round, through a third, not more of the contrary, and nothing from two that do not meet, to both splits, written before they were run; version 2.7 added the contrary of what one is: said of one, through a rule, and not so taken for nothing, to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "2.8",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run; version 2.5 added one said as much as another, at least as much: more than a third through one more, as much through two, never more the other way round, and not more from as much alone, to both splits, written before they were run; version 2.6 added one compared with the contrary word: more of the other the other way round, through a third, not more of the contrary, and nothing from two that do not meet, to both splits, written before they were run; version 2.7 added the contrary of what one is: said of one, through a rule, and not so taken for nothing, to both splits, written before they were run; version 2.8 added several told of together, asked of with the pronoun that stands for them and with their names joined, and the pronoun with no group told, to both splits, written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "cef912e9702e91748ea638ebcf6c9b0adb2806e96f8d652f579aee84f0a66c88",
+  "TestHash": "5bf50c6366a277e3f2178a271129cd83056b087ac246b0d84886cde6279ba845",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -29018,6 +29018,1186 @@
           "Text": "Paolo è nero?",
           "Expect": {
             "Reply": "abstain"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-group-pronoun-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex et Max sont des chiens"
+        },
+        {
+          "Text": "tous les chiens aboient"
+        },
+        {
+          "Text": "Aboient-ils ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-group-names-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex et Max sont des chiens"
+        },
+        {
+          "Text": "tous les chiens aboient"
+        },
+        {
+          "Text": "Rex et Max aboient-ils ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-group-nogroup-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est un chien"
+        },
+        {
+          "Text": "tous les chiens aboient"
+        },
+        {
+          "Text": "Aboient-ils ?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-group-pronoun-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul et Luc sont des étudiants"
+        },
+        {
+          "Text": "tous les étudiants travaillent"
+        },
+        {
+          "Text": "Travaillent-ils ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-group-names-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul et Luc sont des étudiants"
+        },
+        {
+          "Text": "tous les étudiants travaillent"
+        },
+        {
+          "Text": "Est-ce que Paul et Luc travaillent ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-group-nogroup-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est un étudiant"
+        },
+        {
+          "Text": "tous les étudiants travaillent"
+        },
+        {
+          "Text": "Travaillent-ils ?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-group-pronoun-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex and Max are dogs"
+        },
+        {
+          "Text": "all dogs bark"
+        },
+        {
+          "Text": "do they bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no,",
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-group-names-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex and Max are dogs"
+        },
+        {
+          "Text": "all dogs bark"
+        },
+        {
+          "Text": "do Rex and Max bark?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no,",
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-group-nogroup-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is a dog"
+        },
+        {
+          "Text": "all dogs bark"
+        },
+        {
+          "Text": "do they bark?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "yes"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-group-pronoun-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul and Luke are students"
+        },
+        {
+          "Text": "all students work"
+        },
+        {
+          "Text": "do they work?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no,",
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-group-names-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul and Luke are students"
+        },
+        {
+          "Text": "all students work"
+        },
+        {
+          "Text": "do Paul and Luke work?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no,",
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-group-nogroup-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is a student"
+        },
+        {
+          "Text": "all students work"
+        },
+        {
+          "Text": "do they work?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "yes"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-group-pronoun-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex und Max sind Hunde"
+        },
+        {
+          "Text": "alle Hunde bellen"
+        },
+        {
+          "Text": "bellen sie?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-group-names-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex und Max sind Hunde"
+        },
+        {
+          "Text": "alle Hunde bellen"
+        },
+        {
+          "Text": "bellen Rex und Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-group-nogroup-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist ein Hund"
+        },
+        {
+          "Text": "alle Hunde bellen"
+        },
+        {
+          "Text": "bellen sie?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-group-pronoun-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul und Lukas sind Studenten"
+        },
+        {
+          "Text": "alle Studenten arbeiten"
+        },
+        {
+          "Text": "arbeiten sie?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-group-names-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul und Lukas sind Studenten"
+        },
+        {
+          "Text": "alle Studenten arbeiten"
+        },
+        {
+          "Text": "arbeiten Paul und Lukas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nein."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-group-nogroup-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist ein Student"
+        },
+        {
+          "Text": "alle Studenten arbeiten"
+        },
+        {
+          "Text": "arbeiten sie?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-group-pronoun-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex y Max son perros"
+        },
+        {
+          "Text": "todos los perros ladran"
+        },
+        {
+          "Text": "¿ellos ladran?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-group-names-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex y Max son perros"
+        },
+        {
+          "Text": "todos los perros ladran"
+        },
+        {
+          "Text": "¿ladran Rex y Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-group-nogroup-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es un perro"
+        },
+        {
+          "Text": "todos los perros ladran"
+        },
+        {
+          "Text": "¿ellos ladran?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-group-pronoun-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo y Lucas son estudiantes"
+        },
+        {
+          "Text": "todos los estudiantes trabajan"
+        },
+        {
+          "Text": "¿ellos trabajan?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-group-names-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo y Lucas son estudiantes"
+        },
+        {
+          "Text": "todos los estudiantes trabajan"
+        },
+        {
+          "Text": "¿trabajan Pablo y Lucas?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-group-nogroup-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Pablo es un estudiante"
+        },
+        {
+          "Text": "todos los estudiantes trabajan"
+        },
+        {
+          "Text": "¿ellos trabajan?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-group-pronoun-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex en Max zijn honden"
+        },
+        {
+          "Text": "alle honden blaffen"
+        },
+        {
+          "Text": "blaffen zij?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-group-names-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex en Max zijn honden"
+        },
+        {
+          "Text": "alle honden blaffen"
+        },
+        {
+          "Text": "blaffen Rex en Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-group-nogroup-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is een hond"
+        },
+        {
+          "Text": "alle honden blaffen"
+        },
+        {
+          "Text": "blaffen zij?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-group-pronoun-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul en Luuk zijn studenten"
+        },
+        {
+          "Text": "alle studenten werken"
+        },
+        {
+          "Text": "werken zij?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-group-names-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul en Luuk zijn studenten"
+        },
+        {
+          "Text": "alle studenten werken"
+        },
+        {
+          "Text": "werken Paul en Luuk?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja."
+            ],
+            "Avoid": [
+              "nee."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-group-nogroup-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is een student"
+        },
+        {
+          "Text": "alle studenten werken"
+        },
+        {
+          "Text": "werken zij?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "ja."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-group-pronoun-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex e Max são cães"
+        },
+        {
+          "Text": "todos os cães latem"
+        },
+        {
+          "Text": "eles latem?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-group-names-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex e Max são cães"
+        },
+        {
+          "Text": "todos os cães latem"
+        },
+        {
+          "Text": "Rex e Max latem?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-group-nogroup-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é um cão"
+        },
+        {
+          "Text": "todos os cães latem"
+        },
+        {
+          "Text": "eles latem?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-group-pronoun-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo e Lucas são estudantes"
+        },
+        {
+          "Text": "todos os estudantes trabalham"
+        },
+        {
+          "Text": "eles trabalham?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-group-names-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo e Lucas são estudantes"
+        },
+        {
+          "Text": "todos os estudantes trabalham"
+        },
+        {
+          "Text": "Paulo e Lucas trabalham?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim."
+            ],
+            "Avoid": [
+              "nao."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-group-nogroup-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Paulo é um estudante"
+        },
+        {
+          "Text": "todos os estudantes trabalham"
+        },
+        {
+          "Text": "eles trabalham?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "sim."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-group-pronoun-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex e Max sono cani"
+        },
+        {
+          "Text": "tutti i cani abbaiano"
+        },
+        {
+          "Text": "essi abbaiano?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-group-names-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex e Max sono cani"
+        },
+        {
+          "Text": "tutti i cani abbaiano"
+        },
+        {
+          "Text": "Rex e Max abbaiano?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-group-nogroup-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è un cane"
+        },
+        {
+          "Text": "tutti i cani abbaiano"
+        },
+        {
+          "Text": "essi abbaiano?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "si."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-group-pronoun-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "group-pronoun"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo e Luca sono studenti"
+        },
+        {
+          "Text": "tutti gli studenti lavorano"
+        },
+        {
+          "Text": "essi lavorano?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-group-names-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "group-names"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo e Luca sono studenti"
+        },
+        {
+          "Text": "tutti gli studenti lavorano"
+        },
+        {
+          "Text": "Paolo e Luca lavorano?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si."
+            ],
+            "Avoid": [
+              "no."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-group-nogroup-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "group-nogroup"
+      ],
+      "Turns": [
+        {
+          "Text": "Paolo è uno studente"
+        },
+        {
+          "Text": "tutti gli studenti lavorano"
+        },
+        {
+          "Text": "essi lavorano?",
+          "Expect": {
+            "Reply": "abstain",
+            "Avoid": [
+              "si."
+            ]
           }
         }
       ]

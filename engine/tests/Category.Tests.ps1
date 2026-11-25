@@ -715,9 +715,10 @@ Describe 'General rules told in words' {
             (Ask $Asked) -join ' ' | Should -BeLike $Said
         }
 
-        It 'stands a pronoun for nobody when it agrees with none, or with several' {
+        It 'stands a pronoun for nobody when it agrees with none, or for one of several' {
+            # ("ils" stands for them both now: 'Several told of together, then "ils" for them')
             Tell 'tous les chiens aboient', 'Rex et Max sont des chiens'
-            (Ask 'aboient-ils ?') -join ' ' | Should -Not -BeLike 'Oui*'
+            (Ask 'aboie-t-il ?') -join ' ' | Should -Not -BeLike 'Oui*'
             Tell 'toutes les étudiantes sont curieuses', 'Tom est un chat'
             (Ask 'est-elle curieuse ?') -join ' ' | Should -Not -BeLike 'Oui*'
         }
@@ -1544,6 +1545,75 @@ Describe 'General rules told in words' {
             $proof = & (Get-Module Lambek) { Get-LambekLastProof }
             $proof.Conclusion | Should -Be @('compare(more|grand|name:rex|name:tom)')
             $proof.Forms | Should -Be @('compare(more|grand|name:rex|name:max)', 'compare(more|grand|name:max|name:tom)')
+        }
+    }
+
+    Context 'Several told of together, then "ils" for them' {
+
+        It 'asks of each one of the group, and says it once: <Asked>' -ForEach @(
+            @{ Told = @('Rex et Max sont des chiens', 'tous les chiens aboient'); Asked = 'Aboient-ils ?'; Said = 'Oui : Rex et Max aboient.*Rex et Max sont des chiens*' }
+            @{ Told = @('Rex et Max sont des chiens', 'tous les chiens aboient'); Asked = 'Rex et Max aboient-ils ?'; Said = 'Oui : Rex et Max aboient.*' }
+            @{ Told = @('Rex et Max sont des chiens', 'tous les chiens aboient'); Asked = 'Est-ce que Rex et Max aboient ?'; Said = 'Oui : Rex et Max aboient.*' }
+            @{ Told = @('Marie et Paul sont des étudiants', 'tous les étudiants travaillent'); Asked = 'Travaillent-ils ?'; Said = 'Oui : Marie et Paul travaillent.*' }
+            @{ Told = @('Rex und Max sind Hunde', 'alle Hunde bellen'); Asked = 'Bellen sie?'; Said = 'Ja. Rex und Max bellen.*' }
+            @{ Told = @('Rex und Max sind Hunde', 'alle Hunde bellen'); Asked = 'Bellen Rex und Max?'; Said = 'Ja. Rex und Max bellen.*' }
+            @{ Told = @('Rex y Max son perros', 'todos los perros ladran'); Asked = '¿Ellos ladran?'; Said = 'Sí. Rex y Max ladran.*' }
+            @{ Told = @('Rex en Max zijn honden', 'alle honden blaffen'); Asked = 'Blaffen Rex en Max?'; Said = 'Ja. Rex en Max blaffen.*' }
+            @{ Told = @('Rex e Max são cães', 'todos os cães latem'); Asked = 'Eles latem?'; Said = 'Sim. Rex e Max latem.*' }
+            @{ Told = @('Rex e Max sono cani', 'tutti i cani abbaiano'); Asked = 'Essi abbaiano?'; Said = 'Sì. Rex e Max abbaiano.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'says it of each when the answer puts a word of its own: <Asked>' -ForEach @(
+            @{ Told = @('Rex and Max are dogs', 'all dogs bark'); Asked = 'do they bark?' }
+            @{ Told = @('Rex and Max are dogs', 'all dogs bark'); Asked = 'do Rex and Max bark?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike 'Yes: Rex does bark.*Yes: Max does bark.*'
+        }
+
+        It 'says of each what holds of each' {
+            Tell 'Rex est un chien', 'Max est un chat', "aucun chat n'est un chien"
+            (Ask 'Rex et Max sont-ils des chiens ?') -join ' ' | Should -BeLike 'Oui : Rex*Non, Max*'
+        }
+
+        It 'tells of each what is told of them' {
+            Tell 'Rex et Max sont des chiens. Ils aboient.'
+            (Ask 'Aboient-ils ?') -join ' ' | Should -BeLike 'Oui : Rex et Max aboient.*- Rex aboie.*- Max aboie.*'
+        }
+
+        It 'takes the group told last' {
+            Tell 'Rex et Max sont des chiens', 'Tom et Felix sont des chats', 'tous les chats miaulent'
+            (Ask 'Miaulent-ils ?') -join ' ' | Should -BeLike 'Oui : Tom et Felix miaulent.*'
+        }
+
+        It 'stands for no one with no group told, or with a gender none of them has: <Asked>' -ForEach @(
+            @{ Told = @('Rex est un chien', 'tous les chiens aboient'); Asked = 'Aboient-ils ?' }
+            @{ Told = @('Rex et Max sont des chiens', 'tous les chiens aboient'); Asked = 'Aboient-elles ?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -BeLike 'Oui*'
+        }
+
+        It 'does not take one of the group for "il"' {
+            Tell 'Rex et Max sont des chiens', 'tous les chiens aboient'
+            (Ask 'Aboie-t-il ?') -join ' ' | Should -Not -BeLike 'Oui*'
+        }
+
+        It 'does not split what is asked of one with two others: <Asked>' -ForEach @(
+            @{ Told = @('Rex likes Tom', 'all dogs bark'); Asked = 'does Rex like Tom and Max?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -BeLike 'Yes*'
+        }
+
+        It 'keeps the answer in the shape the checker reads' {
+            Tell 'Rex et Max sont des chiens', 'tous les chiens aboient'
+            $null = Ask 'Aboient-ils ?'
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -Be @('category(is|name:max|v:aboyer)')
         }
     }
 }
