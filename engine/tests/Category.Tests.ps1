@@ -1616,4 +1616,67 @@ Describe 'General rules told in words' {
             $proof.Conclusion | Should -Be @('category(is|name:max|v:aboyer)')
         }
     }
+
+    Context 'The one a sentence is about left unsaid, in the languages that leave it out' {
+
+        It 'asks of the one told of last: <Asked>' -ForEach @(
+            @{ Told = @('Rex es un perro', 'todos los perros ladran'); Asked = '¿Ladra?'; Said = 'Sí. Rex ladra.*' }
+            @{ Told = @('Rex è un cane', 'tutti i cani abbaiano'); Asked = 'Abbaia?'; Said = 'Sì. Rex abbaia.*' }
+            @{ Told = @('Rex é um cão', 'todos os cães latem'); Asked = 'Late?'; Said = 'Sim. Rex late.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'asks of each of the group told last when the verb says several: <Asked>' -ForEach @(
+            @{ Told = @('Rex y Max son perros', 'todos los perros ladran'); Asked = '¿Ladran?'; Said = 'Sí. Rex y Max ladran.*' }
+            @{ Told = @('Rex e Max sono cani', 'tutti i cani abbaiano'); Asked = 'Abbaiano?'; Said = 'Sì. Rex e Max abbaiano.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'reads it told after one told of in the same message, and asked in it' {
+            Tell 'Rex es un perro. Ladra.'
+            (Ask '¿Ladra Rex?') -join ' ' | Should -BeLike 'Sí. Rex ladra.*'
+            (Ask 'Rex es un perro. Todos los perros ladran. ¿Ladra?') -join ' ' | Should -BeLike 'Sí. Rex ladra.*'
+        }
+
+        It 'keeps nothing told so alone, as it may be said to the listener' {
+            Tell 'Rex es un perro'
+            $null = Ask 'Borra el archivo.'
+            $known = & (Get-Module Lambek) { @(Get-LambekCategoryKnown -Language es | ForEach-Object { "$($_.Fact.Text)" }) }
+            $known -join ' ' | Should -Not -BeLike '*borra*'
+        }
+
+        It 'asks of nobody with two told together, or none told: <Asked>' -ForEach @(
+            @{ Told = @('Rex y Max son perros', 'todos los perros ladran'); Asked = '¿Ladra?' }
+            @{ Told = @('todos los perros ladran'); Asked = '¿Ladra?' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -BeLike 'Sí*'
+        }
+
+        It 'does not in a language that writes it: <Asked>' -ForEach @(
+            @{ Told = @('Rex is a dog', 'all dogs bark'); Asked = 'barks?'; Yes = 'Yes*' }
+            @{ Told = @('Rex est un chien', 'tous les chiens aboient'); Asked = 'aboie ?'; Yes = 'Oui*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -Not -BeLike $Yes
+        }
+
+        It 'reads a question whose first word has a capital only because it opens it: <Asked>' -ForEach @(
+            @{ Told = @('Rex é um cão', 'todos os cães latem'); Asked = 'Late Rex?'; Said = 'Sim. Rex late.*' }
+            @{ Told = @('Rex es un perro', 'todos los perros ladran'); Asked = '¿Ladra Rex?'; Said = 'Sí. Rex ladra.*' }
+            @{ Told = @('Rex und Max sind Hunde', 'alle Hunde bellen'); Asked = 'Bellen Rex?'; Said = 'Ja. Rex bellen.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'learns which languages leave it out from their treebanks' {
+            & (Get-Module Lambek) { @('fr', 'en', 'de', 'nl') | ForEach-Object { Get-LambekSubjectDropped -Language $_ } } | Should -Not -Contain $true
+            & (Get-Module Lambek) { @('es', 'pt', 'it') | ForEach-Object { Get-LambekSubjectDropped -Language $_ } } | Should -Not -Contain $false
+        }
+    }
 }

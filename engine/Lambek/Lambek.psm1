@@ -163,6 +163,8 @@ $script:WrittenWords = $null
 $script:LearnedSmallWords = $null
 # The contraries of each language, learned (Data/Forms/<language>.antonyms), loaded once
 $script:LearnedAntonyms = $null
+# Whether each language leaves out the one a sentence is about, learned (Data/Forms/<language>.subject), loaded once
+$script:LearnedSubject = $null
 $script:SpeechFusion = $null
 $script:SpeechFrames = $null
 $script:SpeechReadings = $null

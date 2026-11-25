@@ -184,6 +184,31 @@ here, only the words learned from them, with the counts they were learned with a
 the first line of each file. As in the treebanks, the English side anchors what a word means: "another" and "such" are
 tagged PronType=Ind in English-EWT, so "autre" and "telle" are learned as words of `some`.
 
+## The subject left unsaid (`<language>.subject`)
+
+The `<language>.subject` files say whether a language leaves out the one a sentence is about ("¿ladra?", "abbaia?",
+"late?": "does it bark?"), made by `tools/Learn-LambekSubject.ps1` from the treebanks of the language, nothing written by
+hand. Every main clause (relation `root`) whose verb is conjugated (`VerbForm=Fin`) and said neither by the speaker nor
+to the listener (no `Person=1`, `Person=2`, `Mood=Imp`) is counted, and so is every one with no subject (no child
+`nsubj`, `csubj` or `expl` of the head of the clause, with any subtype; the head of "es un perro" is "perro", which the
+copula joins). Counts only, in integers.
+
+| Language | Treebanks (train files, UD 2.18) | Main clauses | No subject |
+| --- | --- | --- | --- |
+| French | GSD | 13 218 | 14 (0.1 %) |
+| English | EWT | 6 374 | 92 (1.4 %) |
+| German | GSD | 12 778 | 247 (1.9 %) |
+| Dutch | Alpino, LassySmall | 21 367 | 369 (1.7 %) |
+| Spanish | AnCora, GSD | 26 048 | 4 761 (18.3 %) |
+| Portuguese | Bosque, PetroGold, Porttinari, DANTEStocks | 18 324 | 2 034 (11.1 %) |
+| Italian | MarkIT, TWITTIRO, ParlaMint | 1 481 | 248 (16.7 %) |
+
+A language leaves the subject out when at least one such clause in twenty has none (`Get-LambekSubjectDropped`): the
+languages that write it stay under one in fifty, those that leave it out are over one in ten, nothing in between. Only
+there does the reader of general rules take a question that names nobody as asked of the one told of last ("Rex es un
+perro" → "¿ladra?" is asked of Rex), or of each one of the group told together last when the verb is plural. The
+treebanks are those of `<language>.logic`, the same files, the same hashes (written in the first line of each file).
+
 ## The dialogues learned (`<language>.dialogue.json`)
 
 German, Spanish, Dutch, Portuguese and Italian have no dialogue written for them: Lambek learned the one it reasons
