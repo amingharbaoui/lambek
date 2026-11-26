@@ -604,6 +604,8 @@ function Expand-LambekCategoryDropped {
     # ("Rex y Max son perros. ladran?"), asked of each as with "ils". What is told so is kept only after one told of in
     # the same message ("Rex es un perro. Ladra."), never alone: "Borra el archivo." is said to the listener
     if ($Words.Count -eq 0) { return @() }
+    # (the group told together last, if any, which a verb in the plural may be said of)
+    $told = $Group
     $read = Read-LambekCategorySentence -Sentence $Sentence.Text -Language $Language -Question:$Sentence.Question
     if ($read) { return @() }
     $small = { param($word) $word.Substring(0, 1).ToLowerInvariant() + $word.Substring(1) }
@@ -621,66 +623,116 @@ function Expand-LambekCategoryDropped {
     if ($plain.Count -eq 0) { return @() }
     $tags = @($model.Read([string[]] $plain))
     if ($tags.Count -ne $plain.Count) { return @() }
-    # (the verb as the tagger reads it here, or, read as something else alone at the start, "ladra" a noun, as the
-    # dictionary gives it when the treebanks never saw it only as something else: every reading of it conjugated for
-    # the same number, for the one spoken of)
+    # (the verb as the tagger reads it here, then as its dictionary and its treebanks give it: "sono" is "I am" as well
+    # as "they are", read "they are" here; "ladra", "trabajo" read as nouns at the start. In a question, as the
+    # dictionary gives it even when the treebanks saw it only as a noun, "trabajo", "lavoro"; told, only a word the
+    # treebanks saw as a verb. Each reading is tried in that order, the first that says a sentence about the one
+    # it then is about wins)
     $verb = $tags[0]
-    $readings = @()
-    if ("$($verb.Upos)" -in 'VERB', 'AUX') { $readings = @("|$($verb.Feats)|") }
-    elseif ($model.Lexicon) {
-        $entries = $null
-        $seen = $null
-        $form = $plain[0].ToLowerInvariant()
-        $other = $model.Tags.TryGetValue($form, [ref] $seen) -and @($seen).Count -gt 0 -and @($seen | Where-Object { $_ -like 'VERB|*' -or $_ -like 'AUX|*' }).Count -eq 0
-        if (-not $other -and $model.Lexicon.TryGet($form, [ref] $entries)) { $readings = @($entries | Where-Object { "$($_.Upos)" -in 'VERB', 'AUX' } | ForEach-Object { "|$($_.Feats)|" }) }
+    $readings = [System.Collections.Generic.List[string]]::new()
+    if ("$($verb.Upos)" -in 'VERB', 'AUX') { $readings.Add("|$($verb.Feats)|") }
+    $form = $plain[0].ToLowerInvariant()
+    $seen = $null
+    $entries = $null
+    $known = $model.Tags.TryGetValue($form, [ref] $seen) -and @($seen).Count -gt 0
+    $other = $known -and @($seen | Where-Object { $_ -like 'VERB|*' -or $_ -like 'AUX|*' }).Count -eq 0
+    if ($model.Lexicon -and (-not $other -or $Sentence.Question) -and $model.Lexicon.TryGet($form, [ref] $entries)) {
+        foreach ($entry in @($entries | Where-Object { "$($_.Upos)" -in 'VERB', 'AUX' })) { $readings.Add("|$($entry.Feats)|") }
     }
+    if ($known) { foreach ($tag in @($seen | Where-Object { $_ -like 'VERB|*' -or $_ -like 'AUX|*' })) { $readings.Add("|$($tag.Substring($tag.IndexOf('|') + 1))|") } }
     if ($readings.Count -eq 0) { return @() }
-    $numbers = @(foreach ($feats in $readings) {
-            if ($feats -notmatch '\|(VerbForm=Fin|Mood=(Ind|Sub|Cnd))\|' -or $feats -match '\|Person=[12]\|' -or $feats -match '\|Mood=Imp\|' -or $feats -notmatch '\|Number=(Sing|Plur)\|') { 'none' }
-            else { $Matches[1] }
+    # (conjugated for the speaker in the singular, "soy", "trabajo": of the user, as "yo" says it; never for the
+    # listener)
+    $choices = @(foreach ($feats in $readings) {
+            if ($feats -notmatch '\|(VerbForm=Fin|Mood=(Ind|Sub|Cnd)|Person=[123])\|' -or $feats -match '\|VerbForm=(Inf|Part|Ger)\|' -or $feats -match '\|Person=2\|' -or $feats -match '\|Mood=Imp\|' -or $feats -notmatch '\|Number=(Sing|Plur)\|') { continue }
+            if ($feats -match '\|Person=1\|') { if ($feats -match '\|Number=Sing\|') { 'speaker' } }
+            elseif ($feats -match '\|Number=(Sing|Plur)\|') { $Matches[1] }
         })
-    $numbers = @($numbers | Select-Object -Unique)
-    if ($numbers.Count -ne 1 -or $numbers[0] -eq 'none') { return @() }
-    $number = $numbers[0]
+    $choices = @($choices | Select-Object -Unique)
+    # (what a copula says agrees with the one it is said of: "uno studente" of one, "studenti" of several)
+    $copula = "$($tags[0].Upos)" -eq 'AUX' -or @($readings | Where-Object { $_ -match '\|VerbType=Cop\|' }).Count -gt 0
+    $gender = ''
+    if ($copula) {
+        for ($r = 1; $r -lt $tags.Count; $r++) {
+            if ("$($tags[$r].Upos)" -in 'ADJ', 'NOUN', 'DET' -and "|$($tags[$r].Feats)|" -match '\|Number=(Sing|Plur)\|') {
+                $said = $Matches[1]
+                $choices = @($choices | Where-Object { if ($said -eq 'Sing') { $_ -ne 'Plur' } else { $_ -eq 'Plur' } })
+                break
+            }
+        }
+        # (the gender of what a copula says of the one, "es negra", "es una gata": the one it agrees with, "Luna")
+        for ($r = 1; $r -lt $tags.Count; $r++) {
+            if ("$($tags[$r].Upos)" -in 'ADJ', 'NOUN' -and "|$($tags[$r].Feats)|" -match '\|Gender=(Masc|Fem)\|') { $gender = $Matches[1]; break }
+        }
+    }
+    if ($choices.Count -eq 0) { return @() }
     $rest = (@(& $small $plain[0]) + @($plain | Select-Object -Skip 1)) -join ' '
     # (told before, in this message: read again, each with the sentence it was told in)
     $here = @(foreach ($one in @($Before | Where-Object { -not $_.Question })) {
             $item = Read-LambekCategorySentence -Sentence $one.Text -Language $Language
             if ($item) { [pscustomobject]@{ Item = $item; Fact = $one } }
         })
-    if ($number -eq 'Plur') {
-        if (-not $Group) { return @() }
-        $names = @($Group.Members | ForEach-Object { "$($_.Written)" })
-        $together = (@($names | Select-Object -SkipLast 1) -join ', ') + " $($Group.Join) $($names[-1])"
+    $about = { param($text, $key)
+        $one = Read-LambekCategorySentence -Sentence $text -Language $Language -Question:$Sentence.Question
+        $one -and $one.PSObject.Properties['Individual'] -and $one.Individual -and "$($one.Individual.Key)" -eq $key
+    }
+    $made = { param($text)
+        $original = if ($Sentence.Question) { "$text ?" } else { "$($text.Substring(0, 1).ToUpperInvariant())$($text.Substring(1))" }
+        [pscustomobject]@{ Original = $original; Text = $text; Question = $Sentence.Question; Correcting = $Sentence.Correcting }
+    }
+    $attempt = { param($number)
+        if ($number -eq 'speaker') {
+            # (the word the user says himself with as the one who does, as the treebanks tag it: "yo", never "conmigo";
+            # in a treebank that marks no case, "io", the first one tagged with none)
+            $words = @((Get-LambekCategoryVocabulary -Language $Language).Data['Speaker'] | Where-Object { $_ })
+            $tagged = { param($word, $test)
+                $seen = $null
+                $model.Tags.TryGetValue("$word".ToLowerInvariant(), [ref] $seen) -and @($seen | Where-Object { "$_" -like 'PRON|*' -and (& $test "|$_|") }).Count -gt 0
+            }
+            $me = @($words | Where-Object { & $tagged $_ { param($t) $t -match '\|Case=([\w,]*\b)?Nom\b' } })
+            if ($me.Count -eq 0) { $me = @($words | Where-Object { & $tagged $_ { param($t) $t -notmatch '\|Case=' } }) }
+            if ($me.Count -eq 0) { return @() }
+            $text = "$($me[0]) $rest"
+            if (-not (& $about $text 'speaker')) { return @() }
+            return , (& $made $text)
+        }
+        if ($number -eq 'Plur') {
+            if (-not $told) { return @() }
+            $names = @($told.Members | ForEach-Object { "$($_.Written)" })
+            $together = (@($names | Select-Object -SkipLast 1) -join ', ') + " $($told.Join) $($names[-1])"
+            if (-not $Sentence.Question) {
+                if ($here.Count -eq 0) { return @() }
+                $split = @(Split-LambekCategorySentence -Text "$together $rest." -Language $Language)
+                $parts = @(Split-LambekCategoryCoordination -Sentences $split -Language $Language)
+                if ($parts.Count -ge 2 -and @($parts | Where-Object { $_.PSObject.Properties['Group'] }).Count -eq $parts.Count) { return $parts }
+                return @()
+            }
+            $each = [System.Collections.Generic.List[object]]::new()
+            foreach ($member in $told.Members) {
+                $text = "$($member.Written) $rest"
+                if (-not (& $about $text "$($member.Key)")) { return @() }
+                $each.Add([pscustomobject]@{ Original = "$text ?"; Text = $text; Question = $true; Correcting = $false; Each = $true; Member = "$($member.Written)"; Together = $together })
+            }
+            return @($each)
+        }
+        $script:CategoryResolving = $true
+        try { $known = @(Get-LambekCategoryKnown -Language $Language) }
+        finally { $script:CategoryResolving = $false }
         if (-not $Sentence.Question) {
             if ($here.Count -eq 0) { return @() }
-            $split = @(Split-LambekCategorySentence -Text "$together $rest." -Language $Language)
-            $parts = @(Split-LambekCategoryCoordination -Sentences $split -Language $Language)
-            if ($parts.Count -ge 2 -and @($parts | Where-Object { $_.PSObject.Properties['Group'] }).Count -eq $parts.Count) { return $parts }
-            return @()
+            $known = @()
         }
-        $each = @(foreach ($member in $Group.Members) {
-                $text = "$($member.Written) $rest"
-                $one = Read-LambekCategorySentence -Sentence $text -Language $Language -Question
-                if (-not $one -or -not $one.PSObject.Properties['Individual'] -or -not $one.Individual -or "$($one.Individual.Key)" -ne "$($member.Key)") { return @() }
-                [pscustomobject]@{ Original = "$text ?"; Text = $text; Question = $true; Correcting = $false; Each = $true; Member = "$($member.Written)"; Together = $together }
-            })
-        return $each
+        $who = Find-LambekCategoryReferent -Known (@($known) + @($here)) -Gender $gender -Number $number -Language $Language
+        if (-not $who) { return @() }
+        $text = "$($who.Written) $rest"
+        if (-not (& $about $text "$($who.Key)")) { return @() }
+        return , (& $made $text)
     }
-    $script:CategoryResolving = $true
-    try { $known = @(Get-LambekCategoryKnown -Language $Language) }
-    finally { $script:CategoryResolving = $false }
-    if (-not $Sentence.Question) {
-        if ($here.Count -eq 0) { return @() }
-        $known = @()
+    foreach ($number in $choices) {
+        $found = @(& $attempt $number)
+        if ($found.Count -gt 0) { return $found }
     }
-    $who = Find-LambekCategoryReferent -Known (@($known) + @($here)) -Number $number -Language $Language
-    if (-not $who) { return @() }
-    $text = "$($who.Written) $rest"
-    $one = Read-LambekCategorySentence -Sentence $text -Language $Language -Question:$Sentence.Question
-    if (-not $one -or -not $one.PSObject.Properties['Individual'] -or -not $one.Individual -or "$($one.Individual.Key)" -ne "$($who.Key)") { return @() }
-    $original = if ($Sentence.Question) { "$text ?" } else { "$($text.Substring(0, 1).ToUpperInvariant())$($text.Substring(1))" }
-    return , [pscustomobject]@{ Original = $original; Text = $text; Question = $Sentence.Question; Correcting = $Sentence.Correcting }
+    return @()
 }
 
 function Find-LambekCategoryReplaced {

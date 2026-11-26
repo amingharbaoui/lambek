@@ -249,11 +249,25 @@ function Read-LambekCategoryTagged {
             if ($negative[$r] -or $upos[$r] -eq 'PROPN') { continue }
             $entries = $null
             if (-not $model.Lexicon.TryGet("$($readings[$r].Form)", [ref] $entries)) { continue }
+            # (right after a pronoun of a person, or right before it opening a question, a verb the dictionary
+            # conjugates for that person and number, or for none it names: "io lavoro", "werk ik?", the tagger reading
+            # "lavoro", "werk" as the noun)
+            $agreeing = @()
+            $by = $(if ($r -gt $first -and $upos[$r - 1] -eq 'PRON') { $r - 1 } elseif ($Question -and $r -eq $first -and $r + 1 -lt $readings.Count -and $upos[$r + 1] -eq 'PRON') { $r + 1 } else { -1 })
+            if ($by -ge 0 -and (& $has $by 'PronType=Prs') -and "|$($readings[$by].Feats)|" -match '\|Person=(\d)\|') {
+                $person = $Matches[1]
+                $count = $(if ("|$($readings[$by].Feats)|" -match '\|Number=(\w+)\|') { $Matches[1] } else { '' })
+                $agreeing = @($entries | Where-Object {
+                        $feats = "|$($_.Feats)|"
+                        "$($_.Upos)" -eq 'VERB' -and ($feats -notmatch '\|Person=' -or $feats -match "\|Person=$person\|") -and
+                        (-not $count -or $feats -notmatch '\|Number=' -or $feats -match "\|Number=$count\|") -and $feats -notmatch '\|VerbForm=(Inf|Part|Ger)\|'
+                    })
+            }
             # (but no word the treebanks saw only as something else: "gato" of "nenhum gato late" is the noun they saw)
             $seen = $null
-            if ($model.Tags.TryGetValue("$($readings[$r].Form)".ToLowerInvariant(), [ref] $seen) -and @($seen).Count -gt 0 -and
+            if ($agreeing.Count -eq 0 -and $model.Tags.TryGetValue("$($readings[$r].Form)".ToLowerInvariant(), [ref] $seen) -and @($seen).Count -gt 0 -and
                 @($seen | Where-Object { $_ -like 'VERB|*' -or $_ -like 'AUX|*' }).Count -eq 0) { continue }
-            $verb = @($entries | Where-Object Upos -EQ 'VERB' | Select-Object -First 1)
+            $verb = @($(if ($agreeing.Count -gt 0) { $agreeing } else { @($entries | Where-Object Upos -EQ 'VERB') }) | Select-Object -First 1)
             if ($verb.Count -gt 0) { $verbs[[string] $r] = $verb[0] }
         }
         $at = -1

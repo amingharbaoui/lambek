@@ -1773,4 +1773,41 @@ Describe 'General rules told in words' {
             (Ask $Asked) -join ' ' | Should -BeLike $Said
         }
     }
+
+    Context 'The user asking of himself, and the one an adjective says by its gender' {
+
+        It 'reads the speaker left unsaid where the language leaves him out: <Asked>' -ForEach @(
+            @{ Told = @('Soy un estudiante', 'todos los estudiantes trabajan'); Asked = '¿Trabajo?'; Said = 'Sí*' }
+            @{ Told = @('Sono uno studente', 'tutti gli studenti lavorano'); Asked = 'Lavoro?'; Said = 'Sì*' }
+            @{ Told = @('Sou um estudante', 'todos os estudantes trabalham'); Asked = 'Trabalho?'; Said = 'Sim*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Conclusion | Should -BeLike 'category(is|speaker|*'
+        }
+
+        It 'reads a verb the tagger read as a noun next to a pronoun of a person: <Text>' -ForEach @(
+            @{ Language = 'it'; Text = 'io lavoro' }
+            @{ Language = 'nl'; Text = 'werk ik' }
+        ) {
+            $read = & (Get-Module Lambek) { param($t, $l) Read-LambekCategorySentence -Sentence $t -Language $l -Question } $Text $Language
+            $read.Kind | Should -Be 'askdoes'
+            $read.Individual.Key | Should -Be 'speaker'
+        }
+
+        It 'takes the one whose gender the adjective agrees with: <Asked>' -ForEach @(
+            @{ Told = @('Luna es una gata. Rex es un perro. Todas las gatas son negras.'); Asked = '¿Es negra?'; Said = 'Sí. Luna es negra.*' }
+            @{ Told = @('Luna è una gatta. Rex è un cane. Tutte le gatte sono nere.'); Asked = 'È nera?'; Said = 'Sì. Luna è nera.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'never takes a verb that may be said of several as said of the user when what follows says one: "Sono uno studente"' {
+            Tell 'Sono uno studente'
+            $known = & (Get-Module Lambek) { @(Get-LambekCategoryKnown -Language it | ForEach-Object { "$($_.Item.Individual.Key)" }) }
+            $known | Should -Contain 'speaker'
+        }
+    }
 }
