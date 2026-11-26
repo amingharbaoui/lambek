@@ -1744,4 +1744,33 @@ Describe 'General rules told in words' {
             & (Get-Module Lambek) { param($t, $l) Get-LambekSingular -Text $t -Language $l -Before 'Max' } $Text $Language | Should -Be $Said
         }
     }
+
+    Context 'A name that ends as a plural does' {
+
+        It 'reads it as one named, never as a kind: <Text>' -ForEach @(
+            @{ Language = 'pt'; Text = 'Jonas é um cão'; Key = 'name:jonas' }
+            @{ Language = 'de'; Text = 'Lukas ist ein Student'; Key = 'name:lukas' }
+            @{ Language = 'en'; Text = 'Thomas is a dog'; Key = 'name:thomas' }
+        ) {
+            $read = & (Get-Module Lambek) { param($t, $l) Read-LambekCategorySentence -Sentence $t -Language $l } $Text $Language
+            $read.Kind | Should -Be 'is'
+            $read.Individual.Key | Should -Be $Key
+        }
+
+        It 'still reads a plural kind with no article as all of them: <Text>' -ForEach @(
+            @{ Language = 'pt'; Text = 'Cães são animais' }
+            @{ Language = 'en'; Text = 'Dogs are animals' }
+            @{ Language = 'de'; Text = 'Hunde sind Tiere' }
+        ) {
+            (& (Get-Module Lambek) { param($t, $l) Read-LambekCategorySentence -Sentence $t -Language $l } $Text $Language).Kind | Should -Be 'all'
+        }
+
+        It 'reasons about it, alone or told with another: <Asked>' -ForEach @(
+            @{ Told = @('Rex e Jonas são cães', 'todos os cães latem'); Asked = 'Jonas late?'; Said = 'Sim*' }
+            @{ Told = @('Thomas est un chien', 'tous les chiens aboient'); Asked = 'Thomas aboie-t-il ?'; Said = 'Oui*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+    }
 }

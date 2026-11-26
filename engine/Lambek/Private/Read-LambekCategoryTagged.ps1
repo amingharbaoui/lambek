@@ -497,7 +497,23 @@ function Read-LambekCategoryTagged {
     if (-not $quantity) {
         $end = $(if ($null -ne $clauseAt) { $clauseAt } elseif ($null -ne $subjectEnd) { $subjectEnd } else { $readings.Count })
         $nouns = @(for ($r = $from; $r -lt $end; $r++) { if ($upos[$r] -in 'NOUN', 'PROPN', 'PRON') { $r } })
-        if ($nouns.Count -gt 0 -and $upos[$nouns[-1]] -eq 'NOUN' -and (& $has $nouns[-1] 'Number=Plur')) {
+        # (never a name the tagger read as a plural here, "Jonas e um cao", "Lukas sind Studenten": a word its treebanks
+        # saw only as a name, or, never seen there, its dictionary gives only as a name; nor one whose verb is said
+        # of one, "e" of "Jonas e um cao")
+        $named = $false
+        if ($nouns.Count -gt 0) {
+            $form = "$($readings[$nouns[-1]].Form)"
+            $seen = $null
+            $entries = $null
+            if ($model.Tags.TryGetValue($form.ToLowerInvariant(), [ref] $seen) -and @($seen).Count -gt 0) {
+                $named = @($seen | Where-Object { "$_".StartsWith('NOUN|') }).Count -eq 0 -and @($seen | Where-Object { "$_".StartsWith('PROPN|') }).Count -gt 0
+            }
+            elseif ($model.Lexicon -and $model.Lexicon.TryGet($form, [ref] $entries) -and @($entries).Count -gt 0) {
+                $named = @($entries | Where-Object { "$($_.Upos)" -eq 'NOUN' }).Count -eq 0 -and @($entries | Where-Object { "$($_.Upos)" -eq 'PROPN' }).Count -gt 0
+            }
+            if ($null -ne $v -and (& $has $v 'Number=Sing')) { $named = $true }
+        }
+        if ($nouns.Count -gt 0 -and $upos[$nouns[-1]] -eq 'NOUN' -and (& $has $nouns[-1] 'Number=Plur') -and -not $named) {
             $generic = $true
             $quantity = 'all'
             # (the article of the plural is its word of how many: "les")
