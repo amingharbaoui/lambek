@@ -1406,6 +1406,37 @@ Describe 'General rules told in words' {
             (Ask $Asked) -join ' ' | Should -BeLike $Said
         }
 
+        It 'keeps a contradiction where it is, and answers what the question reaches: <Asked>' -ForEach @(
+            @{ Told = "Rex est noir. Rex n'est pas noir. Tous les chats sont gris. Tom est un chat."; Asked = 'Tom est-il gris ?'; Said = 'Oui, Tom est gris*' }
+            @{ Told = 'Rex est petit. Rex est grand. Max est un chien. Tous les chiens aboient.'; Asked = 'Max aboie-t-il ?'; Said = 'Oui, Max aboie*' }
+            @{ Told = 'Rex ist schwarz. Rex ist nicht schwarz. Alle Katzen sind grau. Tom ist eine Katze.'; Asked = 'Ist Tom grau?'; Said = 'Ja. Tom ist grau.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'says what contradicts itself again when asked why, with the verdict both' {
+            Tell "Rex est noir. Rex n'est pas noir."
+            (Ask 'Rex est-il noir ?') -join ' ' | Should -BeLike 'Ce que vous m''avez dit se contredit*'
+            (& (Get-Module Lambek) { Get-LambekLastProof }).Verdict | Should -Be 'both'
+            (Ask 'Pourquoi ?') -join ' ' | Should -BeLike "Parce que vous m'avez dit*Rex est noir*Rex n'est pas noir*"
+        }
+
+        It 'answers one compared both ways neither yes nor no, each way checked: <Asked>' -ForEach @(
+            @{ Told = 'Rex est plus grand que Max. Max est plus grand que Rex.'; Asked = 'Rex est-il plus grand que Max ?'; Said = 'Ce que vous m''avez dit se contredit*' }
+            @{ Told = 'Rex es más alto que Max. Max es más alto que Rex.'; Asked = '¿Es Rex más alto que Max?'; Said = 'Eso no puede ser verdad.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+            $proof = & (Get-Module Lambek) { Get-LambekLastProof }
+            $proof.Verdict | Should -Be 'both'
+            @($proof.Conclusion).Count | Should -Be 2
+        }
+
+        It 'gives the four values from what says so and what says not' {
+            & (Get-Module Lambek) { @((Get-LambekVerdict -For $true -Against $false), (Get-LambekVerdict -For $false -Against $true), (Get-LambekVerdict -For $true -Against $true), (Get-LambekVerdict -For $false -Against $false)) } | Should -Be @('true', 'false', 'both', 'none')
+        }
+
         It 'takes the last of two contraries told one after the other in the place of the first: <Asked>' -ForEach @(
             @{ Told = @('Rex est petit', 'Rex est grand'); Asked = 'Rex est-il petit ?'; Said = "Non : Rex n'est pas petit.*Rex est grand*" }
             @{ Told = @('Rex è alto', 'Rex è basso'); Asked = 'Rex è alto?'; Said = 'No.*Rex è basso*' }

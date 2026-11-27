@@ -1605,6 +1605,44 @@ function Get-LambekCategoryCircle {
     }
 }
 
+function Select-LambekCategoryReached {
+    param([object[]] $Premises, [object] $Ask)
+
+    # The premises a question reaches: those that share a word or a one named with it, and those that share one with
+    # them, as far as it goes ("Tom est-il gris ?" reaches "Tom est un chat" by Tom, then "tous les chats sont gris" by
+    # chat; never "Rex est noir"). What shares nothing with the question can neither give it nor take it back
+    $keysOf = {
+        param($item)
+        $found = [System.Collections.Generic.List[string]]::new()
+        foreach ($name in 'Subject', 'Predicate', 'Object') {
+            if (-not $item.PSObject.Properties[$name] -or -not $item.$name -or -not $item.$name.PSObject.Properties['Atoms']) { continue }
+            foreach ($atom in @($item.$name.Atoms)) {
+                if (-not "$atom") { continue }
+                foreach ($one in (Get-LambekCategoryAtomPart -Atom "$atom")) { foreach ($word in @("$one" -split '&' | Where-Object { $_ })) { $found.Add("a:$word") } }
+            }
+        }
+        if ($item.PSObject.Properties['Individual'] -and $item.Individual) { $found.Add("i:$($item.Individual.Key)") }
+        return , $found.ToArray()
+    }
+    $reach = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($key in (& $keysOf $Ask)) { [void] $reach.Add($key) }
+    $keys = @(foreach ($premise in $Premises) { , (& $keysOf $premise.Item) })
+    $taken = [System.Collections.Generic.HashSet[int]]::new()
+    do {
+        $more = $false
+        for ($i = 0; $i -lt $Premises.Count; $i++) {
+            if ($taken.Contains($i)) { continue }
+            # (one that shares no word with anything is kept: nothing says it is apart)
+            if (@($keys[$i]).Count -eq 0 -or @($keys[$i] | Where-Object { $reach.Contains($_) }).Count -gt 0) {
+                [void] $taken.Add($i)
+                foreach ($key in @($keys[$i])) { [void] $reach.Add($key) }
+                $more = $true
+            }
+        }
+    } while ($more)
+    return @($taken | Sort-Object)
+}
+
 function Get-LambekCategoryContraryKey {
     param([string] $Atom)
 
@@ -2344,12 +2382,12 @@ function Resolve-LambekCategoryMessage {
     # What an answer rests on, for a "pourquoi ?" and the checker: the things told, as the reasoning read them, and
     # what the words said by themselves apart
     $proof = {
-        param([int[]] $indices, [string[]] $concluded)
+        param([int[]] $indices, [string[]] $concluded, [string] $verdict = '')
         $told = @($indices | Where-Object { $premises[$_].Fact })
         Set-LambekLastProof -Facts @($told | ForEach-Object { $premises[$_].Fact }) -Conclusion $concluded `
             -Forms @($told | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
             -Assumed @($indices | Where-Object { -not $premises[$_].Fact } | ForEach-Object { "category($(Get-LambekCategorySignature -Item $premises[$_].Item))" }) `
-            -Consulted @(& $read $indices) -AssumedFrom @(& $from $indices) -Least $least
+            -Consulted @(& $read $indices) -AssumedFrom @(& $from $indices) -Least $least -Verdict $verdict
     }
     # The fewest sentences an answer rests on, the same whatever order they were told in (what each says is its key),
     # and whether no fewer could give it
@@ -2398,13 +2436,31 @@ function Resolve-LambekCategoryMessage {
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
 
-    # What was told cannot all be true: nothing follows from it, and it is said which sentences
+    # Four values: what contradicts itself stays where it is. Of what the question reaches through the words and the
+    # ones they share, nothing contradicts itself ("Rex est noir", "Rex n'est pas noir", then "Tom est-il gris ?"): it
+    # is answered from that alone, as if the rest had not been told
+    if (-not [LambekCategories]::Satisfiable($statements)) {
+        $reached = @(Select-LambekCategoryReached -Premises $premises.ToArray() -Ask $question[0].Item)
+        if ($reached.Count -lt $premises.Count) {
+            $near = [System.Collections.Generic.List[object]]::new()
+            foreach ($i in $reached) { $near.Add($premises[$i]) }
+            $nearAtoms = @{}
+            $nearStatements = [LambekCategoryStatement[]] @($near | ForEach-Object { ConvertTo-LambekCategoryStatement -Item $_.Item -Atoms $nearAtoms })
+            if ([LambekCategories]::Satisfiable($nearStatements)) {
+                $premises = $near
+                $atoms = $nearAtoms
+                $statements = $nearStatements
+            }
+        }
+    }
+    # What was told cannot all be true where the question reaches: nothing follows from it, neither yes nor no (both, in
+    # the four values), and it is said which sentences; "pourquoi ?" says them again
     if (-not [LambekCategories]::Satisfiable($statements)) {
         $lines.Add($data['Contradiction'])
         $smallest = [LambekCategories]::Smallest($statements, $null)
         foreach ($line in & $listed $smallest) { $lines.Add($line) }
         foreach ($line in & $read $smallest) { $lines.Add($line) }
-        Set-LambekLastProof
+        & $proof ([int[]] $smallest) @() 'both'
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
 
@@ -2521,16 +2577,17 @@ function Resolve-LambekCategoryMessage {
         # Said in a sentence of its own, read back by a second Lambek; else in lines, as told
         $spoken = $null
         if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict $answer.ToLowerInvariant() -Conclusion $sentence -Premises @($support | Where-Object { $premises[$_].Fact } | ForEach-Object { $premises[$_] }) -Language $Language }
+        $verdict = Get-LambekVerdict -For ($null -ne $yes) -Against ($null -ne $no)
         if ($spoken) {
             $lines.Add($spoken.Text)
-            & $proof $support $concluded
+            & $proof $support $concluded $verdict
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
         }
         if ($sentence) { $lines.Add(($data[$answer] -f $sentence)) }
         elseif ($answer -eq 'No' -and $ask.Kind -eq 'asksome') { $lines.Add($data['NoneThere']) }
         else { $lines.Add($data["$($answer)Short"]) }
         & $because $support
-        if ($concluded.Count -gt 0) { & $proof $support $concluded }
+        if ($concluded.Count -gt 0) { & $proof $support $concluded $verdict }
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts; Settled = $true }
     }
 

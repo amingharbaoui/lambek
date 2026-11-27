@@ -1,8 +1,8 @@
 {
-  "Version": "3.5",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run; version 2.5 added one said as much as another, at least as much: more than a third through one more, as much through two, never more the other way round, and not more from as much alone, to both splits, written before they were run; version 2.6 added one compared with the contrary word: more of the other the other way round, through a third, not more of the contrary, and nothing from two that do not meet, to both splits, written before they were run; version 2.7 added the contrary of what one is: said of one, through a rule, and not so taken for nothing, to both splits, written before they were run; version 2.8 added several told of together, asked of with the pronoun that stands for them and with their names joined, and the pronoun with no group told, to both splits, written before they were run; version 2.9 added the one a sentence is about left unsaid, in the languages that leave it out (the one told of, the group, told after one told of) and in those that do not (nobody), and questions whose first word has a capital only because it opens them, to both splits, written before they were run; version 3.0 added three named in a list, asked of together and of the third, and what is told and asked in one message, to both splits, written before they were run; version 3.1 added what two named are told to do or not to do, asked of one of them, and something else asked, to both splits, written before they were run; version 3.2 added names that end as a plural does (\"Thomas\", \"Jonas\"), alone and with another, to both splits, written before they were run; version 3.3 added the user asking of himself, with the subject left unsaid where the language leaves it out, and the one a pronoun or an adjective says by its gender, to both splits, written before they were run; version 3.4 added the answer about the user said to him, never in his own words (\"eres\", not \"yo es\"), to both splits, written before they were run; version 3.5 added two contraries told of the same one, told together (said they cannot both be true, neither yes nor no) and one after the other (the last replaces the first), to both splits, the test ones written before they were run). Written by hand, never learned from.",
+  "Version": "3.6",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run; version 2.5 added one said as much as another, at least as much: more than a third through one more, as much through two, never more the other way round, and not more from as much alone, to both splits, written before they were run; version 2.6 added one compared with the contrary word: more of the other the other way round, through a third, not more of the contrary, and nothing from two that do not meet, to both splits, written before they were run; version 2.7 added the contrary of what one is: said of one, through a rule, and not so taken for nothing, to both splits, written before they were run; version 2.8 added several told of together, asked of with the pronoun that stands for them and with their names joined, and the pronoun with no group told, to both splits, written before they were run; version 2.9 added the one a sentence is about left unsaid, in the languages that leave it out (the one told of, the group, told after one told of) and in those that do not (nobody), and questions whose first word has a capital only because it opens them, to both splits, written before they were run; version 3.0 added three named in a list, asked of together and of the third, and what is told and asked in one message, to both splits, written before they were run; version 3.1 added what two named are told to do or not to do, asked of one of them, and something else asked, to both splits, written before they were run; version 3.2 added names that end as a plural does (\"Thomas\", \"Jonas\"), alone and with another, to both splits, written before they were run; version 3.3 added the user asking of himself, with the subject left unsaid where the language leaves it out, and the one a pronoun or an adjective says by its gender, to both splits, written before they were run; version 3.4 added the answer about the user said to him, never in his own words (\"eres\", not \"yo es\"), to both splits, written before they were run; version 3.5 added two contraries told of the same one, told together (said they cannot both be true, neither yes nor no) and one after the other (the last replaces the first), to both splits, the test ones written before they were run; version 3.6 added the four values: a contradiction that stays where it is (what the question reaches is answered), one compared both ways (neither yes nor no), and \"why?\" after a contradiction, to both splits, the test ones written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "7416240e6f2d21d04d10cd9f4148dc3a31f132eb197459f754269a00967211d1",
+  "TestHash": "9eba8f4b0c8b75a9e94c74f42f4dcc6a77f1c9866666bdf06fccd4bc5b8530c7",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -37425,6 +37425,1378 @@
               "si.",
               "si:",
               "si,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-both-local-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est noir. Rex n'est pas noir. Tous les chats sont gris. Tom est un chat."
+        },
+        {
+          "Text": "Tom est-il gris ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non",
+              "ne peuvent pas etre vraies ensemble"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-both-compare-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est plus grand que Max. Max est plus grand que Rex."
+        },
+        {
+          "Text": "Rex est-il plus grand que Max ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ne peuvent pas etre vraies ensemble"
+            ],
+            "Avoid": [
+              "oui",
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-both-why-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est noir. Rex n'est pas noir."
+        },
+        {
+          "Text": "Rex est-il noir ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ne peuvent pas etre vraies ensemble"
+            ],
+            "Avoid": [
+              "oui",
+              "non"
+            ]
+          }
+        },
+        {
+          "Text": "Pourquoi ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex n'est pas noir"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-both-local-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est riche. Paul n'est pas riche. Tous les oiseaux volent. Coco est un oiseau."
+        },
+        {
+          "Text": "Coco vole-t-il ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "oui"
+            ],
+            "Avoid": [
+              "non",
+              "ne peuvent pas etre vraies ensemble"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-both-compare-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa est plus âgée que Paul. Paul est plus âgé que Lisa."
+        },
+        {
+          "Text": "Lisa est-elle plus âgée que Paul ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ne peuvent pas etre vraies ensemble"
+            ],
+            "Avoid": [
+              "oui",
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-both-why-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul est riche. Paul n'est pas riche."
+        },
+        {
+          "Text": "Paul est-il riche ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ne peuvent pas etre vraies ensemble"
+            ],
+            "Avoid": [
+              "oui",
+              "non"
+            ]
+          }
+        },
+        {
+          "Text": "Pourquoi ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paul n'est pas riche"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-both-local-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is black. Rex is not black. All cats are grey. Tom is a cat."
+        },
+        {
+          "Text": "Is Tom grey?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no.",
+              "no:",
+              "no,",
+              "cannot all be true together"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-both-compare-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is taller than Max. Max is taller than Rex."
+        },
+        {
+          "Text": "Is Rex taller than Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "cannot all be true together"
+            ],
+            "Avoid": [
+              "yes",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-both-why-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is black. Rex is not black."
+        },
+        {
+          "Text": "Is Rex black?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "cannot all be true together"
+            ],
+            "Avoid": [
+              "yes",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        },
+        {
+          "Text": "Why?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex is not black"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-both-local-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is rich. Paul is not rich. All birds fly. Coco is a bird."
+        },
+        {
+          "Text": "Does Coco fly?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "yes"
+            ],
+            "Avoid": [
+              "no.",
+              "no:",
+              "no,",
+              "cannot all be true together"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-both-compare-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa is older than Paul. Paul is older than Lisa."
+        },
+        {
+          "Text": "Is Lisa older than Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "cannot all be true together"
+            ],
+            "Avoid": [
+              "yes",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-both-why-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is rich. Paul is not rich."
+        },
+        {
+          "Text": "Is Paul rich?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "cannot all be true together"
+            ],
+            "Avoid": [
+              "yes",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        },
+        {
+          "Text": "Why?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paul is not rich"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-both-local-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist schwarz. Rex ist nicht schwarz. Alle Katzen sind grau. Tom ist eine Katze."
+        },
+        {
+          "Text": "Ist Tom grau?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja.|ja:|ja,"
+            ],
+            "Avoid": [
+              "nein.",
+              "nein:",
+              "nein,",
+              "das kann nicht wahr sein"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-both-compare-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist größer als Max. Max ist größer als Rex."
+        },
+        {
+          "Text": "Ist Rex größer als Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "das kann nicht wahr sein"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nein.",
+              "nein:",
+              "nein,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-both-why-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist schwarz. Rex ist nicht schwarz."
+        },
+        {
+          "Text": "Ist Rex schwarz?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "das kann nicht wahr sein"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nein.",
+              "nein:",
+              "nein,"
+            ]
+          }
+        },
+        {
+          "Text": "Warum?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex ist nicht schwarz"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-both-local-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist reich. Paul ist nicht reich. Alle Vögel fliegen. Coco ist ein Vogel."
+        },
+        {
+          "Text": "Fliegt Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja.|ja:|ja,"
+            ],
+            "Avoid": [
+              "nein.",
+              "nein:",
+              "nein,",
+              "das kann nicht wahr sein"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-both-compare-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa ist älter als Paul. Paul ist älter als Lisa."
+        },
+        {
+          "Text": "Ist Lisa älter als Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "das kann nicht wahr sein"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nein.",
+              "nein:",
+              "nein,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-both-why-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul ist reich. Paul ist nicht reich."
+        },
+        {
+          "Text": "Ist Paul reich?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "das kann nicht wahr sein"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nein.",
+              "nein:",
+              "nein,"
+            ]
+          }
+        },
+        {
+          "Text": "Warum?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paul ist nicht reich"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-both-local-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es negro. Rex no es negro. Todos los gatos son grises. Tom es un gato."
+        },
+        {
+          "Text": "¿Es Tom gris?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si.|si:|si,"
+            ],
+            "Avoid": [
+              "no.",
+              "no:",
+              "no,",
+              "eso no puede ser verdad"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-both-compare-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es más alto que Max. Max es más alto que Rex."
+        },
+        {
+          "Text": "¿Es Rex más alto que Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "eso no puede ser verdad"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-both-why-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es negro. Rex no es negro."
+        },
+        {
+          "Text": "¿Es Rex negro?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "eso no puede ser verdad"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        },
+        {
+          "Text": "¿Por qué?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex no es negro"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-both-local-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul es rico. Paul no es rico. Todos los pájaros vuelan. Coco es un pájaro."
+        },
+        {
+          "Text": "¿Vuela Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si.|si:|si,"
+            ],
+            "Avoid": [
+              "no.",
+              "no:",
+              "no,",
+              "eso no puede ser verdad"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-both-compare-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa es más vieja que Paul. Paul es más viejo que Lisa."
+        },
+        {
+          "Text": "¿Es Lisa más vieja que Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "eso no puede ser verdad"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-both-why-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul es rico. Paul no es rico."
+        },
+        {
+          "Text": "¿Es Paul rico?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "eso no puede ser verdad"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        },
+        {
+          "Text": "¿Por qué?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paul no es rico"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-both-local-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is zwart. Rex is niet zwart. Alle katten zijn grijs. Kiki is een kat."
+        },
+        {
+          "Text": "Is Kiki grijs?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja.|ja:|ja,"
+            ],
+            "Avoid": [
+              "nee.",
+              "nee:",
+              "nee,",
+              "dat kan niet waar zijn"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-both-compare-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is groter dan Max. Max is groter dan Rex."
+        },
+        {
+          "Text": "Is Rex groter dan Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "dat kan niet waar zijn"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nee.",
+              "nee:",
+              "nee,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-both-why-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is zwart. Rex is niet zwart."
+        },
+        {
+          "Text": "Is Rex zwart?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "dat kan niet waar zijn"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nee.",
+              "nee:",
+              "nee,"
+            ]
+          }
+        },
+        {
+          "Text": "Waarom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex is niet zwart"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-both-local-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is rijk. Paul is niet rijk. Alle vogels vliegen. Coco is een vogel."
+        },
+        {
+          "Text": "Vliegt Coco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ja.|ja:|ja,"
+            ],
+            "Avoid": [
+              "nee.",
+              "nee:",
+              "nee,",
+              "dat kan niet waar zijn"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-both-compare-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa is ouder dan Paul. Paul is ouder dan Lisa."
+        },
+        {
+          "Text": "Is Lisa ouder dan Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "dat kan niet waar zijn"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nee.",
+              "nee:",
+              "nee,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-both-why-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul is rijk. Paul is niet rijk."
+        },
+        {
+          "Text": "Is Paul rijk?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "dat kan niet waar zijn"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nee.",
+              "nee:",
+              "nee,"
+            ]
+          }
+        },
+        {
+          "Text": "Waarom?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paul is niet rijk"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-both-local-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é preto. Rex não é preto. Todos os gatos são cinzentos. Tom é um gato."
+        },
+        {
+          "Text": "Tom é cinzento?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim.|sim:|sim,"
+            ],
+            "Avoid": [
+              "nao.",
+              "nao:",
+              "nao,",
+              "nao pode ser verdade"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-both-compare-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é mais alto que Max. Max é mais alto que Rex."
+        },
+        {
+          "Text": "Rex é mais alto que Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao pode ser verdade"
+            ],
+            "Avoid": [
+              "sim.",
+              "sim:",
+              "sim,",
+              "nao.",
+              "nao:",
+              "nao,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-both-why-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é preto. Rex não é preto."
+        },
+        {
+          "Text": "Rex é preto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao pode ser verdade"
+            ],
+            "Avoid": [
+              "sim.",
+              "sim:",
+              "sim,",
+              "nao.",
+              "nao:",
+              "nao,"
+            ]
+          }
+        },
+        {
+          "Text": "Por quê?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex nao e preto"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-both-local-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul é rico. Paul não é rico. Todos os pássaros voam. Coco é um pássaro."
+        },
+        {
+          "Text": "Coco voa?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "sim.|sim:|sim,"
+            ],
+            "Avoid": [
+              "nao.",
+              "nao:",
+              "nao,",
+              "nao pode ser verdade"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-both-compare-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa é mais velha que Paul. Paul é mais velho que Lisa."
+        },
+        {
+          "Text": "Lisa é mais velha que Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao pode ser verdade"
+            ],
+            "Avoid": [
+              "sim.",
+              "sim:",
+              "sim,",
+              "nao.",
+              "nao:",
+              "nao,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-both-why-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul é rico. Paul não é rico."
+        },
+        {
+          "Text": "Paul é rico?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao pode ser verdade"
+            ],
+            "Avoid": [
+              "sim.",
+              "sim:",
+              "sim,",
+              "nao.",
+              "nao:",
+              "nao,"
+            ]
+          }
+        },
+        {
+          "Text": "Por quê?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paul nao e rico"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-both-local-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è nero. Rex non è nero. Tutti i gatti sono grigi. Tom è un gatto."
+        },
+        {
+          "Text": "Tom è grigio?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si.|si:|si,"
+            ],
+            "Avoid": [
+              "no.",
+              "no:",
+              "no,",
+              "non puo essere vero"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-both-compare-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è più alto di Max. Max è più alto di Rex."
+        },
+        {
+          "Text": "Rex è più alto di Max?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non puo essere vero"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-both-why-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è nero. Rex non è nero."
+        },
+        {
+          "Text": "Rex è nero?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non puo essere vero"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        },
+        {
+          "Text": "Perché?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "rex non e nero"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-both-local-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "both-local"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul è ricco. Paul non è ricco. Tutti gli uccelli volano. Coco è un uccello."
+        },
+        {
+          "Text": "Coco vola?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "si.|si:|si,"
+            ],
+            "Avoid": [
+              "no.",
+              "no:",
+              "no,",
+              "non puo essere vero"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-both-compare-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "both-compare"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa è più vecchia di Paul. Paul è più vecchio di Lisa."
+        },
+        {
+          "Text": "Lisa è più vecchia di Paul?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non puo essere vero"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-both-why-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "both-why"
+      ],
+      "Turns": [
+        {
+          "Text": "Paul è ricco. Paul non è ricco."
+        },
+        {
+          "Text": "Paul è ricco?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non puo essere vero"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        },
+        {
+          "Text": "Perché?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "paul non e ricco"
             ]
           }
         }

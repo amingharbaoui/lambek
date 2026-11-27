@@ -538,13 +538,13 @@ function Resolve-LambekComparisonMessage {
         }
     }
     $proof = {
-        param($path, [string[]] $concluded)
+        param($path, [string[]] $concluded, [string] $verdict)
         $steps = & $once $path
         # (a contrary the way goes through: said after what was told, and kept apart, from the dictionaries named)
         $contraries = @(Get-LambekComparisonContrary -Path $steps -Language $Language)
         foreach ($one in $contraries) { $lines.Add((Format-LambekComparisonContrary -Contrary $one -Language $Language)) }
         Set-LambekLastProof -Facts @($steps | ForEach-Object { $_.Fact }) -Conclusion $concluded -Forms @($steps | ForEach-Object { Get-LambekComparisonStepForm -Step $_ }) `
-            -Assumed @($contraries | ForEach-Object { $_.Form }) -AssumedFrom @($contraries | ForEach-Object { $_.From })
+            -Assumed @($contraries | ForEach-Object { $_.Form }) -AssumedFrom @($contraries | ForEach-Object { $_.From }) -Verdict $verdict
     }
     if ($asks.Count -gt 1) {
         # Asked of several at once ("Rex et Max sont-ils plus grands que Tom ?"): yes when it holds for each two, no
@@ -561,7 +561,7 @@ function Resolve-LambekComparisonMessage {
             if ($data['Because']) { $lines.Add($data['Because']) }
             $path = $path.ToArray()
             & $listed $path
-            & $proof $path ([string[]] @($asks | ForEach-Object { Get-LambekComparisonForm -Item $_.Item }))
+            & $proof $path ([string[]] @($asks | ForEach-Object { Get-LambekComparisonForm -Item $_.Item })) 'true'
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
         }
         foreach ($entry in $asks) {
@@ -570,7 +570,7 @@ function Resolve-LambekComparisonMessage {
             $lines.Add($data['NoShort'])
             if ($data['Because']) { $lines.Add($data['Because']) }
             & $listed $no
-            & $proof $no ([string[]] @(Get-LambekComparisonForm -Item $entry.Item -Not))
+            & $proof $no ([string[]] @(Get-LambekComparisonForm -Item $entry.Item -Not)) 'false'
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
         }
         Set-LambekLastProof
@@ -584,7 +584,7 @@ function Resolve-LambekComparisonMessage {
             $lines.Add(($data['Yes'] -f (& $sentence $said)))
             if ($data['Because']) { $lines.Add($data['Because']) }
             & $listed $same
-            & $proof $same ([string[]] @(Get-LambekComparisonForm -Item $ask))
+            & $proof $same ([string[]] @(Get-LambekComparisonForm -Item $ask)) 'true'
             return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
         }
         Set-LambekLastProof
@@ -592,17 +592,26 @@ function Resolve-LambekComparisonMessage {
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
     $yes = Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Greater.Key)" -To "$($ask.Smaller.Key)" -Strict:(-not (& $equal $ask)) -Language $Language
-    if ($yes) {
-        $lines.Add(($data['Yes'] -f (& $sentence $said)))
-        if ($data['Because']) { $lines.Add($data['Because']) }
-        & $listed $yes
-        & $proof $yes (Get-LambekComparisonForm -Item $ask)
-        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
-    }
     # (what is more than another is not less than it: the way the other way round says no; never of what is done
     # before or after another, which one may do more than once)
     $no = $(if ("$($ask.Of)".StartsWith('time:')) { $null } else { Find-LambekComparisonPath -Known $all -Of $ask.Of -From "$($ask.Smaller.Key)" -To "$($ask.Greater.Key)" -Strict:(& $equal $ask) -Language $Language })
-    if ($no) {
+    $verdict = Get-LambekVerdict -For ([bool] $yes) -Against ([bool] $no)
+    if ($verdict -eq 'both') {
+        # Both ways (Rex more than Max, and Max more than Rex): what was told contradicts itself there, neither yes nor
+        # no, and both ways are said, each checked as it would be alone
+        $lines.Add($data['Contradiction'])
+        & $listed (@(@($yes) + @($no)))
+        & $proof (@(@($yes) + @($no))) ([string[]] @((Get-LambekComparisonForm -Item $ask), (Get-LambekComparisonForm -Item $ask -Not))) 'both'
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+    }
+    if ($verdict -eq 'true') {
+        $lines.Add(($data['Yes'] -f (& $sentence $said)))
+        if ($data['Because']) { $lines.Add($data['Because']) }
+        & $listed $yes
+        & $proof $yes (Get-LambekComparisonForm -Item $ask) 'true'
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+    }
+    if ($verdict -eq 'false') {
         # (no, said as what holds: the other is the one that is more; only "no" when what holds is not that, the other
         # only as much, or as much asked of)
         if (-not (& $equal $ask) -and (& $strict $no)) {
@@ -613,7 +622,7 @@ function Resolve-LambekComparisonMessage {
         else { $lines.Add($data['NoShort']) }
         if ($data['Because']) { $lines.Add($data['Because']) }
         & $listed $no
-        & $proof $no (Get-LambekComparisonForm -Item $ask -Not)
+        & $proof $no (Get-LambekComparisonForm -Item $ask -Not) 'false'
         return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
     }
     # (nothing told leads either way: it may be true or false, said so, whether or not anything was told of them)

@@ -6,6 +6,19 @@ using System.Collections.Generic;
 using System.Text;
 
 // One thing on the board
+// The four values of Belnap, one definition for all that answers: "true" (only what says so holds), "false" (only what
+// says not), "both" (each does: what was told contradicts itself there), "none" (neither: it is not known)
+public static class LambekVerdict
+{
+    public static string Of(bool so, bool not)
+    {
+        if (so && not) { return "both"; }
+        if (so) { return "true"; }
+        if (not) { return "false"; }
+        return "none";
+    }
+}
+
 public sealed class LambekBoardEntry
 {
     // In the order things came, from 1
@@ -142,10 +155,7 @@ public sealed class LambekBoard
             if (e == null || e.Key != key || e.Status == "imagined") { continue; }
             if (e.Negated) { no = true; } else { yes = true; }
         }
-        if (yes && no) { return "both"; }
-        if (yes) { return "true"; }
-        if (no) { return "false"; }
-        return "none";
+        return LambekVerdict.Of(yes, no);
     }
 
     // The one to act on when things disagree about a key: the strongest status, then the latest day, then the latest come.

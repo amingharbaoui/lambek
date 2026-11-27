@@ -135,6 +135,16 @@ function Get-LambekFactCore {
     return $core
 }
 
+function Get-LambekVerdict {
+    [OutputType([string])]
+    param([bool] $For, [bool] $Against)
+
+    # What an answer is, in the four values of Belnap, from whether something told says so and whether something told
+    # says not: true, false, both (what was told contradicts itself there), none (it is not known). One definition for
+    # every part that answers (LambekVerdict, as the board uses it)
+    return [LambekVerdict]::Of($For, $Against)
+}
+
 function Get-LambekLastProof {
     # What the last answer of this conversation rested on, for "pourquoi ?" (each chat has its own conversation)
     if ($null -eq $script:LastProofs) { $script:LastProofs = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }
@@ -154,14 +164,16 @@ function Set-LambekLastProof {
     # that a "pourquoi ?" says it again, apart from what was told
     # AssumedFrom: where each thing assumed comes from, in the same order (the dictionary named, or the words themselves)
     # Least: whether no fewer sentences could give the answer, and below how many that was checked (LambekCategoryProof)
-    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @(), [object[]] $Read = @(), [string[]] $Conclusion = @(), [string[]] $Forms = @(), [string[]] $Assumed = @(), [string[]] $Consulted = @(), [object[]] $AssumedFrom = @(), [object] $Least = $null)
+    # Verdict: what the answer was, in the four values (Get-LambekVerdict), when the part that answered says it: "both"
+    # rests on what contradicts itself, each side checked
+    param([object[]] $Facts = @(), [string] $Calculation = '', [string[]] $Said = @(), [object[]] $Read = @(), [string[]] $Conclusion = @(), [string[]] $Forms = @(), [string[]] $Assumed = @(), [string[]] $Consulted = @(), [object[]] $AssumedFrom = @(), [object] $Least = $null, [string] $Verdict = '')
 
     if ($null -eq $script:LastProofs) { $script:LastProofs = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }
     $here = Get-LambekTold
     if (@($Facts).Count -eq 0 -and @($Said).Count -eq 0 -and @($Read).Count -eq 0) { [void] $script:LastProofs.Remove($here); return }
     $assumedNow = @($Assumed | Where-Object { $_ })
     $script:LastProofs[$here] = [pscustomobject]@{ Facts = @($Facts); Calculation = $Calculation; Said = @($Said); Read = @($Read); Conclusion = @($Conclusion); Forms = @($Forms); Assumed = $assumedNow; Consulted = @($Consulted | Where-Object { $_ }); Sources = @(Get-LambekProofSource -Facts $Facts -Said $Said -Read $Read -Assumed $assumedNow -AssumedFrom $AssumedFrom -Calculation $Calculation)
-        Least = $(if ($Least) { [pscustomobject]@{ Least = [bool] $Least.Least; Checked = [int] $Least.Checked } } else { $null })
+        Least = $(if ($Least) { [pscustomobject]@{ Least = [bool] $Least.Least; Checked = [int] $Least.Checked } } else { $null }); Verdict = $Verdict
     }
 }
 
