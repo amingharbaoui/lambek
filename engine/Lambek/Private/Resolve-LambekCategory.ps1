@@ -1605,29 +1605,44 @@ function Get-LambekCategoryCircle {
     }
 }
 
+function Get-LambekCategoryContraryKey {
+    param([string] $Atom)
+
+    # The word an atom is, as the contraries learned are written: itself, or the one word kept whole when it was read
+    # as no adjective ("op:rapido": "rapido" read as an adverb in "Rex es rapido")
+    if ($Atom -match '^op:(\p{L}+)$') { return $Matches[1] }
+    return $Atom
+}
+
 function Get-LambekCategoryContrary {
     param([object[]] $Items, [string] $Language)
 
     # Two words the dictionaries say are each other's contrary (learned, Data/Forms/<language>.antonyms: Wiktionary and
     # the wordnet agreeing, each the other's only contrary): nothing is both, so told "Rex est petit", "Rex est-il
-    # grand ?" is no. Only for two words both said in the conversation, and never when what was told already ties them
-    # (someone told both, or a rule told about the two): the dictionaries fill a gap, never take the place of a sentence
+    # grand ?" is no, and told "Rex est petit" and "Rex est grand", the two cannot both be true, and it is said, with
+    # the dictionaries named (four values: what is told both ways is neither yes nor no). Only for two words both said
+    # in the conversation, and never when a rule told ties them ("certains petits sont grands"): a sentence comes first
     $pairs = (Get-LambekAntonym -Language $Language).Pairs
     if ($pairs.Count -eq 0) { return }
     $words = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-    $said = @{}
+    # (each word with the atom it was read as: "rapido" as "op:rapido")
+    $atomOf = @{}
     $tied = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     foreach ($item in $Items) {
         foreach ($side in @($(if ($item.PSObject.Properties['Subject']) { $item.Subject }), $(if ($item.PSObject.Properties['Predicate']) { $item.Predicate }))) {
-            if ($side) { foreach ($atom in @($side.Atoms)) { if ("$atom") { foreach ($one in (Get-LambekCategoryAtomPart -Atom "$atom")) { [void] $words.Add("$one") } } } }
-        }
-        if ($item.Kind -eq 'is' -and $item.Individual -and $item.Predicate) {
-            $who = "$($item.Individual.Key)"
-            if (-not $said.ContainsKey($who)) { $said[$who] = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal) }
-            foreach ($atom in @($item.Predicate.Atoms)) { if ("$atom") { [void] $said[$who].Add("$atom") } }
+            if ($side) {
+                foreach ($atom in @($side.Atoms)) {
+                    if (-not "$atom") { continue }
+                    foreach ($one in (Get-LambekCategoryAtomPart -Atom "$atom")) {
+                        $key = Get-LambekCategoryContraryKey -Atom "$one"
+                        [void] $words.Add($key)
+                        if (-not $atomOf.ContainsKey($key)) { $atomOf[$key] = "$one" }
+                    }
+                }
+            }
         }
         if ($item.Kind -in 'all', 'no', 'some', 'somenot' -and $item.Subject -and $item.Predicate) {
-            foreach ($a in @($item.Subject.Atoms)) { foreach ($b in @($item.Predicate.Atoms)) { [void] $tied.Add("$a`t$b"); [void] $tied.Add("$b`t$a") } }
+            foreach ($a in @($item.Subject.Atoms | ForEach-Object { Get-LambekCategoryContraryKey -Atom "$_" })) { foreach ($b in @($item.Predicate.Atoms | ForEach-Object { Get-LambekCategoryContraryKey -Atom "$_" })) { [void] $tied.Add("$a`t$b"); [void] $tied.Add("$b`t$a") } }
         }
     }
     $named = (Get-LambekAntonym -Language $Language).Source
@@ -1637,11 +1652,10 @@ function Get-LambekCategoryContrary {
         if (-not $pairs.TryGetValue($word, [ref] $other) -or -not $words.Contains($other)) { continue }
         $first, $second = @($word, $other) | Sort-Object -CaseSensitive
         if (-not $seen.Add("$first`t$second") -or $tied.Contains("$first`t$second")) { continue }
-        if (@($said.Values | Where-Object { $_.Contains($first) -and $_.Contains($second) }).Count -gt 0) { continue }
         [pscustomobject]@{
             Kind = 'no'; Quantifier = ''; Individual = $null; Verb = $false; Member = $false; Default = $false
-            Subject = [pscustomobject]@{ Atoms = @($first) }
-            Predicate = [pscustomobject]@{ Atoms = @($second) }
+            Subject = [pscustomobject]@{ Atoms = @($atomOf[$first]) }
+            Predicate = [pscustomobject]@{ Atoms = @($atomOf[$second]) }
             Written = [pscustomobject]@{ Subject = $first; Predicate = $second; Object = '' }
             Contrary = [pscustomobject]@{ Of = $first; Other = $second; From = [pscustomobject]@{ Kind = 'dictionary'; Name = $named; Id = "$first<>$second" } }
         }
@@ -2142,6 +2156,18 @@ function Resolve-LambekCategoryMessage {
     # (whether someone does something, when what someone does was kept here, told with other things: "Rex et Max
     # aboient", "Rex is a dog. Rex barks."; the memory holds it only as one of them)
     if ($asks.Count -eq 1 -and $asks[0] -eq 'askdoes' -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { "$($_.Fact.Action)" -eq 'verb:category' -and $_.Item.Kind -in 'does', 'doesnot' }).Count -gt 0) { $individual = $true }
+    # (something told of someone whose contrary was told of that one before, "Rex est petit", then "Rex est grand": read
+    # here, where the contraries learned are read, so it is said they cannot both be true)
+    if (-not $individual -and $asks.Count -eq 0) {
+        $pairs = (Get-LambekAntonym -Language $Language).Pairs
+        $contraries = @(foreach ($sentence in $Sentences) {
+                foreach ($word in @([regex]::Matches("$($sentence.Text)", '\p{L}+') | ForEach-Object { ConvertTo-LambekNormalizedText -Text $_.Value })) {
+                    $other = $null
+                    if ($pairs.TryGetValue("$word", [ref] $other)) { $other }
+                }
+            })
+        if ($contraries.Count -gt 0 -and @(Get-LambekCategoryKnown -Language $Language | Where-Object { $_.Item.Kind -eq 'is' -and $_.Item.Individual -and $_.Item.Predicate -and @($_.Item.Predicate.Atoms | Where-Object { (Get-LambekCategoryContraryKey -Atom "$_") -in $contraries }).Count -gt 0 }).Count -gt 0) { $individual = $true }
+    }
     if (-not $general -and -not $individual -and @(Get-LambekCategoryKnown -Language $Language -Shape | Where-Object { $_.Item.Kind -in $rules }).Count -eq 0) { return $null }
 
     # Each sentence read, with the dictionary: every one must read, or nothing is taken. A pronoun stands for one told
@@ -2198,10 +2224,22 @@ function Resolve-LambekCategoryMessage {
     if (-not $about -and $asked.Count -eq 1) {
         $pairs = (Get-LambekAntonym -Language $Language).Pairs
         $who = $asked[0].Item.Individual.Key
-        $contraries = @(foreach ($atom in @($asked[0].Item.Predicate.Atoms)) { $other = $null; if ($pairs.TryGetValue("$atom", [ref] $other)) { $other } })
+        $contraries = @(foreach ($atom in @($asked[0].Item.Predicate.Atoms)) { $other = $null; if ($pairs.TryGetValue((Get-LambekCategoryContraryKey -Atom "$atom"), [ref] $other)) { $other } })
         if ($contraries.Count -gt 0) {
-            $told = @(@($known) + @($items) | Where-Object { $_.Item.Kind -eq 'is' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who -and $_.Item.Predicate } | ForEach-Object { $_.Item.Predicate.Atoms })
+            $told = @(@($known) + @($items) | Where-Object { $_.Item.Kind -eq 'is' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $who -and $_.Item.Predicate } | ForEach-Object { $_.Item.Predicate.Atoms | ForEach-Object { Get-LambekCategoryContraryKey -Atom "$_" } })
             if (@($told | Where-Object { "$_" -in $contraries }).Count -gt 0) { $about = $true }
+        }
+    }
+    # (two contraries told of the same one, now or before, "Rex est petit", "Rex est grand": kept here, where the
+    # contraries learned are read, so it is said they cannot both be true)
+    if (-not $about) {
+        $pairs = (Get-LambekAntonym -Language $Language).Pairs
+        $toldNow = @($items | Where-Object { $_.Item.Kind -eq 'is' -and $_.Item.Individual -and $_.Item.Predicate })
+        foreach ($entry in $toldNow) {
+            $contraries = @(foreach ($atom in @($entry.Item.Predicate.Atoms)) { $other = $null; if ($pairs.TryGetValue((Get-LambekCategoryContraryKey -Atom "$atom"), [ref] $other)) { $other } })
+            if ($contraries.Count -eq 0) { continue }
+            $same = @(@($known) + @($items) | Where-Object { $_.Item.Kind -eq 'is' -and $_.Item.Individual -and $_.Item.Individual.Key -eq $entry.Item.Individual.Key -and $_.Item.Predicate } | ForEach-Object { $_.Item.Predicate.Atoms | ForEach-Object { Get-LambekCategoryContraryKey -Atom "$_" } })
+            if (@($same | Where-Object { "$_" -in $contraries }).Count -gt 0) { $about = $true }
         }
     }
     # (asked of each one of a group, "aboient-ils ?": read here, where the group was kept, as nothing else reads it)
@@ -2271,9 +2309,10 @@ function Resolve-LambekCategoryMessage {
     # (what the dictionaries said: a kind a word is, or the contrary of a word)
     $fromBook = { param($item) ($item.PSObject.Properties['Circle'] -and $item.Circle) -or ($item.PSObject.Properties['Contrary'] -and $item.Contrary) }
     # What was told comes before what the dictionary says: a kind it gives that makes the sentences told contradict each
-    # other is left out ("Nemo est un dauphin", "Nemo n'est pas un poisson": a dauphin is a poisson in one sense only)
+    # other is left out ("Nemo est un dauphin", "Nemo n'est pas un poisson": a dauphin is a poisson in one sense only).
+    # Not two contraries: "petit" and "grand" told of Rex cannot both be true, whatever sense each has, and it is said
     while (-not [LambekCategories]::Satisfiable($statements)) {
-        $book = @([LambekCategories]::Smallest($statements, $null) | Where-Object { -not $premises[$_].Fact -and (& $fromBook $premises[$_].Item) } | Sort-Object -Descending)
+        $book = @([LambekCategories]::Smallest($statements, $null) | Where-Object { -not $premises[$_].Fact -and (& $fromBook $premises[$_].Item) -and -not ($premises[$_].Item.PSObject.Properties['Contrary'] -and $premises[$_].Item.Contrary) } | Sort-Object -Descending)
         if ($book.Count -eq 0) { break }
         foreach ($i in $book) { $premises.RemoveAt($i) }
         $atoms = @{}

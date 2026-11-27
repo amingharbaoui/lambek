@@ -221,7 +221,8 @@ with (`tools/Learn-LambekDialogue.ps1`, Native/DialogueWords.cs), nothing in it 
   pronoun of the first person met more with "I" or "me" than with "we" or "us" in the translated sentences.
 - The word that says whose ("von", "de", "van", "di"): the preposition met the most often where English says "of".
 - What it answers: the sentences Tatoeba gives for "Yes.", "No.", "I don't know." and "I understand." ("Ja.", "Nein.",
-  "Ich weiß nicht.", "Ich verstehe."); among several, the one whose rarest word the language says the most, then the
+  "Ich weiß nicht.", "Ich verstehe."), and for "That can't be true." (or "That cannot be true."), said before
+  sentences told that cannot all be true ("Das kann nicht wahr sein."); among several, the one whose rarest word the language says the most, then the
   one it says most often. Short answers, with what they rest on after them: a sentence not in the translated
   sentences is not said.
 - How it says that one is of a kind: the form of the copula found after a name where English says "<name> is a ...".

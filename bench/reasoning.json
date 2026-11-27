@@ -1,8 +1,8 @@
 {
-  "Version": "3.4",
-  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run; version 2.5 added one said as much as another, at least as much: more than a third through one more, as much through two, never more the other way round, and not more from as much alone, to both splits, written before they were run; version 2.6 added one compared with the contrary word: more of the other the other way round, through a third, not more of the contrary, and nothing from two that do not meet, to both splits, written before they were run; version 2.7 added the contrary of what one is: said of one, through a rule, and not so taken for nothing, to both splits, written before they were run; version 2.8 added several told of together, asked of with the pronoun that stands for them and with their names joined, and the pronoun with no group told, to both splits, written before they were run; version 2.9 added the one a sentence is about left unsaid, in the languages that leave it out (the one told of, the group, told after one told of) and in those that do not (nobody), and questions whose first word has a capital only because it opens them, to both splits, written before they were run; version 3.0 added three named in a list, asked of together and of the third, and what is told and asked in one message, to both splits, written before they were run; version 3.1 added what two named are told to do or not to do, asked of one of them, and something else asked, to both splits, written before they were run; version 3.2 added names that end as a plural does (\"Thomas\", \"Jonas\"), alone and with another, to both splits, written before they were run; version 3.3 added the user asking of himself, with the subject left unsaid where the language leaves it out, and the one a pronoun or an adjective says by its gender, to both splits, written before they were run; version 3.4 added the answer about the user said to him, never in his own words (\"eres\", not \"yo es\"), to both splits, written before they were run). Written by hand, never learned from.",
+  "Version": "3.5",
+  "Description": "Reasoning told in every language Lambek reads (fr, en, de, es, nl, pt, it), the same conversations in each: all and no, a thing that is or does, with what it does to, a chain of two, the fact told first, and what cannot be concluded (a thing never told of, all read the other way, some, a thing told of another); and, since version 1.1, a thing told not to be, who is, what all are like, two told at once, no read through a chain and the other way, no with what it does to. Each case is a conversation of its own, measured as bench/messages.json is (Invoke-LambekMessageBenchmark). The calibration split and the test split say the same kinds of things with other words; the test split is frozen: TestHash is the hash of its cases, never edit them while working on Lambek (version 1.1 added cases to both splits, before Lambek was worked on with them; version 1.2 added a question asked of he, il, er, hij (and the pronoun said where the language may leave it out: el, ele, lui), two things told in one message, and a pronoun told after its name in the same message, to both splits, written after Lambek was taught to read them: the test split of 1.2 was not blind, and is frozen from now; version 1.3 added a kind said with what those of it do, after a relative pronoun, and the same rule about one never said to do it, to both splits, written before they were run; version 1.4 added two kinds said the same at once, and two things said of one kind at once, joined by the word that says both, to both splits, written before they were run; version 1.5 added one said to be more than another, twice, and asked of the first and the last either way, to both splits, written before they were run; version 1.6 added two said at once to be more than a third, and one said to be so, or not, with one more so than another, to both splits, written before they were run; version 1.7 added one said to be one of two kinds and not the one, what holds of both kinds, a rule saying one of two and not the one, and one of two asked of the first alone, to both splits, written before they were run; version 1.8 added a kind told to be in a wider one both through a third and at once, the answer resting on the shorter way only, told in either order (the order with the shorter way told first added after the other was run, as it alone tells the two apart), to both splits; version 1.9 added at least so many asked of fewer and of at most, at most so many asked of more, and at least so many of a narrower kind asked of the wider, to both splits, written before they were run; version 2.0 added a rule told with if about someone, used forward and backward, and from one to another, what someone believes, kept apart from what is so and reasoned in alone, and what someone knows, which is so, to both splits, written before they were run; version 2.1 added one done before another, through a third and asked the other way, one done after, one done on a day before another's, and one done on a day asked of that day and of another one, to both splits, written before they were run; version 2.2 added which of two kinds one is, told so, from a rule, from one told not, and not which when it may be either, to both splits, written before they were run; version 2.3 added one said to be neither of two kinds, asked of each and of a third, to both splits, written before they were run; version 2.4 added one of two sentences about ones named joined by or, the first ruled out, the second ruled out with what is done, through a rule, and neither ruled out, to both splits, written before they were run; version 2.5 added one said as much as another, at least as much: more than a third through one more, as much through two, never more the other way round, and not more from as much alone, to both splits, written before they were run; version 2.6 added one compared with the contrary word: more of the other the other way round, through a third, not more of the contrary, and nothing from two that do not meet, to both splits, written before they were run; version 2.7 added the contrary of what one is: said of one, through a rule, and not so taken for nothing, to both splits, written before they were run; version 2.8 added several told of together, asked of with the pronoun that stands for them and with their names joined, and the pronoun with no group told, to both splits, written before they were run; version 2.9 added the one a sentence is about left unsaid, in the languages that leave it out (the one told of, the group, told after one told of) and in those that do not (nobody), and questions whose first word has a capital only because it opens them, to both splits, written before they were run; version 3.0 added three named in a list, asked of together and of the third, and what is told and asked in one message, to both splits, written before they were run; version 3.1 added what two named are told to do or not to do, asked of one of them, and something else asked, to both splits, written before they were run; version 3.2 added names that end as a plural does (\"Thomas\", \"Jonas\"), alone and with another, to both splits, written before they were run; version 3.3 added the user asking of himself, with the subject left unsaid where the language leaves it out, and the one a pronoun or an adjective says by its gender, to both splits, written before they were run; version 3.4 added the answer about the user said to him, never in his own words (\"eres\", not \"yo es\"), to both splits, written before they were run; version 3.5 added two contraries told of the same one, told together (said they cannot both be true, neither yes nor no) and one after the other (the last replaces the first), to both splits, the test ones written before they were run). Written by hand, never learned from.",
   "Now": "2026-10-19T12:00:00",
-  "TestHash": "60425aa0376e28985a930b666ca4e034a40fa696001939ee445d657aae40a8ca",
+  "TestHash": "7416240e6f2d21d04d10cd9f4148dc3a31f132eb197459f754269a00967211d1",
   "Cases": [
     {
       "Id": "R-fr-all-is-1",
@@ -36493,6 +36493,938 @@
               "no:",
               "no,",
               "io e un"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-contrary-both-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est lent. Rex est rapide.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ne peuvent pas etre vraies ensemble"
+            ]
+          }
+        },
+        {
+          "Text": "Rex est-il lent ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ne peuvent pas etre vraies ensemble"
+            ],
+            "Avoid": [
+              "oui",
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-contrary-after-1",
+      "Split": "calibration",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex est lent."
+        },
+        {
+          "Text": "Rex est rapide."
+        },
+        {
+          "Text": "Rex est-il lent ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-contrary-both-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa est riche. Lisa est pauvre.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ne peuvent pas etre vraies ensemble"
+            ]
+          }
+        },
+        {
+          "Text": "Lisa est-elle riche ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "ne peuvent pas etre vraies ensemble"
+            ],
+            "Avoid": [
+              "oui",
+              "non"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-fr-contrary-after-2",
+      "Split": "test",
+      "Language": "fr",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa est riche."
+        },
+        {
+          "Text": "Lisa est pauvre."
+        },
+        {
+          "Text": "Lisa est-elle riche ?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non"
+            ],
+            "Avoid": [
+              "oui"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-contrary-both-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is fast. Rex is slow.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "cannot all be true together"
+            ]
+          }
+        },
+        {
+          "Text": "Is Rex fast?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "cannot all be true together"
+            ],
+            "Avoid": [
+              "yes",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-contrary-after-1",
+      "Split": "calibration",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex is fast."
+        },
+        {
+          "Text": "Rex is slow."
+        },
+        {
+          "Text": "Is Rex fast?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no.|no:|no,"
+            ],
+            "Avoid": [
+              "yes"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-contrary-both-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa is healthy. Lisa is unhealthy.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "cannot all be true together"
+            ]
+          }
+        },
+        {
+          "Text": "Is Lisa healthy?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "cannot all be true together"
+            ],
+            "Avoid": [
+              "yes",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-en-contrary-after-2",
+      "Split": "test",
+      "Language": "en",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa is healthy."
+        },
+        {
+          "Text": "Lisa is unhealthy."
+        },
+        {
+          "Text": "Is Lisa healthy?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no.|no:|no,"
+            ],
+            "Avoid": [
+              "yes"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-contrary-both-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist alt. Rex ist jung.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "das kann nicht wahr sein"
+            ]
+          }
+        },
+        {
+          "Text": "Ist Rex alt?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "das kann nicht wahr sein"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nein.",
+              "nein:",
+              "nein,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-contrary-after-1",
+      "Split": "calibration",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex ist alt."
+        },
+        {
+          "Text": "Rex ist jung."
+        },
+        {
+          "Text": "Ist Rex alt?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein.|nein:|nein,"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-contrary-both-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa ist groß. Lisa ist klein.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "das kann nicht wahr sein"
+            ]
+          }
+        },
+        {
+          "Text": "Ist Lisa groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "das kann nicht wahr sein"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nein.",
+              "nein:",
+              "nein,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-de-contrary-after-2",
+      "Split": "test",
+      "Language": "de",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa ist groß."
+        },
+        {
+          "Text": "Lisa ist klein."
+        },
+        {
+          "Text": "Ist Lisa groß?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nein.|nein:|nein,"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-contrary-both-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es lento. Rex es rápido.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "eso no puede ser verdad"
+            ]
+          }
+        },
+        {
+          "Text": "¿Es Rex lento?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "eso no puede ser verdad"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-contrary-after-1",
+      "Split": "calibration",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex es lento."
+        },
+        {
+          "Text": "Rex es rápido."
+        },
+        {
+          "Text": "¿Es Rex lento?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no.|no:|no,"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-contrary-both-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa es fuerte. Lisa es débil.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "eso no puede ser verdad"
+            ]
+          }
+        },
+        {
+          "Text": "¿Es Lisa fuerte?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "eso no puede ser verdad"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-es-contrary-after-2",
+      "Split": "test",
+      "Language": "es",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa es fuerte."
+        },
+        {
+          "Text": "Lisa es débil."
+        },
+        {
+          "Text": "¿Es Lisa fuerte?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no.|no:|no,"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-contrary-both-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is nuttig. Max is nutteloos.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "dat kan niet waar zijn"
+            ]
+          }
+        },
+        {
+          "Text": "Is Max nuttig?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "dat kan niet waar zijn"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nee.",
+              "nee:",
+              "nee,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-contrary-after-1",
+      "Split": "calibration",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Max is nuttig."
+        },
+        {
+          "Text": "Max is nutteloos."
+        },
+        {
+          "Text": "Is Max nuttig?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee.|nee:|nee,"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-contrary-both-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa is hoorbaar. Lisa is onhoorbaar.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "dat kan niet waar zijn"
+            ]
+          }
+        },
+        {
+          "Text": "Is Lisa hoorbaar?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "dat kan niet waar zijn"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,",
+              "nee.",
+              "nee:",
+              "nee,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-nl-contrary-after-2",
+      "Split": "test",
+      "Language": "nl",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa is hoorbaar."
+        },
+        {
+          "Text": "Lisa is onhoorbaar."
+        },
+        {
+          "Text": "Is Lisa hoorbaar?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nee.|nee:|nee,"
+            ],
+            "Avoid": [
+              "ja.",
+              "ja:",
+              "ja,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-contrary-both-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é alto. Rex é baixo.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao pode ser verdade"
+            ]
+          }
+        },
+        {
+          "Text": "Rex é alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao pode ser verdade"
+            ],
+            "Avoid": [
+              "sim.",
+              "sim:",
+              "sim,",
+              "nao.",
+              "nao:",
+              "nao,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-contrary-after-1",
+      "Split": "calibration",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex é alto."
+        },
+        {
+          "Text": "Rex é baixo."
+        },
+        {
+          "Text": "Rex é alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao.|nao:|nao,"
+            ],
+            "Avoid": [
+              "sim.",
+              "sim:",
+              "sim,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-contrary-both-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa é otimista. Lisa é pessimista.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao pode ser verdade"
+            ]
+          }
+        },
+        {
+          "Text": "Lisa é otimista?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao pode ser verdade"
+            ],
+            "Avoid": [
+              "sim.",
+              "sim:",
+              "sim,",
+              "nao.",
+              "nao:",
+              "nao,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-pt-contrary-after-2",
+      "Split": "test",
+      "Language": "pt",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa é otimista."
+        },
+        {
+          "Text": "Lisa é pessimista."
+        },
+        {
+          "Text": "Lisa é otimista?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "nao.|nao:|nao,"
+            ],
+            "Avoid": [
+              "sim.",
+              "sim:",
+              "sim,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-contrary-both-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è alto. Rex è basso.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non puo essere vero"
+            ]
+          }
+        },
+        {
+          "Text": "Rex è alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non puo essere vero"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-contrary-after-1",
+      "Split": "calibration",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Rex è alto."
+        },
+        {
+          "Text": "Rex è basso."
+        },
+        {
+          "Text": "Rex è alto?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no.|no:|no,"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-contrary-both-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "contrary-both"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa è felice. Lisa è infelice.",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non puo essere vero"
+            ]
+          }
+        },
+        {
+          "Text": "Lisa è felice?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "non puo essere vero"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,",
+              "no.",
+              "no:",
+              "no,"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Id": "R-it-contrary-after-2",
+      "Split": "test",
+      "Language": "it",
+      "Tags": [
+        "reasoning",
+        "contrary-after"
+      ],
+      "Turns": [
+        {
+          "Text": "Lisa è felice."
+        },
+        {
+          "Text": "Lisa è infelice."
+        },
+        {
+          "Text": "Lisa è felice?",
+          "Expect": {
+            "Reply": "answer",
+            "Contains": [
+              "no.|no:|no,"
+            ],
+            "Avoid": [
+              "si.",
+              "si:",
+              "si,"
             ]
           }
         }

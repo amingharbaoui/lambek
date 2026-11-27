@@ -19,7 +19,8 @@
       The verbs that are not what a sentence says (its copulas and auxiliaries), from the same tags and from its words
       of logic (<language>.logic).
     - What it answers, from the sentences translated from English (Tatoeba): "Yes." is "Ja.", "No." is "Nein.",
-      "I don't know." is "Ich weiss nicht.", "I understand." is "Ich verstehe.", "Why?" is "Warum?" Short answers, the
+      "I don't know." is "Ich weiss nicht.", "I understand." is "Ich verstehe.", "Why?" is "Warum?", "That can't be
+      true." is "Das kann nicht wahr sein." (said before sentences told that cannot all be true). Short answers, the
       proof after them: a sentence that is not said in the translated sentences is not said.
     - The words that take back what was told ("Nein", "Ich habe mich geirrt", "Eigentlich"), from the same sentences:
       the language's "No.", its "I was wrong.", and how it starts where English starts with "Actually,".
@@ -205,10 +206,15 @@ $no = & $phrase 'No.'
 $unknown = & $phrase "I don't know."
 $understood = & $phrase 'I understand.'
 $why = & $phrase 'Why?'
+# (what it says of sentences told that cannot all be true, before them: the sentence the language says for "That can't
+# be true.", or "That cannot be true.")
+$cannot = & $phrase "That can't be true."
+if (-not $cannot) { $cannot = & $phrase 'That cannot be true.' }
 if ($yes) { $categories['YesShort'] = $yes; $categories['Yes'] = "$yes {0}." }
 if ($no) { $categories['NoShort'] = $no; $categories['No'] = $no }
 if ($unknown) { $categories['Unknown'] = $unknown; $categories['WhoUnknown'] = $unknown; $dialogue['Say']['NotKnown'] = $unknown }
 if ($understood) { $dialogue['Say']['Noted'] = "$understood {0}"; $dialogue['Say']['NotedHere'] = "$understood {0}" }
+if ($cannot) { $categories['Clash'] = $cannot; $categories['Contradiction'] = $cannot }
 # (what was told is said back in the user's own words, as they were written: no marks of quotation, which differ
 # from one language to another)
 $dialogue['Say']['Quote'] = '{0}'

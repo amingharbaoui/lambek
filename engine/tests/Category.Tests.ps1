@@ -1396,6 +1396,24 @@ Describe 'General rules told in words' {
             $proof.Assumed | Should -Be @('category(no|grand|petit)')
         }
 
+        It 'says two contraries told of the same one cannot both be true, and answers neither yes nor no: <Told>' -ForEach @(
+            @{ Told = 'Rex est petit. Rex est grand.'; Asked = 'Rex est-il grand ?'; Clash = '*Attention*ne peuvent pas*Rex est petit*Rex est grand*le contraire de*'; Said = 'Ce que vous m''avez dit se contredit*' }
+            @{ Told = 'Rex is fast. Rex is slow.'; Asked = 'Is Rex fast?'; Clash = '*Careful*Rex is fast*Rex is slow*opposite*'; Said = 'What you told me contradicts itself*' }
+            @{ Told = 'Rex es lento. Rex es rápido.'; Asked = '¿Es Rex lento?'; Clash = '*Eso no puede ser verdad.*Rex es lento*Rex es rápido*'; Said = 'Eso no puede ser verdad.*' }
+            @{ Told = 'Rex ist alt. Rex ist jung.'; Asked = 'Ist Rex alt?'; Clash = '*Das kann nicht wahr sein.*Rex ist alt*Rex ist jung*'; Said = 'Das kann nicht wahr sein.*' }
+        ) {
+            (Ask $Told) -join ' ' | Should -BeLike $Clash
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'takes the last of two contraries told one after the other in the place of the first: <Asked>' -ForEach @(
+            @{ Told = @('Rex est petit', 'Rex est grand'); Asked = 'Rex est-il petit ?'; Said = "Non : Rex n'est pas petit.*Rex est grand*" }
+            @{ Told = @('Rex è alto', 'Rex è basso'); Asked = 'Rex è alto?'; Said = 'No.*Rex è basso*' }
+        ) {
+            foreach ($one in $Told) { $null = Tell $one }
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
         It 'learns a contrary only where it is the only one: <Word>' -ForEach @(
             @{ Language = 'fr'; Word = 'grand'; Contrary = 'petit' }
             @{ Language = 'fr'; Word = 'petit'; Contrary = 'grand' }
