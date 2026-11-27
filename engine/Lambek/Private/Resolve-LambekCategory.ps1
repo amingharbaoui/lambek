@@ -571,6 +571,24 @@ function Expand-LambekCategoryGroup {
     return @($out)
 }
 
+function Get-LambekSubjectWord {
+    param([string] $Language, [string] $Side = 'Speaker')
+
+    # The word the user says himself with as the one who does (or the one he speaks to, Side Addressee), as the
+    # treebanks tag it: "yo", never "conmigo"; in a treebank that marks no case, "io", the first one tagged with none
+    $model = Get-LambekFormModel -Language $Language
+    if (-not $model) { return $null }
+    $words = @((Get-LambekCategoryVocabulary -Language $Language).Data[$Side] | Where-Object { $_ })
+    $tagged = { param($word, $test)
+        $seen = $null
+        $model.Tags.TryGetValue("$word".ToLowerInvariant(), [ref] $seen) -and @($seen | Where-Object { "$_" -like 'PRON|*' -and (& $test "|$_|") }).Count -gt 0
+    }
+    $me = @($words | Where-Object { & $tagged $_ { param($t) $t -match '\|Case=([\w,]*\b)?Nom\b' } })
+    if ($me.Count -eq 0) { $me = @($words | Where-Object { & $tagged $_ { param($t) $t -notmatch '\|Case=' } }) }
+    if ($me.Count -eq 0) { return $null }
+    return "$($me[0])"
+}
+
 function Get-LambekSubjectDropped {
     param([string] $Language)
 
@@ -682,17 +700,9 @@ function Expand-LambekCategoryDropped {
     }
     $attempt = { param($number)
         if ($number -eq 'speaker') {
-            # (the word the user says himself with as the one who does, as the treebanks tag it: "yo", never "conmigo";
-            # in a treebank that marks no case, "io", the first one tagged with none)
-            $words = @((Get-LambekCategoryVocabulary -Language $Language).Data['Speaker'] | Where-Object { $_ })
-            $tagged = { param($word, $test)
-                $seen = $null
-                $model.Tags.TryGetValue("$word".ToLowerInvariant(), [ref] $seen) -and @($seen | Where-Object { "$_" -like 'PRON|*' -and (& $test "|$_|") }).Count -gt 0
-            }
-            $me = @($words | Where-Object { & $tagged $_ { param($t) $t -match '\|Case=([\w,]*\b)?Nom\b' } })
-            if ($me.Count -eq 0) { $me = @($words | Where-Object { & $tagged $_ { param($t) $t -notmatch '\|Case=' } }) }
-            if ($me.Count -eq 0) { return @() }
-            $text = "$($me[0]) $rest"
+            $me = Get-LambekSubjectWord -Language $Language
+            if (-not $me) { return @() }
+            $text = "$me $rest"
             if (-not (& $about $text 'speaker')) { return @() }
             return , (& $made $text)
         }
@@ -1001,6 +1011,14 @@ function Read-LambekCategorySentence {
 
     $words = Get-LambekCategoryVocabulary -Language $Language
     if (-not $words) { return $null }
+    # (said by Lambek, in a language that learned no sentences of its own for it: read as the user would say it, "eres un
+    # estudiante" as "soy un estudiante"; nothing when it cannot be turned back)
+    if ($Listener -and @($words.Listener).Count -eq 0) {
+        $back = ConvertTo-LambekOtherSideLearned -Text $Sentence -Language $Language -Back
+        if (-not $back) { return $null }
+        $back = $(if ($back -ne $Sentence) { $back.TrimEnd('.') } else { $back })
+        return Read-LambekCategorySentence -Sentence $back -Language $Language -Question:$Question -Shape:$Shape -Strict:$Strict -Imagined:$Imagined
+    }
     # "normalement, les oiseaux volent", "la plupart des oiseaux volent": a rule about every one that holds unless
     # something told says otherwise. It must read as such a rule once the word is taken out
     if (-not $Question -and -not $Strict) {
@@ -2052,7 +2070,9 @@ function Get-LambekCategorySentence {
     foreach ($rule in @($data['Elide'])) { $built = [regex]::Replace($built, $rule[0], $rule[1]) }
     if ($Plain) { return $built }
     $turned = ConvertTo-LambekOtherSide -Text $built -Language $Language -Register 'vous'
-    if (-not $turned) { return $built }
+    # (of the user, a sentence that cannot be said from the other side is not said: "ik werk", "mein Hund ist schwarz"
+    # would be Lambek's)
+    if (-not $turned) { if ($speaker -or (Test-LambekSaysSpeaker -Text $built -Language $Language)) { return $null } else { return $built } }
     if ($Shapes -ne 'Asks') { $turned = $turned.TrimEnd('.') }
     # (a sentence made with a small word first says it small; a name keeps its capital)
     if ($built -cmatch '^\p{Ll}') { $turned = $turned.Substring(0, 1).ToLowerInvariant() + $turned.Substring(1) }

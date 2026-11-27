@@ -909,6 +909,16 @@ public class LambekForms
     // lemma seen so ends as it does
     public string[] Inflect(string lemma, string upos, string wanted)
     {
+        string how;
+        return Inflect(lemma, upos, wanted, out how);
+    }
+
+    // The same, and how the forms were found: "seen" (with this very lemma), "like" (as the lemmas that end like it and
+    // change as it does), "bridged" (from another of its forms, as other lemmas change), "ending" (as the lemmas that
+    // only end like it), "lemma" (a noun said as its lemma), or "" (none)
+    public string[] Inflect(string lemma, string upos, string wanted, out string how)
+    {
+        how = "";
         if (string.IsNullOrEmpty(lemma) || string.IsNullOrEmpty(upos)) return new string[0];
         if (upos == "AUX") upos = "VERB";
         Speaking table = Speak();
@@ -924,13 +934,15 @@ public class LambekForms
             .GroupBy(feats => feats.Value.Count(feature => !want.Contains(feature) && Inflectional(feature))).OrderBy(group => group.Key))
         {
             string[] said = Attested(upos, written, group);
-            if (said.Length == 0 && own != null) said = Proportional(table, upos, written, own, group);
-            if (said.Length == 0 && own != null) said = Bridged(table, upos, written, own, group);
-            if (said.Length == 0) said = BySuffix(table, upos, written, group);
+            how = "seen";
+            if (said.Length == 0 && own != null) { said = Proportional(table, upos, written, own, group); how = "like"; }
+            if (said.Length == 0 && own != null) { said = Bridged(table, upos, written, own, group); how = "bridged"; }
+            if (said.Length == 0) { said = BySuffix(table, upos, written, group); how = "ending"; }
             if (said.Length > 0) return said;
         }
+        how = "";
         // A noun or an adjective that nothing ends like ("CGI", "junior") is said as its lemma in the singular
-        if ((upos == "NOUN" || upos == "ADJ" || upos == "PROPN") && !want.Contains("Number=Plur")) return new[] { written };
+        if ((upos == "NOUN" || upos == "ADJ" || upos == "PROPN") && !want.Contains("Number=Plur")) { how = "lemma"; return new[] { written }; }
         return new string[0];
     }
 

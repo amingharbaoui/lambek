@@ -1810,4 +1810,43 @@ Describe 'General rules told in words' {
             $known | Should -Contain 'speaker'
         }
     }
+
+    Context 'The answer about the user said to him, in a language Lambek learned' {
+
+        It 'says him back to him, never in his own words: <Asked>' -ForEach @(
+            @{ Told = @('Soy un estudiante'); Asked = '¿Soy un estudiante?'; Said = 'Sí. eres un estudiante.*' }
+            @{ Told = @('Sono uno studente'); Asked = 'Sono uno studente?'; Said = 'Sì. sei uno studente.*' }
+            @{ Told = @('Ich bin ein Student'); Asked = 'Bin ich ein Student?'; Said = 'Ja. du bist ein Student.*' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'says only yes when it cannot say it from his side: <Asked>' -ForEach @(
+            @{ Told = @('Ik ben een student', 'alle studenten werken'); Asked = 'Werk ik?'; Said = 'Ja.' }
+            @{ Told = @('Sou um estudante'); Asked = 'Sou um estudante?'; Said = 'Sim.' }
+            @{ Told = @('Soy un estudiante', 'todos los estudiantes trabajan'); Asked = '¿Trabajo?'; Said = 'Sí.' }
+        ) {
+            Tell $Told
+            @((Ask $Asked) -split "`n")[0] | Should -Be $Said
+        }
+
+        It 'turns a sentence to the other side and back: <Text>' -ForEach @(
+            @{ Language = 'es'; Text = 'yo soy un estudiante'; Said = 'Eres un estudiante.'; Back = 'Yo soy un estudiante.' }
+            @{ Language = 'it'; Text = 'io sono uno studente'; Said = 'Sei uno studente.'; Back = 'Io sono uno studente.' }
+            @{ Language = 'de'; Text = 'ich bin ein Student'; Said = 'Du bist ein Student.'; Back = 'Ich bin ein Student.' }
+        ) {
+            $said = & (Get-Module Lambek) { param($t, $l) ConvertTo-LambekOtherSideLearned -Text $t -Language $l } $Text $Language
+            $said | Should -Be $Said
+            & (Get-Module Lambek) { param($t, $l) ConvertTo-LambekOtherSideLearned -Text $t -Language $l -Back } $said.TrimEnd('.') $Language | Should -Be $Back
+        }
+
+        It 'never says a form its treebanks never saw with the verb: "<Text>"' -ForEach @(
+            @{ Language = 'pt'; Text = 'eu sou um estudante' }
+            @{ Language = 'de'; Text = 'ich arbeite' }
+            @{ Language = 'it'; Text = 'io leggo' }
+        ) {
+            & (Get-Module Lambek) { param($t, $l) ConvertTo-LambekOtherSideLearned -Text $t -Language $l } $Text $Language | Should -BeNullOrEmpty
+        }
+    }
 }

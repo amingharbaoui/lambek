@@ -61,8 +61,9 @@ Describe 'A dialogue learned, not written' {
         Tell $Told
         $null = Ask $Question
         $lines = @((Ask $Why) -split "`n")
-        $lines | Should -Contain "- $($Told[0])"
-        $lines | Should -Contain "- $($Told[1])"
+        # (each said back as Lambek says it, a sentence of its own)
+        $lines | Should -Contain "- $($Told[0])."
+        $lines | Should -Contain "- $($Told[1])."
     }
 
     # (the words that take back what was told, learned from the sentences translated from English)
@@ -72,7 +73,7 @@ Describe 'A dialogue learned, not written' {
         @{ Language = 'nl'; Told = 'Rex is een hond', 'alle honden blaffen'; Taken = 'nee, Rex is een kat'; Question = 'blaft Rex?'; Said = 'Ik weet het niet.' }
     ) {
         Tell $Told
-        Ask $Taken | Should -BeLike "*- $($Told[0])"
+        Ask $Taken | Should -BeLike "*- $($Told[0])."
         Ask $Question | Should -Be $Said
     }
 
