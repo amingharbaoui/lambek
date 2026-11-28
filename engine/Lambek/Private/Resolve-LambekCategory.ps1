@@ -1773,7 +1773,7 @@ function Get-LambekCategorySignature {
     $part = { param($i) "$((Get-LambekCategorySignature -Item $i) -replace '\|', '~')" }
     if ($Item.Kind -eq 'if') { return "if|$(& $part $Item.If)|$(& $part $Item.Then)" }
     if ($Item.Kind -eq 'or') { return "or|$(& $part $Item.Either[0])|$(& $part $Item.Either[1])" }
-    if ($Item.Kind -in 'believe', 'askbelieve') { return "$($Item.Kind)|$($Item.Holder.Individual.Key)|$(& $part $Item.Content)" }
+    if ($Item.Kind -in 'believe', 'notbelieve', 'askbelieve') { return "$($Item.Kind)|$($Item.Holder.Individual.Key)|$(& $part $Item.Content)" }
     $who = ''
     if ($Item.Individual) { $who = $Item.Individual.Key }
     elseif ($Item.Subject) { $who = ($Item.Subject.Atoms -join '+') }
@@ -1923,8 +1923,8 @@ function ConvertTo-LambekCategoryStatement {
     param([pscustomobject] $Item, [hashtable] $Atoms)
 
     # A sentence as clauses (see Category.cs): every one of a kind, one named, or one imagined for "certains".
-    # What someone believes says nothing of what is so: no clause
-    if ($Item.Kind -in 'believe', 'askbelieve') { return [LambekCategoryStatement]::new() }
+    # What someone believes, or does not, says nothing of what is so: no clause
+    if ($Item.Kind -in 'believe', 'notbelieve', 'askbelieve') { return [LambekCategoryStatement]::new() }
     $table = $Atoms
     $index = { param($atom) if (-not $table.ContainsKey($atom)) { $table[$atom] = $table.Count + 1 }; [int] $table[$atom] }
     $s = @(); if ($Item.Subject) { $s = @($Item.Subject.Atoms | ForEach-Object { & $index $_ }) }
@@ -2173,7 +2173,7 @@ function Resolve-LambekCategoryMessage {
     $rules = @($quantified) + @('if', 'or')
     # (a sentence with another inside it is read here, as nothing else reads it: "si Rex est un chien, Rex aboie",
     # "Alice croit que Rex est un chat", "Alice sait que Rex est un chien", "Alice croit-elle que Tom est noir ?")
-    $embedded = @($shapes | Where-Object { $_ -in 'if', 'or', 'believe', 'know', 'askbelieve' }).Count -gt 0
+    $embedded = @($shapes | Where-Object { $_ -in 'if', 'or', 'believe', 'notbelieve', 'know', 'askbelieve' }).Count -gt 0
     # (one question whether someone is something may be answered from what was told of that one alone: "Tom est-il un chat ?")
     $individual = $asks.Count -eq 1 -and $asks[0] -eq 'askis'
     # A language whose dialogue is learned has no memory of its own yet: what is told of someone is kept here, for the
@@ -2307,11 +2307,11 @@ function Resolve-LambekCategoryMessage {
     $facts = @(foreach ($entry in $items) { if (-not $entry.Item.Kind.StartsWith('ask')) { ConvertTo-LambekCategoryFact -Sentence $entry.Sentence -Item $entry.Item -Language $Language } })
     $premises = [System.Collections.Generic.List[object]]::new()
     # (what someone believes is no premise of what is so)
-    foreach ($entry in $known) { if ($entry.Item.Kind -ne 'believe') { $premises.Add($entry) } }
+    foreach ($entry in $known) { if ($entry.Item.Kind -notin 'believe', 'notbelieve') { $premises.Add($entry) } }
     $k = 0
     foreach ($entry in $items) {
         if ($entry.Item.Kind.StartsWith('ask')) { continue }
-        if ($entry.Item.Kind -ne 'believe') { $premises.Add([pscustomobject]@{ Fact = $facts[$k]; Item = $entry.Item }) }
+        if ($entry.Item.Kind -notin 'believe', 'notbelieve') { $premises.Add([pscustomobject]@{ Fact = $facts[$k]; Item = $entry.Item }) }
         $k++
     }
     # What the words say by themselves: "le cerisier" is a cerisier, "this shape" a shape. Never told, so never cited

@@ -168,18 +168,21 @@ function Read-LambekCategoryEmbedded {
         $main = ($tokens[0..($i - 1)] -join ' ').TrimEnd(',')
         $content = $tokens[($i + 1)..($tokens.Count - 1)] -join ' '
         $who = Read-LambekCategoryTagged -Sentence $main -Language $Language -Question:$Question
-        if (-not $who -or -not $who.Individual -or $who.Kind -notin 'does', 'askdoes') { continue }
+        # (or what someone does not believe, told: "Alice ne croit pas que Rex est noir", kind notbelieve)
+        if (-not $who -or -not $who.Individual -or $who.Kind -notin 'does', 'askdoes', 'doesnot' -or ($Question -and $who.Kind -eq 'doesnot')) { continue }
         $atoms = @($who.Predicate.Atoms)
         if ($atoms.Count -ne 1 -or -not "$($atoms[0])".StartsWith('v:')) { continue }
         $lemma = "$($atoms[0])".Substring(2)
         $believes = $words.Believing.Contains($lemma)
         $knows = $words.Knowing.Contains($lemma)
         if (-not $believes -and -not $knows) { continue }
-        # (asked: only what one believes; "Alice sait-elle que..." asks of what is so too)
+        # (asked: only what one believes; "Alice sait-elle que..." asks of what is so too; not known, "Alice ne sait pas
+        # que...", is not read here)
         if ($Question -and -not $believes) { return $null }
+        if ($who.Kind -eq 'doesnot' -and -not $believes) { continue }
         $said = Read-LambekCategoryClause -Sentence $content -Language $Language
         if (-not $said) { continue }
-        $kind = $(if ($Question) { 'askbelieve' } elseif ($believes) { 'believe' } else { 'know' })
+        $kind = $(if ($Question) { 'askbelieve' } elseif ($who.Kind -eq 'doesnot') { 'notbelieve' } elseif ($believes) { 'believe' } else { 'know' })
         if ($Shape) { return [pscustomobject]@{ Kind = $kind } }
         $holder = [pscustomobject]@{ Individual = $who.Individual; Written = "$($who.Written.Subject)".Trim(); Verb = $lemma; Said = $tokens[$i] }
         if ($kind -eq 'know') {

@@ -1098,6 +1098,21 @@ Describe 'General rules told in words' {
             $proof.Conclusion | Should -Be @('category(believe|name:alice|is~name:tom~noir)')
             $proof.Forms | Should -Be @('category(believe|name:alice|all~chat~noir)', 'category(believe|name:alice|is~name:tom~chat)')
         }
+
+        It 'answers no to what someone was told not to believe, and says both told cannot be true together: <Asked>' -ForEach @(
+            @{ Told = "Alice ne croit pas que Rex est noir"; Asked = 'Alice croit-elle que Rex est noir ?'; Said = 'Non.*Alice ne croit pas que Rex est noir*'; Verdict = 'false' }
+            @{ Told = "Alice croit que Rex est noir. Alice ne croit pas que Rex est noir."; Asked = 'Alice croit-elle que Rex est noir ?'; Said = 'Ce que vous m''avez dit se contredit*Alice croit que Rex est noir*Alice ne croit pas que Rex est noir*'; Verdict = 'both' }
+            @{ Told = 'Alice no cree que Rex es negro.'; Asked = '¿Cree Alice que Rex es negro?'; Said = 'No.*Alice no cree que Rex es negro*'; Verdict = 'false' }
+        ) {
+            Tell $Told
+            (Ask $Asked) -join ' ' | Should -BeLike $Said
+            (& (Get-Module Lambek) { Get-LambekLastProof }).Verdict | Should -Be $Verdict
+        }
+
+        It 'keeps what someone does not believe apart from what is so' {
+            Tell "Alice ne croit pas que Rex est noir"
+            (Ask 'Rex est-il noir ?') -join ' ' | Should -Not -BeLike 'Non*'
+        }
     }
 
     Context 'Which of two kinds one is' {

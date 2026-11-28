@@ -5,7 +5,9 @@ function Resolve-LambekCategoryBelief {
     # from what is so, nor from what anyone else believes ("Alice croit que tous les chats sont noirs", "Alice croit que
     # Tom est un chat": yes; "Tom est un chat" told as so: Alice may not know it). Yes when what she believes cannot be
     # true without it, no when it cannot be true with it, else it cannot be concluded; what she believes cannot all be
-    # true together, nothing is concluded from it either
+    # true together, nothing is concluded from it either. Told that she does not believe it ("Alice ne croit pas que Tom
+    # est noir"): no; told both that she believes it and that she does not, the four values: both, said as what was told
+    # that cannot be true together
     $asked = @($Items | Where-Object { $_.Item.Kind -eq 'askbelieve' })
     if ($asked.Count -ne 1) { return $null }
     $ask = $asked[0].Item
@@ -47,7 +49,26 @@ function Resolve-LambekCategoryBelief {
         }
     }
 
+    # (what she was told not to believe, the very sentence asked)
+    $askedSign = "$(& $inner $said)"
+    $denied = @($told | Where-Object { $_.Fact -and $_.Item.Kind -eq 'notbelieve' -and (& $held $_.Item) -and (& $inner $_.Item.Content) -eq $askedSign })
+    $verdict = Get-LambekVerdict -For ($answer -eq 'yes') -Against ($answer -eq 'no' -or $denied.Count -gt 0)
+
     $lines = [System.Collections.Generic.List[string]]::new()
+    if ($verdict -eq 'both' -and $denied.Count -gt 0) {
+        $lines.Add($data['Contradiction'])
+        $used = @(@($found.Indices | ForEach-Object { $beliefs[$_] }) + @($denied[0]))
+        foreach ($entry in $used) { $lines.Add("- $(Format-LambekFact -Fact $entry.Fact -Language $Language -Register 'vous' -Bare)") }
+        Set-LambekLastProof -Facts @($used | ForEach-Object { $_.Fact }) -Verdict 'both'
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+    }
+    if ($answer -eq 'unknown' -and $denied.Count -gt 0) {
+        $lines.Add($data['NoShort'])
+        if ($data['Because']) { $lines.Add($data['Because']) }
+        $lines.Add("- $(Format-LambekFact -Fact $denied[0].Fact -Language $Language -Register 'vous' -Bare)")
+        Set-LambekLastProof -Facts @($denied[0].Fact) -Verdict 'false'
+        return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
+    }
     # The answer said as it was told of the one who believes, with the words asked: "Alice croit que Tom est noir"
     $lead = $null
     foreach ($belief in @($told | Where-Object { $_.Fact -and (& $held $_.Item) -and $_.Item.Kind -eq 'believe' -and $_.Item.Holder.Verb -eq $ask.Holder.Verb })) {
@@ -72,6 +93,6 @@ function Resolve-LambekCategoryBelief {
     $concluded = $said.PSObject.Copy()
     if ($answer -eq 'no') { $concluded.Kind = $opposite[$said.Kind] }
     Set-LambekLastProof -Facts @($used | ForEach-Object { $_.Fact }) -Conclusion @(& $believed $concluded) `
-        -Forms @($used | ForEach-Object { & $believed (& $content $_.Item) }) -Least $found
+        -Forms @($used | ForEach-Object { & $believed (& $content $_.Item) }) -Least $found -Verdict $verdict
     return [pscustomobject]@{ Language = $Language; Reply = ($lines -join "`n"); Facts = $facts }
 }
