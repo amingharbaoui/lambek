@@ -1053,6 +1053,7 @@
       "Contradiction": "What you told me contradicts itself: these sentences cannot all be true together:",
       "Clash": "Careful: with what you told me, these sentences cannot all be true together:",
       "Replaced": "I replace what you told me before:",
+      "Fallen": "What I had concluded from it no longer holds:",
       "Contrary": "From the dictionaries ({2}), \"{0}\" is the opposite of \"{1}\".",
       "Circle": "From the dictionary ({2}), \"{0}\" is a kind of \"{1}\".",
       "YesWords": [

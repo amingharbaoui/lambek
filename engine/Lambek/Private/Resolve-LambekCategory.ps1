@@ -2332,9 +2332,11 @@ function Resolve-LambekCategoryMessage {
     # What a correction takes back ("non, en fait Tom est un chien") no longer counts, nor anything that follows from it:
     # the answers are worked out again from what is still told. The journal keeps both, and it is said what was replaced
     $takenBack = [System.Collections.Generic.List[string]]::new()
+    # (the things told that were taken back, now or below, for what was concluded from them)
+    $goneFacts = [System.Collections.Generic.List[object]]::new()
     if ($correcting) {
         $gone = @(Find-LambekCategoryTakenBack -Premises $premises -Items $items -Facts $facts -Language $Language)
-        foreach ($taken in $gone) { Set-LambekToldReplaced -Fact $premises[$taken.Index].Fact -By $taken.By }
+        foreach ($taken in $gone) { Set-LambekToldReplaced -Fact $premises[$taken.Index].Fact -By $taken.By; $goneFacts.Add($premises[$taken.Index].Fact) }
         if ($gone.Count -gt 0) {
             # (a language that has learned no words for it names the sentences alone)
             if ($data['Replaced']) { $takenBack.Add($data['Replaced']) }
@@ -2417,6 +2419,7 @@ function Resolve-LambekCategoryMessage {
             $gone = Find-LambekCategoryReplaced -Premises $premises -Statements $statements -Facts $facts
             if ($null -ne $gone) {
                 $goneFact = $premises[$gone].Fact
+                $goneFacts.Add($goneFact)
                 Set-LambekToldReplaced -Fact $goneFact -By $facts[0]
                 $premises.RemoveAt($gone)
                 $atoms = @{}
@@ -2430,6 +2433,16 @@ function Resolve-LambekCategoryMessage {
                 $smallest = [LambekCategories]::Smallest($statements, $null)
                 foreach ($line in & $listed $smallest) { $lines.Add($line) }
                 foreach ($line in & $read $smallest) { $lines.Add($line) }
+            }
+        }
+        # What had been concluded from what was taken back and no longer follows: said, and no longer held (a language
+        # that has learned no words for it says nothing of it yet)
+        if ($goneFacts.Count -gt 0 -and $data['Fallen']) {
+            $keys = [string[]] @($premises | ForEach-Object { Get-LambekCategorySignature -Item $_.Item })
+            $fallen = @(Get-LambekDerivationFallen -Gone $goneFacts.ToArray() -Statements $statements -Atoms $atoms -Keys $keys)
+            if ($fallen.Count -gt 0) {
+                $lines.Add($data['Fallen'])
+                foreach ($one in $fallen) { $lines.Add("- $($one.Sentence.Substring(0, 1).ToUpperInvariant())$($one.Sentence.Substring(1)).") }
             }
         }
         Set-LambekLastProof
@@ -2578,6 +2591,8 @@ function Resolve-LambekCategoryMessage {
         $spoken = $null
         if ($sentence) { $spoken = ConvertTo-LambekSpeech -Verdict $answer.ToLowerInvariant() -Conclusion $sentence -Premises @($support | Where-Object { $premises[$_].Fact } | ForEach-Object { $premises[$_] }) -Language $Language }
         $verdict = Get-LambekVerdict -For ($null -ne $yes) -Against ($null -ne $no)
+        # (kept with what it rests on, for when one of those is taken back)
+        if ($sentence -and $ask.Kind -in 'askis', 'askdoes') { Add-LambekDerivation -Item $ask -Verdict $verdict -Sentence $sentence -Facts @($support | Where-Object { $premises[$_].Fact } | ForEach-Object { $premises[$_].Fact }) }
         if ($spoken) {
             $lines.Add($spoken.Text)
             & $proof $support $concluded $verdict

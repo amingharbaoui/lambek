@@ -117,6 +117,7 @@ $script:ToldJournal = $null
 $script:ToldDoubt = 0
 # What the last answer of each conversation rested on, for "pourquoi ?"
 $script:LastProofs = $null
+$script:Derivations = $null
 # What Lambek knows of the world (Data/Knowledge, read from Wikidata), loaded on first use, and the genders of the
 # names it says
 $script:FactBase = $null

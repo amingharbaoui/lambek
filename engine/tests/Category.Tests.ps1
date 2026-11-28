@@ -847,6 +847,29 @@ Describe 'General rules told in words' {
 
     Context 'A correction takes back what it corrects, and what followed from it' {
 
+        It 'says what it had concluded from what is taken back and no longer holds: <Taken>' -ForEach @(
+            @{ Taken = "je me suis trompé, Rex n'est pas un chien"; Said = "*Je remplace*Rex est un chien*Ce que j'en avais conclu ne tient plus :*- Rex aboie.*- Rex est un animal.*" }
+            @{ Taken = 'non, en fait Rex est un chat'; Said = "*Je remplace*Rex est un chien*Ce que j'en avais conclu ne tient plus :*- Rex aboie.*- Rex est un animal.*" }
+        ) {
+            Tell 'Rex est un chien. Tous les chiens aboient. Tous les chiens sont des animaux.'
+            $null = Ask 'Rex aboie-t-il ?'
+            $null = Ask 'Rex est-il un animal ?'
+            (Ask $Taken) -join ' ' | Should -BeLike $Said
+        }
+
+        It 'keeps what still holds by something else' {
+            Tell 'Rex est un chien. Tous les chiens aboient. Rex est un loup. Tous les loups aboient.'
+            $null = Ask 'Rex aboie-t-il ?'
+            (Ask "je me suis trompé, Rex n'est pas un chien") -join ' ' | Should -Not -BeLike '*ne tient plus*'
+            (Ask 'Rex aboie-t-il ?') -join ' ' | Should -BeLike 'Oui*'
+        }
+
+        It 'says it of a thing replaced by what is told after it' {
+            Tell 'Rex est petit.', 'Tous les petits sont mignons.'
+            $null = Ask 'Rex est-il mignon ?'
+            (Ask 'Rex est grand.') -join ' ' | Should -BeLike "*Je remplace*Rex est petit*Ce que j'en avais conclu ne tient plus :*- Rex est mignon.*"
+        }
+
         It 'lets go of what is taken back with <Taken>' -ForEach @(
             @{ Taken = 'non, en fait Tom est un chien' }
             @{ Taken = "je me suis trompé, Tom n'est pas un chat" }

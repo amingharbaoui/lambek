@@ -249,6 +249,7 @@ function Clear-LambekTold {
     (Get-LambekTold).Clear()
     (Get-LambekBoard).Clear()
     $script:LastProofs = $null
+    $script:Derivations = $null
     $script:ProblemStores = $null
     $script:CategoryPending = $null
     $script:ToldJournal = [System.Collections.Generic.List[object]]::new()

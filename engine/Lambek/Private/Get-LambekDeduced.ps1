@@ -145,6 +145,55 @@ function Get-LambekVerdict {
     return [LambekVerdict]::Of($For, $Against)
 }
 
+function Add-LambekDerivation {
+    param([object] $Item, [string] $Verdict, [string] $Sentence, [object[]] $Facts)
+
+    # What was concluded in this conversation, and the things told it rested on: the graph of what holds by what, so that
+    # when one of them is taken back, it can be said which conclusions fell with it ("Rex aboie" rested on "Rex est un
+    # chien"). Only what was answered yes or no of someone, with the sentence it was said in
+    if ($Verdict -notin 'true', 'false' -or -not $Sentence -or @($Facts).Count -eq 0) { return }
+    if ($null -eq $script:Derivations) { $script:Derivations = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }
+    $here = Get-LambekTold
+    if (-not $script:Derivations.ContainsKey($here)) { $script:Derivations[$here] = [System.Collections.Generic.List[object]]::new() }
+    $list = $script:Derivations[$here]
+    # (asked again: the last answer stands for it)
+    $key = Get-LambekCategorySignature -Item $Item
+    for ($i = $list.Count - 1; $i -ge 0; $i--) { if ($list[$i].Key -eq $key) { $list.RemoveAt($i) } }
+    $list.Add([pscustomobject]@{ Key = $key; Item = $Item; Verdict = $Verdict; Sentence = $Sentence; Facts = @($Facts) })
+}
+
+function Get-LambekDerivationFallen {
+    param([object[]] $Gone, [object] $Statements, [hashtable] $Atoms, [string[]] $Keys)
+
+    # The conclusions of this conversation that rested on a thing taken back and no longer follow from what is still told
+    # (each worked out again: one that still holds by something else stays). They are forgotten as concluded
+    if ($null -eq $script:Derivations -or @($Gone).Count -eq 0) { return @() }
+    $here = Get-LambekTold
+    if (-not $script:Derivations.ContainsKey($here)) { return @() }
+    $list = $script:Derivations[$here]
+    $same = {
+        param($a, $b)
+        if ([object]::ReferenceEquals($a, $b)) { return $true }
+        $hashA = $(if ($a.PSObject.Properties['Hash'] -and $a.Hash) { "$($a.Hash)" } else { '' })
+        $hashB = $(if ($b.PSObject.Properties['Hash'] -and $b.Hash) { "$($b.Hash)" } else { '' })
+        if ($hashA -and $hashB) { return $hashA -eq $hashB }
+        return "$($a.Text)" -eq "$($b.Text)" -and "$($a.Told)" -eq "$($b.Told)"
+    }
+    $fallen = [System.Collections.Generic.List[object]]::new()
+    for ($i = $list.Count - 1; $i -ge 0; $i--) {
+        $derivation = $list[$i]
+        $rested = @($derivation.Facts | Where-Object { $fact = $_; @($Gone | Where-Object { & $same $fact $_ }).Count -gt 0 })
+        if ($rested.Count -eq 0) { continue }
+        $individual = $(if ($derivation.Item.Individual) { "$($derivation.Item.Individual.Key)" } else { '' })
+        $still = $null
+        if ([LambekCategories]::Satisfiable($Statements)) {
+            $still = [LambekCategories]::Shortest($Statements, (Get-LambekCategoryOpposite -Item $derivation.Item -Atoms $Atoms -Individual $individual -No:($derivation.Verdict -eq 'false')), $Keys, [LambekCategories]::DefaultBudget)
+        }
+        if (-not $still) { $fallen.Insert(0, $derivation); $list.RemoveAt($i) }
+    }
+    return @($fallen)
+}
+
 function Get-LambekLastProof {
     # What the last answer of this conversation rested on, for "pourquoi ?" (each chat has its own conversation)
     if ($null -eq $script:LastProofs) { $script:LastProofs = [System.Collections.Generic.Dictionary[object, object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance) }
